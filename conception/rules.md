@@ -3,27 +3,31 @@
 ## Le tour de jeu
 
 1. Phase de collecte du pouvoir.
-    a. +1 par adorateur.
-    b. +2 par portail contrôlé.
-    c. +1 par portail abandonné.
-    d. +1 par adorateur ennemi capturé et sacrifié (rendus dans la réserve de la faction d'origine).
-    e. Augmenter jusqu'à la moitié du score de la faction au plus haut pouvoir (arrondi au supérieur).
+
+        a. +1 par adorateur.
+        b. +2 par portail contrôlé.
+        c. +1 par portail abandonné.
+        d. +1 par adorateur ennemi capturé et sacrifié (rendus dans la réserve de la faction d'origine).
+        e. Augmenter jusqu'à la moitié du score de la faction au plus haut pouvoir (arrondi au supérieur).
 
 2. Phase de détermination du premier joueur.
-    a. Si c'est le premier tour, aléatoire.
-    b. Sinon, celui avec le plus de PP.
-    c. En cas d'égalité, c'est le premier joueur du tour précédent qui départage.
-    d. Le joueur qui commence choisi aussi le sens de rotation pour l'ordre du tour de table.
+
+        a. Si c'est le premier tour, aléatoire.
+        b. Sinon, celui avec le plus de PP.
+        c. En cas d'égalité, c'est le premier joueur du tour précédent qui départage.
+        d. Le joueur qui commence choisi aussi le sens de rotation pour l'ordre du tour de table.
 
 3. Phase de l'apocalypse.
-    a. +1 PA par portail contrôlé. (!!! pas en partie longue !!!)
-    b. Chaque joueur peut lancer un rituel et obtenir
-        - +1 PA par portail contrôlé
-        - +1 signe des Anciens par Grand Ancien
-    c. Évènements spéciaux.
-    d. Vérifier les conditions de victoire et de défaite.
+
+        a. +1 PA par portail contrôlé. (!!! pas en partie longue !!!)
+        b. Chaque joueur peut lancer un rituel et obtenir
+            - +1 PA par portail contrôlé
+            - +1 signe des Anciens par Grand Ancien
+        c. Évènements spéciaux.
+        d. Vérifier les conditions de victoire et de défaite.
 
 4. La phase d'action.
+
 
 On revient à la phase 1 après avoir effectué la phase 4,
 sauf si la partie est gagnée.
@@ -44,9 +48,9 @@ Il n'est possible de lancer *qu'un et un seul rituel d'annihilation*.
 
 Comment l'effectuer :
 
-1. Il faut dépenser le nombre de PP correspondant à la position où se trouve le curseur sur la piste rituelle.
-2. Le curseur avance d'un cran sur la piste rituelle.
-3. Le joueur avance son pion sur l'échelle de l'apocalypse d'un espace pour chaque portail qu'il contrôle et gagne un signe des Anciens pour chacun de ses Grands Anciens en jeu.
+    1. Il faut dépenser le nombre de PP correspondant à la position où se trouve le curseur sur la piste rituelle.
+    2. Le curseur avance d'un cran sur la piste rituelle.
+    3. Le joueur avance son pion sur l'échelle de l'apocalypse d'un espace pour chaque portail qu'il contrôle et gagne un signe des Anciens pour chacun de ses Grands Anciens en jeu.
 
 ### Mort subite
 
@@ -76,11 +80,12 @@ Un joueur peut passer son tour, cela fait immédiatement tomber ses PP à zéro.
 
 Il y a trois types d'actions :
 
-- *Actions communes*, une maximum par round d'action.
-- *Actions uniques*, une maximum par round, dépend des factions.
-- *Actions illimitées*, aucune limitation pendant le round du joueur.
-    - 0 PP — Contrôler d'un portail. Il s'agit de placer un acolyte sur le portail.
-    - 0 PP – Abandonner un portail. L'acolyte quitte le portail.
+    - *Actions communes*, une maximum par round d'action.
+    - *Actions uniques*, une maximum par round, dépend des factions.
+    - *Actions illimitées*, aucune limitation pendant le round du joueur.
+
+        - 0 PP — Contrôler d'un portail. Il s'agit de placer un acolyte sur le portail.
+        - 0 PP – Abandonner un portail. L'acolyte quitte le portail.
 
 Lors d'un round, il **faut** faire soit une action commune, soit une action unique (pas les deux !).
 Les actions illimités peuvent être effectuées avant et/ou après.
@@ -116,19 +121,22 @@ Les actions illimités peuvent être effectuées avant et/ou après.
 ## Bataille
 
 1. Prébataille.
-    L'attaquant puis le défenseur appliquent les capacités de prébataille de leur choix.
-    Les capacités permanentes et de prébataille des factions tierces s'appliquent ensuite.
+
+        L'attaquant puis le défenseur appliquent les capacités de prébataille de leur choix.
+        Les capacités permanentes et de prébataille des factions tierces s'appliquent ensuite.
 
 2. Bataille.
-    Les deux opposants jettent simultanément leurs dés en fonction de leur score de combat (un dé par point).
-    Un jet de 6 donne un coup mortel, un jet de 4 ou 5 donne une blessure, le reste rate.
-    Les coups mortels sont appliqués. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
+
+        Les deux opposants jettent simultanément leurs dés en fonction de leur score de combat (un dé par point).
+        Un jet de 6 donne un coup mortel, un jet de 4 ou 5 donne une blessure, le reste rate.
+        Les coups mortels sont appliqués. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
 
 3. Postbataille.
-    Les blessures et les capacités postbataille sont appliquées (de la même façon que les capacités prébatailles).
-    Une unité blessée doit se replier sur une zone adjacente où il n'y a pas d'unité de l'autre faction.
-    Sinon, l'unité meurt.
-    L'attaquant effectue la retraite en premier.
+
+        Les blessures et les capacités postbataille sont appliquées (de la même façon que les capacités prébatailles).
+        Une unité blessée doit se replier sur une zone adjacente où il n'y a pas d'unité de l'autre faction.
+        Sinon, l'unité meurt.
+        L'attaquant effectue la retraite en premier.
 
 
 ## Les grimoires
@@ -149,7 +157,7 @@ La partie se termine soit quand un joueur a plus de PA_FIN PA soit par une « m
 Si phase d'apocalypse, les autres joueurs peuvent toujours lancer un dernier rituel (si pas déjà fait).
 Dans n'importe quel cas, il est possible de révéler ses signes des Anciens.
 
-- Le vainqueur est celui qui a le plus de PA parmi ceux qui possèdent les 6 grimoires.
-- En cas d'égalité, les joueurs concernés se partagent la victoire.
-- Si personne n'a les 6 grimoires, personne ne gagne et l'humanité est sauvée.
+    - Le vainqueur est celui qui a le plus de PA parmi ceux qui possèdent les 6 grimoires.
+    - En cas d'égalité, les joueurs concernés se partagent la victoire.
+    - Si personne n'a les 6 grimoires, personne ne gagne et l'humanité est sauvée.
 
