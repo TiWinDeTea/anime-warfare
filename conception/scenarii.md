@@ -1,4 +1,6 @@
-# Scénario nominal "création de la partie"
+# Scénarii « création de la partie »
+
+## Scénario nominal
 
 1. Affichage du menu de création de la partie
 2. Lecture des paramètres de la partie (nom, nombre de joueurs, mot de passe, port)
@@ -7,11 +9,13 @@
 5. Attente des autres joueurs
 6. Démarrage de la partie
 
-# Scénario alternatif "création de la partie - port utilisé"
+## Scénario alternatif
 
-3. Lancement du salon impossible, retour à 1.
+3. Lancement du salon impossible (port déjà utilisé, …), retour à 1.
 
-# Scénario nominal "rejoindre une partie"
+# Scénarii « rejoindre une partie »
+
+## Scénario nominal
 
 1. Affichage de la liste des parties
 2. Lecture du nom de la partie à rejoindre
@@ -20,11 +24,16 @@
 5. Attente des autres joueurs
 6. Démarrage de la partie
 
-# Scénario alternatif "rejoindre une partie - avec un mot de passe"
+## Scénario alternatif "avec un mot de passe"
 
-2. b. Lecture du mot de passe, continuer vers 3.
+3. Mot de passe requis.
+4. Lecture du mot de passe.
+5. Connexion au salon
+6. Affichage de l'interface du salon
+7. Attente des autres joueurs
+8. Démarrage de la partie
 
-# Scénario alternatif "rejoindre une partie - impossible de se connecter"
+## Scénario alternatif "impossible de se connecter"
 
 3. Connexion impossible, retour à 1.
 
