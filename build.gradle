@@ -1,0 +1,59 @@
+group 'org.tiwindete'
+version '0.1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    
+    maven { url "http://clojars.org/repo/" }
+
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.Lomadriel:LFC:0.2.0'
+    compile 'kryonet:kryonet:2.21'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+idea {
+    project {
+        languageLevel = '1.8'
+    }
+
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
+}
+
+task copyLicense(type: Copy) {
+    from "LICENSE"
+    into "$buildDir"
+}
+
+jar {
+    from { 'LICENSE' }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
