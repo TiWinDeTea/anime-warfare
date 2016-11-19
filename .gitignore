@@ -1,1 +1,4 @@
 *.lock
+*gradle/*
+gradlew*
+.idea/*
