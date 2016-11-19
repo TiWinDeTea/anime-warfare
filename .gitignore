@@ -2,3 +2,5 @@
 *gradle/*
 gradlew*
 .idea/*
+out/*
+build/*
