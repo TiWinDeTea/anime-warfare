@@ -31,13 +31,13 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskPlayingOrderEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceListener;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceListener;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEventListener;
 
 import java.util.List;
 
-public class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceListener, PlayingOrderChoiceListener {
+public class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEventListener, PlayingOrderChoiceEventListener {
 	protected static final String TURN_NOT_INITIALIZED = "Turn not initialized"; // TODO: Externalize
 
 	protected Player firstPlayer;

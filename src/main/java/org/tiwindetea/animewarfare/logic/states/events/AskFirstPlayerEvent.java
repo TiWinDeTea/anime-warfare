@@ -5,7 +5,7 @@ import org.lomadriel.lfc.event.Event;
 import java.util.Collections;
 import java.util.List;
 
-public class AskFirstPlayerEvent implements Event<AskFirstPlayerListener> {
+public class AskFirstPlayerEvent implements Event<AskFirstPlayerEventListener> {
 	private final int lastPlayer;
 	private final List<Integer> drawPlayers;
 
@@ -15,7 +15,7 @@ public class AskFirstPlayerEvent implements Event<AskFirstPlayerListener> {
 	}
 
 	@Override
-	public void notify(AskFirstPlayerListener listener) {
+	public void notify(AskFirstPlayerEventListener listener) {
 		listener.askFirstPlayerEvent(this);
 	}
 

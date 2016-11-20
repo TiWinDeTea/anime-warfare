@@ -2,7 +2,7 @@ package org.tiwindetea.animewarfare.net.logicevent;
 
 import org.lomadriel.lfc.event.Event;
 
-public class PlayingOrderChoiceEvent implements Event<PlayingOrderChoiceListener> {
+public class PlayingOrderChoiceEvent implements Event<PlayingOrderChoiceEventListener> {
 	private final Boolean clockWise;
 
 	public PlayingOrderChoiceEvent(boolean clockWise) {
@@ -10,7 +10,7 @@ public class PlayingOrderChoiceEvent implements Event<PlayingOrderChoiceListener
 	}
 
 	@Override
-	public void notify(PlayingOrderChoiceListener listener) {
+	public void notify(PlayingOrderChoiceEventListener listener) {
 		listener.handlePlayingOrder(this);
 	}
 
