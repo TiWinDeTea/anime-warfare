@@ -59,3 +59,13 @@ artifacts {
     archives javadocJar
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Anime Warfare',
+                'Implementation-Version': version,
+                'Main-Class': "org.tiwindetea.animewarfare.MainApp"
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
