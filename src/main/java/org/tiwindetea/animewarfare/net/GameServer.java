@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.net;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 
 import java.io.IOException;
 
@@ -170,6 +171,10 @@ public class GameServer {
 
         public void received(Connection connection, String string) {
             this.server.sendToAllExceptTCP(connection.getID(), string);
+        }
+
+        public void received(Connection connection, MessageReceivedEvent message) {
+            this.server.sendToAllExceptTCP(connection.getID(), message);
         }
 
         //TODO

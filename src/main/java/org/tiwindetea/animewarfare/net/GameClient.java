@@ -30,6 +30,7 @@ import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 import org.tiwindetea.animewarfare.net.networkevent.NetworkCommand;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -158,12 +159,13 @@ public class GameClient {
 
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
-        public void received(Connection connection, GameClientInfo id) {
-            if (id.gameClientName == null) {
-                GameClient.this.myName.id = id.id;
+        public void received(Connection connection, GameClientInfo info) {
+            if (info.gameClientName == null) {
+                GameClient.this.myName.id = info.id;
                 GameClient.this.client.sendTCP(GameClient.this.myName);
             } else {
-                // TODO: player connected
+                GameClient.this.room.addMember(info);
+                GameClient.this.eventDispatcher.fire(new PlayerConnectionEvent(info));
             }
         }
 
@@ -174,6 +176,10 @@ public class GameClient {
 
         public void received(Connection connection, String message) {
             GameClient.this.eventDispatcher.fire(new MessageReceivedEvent(message));
+        }
+
+        public void received(Connection connection, MessageReceivedEvent message) {
+            GameClient.this.eventDispatcher.fire(message);
         }
     }
 }
