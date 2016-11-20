@@ -44,31 +44,9 @@ import java.util.List;
 
 public class GameClient {
 
-    static class GameClientId {
-        String gameClientName;
-        int id;
-
-        GameClientId() {
-
-        }
-
-        public GameClientId(int id) {
-            this.id = id;
-        }
-
-        public GameClientId(String gameClientName) {
-            this.gameClientName = gameClientName;
-        }
-
-        public GameClientId(String gameClientName, int id) {
-            this.gameClientName = gameClientName;
-            this.id = id;
-        }
-    }
-
     private final Client client = new Client();
     private Room room;
-    private final GameClientId myName = new GameClientId();
+    private final GameClientInfo myName = new GameClientInfo();
     private boolean isConnected = false;
     private final EventDispatcher eventDispatcher = EventDispatcher.getInstance();
     private final Listener listener = new Listener();
@@ -180,7 +158,7 @@ public class GameClient {
 
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
-        public void received(Connection connection, GameClient.GameClientId id) {
+        public void received(Connection connection, GameClientInfo id) {
             if (id.gameClientName == null) {
                 GameClient.this.myName.id = id.id;
                 GameClient.this.client.sendTCP(GameClient.this.myName);

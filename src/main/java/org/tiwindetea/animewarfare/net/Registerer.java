@@ -13,7 +13,7 @@ import java.util.LinkedList;
 class Registerer {
     static void registerClasses(EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();
-        kryo.register(GameClient.GameClientId.class);
+        kryo.register(GameClientInfo.class);
         kryo.register(Room.class);
         kryo.register(String.class);
         kryo.register(LinkedList.class);

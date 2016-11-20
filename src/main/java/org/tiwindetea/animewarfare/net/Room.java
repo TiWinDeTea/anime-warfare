@@ -36,8 +36,7 @@ public class Room implements Serializable {
 
     private transient String gamePassword;
 
-    private ArrayList<String> membersNames = new ArrayList<>();
-    private ArrayList<Integer> membersIds = new ArrayList<>();
+    private ArrayList<GameClientInfo> members = new ArrayList<>();
 
     private boolean isLocked;
 
@@ -77,12 +76,8 @@ public class Room implements Serializable {
         return this.gameName;
     }
 
-    public List<String> getMembersNames() {
-        return Collections.unmodifiableList(this.membersNames);
-    }
-
-    public List<Integer> getMembersIds() {
-        return this.membersIds;
+    public List<GameClientInfo> getMembers() {
+        return Collections.unmodifiableList(this.members);
     }
 
     public InetAddress getAddress() {
@@ -93,21 +88,19 @@ public class Room implements Serializable {
         return this.port;
     }
 
-    void addMember(String memberName, Integer id) {
-        this.membersNames.add(memberName);
-        this.membersIds.add(id);
+    void addMember(GameClientInfo info) {
+        this.members.add(info);
     }
 
     boolean checkPassword(String password) {
         return password == this.gamePassword || (password != null && password.equals(this.gamePassword));
     }
 
-    void removeMember(Integer id) {
+    void removeMember(int id) {
         int i = 0;
-        for (; i < this.membersIds.size() && !this.membersIds.get(i).equals(id); i++) ;
-        if (i < this.membersIds.size()) {
-            this.membersIds.remove(i);
-            this.membersNames.remove(i);
+        for (; i < this.members.size() && this.members.get(i).getId() != id; i++) ;
+        if (i < this.members.size()) {
+            this.members.remove(i);
         }
     }
 

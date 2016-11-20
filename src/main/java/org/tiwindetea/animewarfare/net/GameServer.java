@@ -159,17 +159,16 @@ public class GameServer {
         }
 
         public void connected(Connection connection) {
-            connection.sendTCP(new GameClient.GameClientId(connection.getID()));
+            connection.sendTCP(new GameClientInfo(connection.getID()));
             connection.sendTCP(GameServer.this.room);
         }
 
-        public void received(Connection connection, GameClient.GameClientId id) {
+        public void received(Connection connection, GameClientInfo id) {
             this.server.sendToAllExceptTCP(connection.getID(), id);
             GameServer.this.room.addMember(id.gameClientName, new Integer(id.id));
         }
 
         public void received(Connection connection, String string) {
-            System.out.println("Sending");
             this.server.sendToAllExceptTCP(connection.getID(), string);
         }
 
