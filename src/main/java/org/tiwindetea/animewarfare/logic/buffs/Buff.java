@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic;
+package org.tiwindetea.animewarfare.logic.buffs;
 
 public abstract class Buff {
 	private int remainingTurns;

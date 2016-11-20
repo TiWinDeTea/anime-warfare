@@ -24,8 +24,8 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
-import org.tiwindetea.animewarfare.logic.BuffManager;
 import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 
 public class Unit extends Entity {
 	private Zone zone;

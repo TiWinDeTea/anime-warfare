@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic;
+package org.tiwindetea.animewarfare.logic.buffs;
 
 import java.util.ArrayList;
 import java.util.List;

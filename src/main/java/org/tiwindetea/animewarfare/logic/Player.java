@@ -24,6 +24,8 @@
 
 package org.tiwindetea.animewarfare.logic;
 
+import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
+
 public class Player {
 	private int fanNumber;
 	private int staffAvailable;
