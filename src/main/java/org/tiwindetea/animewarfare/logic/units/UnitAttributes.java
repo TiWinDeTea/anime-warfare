@@ -25,6 +25,11 @@
 package org.tiwindetea.animewarfare.logic.units;
 
 public class UnitAttributes {
+	public enum Gender {
+		MALE,
+		FEMALE
+	}
+
 	private final Gender gender;
 	private final boolean isHero;
 	private final int baseAttackPoints;
