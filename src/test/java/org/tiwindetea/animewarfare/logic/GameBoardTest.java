@@ -45,7 +45,17 @@ public class GameBoardTest {
 
 	@Test
 	public void getPlayersInOrderAntiClockwise() throws Exception {
-		// TODO
+		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
+			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), false);
+
+			List<FactionType> factionsCopy = new ArrayList<>(this.factions);
+			Collections.rotate(factionsCopy, -(i + 1));
+			Collections.reverse(factionsCopy);
+
+			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream().map(p -> p.getFaction()).collect(Collectors.toList());
+
+			Assert.assertEquals(factionsCopy, playerFaction);
+		}
 	}
 
 }
