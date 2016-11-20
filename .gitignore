@@ -5,3 +5,4 @@ gradlew*
 out/*
 build/*
 *.psd
+classes/*
