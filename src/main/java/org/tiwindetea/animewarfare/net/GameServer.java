@@ -110,6 +110,7 @@ public class GameServer {
         this.server.bind(TCPport);
         this.room.setPort(TCPport);
         this.udpListener.bind(UDPport);
+        this.start();
     }
 
     /**
@@ -120,15 +121,14 @@ public class GameServer {
      * Basically, starts the game
      */
     public void start() {
-        this.isRunning = true;
-        for (Connection connection : this.server.getConnections()) {
-            connection.close();
+        if (!this.isRunning) {
+            this.isRunning = true;
+            if (!this.udpListener.isRunning()) {
+                this.server.start();
+                this.udpListener.start();
+            }
+            this.server.addListener(this.listener);
         }
-        if (!this.udpListener.isRunning()) {
-            this.server.start();
-            this.udpListener.start();
-        }
-        this.server.addListener(this.listener);
     }
 
     /**
@@ -164,9 +164,9 @@ public class GameServer {
             connection.sendTCP(GameServer.this.room);
         }
 
-        public void received(Connection connection, GameClientInfo id) {
-            this.server.sendToAllExceptTCP(connection.getID(), id);
-            GameServer.this.room.addMember(id.gameClientName, new Integer(id.id));
+        public void received(Connection connection, GameClientInfo info) {
+            this.server.sendToAllExceptTCP(connection.getID(), info);
+            GameServer.this.room.addMember(info);
         }
 
         public void received(Connection connection, String string) {

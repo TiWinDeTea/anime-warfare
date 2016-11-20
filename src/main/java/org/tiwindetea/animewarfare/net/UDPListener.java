@@ -77,6 +77,7 @@ class UDPListener implements Runnable {
             this.client.close();
         }
         this.client = new DatagramSocket(this.port);
+        this.start();
     }
 
     public void start() {
