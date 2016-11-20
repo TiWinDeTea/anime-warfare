@@ -79,6 +79,9 @@ public class GameRoomState extends MenuState implements GameRoomEventListener {
 		this.rootLayout.setCenter(GameRoomState.gameRoom);
 		GlobalChat.getChatController().clear();
 
+		// play the fade transition
+		GameRoomState.fadeTransition.play();
+
 		// listen events.
 		EventDispatcher.getInstance().addListener(GameRoomEvent.class, this);
 	}
