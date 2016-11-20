@@ -26,38 +26,45 @@ package org.tiwindetea.animewarfare.logic.units;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
 
+// TODO: Fill field
 public enum UnitType {
 	// No Name
-	RUSSELL_JIN, // Staff
-	KUROUSAGI, // LVL0
-	KASUKABE_YOU, // LVL1
-	KUDOU_ASUKA, //LV2
-	SAKAMAKI_IZAYOI, // Great Old One
+	RUSSELL_JIN(FactionType.NO_NAME, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // Acolyte
+	KUROUSAGI(FactionType.NO_NAME, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), // LVL0
+	KASUKABE_YOU(FactionType.NO_NAME, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), // LVL1
+	KUDOU_ASUKA(FactionType.NO_NAME, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), //LV2
+	SAKAMAKI_IZAYOI(FactionType.NO_NAME, new UnitAttributes(UnitAttributes.Gender.MALE, true, 0, 0), 0), // Great Old One
 
 	// F-class no Baka
-	YOSHII_AKIHISA, // Staff
-	SAKAMOTO_YUUJI, // LVL0
-	SHIMADA_MINAMI, // LVL1
-	TSUCHIYA_KOUTA, // LVL2
-	HIMEJI_MIZUKI, // Great Old One
+	YOSHII_AKIHISA(FactionType.F_CLASS_NO_BAKA, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // Acolyte
+	SAKAMOTO_YUUJI(FactionType.F_CLASS_NO_BAKA, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL0
+	SHIMADA_MINAMI(FactionType.F_CLASS_NO_BAKA, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), // LVL1
+	TSUCHIYA_KOUTA(FactionType.F_CLASS_NO_BAKA, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL2
+	HIMEJI_MIZUKI(FactionType.F_CLASS_NO_BAKA, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), // Great Old One
 
 	// Haiyore
-	YOICHI_TAKEHIKO, // Staff
-	YASAKA_MAHIRO, // LVL0
-	HASUTA, // LVL1
-	CTHUKO, // Great Old One
-	NYARUKO, // Great Old One
+	YOICHI_TAKEHIKO(FactionType.HAIYORE, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // Acolyte
+	YASAKA_MAHIRO(FactionType.HAIYORE, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL0
+	HASUTA(FactionType.HAIYORE, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL1
+	CTHUKO(FactionType.HAIYORE, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), // Great Old One
+	NYARUKO(FactionType.HAIYORE, new UnitAttributes(UnitAttributes.Gender.FEMALE, false, 0, 0), 0), // Great Old One
 
 	// Cool Guys
-	KUBOTA_YOSHINOBU, // Staff
-	ACCHAN, // LVL0
-	HAYABUSA_SHOU, // LVL1
-	FUKASE, // LVL2
-	SAKAMOTO; // Great Old One
+	KUBOTA_YOSHINOBU(FactionType.COOL_GUYS, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // Acolyte
+	ACCHAN(FactionType.COOL_GUYS, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL0
+	HAYABUSA_SHOU(FactionType.COOL_GUYS, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL1
+	FUKASE(FactionType.COOL_GUYS, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0), // LVL2
+	SAKAMOTO(FactionType.COOL_GUYS, new UnitAttributes(UnitAttributes.Gender.MALE, false, 0, 0), 0); // Great Old One
 
 	private FactionType faction;
 	private UnitAttributes attributes;
 	private int defaultCost;
+
+	UnitType(FactionType faction, UnitAttributes attributes, int defaultCost) {
+		this.faction = faction;
+		this.attributes = attributes;
+		this.defaultCost = defaultCost;
+	}
 
 	public int getDefaultCost() {
 		return this.defaultCost;
