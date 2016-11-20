@@ -26,15 +26,20 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
+// TODO
 public enum FactionType {
-	NO_NAME,
-	COOL_GUYS,
-	HAIYORE,
-	F_CLASS_NO_BAKA;
+	NO_NAME(0),
+	COOL_GUYS(0),
+	HAIYORE(0),
+	F_CLASS_NO_BAKA(0);
 
+	private int maxUnitNumber;
+
+	FactionType(int maxUnitNumber) {
+		this.maxUnitNumber = maxUnitNumber;
+	}
 	public int getMaxUnitNumber(UnitType type) {
-		// TODO
-		return 0;
+		return this.maxUnitNumber;
 	}
 
 }
