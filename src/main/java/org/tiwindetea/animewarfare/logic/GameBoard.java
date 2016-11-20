@@ -48,6 +48,10 @@ public class GameBoard {
 		initializeZones(players.size());
 	}
 
+	public Player getLastFirstPlayer() {
+		return this.lastFirstPlayer;
+	}
+
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(this.players);
 	}
@@ -60,6 +64,7 @@ public class GameBoard {
 		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
 		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
 		this.clockWiseRotation = clockWiseRotation;
+
 		buildPlayerList();
 	}
 

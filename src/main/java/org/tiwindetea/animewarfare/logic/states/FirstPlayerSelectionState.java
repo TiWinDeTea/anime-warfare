@@ -24,14 +24,21 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskPlayingOrderEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceListener;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstPlayerSelectionState extends GameState {
+public class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceListener, PlayingOrderChoiceListener {
 	protected Player firstPlayer;
 	private Boolean clockWise;
 
@@ -56,9 +63,12 @@ public class FirstPlayerSelectionState extends GameState {
 
 		if (maxPlayers.size() == 1) {
 			this.firstPlayer = maxPlayers.get(0);
-			// TODO : Asks first player the playing order.
+
+			EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
+			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer));
 		} else {
-			// TODO: Asks the last first player to choose the new first player.
+			EventDispatcher.getInstance().addListener(FirstPlayerChoiceEvent.class, this);
+			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayer()));
 		}
 	}
 
@@ -80,6 +90,22 @@ public class FirstPlayerSelectionState extends GameState {
 		return new MarketingState(this.gameBoard);
 	}
 
-	// TODO: Handle the first player
-	// TODO: Handle the playing order
+	@Override
+	public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
+		this.firstPlayer = event.firstPlayer;
+
+		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
+		EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
+		EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer));
+	}
+
+	@Override
+	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
+		this.clockWise = event.clockWise;
+
+		EventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
+
+		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
+		// TODO: Send event to the scheduler to update the state machine.
+	}
 }
