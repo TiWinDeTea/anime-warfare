@@ -86,12 +86,12 @@ public class ServersListController {
 	}
 
 	@FXML
-	void handleRefresh(ActionEvent event) {
+	private void handleRefresh(ActionEvent event) {
 		handleRefresh();
 	}
 
 	@FXML
-	void handleConnect(ActionEvent event) {
+	private void handleConnect(ActionEvent event) {
 		int selectedIndex = roomsTableView.getSelectionModel().getSelectedIndex();
 		if (selectedIndex != -1) {
 			// TODO: try connection to the selected room.
@@ -101,7 +101,7 @@ public class ServersListController {
 	}
 
 	@FXML
-	void handleHost(ActionEvent event) {
+	private void handleHost(ActionEvent event) {
 		// TODO: start a server, connect the local client to it...
 		EventDispatcher.getInstance().fire(new ServersListEvent(ServersListEvent.Type.HOST));
 	}

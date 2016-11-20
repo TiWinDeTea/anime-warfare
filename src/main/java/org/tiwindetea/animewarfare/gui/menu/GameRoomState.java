@@ -77,6 +77,7 @@ public class GameRoomState extends MenuState implements GameRoomEventListener {
 	public void onEnter() {
 		// place the node in the root layout.
 		this.rootLayout.setCenter(GameRoomState.gameRoom);
+		GlobalChat.getChatController().clear();
 
 		// listen events.
 		EventDispatcher.getInstance().addListener(GameRoomEvent.class, this);

@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.gui;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
+import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -38,6 +39,7 @@ import java.util.ResourceBundle;
  */
 public class GlobalChat {
 	private static AnchorPane chat;
+	private static ChatController chatController;
 
 	static {
 		FXMLLoader chatLoader = new FXMLLoader();
@@ -49,9 +51,14 @@ public class GlobalChat {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		GlobalChat.chatController = chatLoader.getController();
 	}
 
 	public static AnchorPane getChat() {
 		return GlobalChat.chat;
+	}
+
+	public static ChatController getChatController() {
+		return GlobalChat.chatController;
 	}
 }

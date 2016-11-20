@@ -30,7 +30,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.tiwindetea.animewarfare.Settings;
+import org.tiwindetea.animewarfare.util.PropertiesReader;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * The chat controller.
@@ -38,6 +43,9 @@ import org.tiwindetea.animewarfare.Settings;
  * @author Benoît CORTIER
  */
 public class ChatController {
+	private static final PropertiesReader PROPERTIES_READER
+			= new PropertiesReader("org.tiwindetea.animewarfare.gui.ChatController");
+
 	@FXML
 	private VBox chatMessages;
 
@@ -49,7 +57,9 @@ public class ChatController {
 	@FXML
 	private TextArea answerTextArea;
 
-	private static final int MAX_MESSAGES = 35;
+	private Deque<Label> chatContent = new ArrayDeque<>();
+
+	private static final int MAX_MESSAGES = Integer.valueOf(PROPERTIES_READER.getString("messages.max"));
 
 	public void clear() {
 		this.chatMessages.getChildren().clear();
@@ -71,15 +81,25 @@ public class ChatController {
 	}
 
 	@FXML
-	void handleSend(ActionEvent event) {
-		// TODO: send message over network.
-		addMessage(Settings.getPlayerName() + ": " + this.answerTextArea.getText());
-		this.answerTextArea.setText("");
+	private void handleSend(ActionEvent event) {
+		if (!this.answerTextArea.getText().isEmpty()) {
+			// TODO: send message over network.
+			addMessage(Settings.getPlayerName() + ": " + this.answerTextArea.getText(), Color.DARKBLUE);
+			this.answerTextArea.setText("");
+		}
 	}
 
-	private void addMessage(String message/*, Color color*/) {
-		// TODO: handle colors.
-		this.chatMessages.getChildren().add(new Label(message));
+	private void addMessage(String message, Color color) {
+		Label newMessage = new Label(message);
+		newMessage.setTextFill(color);
+
+		this.chatContent.addLast(newMessage);
+		this.chatMessages.getChildren().add(newMessage);
+
+		if (this.chatContent.size() > MAX_MESSAGES) {
+			this.chatMessages.getChildren().remove(this.chatContent.pop());
+		}
+
 		this.needScrollBarUpdate = true;
 	}
 }

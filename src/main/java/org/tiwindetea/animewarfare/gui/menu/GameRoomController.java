@@ -54,7 +54,7 @@ public class GameRoomController {
 	}
 
 	@FXML
-	void handleQuit(ActionEvent event) {
+	private void handleQuit(ActionEvent event) {
 		// TODO: disconnect from network
 		EventDispatcher.getInstance().fire(new GameRoomEvent(GameRoomEvent.Type.QUIT));
 	}
