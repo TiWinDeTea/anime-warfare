@@ -25,6 +25,7 @@
 package org.tiwindetea.net;
 
 import com.esotericsoftware.minlog.Log;
+import org.tiwindetea.net.networkevent.NetworkCommand;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,14 +33,13 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class UDPListener implements Runnable {
+class UDPListener implements Runnable {
 
 
-    private volatile boolean isRunning = true;
+    private volatile boolean isRunning = false;
     private volatile boolean clientClosed;
     private Room room;
     private int port;
@@ -52,7 +52,7 @@ public class UDPListener implements Runnable {
         this.client = null;
     }
 
-    UDPListener(Room room, int listeningPort, UUID me) {
+    UDPListener(Room room, int listeningPort) {
         this.room = room;
         this.port = listeningPort;
     }
@@ -69,37 +69,40 @@ public class UDPListener implements Runnable {
         return this.isRunning;
     }
 
-    public void start() throws SocketException {
+    public void bind(int port) throws SocketException {
 
-        if (this.port < -1 || this.room == null || this.client == null || this.client.isClosed()) {
-            throw new IllegalStateException("Trying to start an UDPListener with unvalid parameters");
-        }
-
+        this.port = port;
         this.clientClosed = true;
         if (this.client != null) {
             this.client.close();
         }
         this.client = new DatagramSocket(this.port);
+    }
 
+    public void start() {
+
+        this.isRunning = true;
+        if (this.room == null || this.client == null || this.client.isClosed()) {
+            throw new IllegalStateException("Trying to start an UDPListener with unvalid parameters");
+        }
         this.executor.submit(this);
     }
 
     @Override
     public void run() {
         try {
-            this.isRunning = true;
             this.clientClosed = false;
 
             byte[] versionHeader = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
             int size = versionHeader.length + 1;
             DatagramPacket packet = new DatagramPacket(new byte[size], size);
-            Log.trace(UDPListener.class.getName(), "Starting UDPListener for room" + this.room);
+            Log.info(UDPListener.class.getName(), "Starting UDPListener for room " + this.room);
             while (this.isRunning) {
                 try {
                     this.client.receive(packet);
 
 
-                    if (packet != null && packet.getLength() == size) {
+                    if (packet.getLength() == size) {
                         byte[] data = packet.getData();
 
                         boolean valid = true;
@@ -109,12 +112,13 @@ public class UDPListener implements Runnable {
 
                         if (valid) {
 
-                            if (data[size - 1] == NetworkCommand.SCANNING.value) {
+                            if (data[size - 1] == NetworkCommand.SCANNING.getValue()) {
 
                                 Log.trace(UDPListener.class.getName(), "Sending game infos to " + packet.getAddress());
 
                                 try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
                                     try (ObjectOutputStream os = new ObjectOutputStream(bos)) {
+                                        os.writeObject(Utils.VERSION_HEADER);
                                         os.writeObject(this.room);
                                         os.flush();
                                     }
@@ -126,6 +130,8 @@ public class UDPListener implements Runnable {
                                     Log.warn(UDPListener.class.getName(), "Failed to instantiate the ByteArrayOutpuStream", e);
                                     stop();
                                 }
+                            } else {
+                                Log.trace(UDPListener.class.getName(), "Unexpected command received from " + packet.getAddress());
                             }
                         } else {
                             Log.trace(UDPListener.class.getName(), "Bad Version header received from " + packet.getAddress());
@@ -141,26 +147,27 @@ public class UDPListener implements Runnable {
 
                         Log.info(UDPListener.class.getName(), "Catched an unexpected SocketException");
                         try {
-                            Thread.sleep(100);
+                            Thread.sleep(10);
                         } catch (InterruptedException ignore) {
                         }
                     }
                 } catch (IOException e) {
                     Log.debug(UDPListener.class.getName(), "Unexpected IOException", e);
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException ignored) {
                     }
                 }
             }
         } catch (Exception e) {
-            Log.warn(UDPListener.class.getName(), "Caught " + e.getClass(), e);
+            Log.error(UDPListener.class.getName(), "Caught " + e.getClass(), e);
             throw e;
 
         } finally {
             this.client.close();
             this.client.disconnect();
-            Log.trace(UDPListener.class.getName(), "Stopping UDPListener for room " + this.room);
+            this.executor.shutdown();
+            Log.info(UDPListener.class.getName(), "Stopping UDPListener for room " + this.room);
         }
     }
 
