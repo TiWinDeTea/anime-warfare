@@ -28,10 +28,16 @@ import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.lomadriel.lfc.statemachine.StateMachine;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnHiringState;
 
+import java.util.List;
+
 public class Scheduler {
 	private final StateMachine stateMachine;
 
-	public Scheduler(int numberOfPlayers) {
-		this.stateMachine = new DefaultStateMachine(new FirstTurnHiringState(new GameBoard(numberOfPlayers)));
+	public Scheduler(List<FactionType> players) {
+		this.stateMachine = new DefaultStateMachine(new FirstTurnHiringState(new GameBoard(players)));
+	}
+
+	public void update() {
+		this.stateMachine.update();
 	}
 }
