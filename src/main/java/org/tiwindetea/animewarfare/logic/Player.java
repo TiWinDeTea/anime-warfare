@@ -27,19 +27,33 @@ package org.tiwindetea.animewarfare.logic;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 
 public class Player {
+	private final int ID;
+
 	private int fanNumber;
 	private int staffAvailable;
 
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
 
-
-	public Player(FactionType faction) {
+	public Player(int id, FactionType faction) {
+		this.ID = id;
 		this.faction = faction;
+	}
+
+	public int getID() {
+		return this.ID;
+	}
+
+	public void setStaffAvailable(int staffAvailable) {
+		this.staffAvailable = staffAvailable;
 	}
 
 	public int getStaffAvailable() {
 		return this.staffAvailable;
+	}
+
+	public int getFanNumber() {
+		return this.fanNumber;
 	}
 
 	public FactionType getFaction() {

@@ -49,13 +49,16 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 	@Override
 	public void onEnter() {
+		registerEventListeners();
+
 		List<Player> drawPlayers = this.gameBoard.getPlayersWithMaxStaff();
 
 		if (drawPlayers.size() == 1) { // No draw
 			this.firstPlayer = drawPlayers.get(0);
-			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer));
+			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
 		} else {
-			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayer(), drawPlayers));
+			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerIndex(),
+					this.gameBoard.getPlayersIndex(drawPlayers)));
 		}
 	}
 
@@ -70,6 +73,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
 	}
 
+	@Override
 	public State next() {
 		if (this.firstPlayer == null || this.clockWise == null) {
 			throw new IllegalStateException(TURN_NOT_INITIALIZED);
@@ -80,14 +84,14 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 	@Override
 	public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
-		this.firstPlayer = event.firstPlayer;
+		this.firstPlayer = this.gameBoard.getPlayer(event.getFirstPlayer());
 
-		EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer));
+		EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
 	}
 
 	@Override
 	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
-		this.clockWise = event.clockWise;
+		this.clockWise = event.getClockWise();
 		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
 		// TODO: Send an event to the scheduler to update the state machine.
 	}

@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.logic.states;
 
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.Player;
 
 public class StaffHiringState extends GameState {
 	public StaffHiringState(GameBoard gameBoard) {
@@ -54,5 +55,11 @@ public class StaffHiringState extends GameState {
 
 	protected void computeStaffAvailable() {
 		// TODO
+
+		for (Player player : this.gameBoard.getPlayers()) {
+			int portalControlled = 0;
+			int acolyte = 0;
+			player.setStaffAvailable(2 * portalControlled + acolyte);
+		}
 	}
 }

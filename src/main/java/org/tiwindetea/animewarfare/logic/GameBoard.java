@@ -33,7 +33,7 @@ public class GameBoard {
 	private final List<Zone> zones = new ArrayList<>();
 	private final List<Player> players = new ArrayList<>();
 	private final List<Player> playersInOrder = new ArrayList<>();
-	private Player lastFirstPlayer;
+	private int lastFirstPlayerIndex;
 	private int firstPlayerIndex;
 	private boolean clockWiseRotation;
 
@@ -48,8 +48,12 @@ public class GameBoard {
 		initializeZones(players.size());
 	}
 
-	public Player getLastFirstPlayer() {
-		return this.lastFirstPlayer;
+	public int getLastFirstPlayerIndex() {
+		return this.lastFirstPlayerIndex;
+	}
+
+	public Player getPlayer(int index) {
+		return this.players.get(index);
 	}
 
 	public List<Player> getPlayers() {
@@ -77,8 +81,13 @@ public class GameBoard {
 
 		return playersWithMaxStaff;
 	}
+
+	public List<Integer> getPlayersIndex(List<Player> players) {
+		return players.stream().map(player -> player.getID()).collect(Collectors.toList());
+	}
+
 	public void initializeTurn(Player firstPlayer, boolean clockWiseRotation) {
-		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
+		this.lastFirstPlayerIndex = this.firstPlayerIndex;
 		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
 		this.clockWiseRotation = clockWiseRotation;
 
@@ -86,7 +95,9 @@ public class GameBoard {
 	}
 
 	private void initializePlayers(List<FactionType> players) {
-		this.players.addAll(players.stream().map(Player::new).collect(Collectors.toList()));
+		for (int i = 0; i < players.size(); i++) {
+			this.players.add(new Player(i, players.get(i)));
+		}
 	}
 
 	private void initializeZones(int numberOfPlayers) {

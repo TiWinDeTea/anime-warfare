@@ -26,12 +26,11 @@ package org.tiwindetea.animewarfare.logic.states;
 
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
-import org.tiwindetea.animewarfare.logic.Player;
 
 public class GameEnded extends GameState {
-	private final Player winner;
+	private final int winner;
 
-	public GameEnded(Player winner, GameBoard gameBoard) {
+	public GameEnded(int winner, GameBoard gameBoard) {
 		super(gameBoard);
 		this.winner = winner;
 	}
