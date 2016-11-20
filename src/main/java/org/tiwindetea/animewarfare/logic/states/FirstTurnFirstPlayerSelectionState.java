@@ -24,8 +24,12 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
+
+import java.util.Random;
 
 public class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
 	public FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
@@ -34,12 +38,18 @@ public class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionStat
 
 	@Override
 	public void onEnter() {
-		// TODO: Select a player randomly.
-		// TODO: Asks the first player the playing order.
+		this.firstPlayer = this.gameBoard.getPlayers()
+				.get(new Random().nextInt(this.gameBoard.getPlayers().size()));
+
+		EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
 	}
 
 	@Override
 	public State next() {
+		if (this.firstPlayer == null || this.clockWise == null) {
+			throw new IllegalStateException(TURN_NOT_INITIALIZED);
+		}
+
 		return new ActionState(this.gameBoard);
 	}
 }

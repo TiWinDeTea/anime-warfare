@@ -35,12 +35,13 @@ import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceListener, PlayingOrderChoiceListener {
+	protected static final String TURN_NOT_INITIALIZED = "Turn not initialized"; // TODO: Externalize
+
 	protected Player firstPlayer;
-	private Boolean clockWise;
+	protected Boolean clockWise;
 
 	public FirstPlayerSelectionState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -48,27 +49,13 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 	@Override
 	public void onEnter() {
-		int maxStaff = 0;
-		List<Player> maxPlayers = new ArrayList<>();
+		List<Player> drawPlayers = this.gameBoard.getPlayersWithMaxStaff();
 
-		for (Player player : this.gameBoard.getPlayers()) {
-			if (player.getStaffAvailable() > maxStaff) {
-				maxPlayers.clear();
-				maxPlayers.add(player);
-				maxStaff = player.getStaffAvailable();
-			} else if (player.getStaffAvailable() == maxStaff) {
-				maxPlayers.add(player);
-			}
-		}
-
-		if (maxPlayers.size() == 1) {
-			this.firstPlayer = maxPlayers.get(0);
-
-			EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
+		if (drawPlayers.size() == 1) { // No draw
+			this.firstPlayer = drawPlayers.get(0);
 			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer));
 		} else {
-			EventDispatcher.getInstance().addListener(FirstPlayerChoiceEvent.class, this);
-			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayer()));
+			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayer(), drawPlayers));
 		}
 	}
 
@@ -79,12 +66,13 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 	@Override
 	public void onExit() {
-		// Nothing to do.
+		EventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
+		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
 	}
 
 	public State next() {
 		if (this.firstPlayer == null || this.clockWise == null) {
-			throw new RuntimeException("Turn not initialized");
+			throw new IllegalStateException(TURN_NOT_INITIALIZED);
 		}
 
 		return new MarketingState(this.gameBoard);
@@ -94,18 +82,18 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 	public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
 		this.firstPlayer = event.firstPlayer;
 
-		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
-		EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
 		EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer));
 	}
 
 	@Override
 	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
 		this.clockWise = event.clockWise;
-
-		EventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
-
 		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
-		// TODO: Send event to the scheduler to update the state machine.
+		// TODO: Send an event to the scheduler to update the state machine.
+	}
+
+	private void registerEventListeners() {
+		EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
+		EventDispatcher.getInstance().addListener(FirstPlayerChoiceEvent.class, this);
 	}
 }

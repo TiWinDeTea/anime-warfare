@@ -60,6 +60,23 @@ public class GameBoard {
 		return Collections.unmodifiableList(this.playersInOrder);
 	}
 
+	public List<Player> getPlayersWithMaxStaff() {
+		List<Player> playersWithMaxStaff = new ArrayList<>();
+
+		int maxStaff = 0;
+
+		for (Player player : this.players) {
+			if (player.getStaffAvailable() > maxStaff) {
+				playersWithMaxStaff.clear();
+				playersWithMaxStaff.add(player);
+				maxStaff = player.getStaffAvailable();
+			} else if (player.getStaffAvailable() == maxStaff) {
+				playersWithMaxStaff.add(player);
+			}
+		}
+
+		return playersWithMaxStaff;
+	}
 	public void initializeTurn(Player firstPlayer, boolean clockWiseRotation) {
 		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
 		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
@@ -69,7 +86,7 @@ public class GameBoard {
 	}
 
 	private void initializePlayers(List<FactionType> players) {
-		this.players.addAll(players.stream().map(player -> new Player(player)).collect(Collectors.toList()));
+		this.players.addAll(players.stream().map(Player::new).collect(Collectors.toList()));
 	}
 
 	private void initializeZones(int numberOfPlayers) {
