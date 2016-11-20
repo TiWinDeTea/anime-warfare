@@ -32,6 +32,7 @@ public class Unit extends Entity {
 	private final UnitType type;
 
 	public Unit(UnitType type) {
+		super(type.getFaction());
 		this.type = type;
 	}
 

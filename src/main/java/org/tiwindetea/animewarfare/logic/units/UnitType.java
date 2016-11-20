@@ -24,6 +24,8 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
+import org.tiwindetea.animewarfare.logic.FactionType;
+
 public enum UnitType {
 	// No Name
 	RUSSELL_JIN, // Staff
@@ -53,6 +55,7 @@ public enum UnitType {
 	FUKASE, // LVL2
 	SAKAMOTO; // Great Old One
 
+	private FactionType faction;
 	private UnitAttributes attributes;
 	private int defaultCost;
 
@@ -64,4 +67,7 @@ public enum UnitType {
 		return this.attributes;
 	}
 
+	public FactionType getFaction() {
+		return this.faction;
+	}
 }

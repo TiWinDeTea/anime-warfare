@@ -22,10 +22,13 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic;
+package org.tiwindetea.animewarfare.logic.units;
 
-import org.tiwindetea.animewarfare.logic.units.Entity;
+import org.tiwindetea.animewarfare.logic.FactionType;
 
 public class Studio extends Entity {
 
+	public Studio(FactionType type) {
+		super(type);
+	}
 }
