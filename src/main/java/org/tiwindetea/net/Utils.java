@@ -24,12 +24,42 @@
 
 package org.tiwindetea.net;
 
+import com.esotericsoftware.minlog.Log;
+
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Created by Lucas on 20/11/2016.
+ * @author Lucas Lazare
  */
-public class Utils {
+class Utils {
+
     static final String VERSION_HEADER = "Anime-Wafare v0.1.0";
     static final Charset CHARSET = Charset.defaultCharset();
+
+    static List<InetAddress> findBroadcastAddr() {
+
+        LinkedList<InetAddress> broadcastAddresses = new LinkedList<>();
+        Enumeration<NetworkInterface> en = Collections.emptyEnumeration();
+
+        try {
+            en = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            Log.warn(Utils.class.getName(), "Failed to find broacast addresses", e);
+        }
+
+        while (en.hasMoreElements()) {
+            List<InterfaceAddress> list = en.nextElement().getInterfaceAddresses();
+            broadcastAddresses.addAll(list.stream().filter(ia -> ia.getBroadcast() != null).map(InterfaceAddress::getBroadcast).collect(Collectors.toList()));
+        }
+        return broadcastAddresses;
+    }
 }

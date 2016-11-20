@@ -24,6 +24,85 @@
 
 package org.tiwindetea.net;
 
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.minlog.Log;
+import org.tiwindetea.net.networkevent.NetworkCommand;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameClient {
+
+    private final Client client = new Client();
+
+    /**
+     * Looks for available servers on local network
+     *
+     * @param UDPport UDP port on which servers are running
+     * @param timeout The number of milliseconds to wait for a response
+     * @return A list containing all servers found on LAN
+     */
+    public List<Room> discover(int UDPport, int timeout) {
+
+        List<InetAddress> broadcastAddresses = Utils.findBroadcastAddr();
+        List<Room> lanRooms = new ArrayList<>(3);
+        List<InetSocketAddress> retrievedFrom = new ArrayList<>(3);
+
+        try (DatagramSocket lookup = new DatagramSocket()) {
+            byte[] header = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
+            byte[] request = new byte[header.length + 1];
+            System.arraycopy(header, 0, request, 0, header.length);
+            request[header.length] = NetworkCommand.SCANNING.getValue();
+
+            for (InetAddress address : broadcastAddresses) {
+                DatagramPacket packet = new DatagramPacket(request, request.length, address, UDPport);
+                Log.trace(GameClient.class.getName(), "Broadcasting to " + address);
+                lookup.send(packet);
+            }
+            lookup.setSoTimeout(timeout);
+
+            Log.trace(GameClient.class.getName(), "Listening for server answers");
+            //noinspection InfiniteLoopStatement
+            for (; ; ) {
+                byte[] reception = new byte[8192];
+                DatagramPacket rpacket = new DatagramPacket(reception, reception.length);
+                lookup.receive(rpacket);
+                Log.trace(GameClient.class.getName(), "Received data from " + rpacket.getAddress());
+                reception = rpacket.getData();
+                try (ByteArrayInputStream bais = new ByteArrayInputStream(reception)) {
+                    try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+                        String serverVersionHeader;
+                        Room serverRoom;
+                        serverVersionHeader = (String) ois.readObject();
+                        serverRoom = (Room) ois.readObject();
+
+                        if (Utils.VERSION_HEADER.equals(serverVersionHeader)) {
+                            InetSocketAddress sender = new InetSocketAddress(rpacket.getAddress(), rpacket.getPort());
+                            if (serverRoom != null && !retrievedFrom.contains(sender)) {
+                                Log.trace(GameClient.class.getName(), "Adding " + serverRoom + " to rooms list");
+                                lanRooms.add(serverRoom);
+                                retrievedFrom.add(sender);
+                            }
+                        }
+                    } catch (ClassNotFoundException e) {
+                        Log.warn(GameClient.class.getName(), "Failed to read room from remote " + rpacket.getAddress(), e);
+                    }
+                }
+            }
+        } catch (SocketTimeoutException ignored) {
+            Log.trace(GameClient.class.getName(), "Stopping servers lookup (timed out)");
+        } catch (IOException e) {
+            Log.warn(GameClient.class.getName(), "Unexpected IOException", e);
+        }
+        return lanRooms;
+    }
 
 }
