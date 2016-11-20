@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.menu.SettingsMenuController">
+   <children>
+      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <right>
+            <VBox alignment="CENTER" prefHeight="400.0" prefWidth="303.0" spacing="15.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Label text="%label.playername" HBox.hgrow="SOMETIMES" />
+                        <TextField fx:id="playerNameTextField" prefHeight="25.0" prefWidth="106.0" text="%label.playername.default" HBox.hgrow="SOMETIMES" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="15.0" layoutY="153.0" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="enableEffectsCheckBox" mnemonicParsing="false" selected="true" text="%checkbox.enable.animationeffects" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#handleSave" text="%button.save" />
+                  <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>
