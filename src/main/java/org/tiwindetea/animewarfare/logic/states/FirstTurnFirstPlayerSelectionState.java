@@ -35,6 +35,7 @@ public class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionStat
 	@Override
 	public void onEnter() {
 		// TODO: Select a player randomly.
+		// TODO: Asks the first player the playing order.
 	}
 
 	@Override

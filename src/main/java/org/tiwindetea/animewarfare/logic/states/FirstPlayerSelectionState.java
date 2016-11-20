@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirstPlayerSelectionState extends GameState {
-	private Player firstPlayer;
+	protected Player firstPlayer;
 	private Boolean clockWise;
 
 	public FirstPlayerSelectionState(GameBoard gameBoard) {
@@ -56,8 +56,9 @@ public class FirstPlayerSelectionState extends GameState {
 
 		if (maxPlayers.size() == 1) {
 			this.firstPlayer = maxPlayers.get(0);
+			// TODO : Asks first player the playing order.
 		} else {
-			// TODO: Asks the last first player to get the new first player.
+			// TODO: Asks the last first player to choose the new first player.
 		}
 	}
 

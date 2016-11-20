@@ -28,8 +28,10 @@ import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
 
+import java.util.List;
+
 public class MarketingState extends GameState {
-	private Player currentPlayer;
+	private List<Player> players;
 
 	protected MarketingState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -37,7 +39,7 @@ public class MarketingState extends GameState {
 
 	@Override
 	public void onEnter() {
-		this.currentPlayer = this.gameBoard.getFirstPlayer();
+		this.players = this.gameBoard.getPlayersInOrder();
 	}
 
 	@Override
