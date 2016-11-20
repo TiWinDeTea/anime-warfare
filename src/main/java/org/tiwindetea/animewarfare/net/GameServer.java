@@ -24,9 +24,9 @@
 
 package org.tiwindetea.animewarfare.net;
 
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import org.lomadriel.lfc.event.EventDispatcher;
 
 import java.io.IOException;
 
@@ -44,8 +44,10 @@ public class GameServer {
     //Scheduler scheduler;
     private final Server server = new Server();
 
+    private final EventDispatcher eventDispatcher = EventDispatcher.getInstance();
+
     private final Room room = new Room();
-    private final Listener listener = new Listener();
+    private final Listener listener = new Listener(this.server);
     private final UDPListener udpListener = new UDPListener();
     private boolean isRunning = false;
 
@@ -61,8 +63,7 @@ public class GameServer {
         this.room.setGameName(gameName);
         this.room.setGamePassword(gamePassword);
         this.udpListener.setRoom(this.room);
-        Kryo kryo = this.server.getKryo();
-        //kryo.register(); //Todo
+        Registerer.registerClasses(this.server);
     }
 
     /**
@@ -149,7 +150,28 @@ public class GameServer {
         return this.isRunning;
     }
 
-    private class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
+    public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
+
+        private Server server;
+
+        Listener(Server server) {
+            this.server = server;
+        }
+
+        public void connected(Connection connection) {
+            connection.sendTCP(new GameClient.GameClientId(connection.getID()));
+            connection.sendTCP(GameServer.this.room);
+        }
+
+        public void received(Connection connection, GameClient.GameClientId id) {
+            this.server.sendToAllExceptTCP(connection.getID(), id);
+            GameServer.this.room.addMember(id.gameClientName, new Integer(id.id));
+        }
+
+        public void received(Connection connection, String string) {
+            System.out.println("Sending");
+            this.server.sendToAllExceptTCP(connection.getID(), string);
+        }
 
         //TODO
         /*

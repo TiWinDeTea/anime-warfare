@@ -26,8 +26,8 @@ package org.tiwindetea.animewarfare.net;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Room implements Serializable {
@@ -36,7 +36,8 @@ public class Room implements Serializable {
 
     private transient String gamePassword;
 
-    private List<String> members;
+    private ArrayList<String> membersNames = new ArrayList<>();
+    private ArrayList<Integer> membersIds = new ArrayList<>();
 
     private boolean isLocked;
 
@@ -46,28 +47,24 @@ public class Room implements Serializable {
 
     Room() {
         this.gameName = null;
-        this.members = new LinkedList<>();
         this.gamePassword = null;
         this.isLocked = false;
     }
 
     Room(String gameName) {
         this.gameName = gameName;
-        this.members = new LinkedList<>();
         this.gamePassword = null;
         this.isLocked = false;
     }
 
     Room(String gameName, String gamePassword) {
         this.gameName = gameName;
-        this.members = new LinkedList<>();
         this.gamePassword = gamePassword;
         this.isLocked = (gamePassword != null);
     }
 
     Room(String gameName, String gamePassword, List<String> members) {
         this.gameName = gameName;
-        this.members = members;
         this.gamePassword = gamePassword;
         this.isLocked = (gamePassword != null);
     }
@@ -80,24 +77,38 @@ public class Room implements Serializable {
         return this.gameName;
     }
 
-    public List<String> getMembers() {
-        return Collections.unmodifiableList(this.members);
+    public List<String> getMembersNames() {
+        return Collections.unmodifiableList(this.membersNames);
+    }
+
+    public List<Integer> getMembersIds() {
+        return this.membersIds;
     }
 
     public InetAddress getAddress() {
         return this.address;
     }
 
-    void addMember(String memberName) {
-        this.members.add(memberName);
+    public int getPort() {
+        return this.port;
+    }
+
+    void addMember(String memberName, Integer id) {
+        this.membersNames.add(memberName);
+        this.membersIds.add(id);
     }
 
     boolean checkPassword(String password) {
         return password == this.gamePassword || (password != null && password.equals(this.gamePassword));
     }
 
-    void removeMember(String memberName) {
-        this.members.remove(memberName);
+    void removeMember(Integer id) {
+        int i = 0;
+        for (; i < this.membersIds.size() && !this.membersIds.get(i).equals(id); i++) ;
+        if (i < this.membersIds.size()) {
+            this.membersIds.remove(i);
+            this.membersNames.remove(i);
+        }
     }
 
     void setGameName(String gameName) {
@@ -115,10 +126,6 @@ public class Room implements Serializable {
 
     void setPort(int port) {
         this.port = port;
-    }
-
-    int getPort() {
-        return this.port;
     }
 
     public String toString() {

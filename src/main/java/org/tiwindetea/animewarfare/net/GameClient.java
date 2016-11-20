@@ -25,7 +25,10 @@
 package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
+import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 import org.tiwindetea.animewarfare.net.networkevent.NetworkCommand;
 
 import java.io.ByteArrayInputStream;
@@ -41,12 +44,34 @@ import java.util.List;
 
 public class GameClient {
 
-    class GameClientName {
+    static class GameClientId {
         String gameClientName;
+        int id;
+
+        GameClientId() {
+
+        }
+
+        public GameClientId(int id) {
+            this.id = id;
+        }
+
+        public GameClientId(String gameClientName) {
+            this.gameClientName = gameClientName;
+        }
+
+        public GameClientId(String gameClientName, int id) {
+            this.gameClientName = gameClientName;
+            this.id = id;
+        }
     }
 
     private final Client client = new Client();
-    private final GameClientName myName = new GameClientName();
+    private Room room;
+    private final GameClientId myName = new GameClientId();
+    private boolean isConnected = false;
+    private final EventDispatcher eventDispatcher = EventDispatcher.getInstance();
+    private final Listener listener = new Listener();
 
     /**
      * Looks for available servers on local network
@@ -111,4 +136,66 @@ public class GameClient {
         return lanRooms;
     }
 
+    public GameClient() {
+        this(null);
+    }
+
+    public GameClient(String name) {
+        this.myName.gameClientName = name;
+        Registerer.registerClasses(this.client);
+    }
+
+    public void setName(String name) {
+        if (this.isConnected) {
+            throw new IllegalStateException();
+        } else {
+            this.myName.gameClientName = name;
+        }
+    }
+
+    public void connect(Room room) throws IOException {
+        if (this.myName.gameClientName == null) {
+            throw new IllegalStateException();
+        }
+        this.client.addListener(this.listener);
+        this.client.start();
+        this.client.connect(500, room.getAddress(), room.getPort());
+    }
+
+    public Room getRoom() {
+        return this.room;
+    }
+
+    public void disconnect() {
+        if (this.isConnected) {
+            this.client.stop();
+            this.client.removeListener(this.listener);
+            this.isConnected = false;
+        }
+    }
+
+    public void send(String string) {
+        this.client.sendTCP(string);
+    }
+
+    public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
+
+        public void received(Connection connection, GameClient.GameClientId id) {
+            if (id.gameClientName == null) {
+                GameClient.this.myName.id = id.id;
+                GameClient.this.client.sendTCP(GameClient.this.myName);
+            } else {
+                // TODO: player connected
+            }
+        }
+
+        public void received(Connection connection, Room room) {
+            GameClient.this.room = room;
+            // TODO : fire I am connected ?
+        }
+
+        public void received(Connection connection, String message) {
+            GameClient.this.eventDispatcher.fire(new MessageReceivedEvent(message));
+        }
+    }
 }
