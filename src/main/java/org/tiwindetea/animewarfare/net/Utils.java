@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.net;
+package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.minlog.Log;
 

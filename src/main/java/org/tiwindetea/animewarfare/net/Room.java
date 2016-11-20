@@ -22,9 +22,10 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.net;
+package org.tiwindetea.animewarfare.net;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,10 @@ public class Room implements Serializable {
     private List<String> members;
 
     private boolean isLocked;
+
+    private InetAddress address;
+
+    private int port;
 
     Room() {
         this.gameName = null;
@@ -79,12 +84,16 @@ public class Room implements Serializable {
         return Collections.unmodifiableList(this.members);
     }
 
-    public boolean checkPassword(String password) {
-        return password == this.gamePassword || (password != null && password.equals(this.gamePassword));
+    public InetAddress getAddress() {
+        return this.address;
     }
 
     void addMember(String memberName) {
         this.members.add(memberName);
+    }
+
+    boolean checkPassword(String password) {
+        return password == this.gamePassword || (password != null && password.equals(this.gamePassword));
     }
 
     void removeMember(String memberName) {
@@ -100,6 +109,17 @@ public class Room implements Serializable {
         this.isLocked = gamePassword != null;
     }
 
+    void setAddress(InetAddress address) {
+        this.address = address;
+    }
+
+    void setPort(int port) {
+        this.port = port;
+    }
+
+    int getPort() {
+        return this.port;
+    }
 
     public String toString() {
         return this.gameName;

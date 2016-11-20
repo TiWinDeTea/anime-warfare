@@ -22,16 +22,51 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.net;
+package org.tiwindetea.animewarfare.net.networkevent;
 
 public enum NetworkCommand {
-    SCANNING(0x00);
+    //Not playing
+    SCANNING(0x00),
+    CHAT_MESSAGE(0x01),
 
 
-    public final byte value;
+    //Playing requests
+    // Action phase
+    UNIT_MOVE_R(0x20),
+    UNIT_CAPTURE_R(0x21),
+    UNIT_RECRUITMENT_R(0x22),
+    START_FIGHT_R(0x23),
+    CREATE_PORTAL_R(0x24),
+
+    // Marketing phase
+    ADVERTISE_R(0x25),
+
+    // Global
+    USE_SPECIAL_R(0x26),
+
+
+    //Played
+    // Action phase
+    UNIT_MOVED(0x40),
+    UNIT_CAPTURED(0x41),
+    UNIT_RECRUITED(0x42),
+    FIGHT_RESULT(0x43),
+    PORTAL_CREATED(0x44),
+
+    // Marketing phase
+    ADVERTISED(0x45),
+
+    // Global
+    SPECIAL_USED(0x46);
+
+    private final byte value;
 
     NetworkCommand(int value) {
         assert value <= Byte.MAX_VALUE && value >= Byte.MIN_VALUE;
         this.value = (byte) value;
+    }
+
+    public byte getValue() {
+        return this.value;
     }
 }

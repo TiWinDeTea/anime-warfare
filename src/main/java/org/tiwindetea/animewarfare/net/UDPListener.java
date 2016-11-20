@@ -22,10 +22,10 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.net;
+package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.minlog.Log;
-import org.tiwindetea.net.networkevent.NetworkCommand;
+import org.tiwindetea.animewarfare.net.networkevent.NetworkCommand;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

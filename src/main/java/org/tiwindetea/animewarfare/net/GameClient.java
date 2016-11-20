@@ -22,11 +22,11 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.net;
+package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
-import org.tiwindetea.net.networkevent.NetworkCommand;
+import org.tiwindetea.animewarfare.net.networkevent.NetworkCommand;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,7 +41,12 @@ import java.util.List;
 
 public class GameClient {
 
+    class GameClientName {
+        String gameClientName;
+    }
+
     private final Client client = new Client();
+    private final GameClientName myName = new GameClientName();
 
     /**
      * Looks for available servers on local network
@@ -86,6 +91,7 @@ public class GameClient {
 
                         if (Utils.VERSION_HEADER.equals(serverVersionHeader)) {
                             InetSocketAddress sender = new InetSocketAddress(rpacket.getAddress(), rpacket.getPort());
+                            serverRoom.setAddress(rpacket.getAddress());
                             if (serverRoom != null && !retrievedFrom.contains(sender)) {
                                 Log.trace(GameClient.class.getName(), "Adding " + serverRoom + " to rooms list");
                                 lanRooms.add(serverRoom);

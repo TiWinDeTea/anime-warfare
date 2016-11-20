@@ -22,12 +22,20 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.net;
+package org.tiwindetea.animewarfare.net.logicevent;
 
 public abstract class BaseLogicEvent {
 
-	BaseLogicEvent() {
+    int playerId;
 
-	}
+    BaseLogicEvent(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public int getPlayerId() {
+        return this.playerId;
+    }
+
+    public abstract LogicRequest getLogicRequest();
 
 }
