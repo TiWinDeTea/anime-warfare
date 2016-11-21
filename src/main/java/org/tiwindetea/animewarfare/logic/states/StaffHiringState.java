@@ -49,6 +49,7 @@ public class StaffHiringState extends GameState {
 		// TODO
 	}
 
+	@Override
 	public State next() {
 		return new FirstPlayerSelectionState(this.gameBoard);
 	}

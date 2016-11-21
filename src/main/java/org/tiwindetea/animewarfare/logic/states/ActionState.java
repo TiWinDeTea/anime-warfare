@@ -31,9 +31,9 @@ import org.tiwindetea.animewarfare.logic.Player;
 import java.util.List;
 
 public class ActionState extends GameState {
+	private List<Player> players;
 	private boolean gameEnded;
 	private boolean phaseEnded;
-	private List<Player> players;
 	private final int winner = -1;
 
 	public ActionState(GameBoard gameBoard) {

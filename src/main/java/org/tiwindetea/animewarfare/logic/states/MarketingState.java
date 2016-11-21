@@ -32,6 +32,9 @@ import java.util.List;
 
 public class MarketingState extends GameState {
 	private List<Player> players;
+	private boolean gameEnded;
+	private boolean phaseEnded;
+	private final int winner = -1;
 
 	protected MarketingState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -53,14 +56,12 @@ public class MarketingState extends GameState {
 	}
 
 	public State next() {
-		/*if (gameEnded) {
-			return new GameEndedState(winner, this.gameBoard);
-		} else if (phaseEnded) {
+		if (this.gameEnded) {
+			return new GameEndedState(this.winner, this.gameBoard);
+		} else if (this.phaseEnded) {
 			return new ActionState(this.gameBoard);
 		} else {
 			return this;
-		}*/
-		// TODO
-		return null;
+		}
 	}
 }
