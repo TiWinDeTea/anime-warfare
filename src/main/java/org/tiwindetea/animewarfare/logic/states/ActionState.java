@@ -26,15 +26,23 @@ package org.tiwindetea.animewarfare.logic.states;
 
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.Player;
+
+import java.util.List;
 
 public class ActionState extends GameState {
+	private boolean gameEnded;
+	private boolean phaseEnded;
+	private List<Player> players;
+	private final int winner = -1;
+
 	public ActionState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
 
 	@Override
 	public void onEnter() {
-		// TODO
+		this.players = this.gameBoard.getPlayersInOrder();
 	}
 
 	@Override
@@ -47,17 +55,15 @@ public class ActionState extends GameState {
 		// TODO
 	}
 
+	@Override
 	public State next() {
-		/*if (gameEnded) {
-			return new GameEnded(winner, this.gameBoard);
-		} else if (phaseEnded) {
+		if (this.gameEnded) {
+			return new GameEndedState(this.winner, this.gameBoard);
+		} else if (this.phaseEnded) {
 			return new StaffHiringState(this.gameBoard);
 		} else {
 			return this;
-		}*/
-
-		// TODO
-		return null;
+		}
 	}
 
 }

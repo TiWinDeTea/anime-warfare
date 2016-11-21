@@ -24,34 +24,38 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 
-public class GameEnded extends GameState {
+public class GameEndedState extends GameState {
+	private static final String END_GAME_EXCEPTION = "End game event should be catched";
+
 	private final int winner;
 
-	public GameEnded(int winner, GameBoard gameBoard) {
+	public GameEndedState(int winner, GameBoard gameBoard) {
 		super(gameBoard);
 		this.winner = winner;
 	}
 
 	@Override
 	public void onEnter() {
-		// TODO : Send an event to end the game.
+		EventDispatcher.getInstance().fire(new GameEndedEvent(Integer.valueOf(this.winner)));
 	}
 
 	@Override
 	public void update() {
-		throw new UnsupportedOperationException("End game event should be catched");
+		throw new UnsupportedOperationException(END_GAME_EXCEPTION);
 	}
 
 	@Override
 	public void onExit() {
-		throw new UnsupportedOperationException("End game event should be catched");
+		throw new UnsupportedOperationException(END_GAME_EXCEPTION);
 	}
 
 	@Override
 	public State next() {
-		throw new UnsupportedOperationException("End game event should be catched");
+		throw new UnsupportedOperationException(END_GAME_EXCEPTION);
 	}
 }

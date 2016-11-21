@@ -54,7 +54,7 @@ public class MarketingState extends GameState {
 
 	public State next() {
 		/*if (gameEnded) {
-			return new GameEnded(winner, this.gameBoard);
+			return new GameEndedState(winner, this.gameBoard);
 		} else if (phaseEnded) {
 			return new ActionState(this.gameBoard);
 		} else {
