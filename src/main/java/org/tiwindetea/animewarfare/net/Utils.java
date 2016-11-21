@@ -38,7 +38,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * This class regroups some methods used in the net package
+ *
  * @author Lucas Lazare
+ * @since 0.1.0
  */
 class Utils {
 

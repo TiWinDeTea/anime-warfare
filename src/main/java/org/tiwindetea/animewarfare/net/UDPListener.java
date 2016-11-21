@@ -36,6 +36,16 @@ import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * A class that represents an UDP listener.
+ * An UDPListener will listener to any incomming
+ * packets from a given port, and return the packet
+ * with the room to any one that asks for it with
+ * the good version
+ *
+ * @author Lucas Lazare
+ * @since 0.1.0
+ */
 class UDPListener implements Runnable {
 
 
@@ -57,19 +67,19 @@ class UDPListener implements Runnable {
         this.port = listeningPort;
     }
 
-    public void setPort(int port) {
+    void setPort(int port) {
         this.port = port;
     }
 
-    public void setRoom(Room room) {
+    void setRoom(Room room) {
         this.room = room;
     }
 
-    public boolean isRunning() {
+    boolean isRunning() {
         return this.isRunning;
     }
 
-    public void bind(int port) throws SocketException {
+    void bind(int port) throws SocketException {
 
         this.port = port;
         this.clientClosed = true;
@@ -80,7 +90,7 @@ class UDPListener implements Runnable {
         this.start();
     }
 
-    public void start() {
+    void start() {
 
         this.isRunning = true;
         if (this.room == null || this.client == null || this.client.isClosed()) {
@@ -172,7 +182,7 @@ class UDPListener implements Runnable {
         }
     }
 
-    public void stop() {
+    void stop() {
         this.isRunning = false;
         this.clientClosed = true;
         this.client.close();

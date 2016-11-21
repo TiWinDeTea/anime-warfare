@@ -3,9 +3,17 @@ package org.tiwindetea.animewarfare.net.networkevent;
 import java.util.EventListener;
 
 /**
- * Created by Lucas on 20/11/2016.
+ * Interface fo PlayerConnectionEvent listeners
+ *
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
 public interface PlayerConnectionEventListener extends EventListener {
 
-    void handleConnection(PlayerConnectionEvent event);
+    /**
+     * Method invoked when a new player connects
+     *
+     * @param player The newly connected player
+     */
+    void handleConnection(PlayerConnectionEvent player);
 }

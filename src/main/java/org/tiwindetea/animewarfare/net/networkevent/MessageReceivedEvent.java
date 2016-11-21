@@ -1,9 +1,11 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.net.Message;
 
 /**
- * Created by Lucas on 20/11/2016.
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
 public class MessageReceivedEvent implements Event<MessageReceivedEventListener> {
 
@@ -13,10 +15,17 @@ public class MessageReceivedEvent implements Event<MessageReceivedEventListener>
         this.message = message;
     }
 
+    public MessageReceivedEvent(Message message) {
+        this.message = message.getMessage();
+    }
+
     public String getMessage() {
         return this.message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notify(MessageReceivedEventListener listener) {
         listener.handleMessage(this);

@@ -1,7 +1,12 @@
 package org.tiwindetea.animewarfare.net;
 
 /**
- * Created by Lucas on 20/11/2016.
+ * Class to represent a game client
+ * Basically a wrapper for its ID an
+ * its name.
+ *
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
 public class GameClientInfo {
     String gameClientName;

@@ -30,6 +30,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class represents a game room with players.
+ * It basically wraps the game name, its member,
+ * the address and port of the server, and wether it
+ * requires a password or not
+ *
+ * @author Lucas Lazare
+ * @since 0.1.0
+ */
 public class Room implements Serializable {
 
     private String gameName;
@@ -68,22 +77,39 @@ public class Room implements Serializable {
         this.isLocked = (gamePassword != null);
     }
 
+    /**
+     * @return true if the room has a password, false otherwise
+     */
     public boolean isLocked() {
         return this.isLocked;
     }
 
+    /**
+     * @return the name of the game
+     */
     public String getGameName() {
         return this.gameName;
     }
 
+    /**
+     * @return A unmodifiableList of the members of this room
+     *
+     * @see Collections#unmodifiableList(List)
+     */
     public List<GameClientInfo> getMembers() {
         return Collections.unmodifiableList(this.members);
     }
 
+    /**
+     * @return the address of the server that has this room
+     */
     public InetAddress getAddress() {
         return this.address;
     }
 
+    /**
+     * @return the port of the server
+     */
     public int getPort() {
         return this.port;
     }
@@ -121,6 +147,10 @@ public class Room implements Serializable {
         this.port = port;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         return this.gameName;
     }

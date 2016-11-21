@@ -43,6 +43,15 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The game client class
+ * This class is used to connect to a game
+ * server that hosts a game.
+ * No logic involved in the client.
+ *
+ * @author Lucas Lazare
+ * @since 0.1.0
+ */
 public class GameClient {
 
     private final Client client = new Client();
@@ -115,15 +124,29 @@ public class GameClient {
         return lanRooms;
     }
 
+    /**
+     * Instanciate a new GameClient with to name
+     */
     public GameClient() {
         this(null);
     }
 
+    /**
+     * Instanciate a new GameClient
+     *
+     * @param name client name
+     */
     public GameClient(String name) {
         this.myName.gameClientName = name;
-        Registerer.registerClasses(this.client);
+        Utils.registerClasses(this.client);
     }
 
+    /**
+     * Sets the name of the client
+     *
+     * @param name new name for the client
+     * @throws IllegalStateException if the client is already connected
+     */
     public void setName(String name) {
         if (this.isConnected) {
             throw new IllegalStateException();
@@ -132,6 +155,12 @@ public class GameClient {
         }
     }
 
+    /**
+     * Connects the client to a server, given its room
+     *
+     * @param room Room to connect to
+     * @throws IOException if an I/O error occurs
+     */
     public void connect(Room room) throws IOException {
         if (this.myName.gameClientName == null) {
             throw new IllegalStateException();
@@ -141,10 +170,16 @@ public class GameClient {
         this.client.connect(500, room.getAddress(), room.getPort());
     }
 
+    /**
+     * @return Gets the room to which this client is connected
+     */
     public Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Disconnects from the server
+     */
     public void disconnect() {
         if (this.isConnected) {
             this.client.stop();
@@ -153,8 +188,13 @@ public class GameClient {
         }
     }
 
-    public void send(String string) {
-        this.client.sendTCP(string);
+    /**
+     * Sends a message to the server, to be send to any other room member
+     *
+     * @param message message to be send
+     */
+    public void send(MessageReceivedEvent message) {
+        this.client.sendTCP(message);
     }
 
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {

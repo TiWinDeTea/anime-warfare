@@ -4,7 +4,8 @@ import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
- * Created by Lucas on 20/11/2016.
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
 public class PlayerConnectionEvent implements Event<PlayerConnectionEventListener> {
 
@@ -14,6 +15,9 @@ public class PlayerConnectionEvent implements Event<PlayerConnectionEventListene
         this.client = client;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void notify(PlayerConnectionEventListener listener) {
         listener.handleConnection(this);
     }

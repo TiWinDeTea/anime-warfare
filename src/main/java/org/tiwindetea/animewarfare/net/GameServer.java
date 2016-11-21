@@ -26,10 +26,13 @@ package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Random;
 
 /**
  * The game server class
@@ -52,19 +55,36 @@ public class GameServer {
     private final UDPListener udpListener = new UDPListener();
     private boolean isRunning = false;
 
+    /**
+     * Instanciate a server with a random name and without password
+     */
     public GameServer() {
         this(null, null);
     }
 
-    public GameServer(String gameName) {
+    /**
+     * Instanciate a server without password, given its name
+     *
+     * @param gameName Name of the game Room
+     */
+    public GameServer(@Nullable String gameName) {
         this(gameName, null);
     }
 
-    public GameServer(String gameName, String gamePassword) {
+    /**
+     * Instanciate a server given its name and password
+     *
+     * @param gameName     Name of the Room
+     * @param gamePassword Password of the Room
+     */
+    public GameServer(@Nullable String gameName, @Nullable String gamePassword) {
+        if (gameName == null) {
+            gameName = new BigInteger(17, new Random()).toString(Character.MAX_RADIX);
+        }
         this.room.setGameName(gameName);
         this.room.setGamePassword(gamePassword);
         this.udpListener.setRoom(this.room);
-        Registerer.registerClasses(this.server);
+        Utils.registerClasses(this.server);
     }
 
     /**
@@ -87,7 +107,7 @@ public class GameServer {
      * @param gameName new name for the game
      * @throws IllegalStateException if the server is already running
      */
-    public void setName(String gameName) {
+    public void setGameName(String gameName) {
         if (this.isRunning) {
             throw new IllegalStateException();
         } else {
@@ -98,9 +118,6 @@ public class GameServer {
     /**
      * Start the server with a given TCP port for client's
      * connections and UDP port for client's broacast.
-     * <p>
-     * Any incoming requests will be ignored until the {@link GameServer#start()}
-     * method is called. Clients will still be able to connect, though
      *
      * @param TCPport Port to use for clients connection on TCP
      * @param UDPport Port to use for clients broadcasting when discovering
@@ -115,10 +132,6 @@ public class GameServer {
 
     /**
      * Starts the server if it is not started yet,
-     * closes all connections that have been previously done
-     * and start treating incoming connections and requests.
-     * <p>
-     * Basically, starts the game
      */
     public void start() {
         if (!this.isRunning) {
@@ -173,14 +186,8 @@ public class GameServer {
             this.server.sendToAllExceptTCP(connection.getID(), string);
         }
 
-        public void received(Connection connection, MessageReceivedEvent message) {
-            this.server.sendToAllExceptTCP(connection.getID(), message);
+        public void received(Connection connection, Message message) {
+            this.server.sendToAllExceptTCP(connection.getID(), new MessageReceivedEvent(message));
         }
-
-        //TODO
-        /*
-        public void received(Connection connection, String string){
-		}
-		 */
     }
 }
