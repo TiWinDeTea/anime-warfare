@@ -24,13 +24,17 @@
 
 package org.tiwindetea.animewarfare.net;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -64,5 +68,16 @@ class Utils {
             broadcastAddresses.addAll(list.stream().filter(ia -> ia.getBroadcast() != null).map(InterfaceAddress::getBroadcast).collect(Collectors.toList()));
         }
         return broadcastAddresses;
+    }
+
+    static void registerClasses(EndPoint endPoint) {
+        Kryo kryo = endPoint.getKryo();
+        kryo.register(GameClientInfo.class);
+        kryo.register(Room.class);
+        kryo.register(String.class);
+        kryo.register(LinkedList.class);
+        kryo.register(ArrayList.class);
+        kryo.register(MessageReceivedEvent.class);
+        kryo.register(Message.class);
     }
 }
