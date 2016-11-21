@@ -82,8 +82,8 @@ public class GameBoard {
 		return playersWithMaxStaff;
 	}
 
-	public List<Integer> getPlayersIndex(List<Player> players) {
-		return players.stream().map(player -> player.getID()).collect(Collectors.toList());
+	public static List<Integer> getPlayersIndex(List<Player> players) {
+		return players.stream().map(player -> Integer.valueOf(player.getID())).collect(Collectors.toList());
 	}
 
 	public void initializeTurn(Player firstPlayer, boolean clockWiseRotation) {

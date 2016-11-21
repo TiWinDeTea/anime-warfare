@@ -58,7 +58,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
 		} else {
 			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerIndex(),
-					this.gameBoard.getPlayersIndex(drawPlayers)));
+					GameBoard.getPlayersIndex(drawPlayers)));
 		}
 	}
 
