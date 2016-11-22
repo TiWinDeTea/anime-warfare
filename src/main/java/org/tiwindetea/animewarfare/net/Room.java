@@ -101,6 +101,21 @@ public class Room implements Serializable {
     }
 
     /**
+     * Search for a player in the room
+     *
+     * @param id id of the player
+     * @return The player, or null if there is no such player.
+     */
+    public GameClientInfo find(int id) {
+        for (GameClientInfo member : this.members) {
+            if (member.getId() == id) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return the address of the server that has this room
      */
     public InetAddress getAddress() {
