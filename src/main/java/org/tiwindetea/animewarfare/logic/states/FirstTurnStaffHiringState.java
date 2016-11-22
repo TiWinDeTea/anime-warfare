@@ -22,22 +22,21 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic;
+package org.tiwindetea.animewarfare.logic.states;
 
-import org.lomadriel.lfc.statemachine.DefaultStateMachine;
-import org.lomadriel.lfc.statemachine.StateMachine;
-import org.tiwindetea.animewarfare.logic.states.FirstTurnHiringState;
+import org.lomadriel.lfc.statemachine.State;
+import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.GameBoard;
 
 import java.util.List;
 
-public class Scheduler {
-	private final StateMachine stateMachine;
-
-	public Scheduler(List<FactionType> players) {
-		this.stateMachine = new DefaultStateMachine(new FirstTurnHiringState(new GameBoard(players)));
+public class FirstTurnStaffHiringState extends StaffHiringState {
+	public FirstTurnStaffHiringState(List<FactionType> players) {
+		super(new GameBoard(players));
 	}
 
-	public void update() {
-		this.stateMachine.update();
+	@Override
+	public State next() {
+		return new FirstTurnFirstPlayerSelectionState(this.gameBoard);
 	}
 }
