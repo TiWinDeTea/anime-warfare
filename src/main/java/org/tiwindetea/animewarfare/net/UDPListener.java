@@ -87,16 +87,17 @@ class UDPListener implements Runnable {
             this.client.close();
         }
         this.client = new DatagramSocket(this.port);
-        this.start();
     }
 
     void start() {
 
-        this.isRunning = true;
-        if (this.room == null || this.client == null || this.client.isClosed()) {
-            throw new IllegalStateException("Trying to start an UDPListener with unvalid parameters");
+        if (!this.isRunning) {
+            this.isRunning = true;
+            if (this.room == null || this.client == null || this.client.isClosed()) {
+                throw new IllegalStateException("Trying to start an UDPListener with unvalid parameters");
+            }
+            this.executor.submit(this);
         }
-        this.executor.submit(this);
     }
 
     @Override

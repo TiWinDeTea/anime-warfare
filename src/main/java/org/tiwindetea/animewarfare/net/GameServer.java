@@ -28,7 +28,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -116,7 +115,7 @@ public class GameServer {
     }
 
     /**
-     * Start the server with a given TCP port for client's
+     * Binds the server with a given TCP port for client's
      * connections and UDP port for client's broacast.
      *
      * @param TCPport Port to use for clients connection on TCP
@@ -127,7 +126,6 @@ public class GameServer {
         this.server.bind(TCPport);
         this.room.setPort(TCPport);
         this.udpListener.bind(UDPport);
-        this.start();
     }
 
     /**
@@ -136,10 +134,8 @@ public class GameServer {
     public void start() {
         if (!this.isRunning) {
             this.isRunning = true;
-            if (!this.udpListener.isRunning()) {
-                this.server.start();
-                this.udpListener.start();
-            }
+            this.server.start();
+            this.udpListener.start();
             this.server.addListener(this.listener);
         }
     }
@@ -187,7 +183,7 @@ public class GameServer {
         }
 
         public void received(Connection connection, Message message) {
-            this.server.sendToAllExceptTCP(connection.getID(), new MessageReceivedEvent(message));
+            this.server.sendToAllExceptTCP(connection.getID(), message);
         }
     }
 }
