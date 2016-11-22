@@ -1,6 +1,7 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.Message;
 
 /**
@@ -9,18 +10,22 @@ import org.tiwindetea.animewarfare.net.Message;
  */
 public class MessageReceivedEvent implements Event<MessageReceivedEventListener> {
 
-    private final String message;
+    private final Message message;
 
-    public MessageReceivedEvent(String message) {
-        this.message = message;
+    public MessageReceivedEvent(String message, String senderName, int senderId) {
+        this.message = new Message(message, senderName, senderId);
     }
 
     public MessageReceivedEvent(Message message) {
-        this.message = message.getMessage();
+        this.message = message;
     }
 
     public String getMessage() {
-        return this.message;
+        return this.message.getMessage();
+    }
+
+    public GameClientInfo getSenderInfos() {
+        return this.message.getSenderInfos();
     }
 
     /**

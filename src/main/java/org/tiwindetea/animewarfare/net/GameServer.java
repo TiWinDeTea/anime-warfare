@@ -183,7 +183,7 @@ public class GameServer {
         }
 
         public void received(Connection connection, Message message) {
-            this.server.sendToAllExceptTCP(connection.getID(), message);
+            this.server.sendToAllExceptTCP(connection.getID(), new Message(message.getMessage(), GameServer.this.room.find(connection.getID())));
         }
     }
 }

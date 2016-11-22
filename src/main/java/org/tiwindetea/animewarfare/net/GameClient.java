@@ -193,7 +193,7 @@ public class GameClient {
      *
      * @param message message to be send
      */
-    public void send(MessageReceivedEvent message) {
+    public void send(Message message) {
         this.client.sendTCP(message);
     }
 
@@ -214,12 +214,8 @@ public class GameClient {
             // TODO : fire I am connected ?
         }
 
-        public void received(Connection connection, String message) {
+        public void received(Connection connection, Message message) {
             GameClient.this.eventDispatcher.fire(new MessageReceivedEvent(message));
-        }
-
-        public void received(Connection connection, MessageReceivedEvent message) {
-            GameClient.this.eventDispatcher.fire(message);
         }
     }
 }

@@ -1,5 +1,7 @@
 package org.tiwindetea.animewarfare.net;
 
+import java.io.Serializable;
+
 /**
  * Class to represent a game client
  * Basically a wrapper for its ID an
@@ -8,7 +10,7 @@ package org.tiwindetea.animewarfare.net;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GameClientInfo {
+public class GameClientInfo implements Serializable {
     String gameClientName;
     int id;
 

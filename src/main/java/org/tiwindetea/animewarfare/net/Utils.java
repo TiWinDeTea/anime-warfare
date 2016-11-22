@@ -27,7 +27,6 @@ package org.tiwindetea.animewarfare.net;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
-import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -77,7 +76,6 @@ class Utils {
         kryo.register(String.class);
         kryo.register(LinkedList.class);
         kryo.register(ArrayList.class);
-        kryo.register(MessageReceivedEvent.class);
         kryo.register(Message.class);
     }
 }
