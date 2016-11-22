@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class GameBoardTest {
 	private GameBoard gameBoard;
-	private List<FactionType> factions = Arrays.asList(FactionType.NO_NAME,
+	private final List<FactionType> factions = Arrays.asList(FactionType.NO_NAME,
 			FactionType.HAIYORE,
 			FactionType.F_CLASS_NO_BAKA,
 			FactionType.COOL_GUYS);

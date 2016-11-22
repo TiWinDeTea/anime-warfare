@@ -14,6 +14,11 @@ public class GameEndedEvent implements Event<GameEndedEventListener> {
 		listener.handleGameEndedEvent(this);
 	}
 
+	/**
+	 * Returns the id of the winner or null if there is no winner.
+	 *
+	 * @return the id of winner or null if there is no winner.
+	 */
 	public Integer getWinner() {
 		return this.winner;
 	}

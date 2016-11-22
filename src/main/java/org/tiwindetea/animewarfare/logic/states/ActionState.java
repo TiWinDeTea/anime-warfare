@@ -65,5 +65,4 @@ public class ActionState extends GameState {
 			return this;
 		}
 	}
-
 }

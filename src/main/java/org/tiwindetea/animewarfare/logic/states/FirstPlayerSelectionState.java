@@ -51,15 +51,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 	public void onEnter() {
 		registerEventListeners();
 
-		List<Player> drawPlayers = this.gameBoard.getPlayersWithMaxStaff();
-
-		if (drawPlayers.size() == 1) { // No draw
-			this.firstPlayer = drawPlayers.get(0);
-			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
-		} else {
-			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerIndex(),
-					GameBoard.getPlayersIndex(drawPlayers)));
-		}
+		selectionFirstPlayer();
 	}
 
 	@Override
@@ -69,8 +61,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 	@Override
 	public void onExit() {
-		EventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
-		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
+		unregisterEventListeners();
 	}
 
 	@Override
@@ -93,11 +84,29 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
 		this.clockWise = event.getClockWise();
 		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
-		// TODO: Send an event to the scheduler to update the state machine.
+
+		// TODO: Send PhaseEnded Event.
 	}
 
-	private void registerEventListeners() {
+	protected void registerEventListeners() {
 		EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
 		EventDispatcher.getInstance().addListener(FirstPlayerChoiceEvent.class, this);
+	}
+
+	private void unregisterEventListeners() {
+		EventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
+		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
+	}
+
+	private void selectionFirstPlayer() {
+		List<Player> drawPlayers = this.gameBoard.getPlayersWithMaxStaff();
+
+		if (drawPlayers.size() == 1) { // No draw
+			this.firstPlayer = drawPlayers.get(0);
+			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
+		} else {
+			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerIndex(),
+					GameBoard.getPlayersIndex(drawPlayers)));
+		}
 	}
 }

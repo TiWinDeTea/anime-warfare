@@ -27,6 +27,11 @@ package org.tiwindetea.animewarfare.logic.states;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 
+/**
+ * Abstraction of a state of this game.
+ *
+ * @author Jérôme BOULMIER
+ */
 abstract class GameState implements State {
 	protected final GameBoard gameBoard;
 

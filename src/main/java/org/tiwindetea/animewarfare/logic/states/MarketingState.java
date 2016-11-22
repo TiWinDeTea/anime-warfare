@@ -55,6 +55,7 @@ public class MarketingState extends GameState {
 		// TODO
 	}
 
+	@Override
 	public State next() {
 		if (this.gameEnded) {
 			return new GameEndedState(this.winner, this.gameBoard);

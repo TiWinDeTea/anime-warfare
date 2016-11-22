@@ -27,6 +27,12 @@ package org.tiwindetea.animewarfare.logic.states;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.units.Studio;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StaffHiringState extends GameState {
 	public StaffHiringState(GameBoard gameBoard) {
@@ -35,8 +41,9 @@ public class StaffHiringState extends GameState {
 
 	@Override
 	public void onEnter() {
-		// TODO
 		computeStaffAvailable();
+
+		// TODO: Send event phase ended.
 	}
 
 	@Override
@@ -54,13 +61,53 @@ public class StaffHiringState extends GameState {
 		return new FirstPlayerSelectionState(this.gameBoard);
 	}
 
-	protected void computeStaffAvailable() {
+	private void computeStaffAvailable() {
 		// TODO
 
+		List<Studio> studios = this.gameBoard.getZones().stream()
+				.map(Zone::getStudio)
+				.filter(studio -> studio != null)
+				.collect(Collectors.toList());
+
+		int numberOfNonControlledPortal = getNumberOfNonControlledPortal(studios);
+		int maxStaffPoints = 0;
+
+		int numberOfCapturedAcolytes = 0; // TODO
 		for (Player player : this.gameBoard.getPlayers()) {
-			int portalControlled = 0;
-			int acolyte = 0;
-			player.setStaffAvailable(2 * portalControlled + acolyte);
+			int staffPoints = 2 * getNumberOfControlledPortal(studios, player)
+					+ player.getNumberOfUnits(UnitLevel.MASCOT)
+					+ numberOfCapturedAcolytes
+					+ numberOfNonControlledPortal;
+
+			player.setStaffAvailable(staffPoints);
+
+			if (staffPoints > maxStaffPoints) {
+				maxStaffPoints = staffPoints;
+			}
 		}
+
+		// TODO Free captured acolytes
+
+		// Increment maxStaffPoints to an even number.
+		if (maxStaffPoints % 2 == 1) {
+			++maxStaffPoints;
+		}
+
+		adjustNumberOfStaffMembersTo(maxStaffPoints / 2);
+	}
+
+	private void adjustNumberOfStaffMembersTo(int halfStaffPoints) {
+		this.gameBoard.getPlayers().stream()
+				.filter(player -> player.getStaffAvailable() < halfStaffPoints)
+				.forEach(player -> player.setStaffAvailable(halfStaffPoints));
+	}
+
+	private static int getNumberOfNonControlledPortal(List<Studio> studios) {
+		return (int) studios.stream().filter(faction -> faction == null).count();
+	}
+
+	private static int getNumberOfControlledPortal(List<Studio> studios, Player player) {
+		return (int) studios.stream().map(Studio::getCurrentFaction)
+				.filter(faction -> faction == player.getFaction()).count();
 	}
 }

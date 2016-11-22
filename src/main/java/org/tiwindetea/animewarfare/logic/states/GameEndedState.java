@@ -30,10 +30,16 @@ import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 
 public class GameEndedState extends GameState {
-	private static final String END_GAME_EXCEPTION = "End game event should be catched";
+	private static final String END_GAME_EXCEPTION = "End game event should be catched"; // TODO: Externalize
 
 	private final int winner;
 
+	/**
+	 * Final state of the game
+	 *
+	 * @param winner    id of the winner.
+	 * @param gameBoard the gameboard.
+	 */
 	public GameEndedState(int winner, GameBoard gameBoard) {
 		super(gameBoard);
 		this.winner = winner;
