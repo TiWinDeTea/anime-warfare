@@ -6,7 +6,7 @@
 
         a. +1 par mascotte.
         b. +2 par studio contrôlé.
-        c. +1 par studio abandonné.
+        c. +1 par studio indépendant.
         d. +1 par mascotte ennemie capturée (rendues dans la réserve de la faction d'origine).
         e. Augmenter jusqu'à la moitié du score de la faction au plus haut pouvoir (arrondi au supérieur).
 
@@ -20,9 +20,9 @@
 3. Phase de marketing.
 
         a. +1K de fans par studio contrôlé. (!!! pas en partie longue !!!)
-        b. Chaque joueur peut lancer un rituel et obtenir
+        b. Chaque joueur organiser une convention pour obtenir
             - +1K de fans par studio contrôlé
-            - +1 campagne publicitaire par Héros
+            - +1 droit de campagne publicitaire par Héros
         c. Évènements spéciaux.
         d. Vérifier les conditions de victoire et de défaite.
 
@@ -50,20 +50,20 @@ Comment l'effectuer :
 
     1. Il faut affecter le nombre de staff correspondant à la position où se trouve le curseur sur la piste marketing.
     2. Le curseur avance d'un cran sur la piste marketing.
-    3. Le joueur avance son pion sur l'échelle de popularité d'un espace pour chaque studio qu'il contrôle et gagne une campagne publicitaire pour chacun de ses Héros en jeu.
+    3. Le joueur avance son pion sur l'échelle de popularité d'un espace pour chaque studio qu'il contrôle et gagne un droit de campagne publicitaire pour chacun de ses Héros en jeu.
 
-### Mort subite
+### Crise économique du secteur
 
-Si le curseur de la piste marketing arrive à la fin, on détermine la victoire immédiatement et le jeu se termine.
+Si le curseur de la piste marketing arrive à la fin, on détermine un gagnant éventuel immédiatement et le jeu se termine.
 
 ### Campagne publicitaires
 
-Lorsque l'on gagne une campagne publicitaire, on le pioche dans la réserve **sans le révéler aux autres joueurs** et on le place à proximité du plateau de sa faction (info visible par les autres joueurs).
+Lorsque l'on gagne un droit de campagne publicitaire, on le pioche dans la réserve **sans le révéler aux autres joueurs** et on le place à proximité du plateau de sa faction (info visible par les autres joueurs).
 La valeur (entre 1 et 3) de la campagne n'est connue que du joueur.
 
 ### Évènements spéciaux
 
-Certains mangas et capacités prennent effet durant la phase marketing.
+Certaines capacités et productions prennent effet durant la phase marketing.
 Sauf cas exceptionnel, les effets surviennent après les conventions et avant de déterminer la victoire.
 En cas de conflit, c'est dans l'ordre du tour de table que les effets sont appliqués.
 
@@ -72,8 +72,8 @@ En cas de conflit, c'est dans l'ordre du tour de table que les effets sont appli
 
 Lors de la phase d'action chaque joueur dans l'ordre défini peut effectuer des actions.
 
-La phase d'action continue tant qu'il reste un joueur avec du staff disponible.
-Si un joueur tombe à court de staff, il ne peut plus effectuer d'actions (même gratuite) jusqu'à la fin de la phase.
+La phase d'action continue tant qu'il reste un joueur avec au moins un employé disponible.
+Si un joueur n'a plus aucun employé disponible, il ne peut plus effectuer d'actions (même gratuite) jusqu'à la fin de la phase.
 Un joueur peut passer son tour, cela fait immédiatement prendre congé à son staff.
 
 Il y a trois types d'actions :
@@ -82,54 +82,54 @@ Il y a trois types d'actions :
     - *Actions uniques*, une maximum par round, dépend des factions.
     - *Actions illimitées*, aucune limitation pendant le round du joueur.
 
-        - 0 staff — Contrôler d'un studio. Il s'agit de placer une mascotte sur le studio.
-        - 0 staff – Abandonner un studio. La mascotte quitte le studio.
+        - Gratuit — Prendre le contrôle d'un studio. Il s'agit de placer une mascotte sur le studio.
+        - Gratuit – Abandonner un studio. La mascotte quitte le studio.
 
 Lors d'un round, il **faut** faire soit une action commune, soit une action unique (pas les deux !).
 Les actions illimités peuvent être effectuées avant et/ou après.
 
 ### Actions communes
 
-- -3 staffs – ouvrir un studio.
+- -3 membres du staff – ouvrir un studio.
     Il est nécessaire de disposer d'une mascotte dans une *zone sans stadio* où vous voulez ouvrir votre studio.
 
-- -N staffs – Déplacer N unités d'une case.
+- -N membre(s) du staff – Déplacer N unités d'une case.
 
-- -1 staff – Engager une bataille.
+- -1 membre du staff – Engager une bataille.
     *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'une bataille par zone** lors du round.
 
-- -1 staff – Capturer une mascotte.
+- -1 membre du staff – Capturer une mascotte.
     Hiérarchie entre les unités : Héros > Personnage > Mascotte.
     Pour capturer un adorateur, il faut une unité supérieur en rang à tous les adversaires de la faction concernée de la zone.
     Attention, capturer ≠ combat. L'adorateur ne peut pas se défendre même s'il a des points de combat.
 
-- -1 staff – Recruter une mascotte.
+- -1 membre du staff – Recruter une mascotte.
     Il ne peuvent apparaître que dans une zone où il y a déjà une unité du joueur ou
     n'importe où si le joueur n'a plus d'unité.
 
-- -? staffs – Invoquer un personnage.
+- -? membre(s) du staff – Invoquer un personnage.
     Un personnage doit apparaître sur un studio contrôlé par le joueur.
 
-- -? staffs – Invoquer un Héros.
+- -? membre(s) du staff – Invoquer un Héros.
     cf spécificités de chaque Héros.
 
-- Tout le staff – passer son tour.
+- Tout les membres du staff – passer son tour.
 
 
-## Bataille
+## Affrontement publicitaire
 
-1. Prébataille.
+1. Pré-affrontement.
 
-        L'attaquant puis le défenseur appliquent les capacités de prébataille de leur choix.
-        Les capacités permanentes et de prébataille des factions tierces s'appliquent ensuite.
+        L'attaquant puis le défenseur appliquent les capacités de préaffrontement de leur choix.
+        Les capacités permanentes et de préaffrontement des factions tierces s'appliquent ensuite.
 
-2. Bataille.
+2. Affrontement.
 
         Les deux opposants jettent simultanément leurs dés en fonction de leur score de combat (un dé par point).
-        Un jet de 6 donne un coup mortel, un jet de 4 ou 5 donne une blessure, le reste rate.
-        Les coups mortels sont appliqués. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
+        Un jet de 6 humilie, un jet de 4 ou 5 blesse leur égo, le reste rate.
+        Les unités humiliatiés sont retirés du jeu et remis en réserve. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
 
-3. Postbataille.
+3. Post-affrontement.
 
         Les blessures et les capacités postbataille sont appliquées (de la même façon que les capacités prébatailles).
         Une unité blessée doit se replier sur une zone adjacente où il n'y a pas d'unité de l'autre faction.
@@ -137,25 +137,25 @@ Les actions illimités peuvent être effectuées avant et/ou après.
         L'attaquant effectue la retraite en premier.
 
 
-## Les manga
+## Les productions
 
-Chaque manga a un effet unique.
-Lorsque l'on obtient un manga, il ne sera jamais perdu même si la condition d'obtention n'est plus remplie.
+Chaque production (manga, light novel, …) a un effet unique.
+Lorsque l'on créé une production, elle ne sera jamais perdue, même si la condition de création n'est plus remplie.
 
 
 ## Réserves
 
 - 6 mascottes max sur la carte pour chaque faction.
-- Pour les personnages, voir au cas par cas dans les factions.
+- Pour les autres personnages, voir au cas par cas dans les factions.
 
 
 ## Détermination victoire et défaite
 
-La partie se termine soit quand un joueur a plus de FANS_FIN fans soit par une « mort subite ».
-Si phase d'apocalypse, les autres joueurs peuvent toujours lancer une dernière convention (si pas déjà fait).
+La partie se termine soit quand un joueur a plus de FANS_FIN fans soit par une « Crise économique du secteur ».
+Si le jeu se termine lors d'une phase de marketing, les autres joueurs peuvent toujours lancer une dernière convention (si pas déjà fait).
 Dans n'importe quel cas, il est possible de révéler ses campagnes publicitaires.
 
-    - Le vainqueur est celui qui a le plus de fans parmi ceux qui possèdent les 6 mangas.
+    - Le vainqueur est celui qui a le plus de fans parmi ceux qui possèdent 6 productions.
     - En cas d'égalité, les joueurs concernés se partagent la victoire.
-    - Si personne n'a les 6 mangas, personne ne gagne et l'humanité est sauvée.
+    - Si personne n'a les 6 productions, tout le monde perd, et les studios d'animation du monde entier font faillite.
 
