@@ -24,20 +24,39 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.tiwindetea.animewarfare.logic.units.Entity;
+import org.tiwindetea.animewarfare.logic.units.Studio;
+import org.tiwindetea.animewarfare.logic.units.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Zone {
-	private boolean isCountrySide;
-	private final List<Entity> entities = new ArrayList<>();
+	private final boolean isCountrySide;
+	private final List<Unit> units = new ArrayList<>();
 
-	public void addEntity(Entity entity) {
-		this.entities.add(entity);
+	private Studio studio;
+
+	public Zone(boolean isCountrySide) {
+		this.isCountrySide = isCountrySide;
 	}
 
-	public boolean remove(Entity entity) {
-		return this.entities.remove(entity);
+	public void addUnit(Unit unit) {
+		this.units.add(unit);
+	}
+
+	public boolean removeUnit(Unit unit) {
+		return this.units.remove(unit);
+	}
+
+	public Studio getStudio() {
+		return this.studio;
+	}
+
+	public void setStudio(Studio studio) {
+		this.studio = studio;
+	}
+
+	public boolean isCountrySide() {
+		return this.isCountrySide;
 	}
 }

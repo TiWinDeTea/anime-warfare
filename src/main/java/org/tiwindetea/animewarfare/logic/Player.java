@@ -25,6 +25,8 @@
 package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 public class Player {
 	private final int ID;
@@ -34,6 +36,7 @@ public class Player {
 
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
+	private final UnitCounter unitCounter = new UnitCounter();
 
 	public Player(int id, FactionType faction) {
 		this.ID = id;
@@ -58,5 +61,17 @@ public class Player {
 
 	public FactionType getFaction() {
 		return this.faction;
+	}
+
+	public int getNumberOfUnits(UnitType type) {
+		return this.unitCounter.getNumberOfUnits(type);
+	}
+
+	public int getNumberOfUnits(UnitLevel level) {
+		return this.unitCounter.getNumberOfUnits(level);
+	}
+
+	public void addUnit(UnitType type) {
+		this.unitCounter.addUnit(type);
 	}
 }

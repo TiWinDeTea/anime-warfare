@@ -41,7 +41,7 @@ public class GameBoard {
 		if (players.size() < 2 && players.size() > 4) {
 			throw new IllegalArgumentException("Incorrect number of players, "
 					+ players.size()
-					+ " players requested, should be between 2 and 4");
+					+ " player(s) requested, should be between 2 and 4");
 		}
 
 		initializePlayers(players);
@@ -115,5 +115,9 @@ public class GameBoard {
 				this.playersInOrder.add(this.players.get((i + j) % this.players.size()));
 			}
 		}
+	}
+
+	public List<Zone> getZones() {
+		return this.zones;
 	}
 }

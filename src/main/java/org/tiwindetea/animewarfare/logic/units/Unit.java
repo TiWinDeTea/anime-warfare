@@ -24,15 +24,17 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 
-public class Unit extends Entity {
-	private Zone zone;
+public class Unit {
 	private final UnitType type;
+	private Zone zone;
+	private FactionType faction;
 
 	public Unit(UnitType type) {
-		super(type.getFaction());
+		this.faction = type.getDefaultFaction();
 		this.type = type;
 	}
 
@@ -40,7 +42,8 @@ public class Unit extends Entity {
 	 * Returns the previous zone.
 	 */
 	public Zone move(Zone zone) {
-		return null;
+		// TODO: Fire event
+		return this.zone = zone;
 	}
 
 	/**
@@ -52,6 +55,10 @@ public class Unit extends Entity {
 	public int getAttackPoints(BuffManager bManager) {
 		// TODO
 		return 0;
+	}
+
+	public FactionType getFaction() {
+		return this.faction;
 	}
 
 	// TODO: getters

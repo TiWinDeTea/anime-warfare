@@ -26,8 +26,17 @@ package org.tiwindetea.animewarfare.logic.units;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
 
-public class Studio extends Entity {
-	public Studio(FactionType type) {
-		super(type);
+public class Studio {
+	private FactionType currentFaction;
+
+	public Studio() {
+	}
+
+	public void setCurrentFaction(FactionType currentFaction) {
+		this.currentFaction = currentFaction;
+	}
+
+	public FactionType getCurrentFaction() {
+		return this.currentFaction;
 	}
 }
