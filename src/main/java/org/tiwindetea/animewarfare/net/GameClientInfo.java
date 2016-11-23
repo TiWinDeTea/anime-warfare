@@ -26,7 +26,7 @@ public class GameClientInfo implements Serializable {
         this.gameClientName = gameClientName;
     }
 
-    GameClientInfo(String gameClientName, int id) {
+    public GameClientInfo(String gameClientName, int id) {
         this.gameClientName = gameClientName;
         this.id = id;
     }

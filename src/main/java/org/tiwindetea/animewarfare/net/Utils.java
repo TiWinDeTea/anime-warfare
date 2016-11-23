@@ -27,6 +27,17 @@ package org.tiwindetea.animewarfare.net;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
+import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkrequests.FirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.Message;
+import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -69,13 +80,45 @@ class Utils {
         return broadcastAddresses;
     }
 
+    /**
+     * Register classes sent by network.
+     */
     static void registerClasses(EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();
+
+        // general
         kryo.register(GameClientInfo.class);
         kryo.register(Room.class);
         kryo.register(String.class);
         kryo.register(LinkedList.class);
         kryo.register(ArrayList.class);
+
+        // network requests
+        kryo.register(FirstPlayerSelected.class);
+        kryo.register(LockFaction.class);
         kryo.register(Message.class);
+        kryo.register(PlayingOrderChosen.class);
+        kryo.register(SelectFaction.class);
+
+        // network events
+        kryo.register(PlayerSelectedFactionNetevent.class);
+        kryo.register(PlayerLockedFactionNetevent.class);
+        kryo.register(GameStartedNetevent.class);
+    }
+
+    public static void registerAsLogicListener(GameServer.LogicListener logicListener) {
+
+        EventDispatcher ed = EventDispatcher.getInstance();
+
+        ed.addListener(FirstPlayerChoiceEvent.class, logicListener);
+        ed.addListener(PlayingOrderChoiceEvent.class, logicListener);
+    }
+
+    public static void deregisterLogicListener(GameServer.LogicListener logicListener) {
+
+        EventDispatcher ed = EventDispatcher.getInstance();
+
+        ed.removeListener(FirstPlayerChoiceEvent.class, logicListener);
+        ed.removeListener(PlayingOrderChoiceEvent.class, logicListener);
     }
 }

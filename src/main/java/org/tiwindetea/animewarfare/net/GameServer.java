@@ -28,9 +28,24 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.lomadriel.lfc.statemachine.DefaultStateMachine;
+import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEventListener;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
+import org.tiwindetea.animewarfare.net.networkrequests.FirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.Message;
+import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -44,21 +59,29 @@ import java.util.Random;
  */
 public class GameServer {
 
-    //Scheduler scheduler;
+    private DefaultStateMachine stateMachine;
     private final Server server = new Server();
 
     private final EventDispatcher eventDispatcher = EventDispatcher.getInstance();
 
     private final Room room = new Room();
-    private final Listener listener = new Listener(this.server);
+    private final NetworkListener networkNetworkListener = new NetworkListener(this.server);
+    private final LogicListener logicListener = new LogicListener();
     private final UDPListener udpListener = new UDPListener();
     private boolean isRunning = false;
+
+    private final HashMap<Integer, FactionType> playersSelection = new HashMap<>(4, 1);
+    private final HashMap<Integer, FactionType> playersLocks = new HashMap<>(4, 1);
 
     /**
      * Instanciate a server with a random name and without password
      */
     public GameServer() {
-        this(null, null);
+        this(-1, null, null);
+    }
+
+    public GameServer(int numberOfExpectedPlayers) {
+        this(numberOfExpectedPlayers, null, null);
     }
 
     /**
@@ -67,22 +90,26 @@ public class GameServer {
      * @param gameName Name of the game Room
      */
     public GameServer(@Nullable String gameName) {
-        this(gameName, null);
+        this(-1, gameName, null);
+    }
+
+    public GameServer(@Nullable String gameName, @Nullable String gamePassword) {
+        this(-1, gameName, gamePassword);
     }
 
     /**
      * Instanciate a server given its name and password
-     *
      * @param gameName     Name of the Room
      * @param gamePassword Password of the Room
      */
-    public GameServer(@Nullable String gameName, @Nullable String gamePassword) {
+    public GameServer(int numberOfExpectedPlayers, @Nullable String gameName, @Nullable String gamePassword) {
         if (gameName == null) {
             gameName = new BigInteger(17, new Random()).toString(Character.MAX_RADIX);
         }
         this.room.setGameName(gameName);
         this.room.setGamePassword(gamePassword);
         this.udpListener.setRoom(this.room);
+        this.room.setNumberOfExpectedPlayers(numberOfExpectedPlayers);
         Utils.registerClasses(this.server);
     }
 
@@ -94,7 +121,7 @@ public class GameServer {
      */
     public void setGamePassword(String gamePassword) {
         if (this.isRunning) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Server already running");
         } else {
             this.room.setGamePassword(gamePassword);
         }
@@ -108,9 +135,26 @@ public class GameServer {
      */
     public void setGameName(String gameName) {
         if (this.isRunning) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Server already running");
         } else {
             this.room.setGameName(gameName);
+        }
+    }
+
+    /**
+     * Sets the number of players for the game
+     *
+     * @param numberOfExpectedPlayer the number of players
+     * @throws IllegalStateException    If the server is already running.
+     * @throws IllegalArgumentException If the passed argument is outside of the [2-4] range
+     */
+    public void setNumberOfExpectedPlayer(int numberOfExpectedPlayer) {
+        if (this.isRunning) {
+            throw new IllegalStateException("Server already running");
+        } else if (numberOfExpectedPlayer < 2 || numberOfExpectedPlayer > 4) {
+            throw new IllegalArgumentException("Passed argument outside of the [2-4] range. (got " + numberOfExpectedPlayer + ")");
+        } else {
+            this.room.setNumberOfExpectedPlayers(numberOfExpectedPlayer);
         }
     }
 
@@ -130,13 +174,19 @@ public class GameServer {
 
     /**
      * Starts the server if it is not started yet,
+     * @throws IllegalStateException if the number of player was not set
      */
     public void start() {
-        if (!this.isRunning) {
-            this.isRunning = true;
-            this.server.start();
-            this.udpListener.start();
-            this.server.addListener(this.listener);
+        if (this.room.getNumberOfExpectedPlayers() > 1) {
+            if (!this.isRunning) {
+                this.isRunning = true;
+                this.server.start();
+                this.udpListener.start();
+                this.server.addListener(this.networkNetworkListener);
+                Utils.registerAsLogicListener(this.logicListener);
+            }
+        } else {
+            throw new IllegalStateException("Number of expected players was not set");
         }
     }
 
@@ -145,12 +195,16 @@ public class GameServer {
      * UDP server.
      */
     public void stop() {
-        this.isRunning = false;
-        if (this.udpListener.isRunning()) {
-            this.udpListener.stop();
+        if (this.isRunning) {
+            if (this.udpListener.isRunning()) {
+                this.udpListener.stop();
+            }
+            this.server.stop();
+            this.server.removeListener(this.networkNetworkListener);
+            this.room.clear();
+            this.isRunning = false;
+            Utils.deregisterLogicListener(this.logicListener);
         }
-        this.server.stop();
-        this.server.removeListener(this.listener);
     }
 
     /**
@@ -160,22 +214,39 @@ public class GameServer {
         return this.isRunning;
     }
 
-    public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
+    void initNew() {
+        this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(this.playersLocks));
+        this.playersSelection.clear();
+        this.playersLocks.clear();
+        this.server.sendToAllTCP(new GameStartedNetevent());
+    }
+
+    public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
         private Server server;
 
-        Listener(Server server) {
+        NetworkListener(Server server) {
             this.server = server;
         }
 
+        @Override
         public void connected(Connection connection) {
             connection.sendTCP(new GameClientInfo(connection.getID()));
             connection.sendTCP(GameServer.this.room);
         }
 
+        @Override
+        public void disconnected(Connection connection) {
+            // TODO: something
+        }
+
+        // general
         public void received(Connection connection, GameClientInfo info) {
             this.server.sendToAllExceptTCP(connection.getID(), info);
             GameServer.this.room.addMember(info);
+            if (GameServer.this.room.getMembers().size() == GameServer.this.room.getNumberOfExpectedPlayers()) {
+                GameServer.this.initNew();
+            }
         }
 
         public void received(Connection connection, String string) {
@@ -184,6 +255,55 @@ public class GameServer {
 
         public void received(Connection connection, Message message) {
             this.server.sendToAllExceptTCP(connection.getID(), new Message(message.getMessage(), GameServer.this.room.find(connection.getID())));
+        }
+
+        // network requests
+        public void received(Connection connection, LockFaction faction) {
+            boolean isFactionLocked = false;
+            for (Map.Entry<Integer, FactionType> integerFactionTypeEntry : GameServer.this.playersSelection.entrySet()) {
+                if (integerFactionTypeEntry.getValue().equals(faction.getFaction())) {
+                    isFactionLocked = true;
+                    break;
+                }
+            }
+            if (!isFactionLocked) {
+                int numberOfTimesTheFactionIsSelected = (int) GameServer.this.playersSelection.entrySet()
+                        .stream()
+                        .filter(integerFactionTypeEntry -> integerFactionTypeEntry.getValue()
+                                .equals(faction.getFaction()))
+                        .count();
+                if (numberOfTimesTheFactionIsSelected <= 1) {
+                    this.server.sendToAllTCP(faction);
+                    GameServer.this.playersLocks.put(new Integer(connection.getID()), faction.getFaction());
+
+                    if (GameServer.this.playersLocks.size() == GameServer.this.room.getNumberOfExpectedPlayers()) {
+                        initNew();
+                    }
+                }
+            }
+        }
+
+        public void received(Connection connection, SelectFaction faction) {
+            GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
+            this.server.sendToAllTCP(faction);
+        }
+
+        public void received(Connection connection, PlayingOrderChosen playingOrderChosen) {
+            GameServer.this.eventDispatcher.fire(new PlayingOrderChoiceEvent(playingOrderChosen.isClockwise()));
+            this.server.sendToAllTCP(playingOrderChosen);
+        }
+    }
+
+    public class LogicListener implements FirstPlayerChoiceEventListener, PlayingOrderChoiceEventListener {
+
+        @Override
+        public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
+            GameServer.this.server.sendToAllTCP(new FirstPlayerSelected(GameServer.this.room.find(event.getFirstPlayer())));
+        }
+
+        @Override
+        public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
+//            GameServer.this.server.sendToAllTCP(new PlayingOrderChosen(event.getClockWise()));     dame ?
         }
     }
 }

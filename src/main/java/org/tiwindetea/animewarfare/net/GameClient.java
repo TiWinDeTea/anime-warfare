@@ -28,9 +28,19 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedEvent;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.NetworkCommand;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionEvent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayOrderChosenNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkrequests.FirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.Message;
+import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -197,15 +207,20 @@ public class GameClient {
         this.client.sendTCP(message);
     }
 
+    public void send(PlayingOrderChosen playingOrderChosen) {
+        this.client.sendTCP(playingOrderChosen);
+    }
+
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
+        // general
         public void received(Connection connection, GameClientInfo info) {
             if (info.gameClientName == null) {
                 GameClient.this.myName.id = info.id;
                 GameClient.this.client.sendTCP(GameClient.this.myName);
             } else {
                 GameClient.this.room.addMember(info);
-                GameClient.this.eventDispatcher.fire(new PlayerConnectionEvent(info));
+                GameClient.this.eventDispatcher.fire(new PlayerConnectionNetevent(info));
             }
         }
 
@@ -215,7 +230,29 @@ public class GameClient {
         }
 
         public void received(Connection connection, Message message) {
-            GameClient.this.eventDispatcher.fire(new MessageReceivedEvent(message));
+            GameClient.this.eventDispatcher.fire(new MessageReceivedNetevent(message));
+        }
+
+        // network events
+        public void received(Connection connection, GameStartedNetevent ev) {
+            GameClient.this.eventDispatcher.fire(ev);
+        }
+
+        // network requests
+        public void received(Connection connection, SelectFaction faction) {
+            GameClient.this.eventDispatcher.fire(new PlayerSelectedFactionNetevent(faction));
+        }
+
+        public void received(Connection connection, LockFaction faction) {
+            GameClient.this.eventDispatcher.fire(new PlayerLockedFactionNetevent(faction));
+        }
+
+        public void received(Connection connection, FirstPlayerSelected playerSelected) {
+            GameClient.this.eventDispatcher.fire(new FirstPlayerSelectedNetevent(playerSelected.getGameClientInfo()));
+        }
+
+        public void received(Connection connection, PlayingOrderChosen playingOrderChosen) {
+            GameClient.this.eventDispatcher.fire(new PlayOrderChosenNetevent(playingOrderChosen));
         }
     }
 }
