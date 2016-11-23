@@ -29,6 +29,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -116,6 +117,24 @@ public class Room implements Serializable {
             }
         }
         return null;
+    }
+
+    /**
+     * Finds players in the room
+     *
+     * @param players the ids of the players to look for
+     * @return A list containing found players
+     */
+    public List<GameClientInfo> findAll(List<Integer> players) {
+        LinkedList<GameClientInfo> ans = new LinkedList<>();
+        GameClientInfo currentPlayer;
+        for (Integer playerId : players) {
+            currentPlayer = find(playerId.intValue());
+            if (currentPlayer != null) {
+                ans.add(currentPlayer);
+            }
+        }
+        return ans;
     }
 
     /**

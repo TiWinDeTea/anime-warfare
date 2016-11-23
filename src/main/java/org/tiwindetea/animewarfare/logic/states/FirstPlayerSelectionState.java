@@ -29,7 +29,7 @@ import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
-import org.tiwindetea.animewarfare.logic.states.events.AskPlayingOrderEvent;
+import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
@@ -77,7 +77,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 	public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
 		this.firstPlayer = this.gameBoard.getPlayer(event.getFirstPlayer());
 
-		EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
+		EventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 		if (drawPlayers.size() == 1) { // No draw
 			this.firstPlayer = drawPlayers.get(0);
-			EventDispatcher.getInstance().fire(new AskPlayingOrderEvent(this.firstPlayer.getID()));
+			EventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
 		} else {
 			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerIndex(),
 					GameBoard.getPlayersIndex(drawPlayers)));

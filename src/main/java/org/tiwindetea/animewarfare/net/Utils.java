@@ -28,8 +28,9 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
+import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
@@ -114,15 +115,17 @@ class Utils {
 
         EventDispatcher ed = EventDispatcher.getInstance();
 
-        ed.addListener(FirstPlayerChoiceEvent.class, logicListener);
-        ed.addListener(PlayingOrderChoiceEvent.class, logicListener);
+        ed.addListener(AskFirstPlayerEvent.class, logicListener);
+        ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
+        ed.addListener(GameEndedEvent.class, logicListener);
     }
 
     public static void deregisterLogicListener(GameServer.LogicListener logicListener) {
 
         EventDispatcher ed = EventDispatcher.getInstance();
 
-        ed.removeListener(FirstPlayerChoiceEvent.class, logicListener);
-        ed.removeListener(PlayingOrderChoiceEvent.class, logicListener);
+        ed.removeListener(AskFirstPlayerEvent.class, logicListener);
+        ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
+        ed.removeListener(GameEndedEvent.class, logicListener);
     }
 }

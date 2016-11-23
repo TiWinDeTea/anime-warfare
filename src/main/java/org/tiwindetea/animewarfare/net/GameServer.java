@@ -31,10 +31,13 @@ import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
-import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEventListener;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
@@ -298,16 +301,22 @@ public class GameServer {
         }
     }
 
-    public class LogicListener implements FirstPlayerChoiceEventListener, PlayingOrderChoiceEventListener {
+    public class LogicListener implements AskFirstPlayerEventListener, FirstPlayerSelectedEventListener, GameEndedEventListener {
 
         @Override
-        public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
-            GameServer.this.server.sendToAllTCP(new FirstPlayerSelected(GameServer.this.room.find(event.getFirstPlayer())));
+        public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
+            GameServer.this.server.sendToAllTCP(new NetGameEnded(gameEndedEvent.getWinner()));
         }
 
         @Override
-        public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
-//            GameServer.this.server.sendToAllTCP(new PlayingOrderChosen(event.getClockWise()));     dame ?
+        public void askFirstPlayerEvent(AskFirstPlayerEvent event) {
+            GameServer.this.server.sendToAllTCP(new NetFirstPlayerSelectionRequest(GameServer.this.room.find(event.getLastPlayer()),
+                                                                                   GameServer.this.room.findAll(event.getDrawPlayers())));
+        }
+
+        @Override
+        public void firstPlayerSelected(FirstPlayerSelectedEvent event) {
+            GameServer.this.server.sendToAllTCP(new NetFirstPlayerSelected(GameServer.this.room.find(event.getFirstPlayer())));
         }
     }
 }
