@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -52,6 +53,8 @@ public class Room implements Serializable {
     private InetAddress address;
 
     private int port;
+
+    private int numberOfExpectedPlayers = -1;
 
     Room() {
         this.gameName = null;
@@ -129,6 +132,13 @@ public class Room implements Serializable {
         return this.port;
     }
 
+    /**
+     * @return The number of expected players for this game. (-1 if unset)
+     */
+    public int getNumberOfExpectedPlayers() {
+        return this.numberOfExpectedPlayers;
+    }
+
     void addMember(GameClientInfo info) {
         this.members.add(info);
     }
@@ -138,11 +148,20 @@ public class Room implements Serializable {
     }
 
     void removeMember(int id) {
+
         int i = 0;
-        for (; i < this.members.size() && this.members.get(i).getId() != id; i++) ;
+        Iterator<GameClientInfo> iterator = this.members.iterator();
+        while (iterator.hasNext() && iterator.next().getId() != id) {
+            ++i;
+        }
+
         if (i < this.members.size()) {
             this.members.remove(i);
         }
+    }
+
+    void clear() {
+        this.members.clear();
     }
 
     void setGameName(String gameName) {
@@ -160,6 +179,10 @@ public class Room implements Serializable {
 
     void setPort(int port) {
         this.port = port;
+    }
+
+    void setNumberOfExpectedPlayers(int numberOfExpectedPlayers) {
+        this.numberOfExpectedPlayers = numberOfExpectedPlayers;
     }
 
     /**
