@@ -1,4 +1,6 @@
-package org.tiwindetea.animewarfare.net;
+package org.tiwindetea.animewarfare.net.networkrequests;
+
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 import java.io.Serializable;
 
@@ -12,7 +14,7 @@ public class Message implements Serializable {
     private final GameClientInfo client;
 
     /**
-     * Empty message constructor (used for kryoserealizer)
+     * Empty Message instance. Required by kryonet lib
      */
     public Message() {
         this.message = null;
@@ -24,7 +26,7 @@ public class Message implements Serializable {
         this.client = null;
     }
 
-    Message(String message, GameClientInfo client) {
+    public Message(String message, GameClientInfo client) {
         this.message = message;
         this.client = client;
     }

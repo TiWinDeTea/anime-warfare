@@ -7,18 +7,18 @@ import org.tiwindetea.animewarfare.net.GameClientInfo;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class PlayerConnectionEvent implements Event<PlayerConnectionEventListener> {
+public class PlayerConnectionNetevent implements Event<PlayerConnectionNeteventListener> {
 
     private final GameClientInfo client;
 
-    public PlayerConnectionEvent(GameClientInfo client) {
+    public PlayerConnectionNetevent(GameClientInfo client) {
         this.client = client;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void notify(PlayerConnectionEventListener listener) {
+    public void notify(PlayerConnectionNeteventListener listener) {
         listener.handleConnection(this);
     }
 
