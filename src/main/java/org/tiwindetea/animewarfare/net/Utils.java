@@ -33,11 +33,13 @@ import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkrequests.FirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
-import org.tiwindetea.animewarfare.net.networkrequests.Message;
-import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -94,11 +96,13 @@ class Utils {
         kryo.register(ArrayList.class);
 
         // network requests
-        kryo.register(FirstPlayerSelected.class);
-        kryo.register(LockFaction.class);
-        kryo.register(Message.class);
-        kryo.register(PlayingOrderChosen.class);
-        kryo.register(SelectFaction.class);
+        kryo.register(NetFirstPlayerSelected.class);
+        kryo.register(NetGameEnded.class);
+        kryo.register(NetLockFaction.class);
+        kryo.register(NetMessage.class);
+        kryo.register(NetPlayingOrderChosen.class);
+        kryo.register(NetSelectFaction.class);
+        kryo.register(NetFirstPlayerSelectionRequest.class);
 
         // network events
         kryo.register(PlayerSelectedFactionNetevent.class);

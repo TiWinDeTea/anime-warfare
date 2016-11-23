@@ -2,7 +2,7 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.Message;
+import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
 
 /**
  * @author Lucas Lazare
@@ -10,13 +10,13 @@ import org.tiwindetea.animewarfare.net.networkrequests.Message;
  */
 public class MessageReceivedNetevent implements Event<MessageReceivedNeteventListener> {
 
-    private final Message message;
+    private final NetMessage message;
 
     public MessageReceivedNetevent(String message, String senderName, int senderId) {
-        this.message = new Message(message, senderName, senderId);
+        this.message = new NetMessage(message, senderName, senderId);
     }
 
-    public MessageReceivedNetevent(Message message) {
+    public MessageReceivedNetevent(NetMessage message) {
         this.message = message;
     }
 

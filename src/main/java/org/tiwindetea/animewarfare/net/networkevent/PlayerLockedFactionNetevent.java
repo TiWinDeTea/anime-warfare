@@ -3,7 +3,7 @@ package org.tiwindetea.animewarfare.net.networkevent;
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
 
 /**
  * @author Lucas Lazare
@@ -24,7 +24,7 @@ public class PlayerLockedFactionNetevent implements Event<PlayerLockedFactionNet
         this.playerInfo = playerId;
     }
 
-    public PlayerLockedFactionNetevent(LockFaction faction) {
+    public PlayerLockedFactionNetevent(NetLockFaction faction) {
         this.playerInfo = faction.getGameClientInfo();
         this.faction = faction.getFaction();
     }

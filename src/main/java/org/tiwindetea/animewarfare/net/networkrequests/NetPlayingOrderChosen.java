@@ -6,15 +6,15 @@ import java.io.Serializable;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class PlayingOrderChosen implements Serializable {
+public class NetPlayingOrderChosen implements Serializable {
 
     private final boolean isClockwise;
 
-    public PlayingOrderChosen() {
+    public NetPlayingOrderChosen() {
         this.isClockwise = false;
     }
 
-    public PlayingOrderChosen(Boolean clockWise) {
+    public NetPlayingOrderChosen(Boolean clockWise) {
         this.isClockwise = clockWise.booleanValue();
     }
 

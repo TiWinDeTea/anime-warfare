@@ -1,7 +1,7 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 
 /**
  * @author Lucas Lazare
@@ -15,8 +15,8 @@ public class PlayOrderChosenNetevent implements Event<PlayOrderChosenNeteventLis
         this.isClockwise = isClockwise;
     }
 
-    public PlayOrderChosenNetevent(PlayingOrderChosen playingOrderChosen) {
-        this.isClockwise = playingOrderChosen.isClockwise();
+    public PlayOrderChosenNetevent(NetPlayingOrderChosen netPlayingOrderChosen) {
+        this.isClockwise = netPlayingOrderChosen.isClockwise();
     }
 
     @Override

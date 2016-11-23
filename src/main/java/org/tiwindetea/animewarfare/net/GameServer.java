@@ -36,11 +36,13 @@ import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEventListener
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEventListener;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
-import org.tiwindetea.animewarfare.net.networkrequests.FirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
-import org.tiwindetea.animewarfare.net.networkrequests.Message;
-import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -253,12 +255,14 @@ public class GameServer {
             this.server.sendToAllExceptTCP(connection.getID(), string);
         }
 
-        public void received(Connection connection, Message message) {
-            this.server.sendToAllExceptTCP(connection.getID(), new Message(message.getMessage(), GameServer.this.room.find(connection.getID())));
+        public void received(Connection connection, NetMessage message) {
+            this.server.sendToAllExceptTCP(connection.getID(),
+                                           new NetMessage(message.getMessage(),
+                                                          GameServer.this.room.find(connection.getID())));
         }
 
         // network requests
-        public void received(Connection connection, LockFaction faction) {
+        public void received(Connection connection, NetLockFaction faction) {
             boolean isFactionLocked = false;
             for (Map.Entry<Integer, FactionType> integerFactionTypeEntry : GameServer.this.playersSelection.entrySet()) {
                 if (integerFactionTypeEntry.getValue().equals(faction.getFaction())) {
@@ -283,14 +287,14 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, SelectFaction faction) {
+        public void received(Connection connection, NetSelectFaction faction) {
             GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
             this.server.sendToAllTCP(faction);
         }
 
-        public void received(Connection connection, PlayingOrderChosen playingOrderChosen) {
-            GameServer.this.eventDispatcher.fire(new PlayingOrderChoiceEvent(playingOrderChosen.isClockwise()));
-            this.server.sendToAllTCP(playingOrderChosen);
+        public void received(Connection connection, NetPlayingOrderChosen netPlayingOrderChosen) {
+            GameServer.this.eventDispatcher.fire(new PlayingOrderChoiceEvent(netPlayingOrderChosen.isClockwise()));
+            this.server.sendToAllTCP(netPlayingOrderChosen);
         }
     }
 

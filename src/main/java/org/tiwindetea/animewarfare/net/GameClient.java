@@ -29,6 +29,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.NetworkCommand;
@@ -36,11 +37,12 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayOrderChosenNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkrequests.FirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.LockFaction;
-import org.tiwindetea.animewarfare.net.networkrequests.Message;
-import org.tiwindetea.animewarfare.net.networkrequests.PlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -203,12 +205,12 @@ public class GameClient {
      *
      * @param message message to be send
      */
-    public void send(Message message) {
+    public void send(NetMessage message) {
         this.client.sendTCP(message);
     }
 
-    public void send(PlayingOrderChosen playingOrderChosen) {
-        this.client.sendTCP(playingOrderChosen);
+    public void send(NetPlayingOrderChosen netPlayingOrderChosen) {
+        this.client.sendTCP(netPlayingOrderChosen);
     }
 
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
@@ -229,7 +231,7 @@ public class GameClient {
             // TODO : fire I am connected ?
         }
 
-        public void received(Connection connection, Message message) {
+        public void received(Connection connection, NetMessage message) {
             GameClient.this.eventDispatcher.fire(new MessageReceivedNetevent(message));
         }
 
@@ -239,20 +241,24 @@ public class GameClient {
         }
 
         // network requests
-        public void received(Connection connection, SelectFaction faction) {
+        public void received(Connection connection, NetSelectFaction faction) {
             GameClient.this.eventDispatcher.fire(new PlayerSelectedFactionNetevent(faction));
         }
 
-        public void received(Connection connection, LockFaction faction) {
+        public void received(Connection connection, NetLockFaction faction) {
             GameClient.this.eventDispatcher.fire(new PlayerLockedFactionNetevent(faction));
         }
 
-        public void received(Connection connection, FirstPlayerSelected playerSelected) {
-            GameClient.this.eventDispatcher.fire(new FirstPlayerSelectedNetevent(playerSelected.getGameClientInfo()));
+        public void received(Connection connection, NetFirstPlayerSelected playerSelected) {
+            GameClient.this.eventDispatcher.fire(new FirstPlayerSelectedNetevent(playerSelected.getFirstPlayer()));
         }
 
-        public void received(Connection connection, PlayingOrderChosen playingOrderChosen) {
+        public void received(Connection connection, NetPlayingOrderChosen playingOrderChosen) {
             GameClient.this.eventDispatcher.fire(new PlayOrderChosenNetevent(playingOrderChosen));
+        }
+
+        public void received(Connection connection, NetGameEnded gameEnded) {
+            GameClient.this.eventDispatcher.fire(new GameEndedNetevent(gameEnded));
         }
     }
 }

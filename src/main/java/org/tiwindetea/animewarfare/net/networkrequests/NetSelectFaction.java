@@ -3,30 +3,32 @@ package org.tiwindetea.animewarfare.net.networkrequests;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 
+import java.io.Serializable;
+
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class LockFaction {
+public class NetSelectFaction implements Serializable {
 
-    private final FactionType faction;
+    private final FactionType factionType;
     private final GameClientInfo gameClientInfo;
 
     /**
-     * Empty Lockfaction instance. Required by kryonet lib
+     * Empty NetSelectFaction instance. Required by kryonet lib
      */
-    public LockFaction() {
-        this.faction = null;
+    public NetSelectFaction() {
+        this.factionType = null;
         this.gameClientInfo = null;
     }
 
-    public LockFaction(FactionType faction, GameClientInfo info) {
-        this.faction = faction;
+    public NetSelectFaction(FactionType factionType, GameClientInfo info) {
+        this.factionType = factionType;
         this.gameClientInfo = info;
     }
 
-    public FactionType getFaction() {
-        return this.faction;
+    public FactionType getFactionType() {
+        return this.factionType;
     }
 
     public GameClientInfo getGameClientInfo() {

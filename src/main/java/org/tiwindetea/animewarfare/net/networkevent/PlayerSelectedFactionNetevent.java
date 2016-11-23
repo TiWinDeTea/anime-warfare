@@ -3,7 +3,7 @@ package org.tiwindetea.animewarfare.net.networkevent;
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.SelectFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
 
 /**
  * @author Lucas Lazare
@@ -24,7 +24,7 @@ public class PlayerSelectedFactionNetevent implements Event<PlayerSelectedFactio
         this.factionType = factionType;
     }
 
-    public PlayerSelectedFactionNetevent(SelectFaction faction) {
+    public PlayerSelectedFactionNetevent(NetSelectFaction faction) {
         this.playerInfo = faction.getGameClientInfo();
         this.factionType = faction.getFactionType();
     }

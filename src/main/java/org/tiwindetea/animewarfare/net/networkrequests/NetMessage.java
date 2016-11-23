@@ -8,30 +8,30 @@ import java.io.Serializable;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class Message implements Serializable {
+public class NetMessage implements Serializable {
 
     private final String message;
     private final GameClientInfo client;
 
     /**
-     * Empty Message instance. Required by kryonet lib
+     * Empty NetMessage instance. Required by kryonet lib
      */
-    public Message() {
+    public NetMessage() {
         this.message = null;
         this.client = null;
     }
 
-    public Message(String message) {
+    public NetMessage(String message) {
         this.message = message;
         this.client = null;
     }
 
-    public Message(String message, GameClientInfo client) {
+    public NetMessage(String message, GameClientInfo client) {
         this.message = message;
         this.client = client;
     }
 
-    public Message(String message, String senderName, int senderId) {
+    public NetMessage(String message, String senderName, int senderId) {
         this.message = message;
         this.client = new GameClientInfo(senderName, senderId);
     }
