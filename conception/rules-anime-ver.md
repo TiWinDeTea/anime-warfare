@@ -127,7 +127,7 @@ Les actions illimités peuvent être effectuées avant et/ou après.
 
         Les deux opposants jettent simultanément leurs dés en fonction de leur score de combat (un dé par point).
         Un jet de 6 humilie, un jet de 4 ou 5 blesse leur égo, le reste rate.
-        Les unités humiliatiés sont retirés du jeu et remis en réserve. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
+        Les unités humiliatiées sont retirées du jeu et remis en réserve. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
 
 3. Post-affrontement.
 
