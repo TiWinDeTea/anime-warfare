@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
@@ -112,6 +113,7 @@ public class GameServer {
     public GameServer(int numberOfExpectedPlayers, @Nullable String gameName, @Nullable String gamePassword) {
         if (gameName == null) {
             gameName = new BigInteger(17, new Random()).toString(Character.MAX_RADIX);
+            Log.trace(GameServer.class.toString(), "Server name randomly created: " + gameName);
         }
         this.room.setGameName(gameName);
         this.room.setGamePassword(gamePassword);
@@ -174,6 +176,7 @@ public class GameServer {
      * @throws IOException If the server could not be opened
      */
     public void bind(int TCPport, int UDPport) throws IOException {
+        Log.trace(GameServer.class.toString(), "Binding server to " + TCPport + " - " + UDPport);
         this.server.bind(TCPport);
         this.room.setPort(TCPport);
         this.udpListener.bind(UDPport);
@@ -192,6 +195,7 @@ public class GameServer {
                 this.udpListener.start();
                 this.server.addListener(this.networkNetworkListener);
                 Utils.registerAsLogicListener(this.logicListener);
+                Log.debug(GameServer.class.toString(), "Running");
             }
         } else {
             throw new IllegalStateException("Number of expected players was not set");
@@ -227,8 +231,10 @@ public class GameServer {
         this.playersSelection.clear();
         this.playersLocks.clear();
         this.server.sendToAllTCP(new NetGameStarted());
+        Log.debug(GameServer.class.toString(), this.room.getGameName() + ": started");
     }
 
+    @SuppressWarnings("unused")
     public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
         private Server server;
@@ -239,13 +245,16 @@ public class GameServer {
 
         @Override
         public void connected(Connection connection) {
+            Log.trace(GameServer.NetworkListener.class.toString(), "Incomming connection: " + connection.getID());
             connection.sendTCP(new GameClientInfo(connection.getID()));
             connection.sendTCP(GameServer.this.room);
         }
 
         @Override
         public void disconnected(Connection connection) {
-            this.server.sendToAllTCP(new NetHandlePlayerDisconnection(GameServer.this.room.removeMember(connection.getID())));
+            GameClientInfo info = GameServer.this.room.removeMember(connection.getID());
+            Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " disconnected");
+            this.server.sendToAllTCP(new NetHandlePlayerDisconnection(info));
         }
 
         // general
@@ -255,20 +264,19 @@ public class GameServer {
             if (GameServer.this.room.getMembers().size() == GameServer.this.room.getNumberOfExpectedPlayers()) {
                 GameServer.this.initNew();
             }
-        }
-
-        public void received(Connection connection, String string) {
-            this.server.sendToAllExceptTCP(connection.getID(), string);
+            Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " connected");
         }
 
         public void received(Connection connection, NetMessage message) {
             this.server.sendToAllExceptTCP(connection.getID(),
                                            new NetMessage(message.getMessage(),
                                                           GameServer.this.room.find(connection.getID())));
+            Log.debug(GameServer.NetworkListener.class.toString(), "Received message: " + message.getMessage());
         }
 
         // network requests
         public void received(Connection connection, NetLockFaction faction) {
+            Log.trace(GameServer.NetworkListener.class.toString(), "Faction locking requested: " + faction);
             boolean isFactionLocked = false;
             for (Map.Entry<Integer, FactionType> integerFactionTypeEntry : GameServer.this.playersSelection.entrySet()) {
                 if (integerFactionTypeEntry.getValue().equals(faction.getFaction())) {
@@ -285,6 +293,8 @@ public class GameServer {
                 if (numberOfTimesTheFactionIsSelected <= 1) {
                     this.server.sendToAllTCP(faction);
                     GameServer.this.playersLocks.put(new Integer(connection.getID()), faction.getFaction());
+                    Log.debug(GameServer.NetworkListener.class.toString(),
+                              "Player " + GameServer.this.room.find(connection.getID()) + " locked " + faction);
 
                     if (GameServer.this.playersLocks.size() == GameServer.this.room.getNumberOfExpectedPlayers()) {
                         initNew();
@@ -296,11 +306,14 @@ public class GameServer {
         public void received(Connection connection, NetSelectFaction faction) {
             GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
             this.server.sendToAllTCP(faction);
+            Log.trace(GameServer.NetworkListener.class.toString(),
+                      GameServer.this.room.find(connection.getID()) + " selected " + faction);
         }
 
         public void received(Connection connection, NetPlayingOrderChosen netPlayingOrderChosen) {
             GameServer.this.eventDispatcher.fire(new PlayingOrderChoiceEvent(netPlayingOrderChosen.isClockwise()));
             this.server.sendToAllTCP(netPlayingOrderChosen);
+            Log.trace(GameServer.NetworkListener.class.toString(), "Play order was choosen (" + netPlayingOrderChosen);
         }
     }
 
@@ -309,6 +322,7 @@ public class GameServer {
         @Override
         public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
             GameServer.this.server.sendToAllTCP(new NetGameEnded(gameEndedEvent.getWinner()));
+            Log.trace(GameServer.LogicListener.class.toString(), "Game terminated.");
         }
 
         @Override

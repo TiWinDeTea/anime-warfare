@@ -179,6 +179,7 @@ public class GameClient {
         if (this.myName.gameClientName == null) {
             throw new IllegalStateException();
         }
+        Log.debug(GameClient.class.toString(), "Connecting to " + room);
         this.client.addListener(this.listener);
         this.client.start();
         this.client.connect(500, room.getAddress(), room.getPort());
@@ -196,6 +197,7 @@ public class GameClient {
      */
     public void disconnect() {
         if (this.isConnected) {
+            Log.debug(GameClient.class.toString(), "Disconnecting");
             this.client.stop();
             this.client.removeListener(this.listener);
             this.isConnected = false;
@@ -208,18 +210,22 @@ public class GameClient {
      * @param message message to be send
      */
     public void send(NetMessage message) {
+        Log.trace(GameClient.class.toString(), "Sending " + message);
         this.client.sendTCP(message);
     }
 
     public void send(NetPlayingOrderChosen netPlayingOrderChosen) {
+        Log.trace(GameClient.class.toString(), "Sending " + netPlayingOrderChosen);
         this.client.sendTCP(netPlayingOrderChosen);
     }
 
     public void send(NetLockFaction lockFaction) {
+        Log.trace(GameClient.class.toString(), "Sending " + lockFaction);
         this.client.sendTCP(lockFaction);
     }
 
     public void send(NetSelectFaction selectFaction) {
+        Log.trace(GameClient.class.toString(), "Sending " + selectFaction);
         this.client.sendTCP(selectFaction);
     }
 
@@ -228,46 +234,57 @@ public class GameClient {
 
         // general
         public void received(Connection connection, GameClientInfo info) {
+            Log.trace(GameClient.Listener.class.toString(), "Incoming GameClientInfo: " + info);
             if (info.gameClientName == null) {
+                Log.debug(GameClient.Listener.class.toString(), "Finalizing connection to server");
                 GameClient.this.myName.id = info.id;
                 GameClient.this.client.sendTCP(GameClient.this.myName);
             } else {
+                Log.debug(GameClient.Listener.class.toString(), "A new player connected: " + info);
                 GameClient.this.room.addMember(info);
                 GameClient.this.eventDispatcher.fire(new PlayerConnectionNetevent(info));
             }
         }
 
         public void received(Connection connection, Room room) {
+            Log.debug(GameClient.Listener.class.toString(), "Connected.");
             GameClient.this.room = room;
             GameClient.this.eventDispatcher.fire(new ConnectedNetevent(room));
         }
 
         public void received(Connection connection, NetFirstPlayerSelected playerSelected) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + playerSelected);
             GameClient.this.eventDispatcher.fire(new FirstPlayerSelectedNetevent(playerSelected.getFirstPlayer()));
         }
 
         public void received(Connection connection, NetGameEnded gameEnded) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + gameEnded);
             GameClient.this.eventDispatcher.fire(new GameEndedNetevent(gameEnded));
         }
 
         // network requests
         public void received(Connection connection, NetGameStarted gameStarted) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + gameStarted);
             GameClient.this.eventDispatcher.fire(new GameStartedNetevent());
         }
 
         public void received(Connection connection, NetLockFaction faction) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + faction);
             GameClient.this.eventDispatcher.fire(new PlayerLockedFactionNetevent(faction));
         }
 
         public void received(Connection connection, NetMessage message) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + message);
             GameClient.this.eventDispatcher.fire(new MessageReceivedNetevent(message));
         }
 
         public void received(Connection connection, NetPlayingOrderChosen playingOrderChosen) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + playingOrderChosen);
             GameClient.this.eventDispatcher.fire(new PlayOrderChosenNetevent(playingOrderChosen));
         }
 
         public void received(Connection connection, NetSelectFaction faction) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + faction);
             GameClient.this.eventDispatcher.fire(new PlayerSelectedFactionNetevent(faction));
         }
     }
