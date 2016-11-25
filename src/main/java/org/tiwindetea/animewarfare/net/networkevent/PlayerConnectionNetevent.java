@@ -19,7 +19,7 @@ public class PlayerConnectionNetevent implements Event<PlayerConnectionNeteventL
      * {@inheritDoc}
      */
     public void notify(PlayerConnectionNeteventListener listener) {
-        listener.handleConnection(this);
+        listener.handlePlayerConnection(this);
     }
 
     public GameClientInfo getClient() {

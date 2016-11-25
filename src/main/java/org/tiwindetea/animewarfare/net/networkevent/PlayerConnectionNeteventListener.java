@@ -15,5 +15,5 @@ public interface PlayerConnectionNeteventListener extends EventListener {
      *
      * @param player The newly connected player
      */
-    void handleConnection(PlayerConnectionNetevent player);
+    void handlePlayerConnection(PlayerConnectionNetevent player);
 }

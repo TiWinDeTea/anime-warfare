@@ -31,16 +31,16 @@ import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
-import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
 import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.playingcommands.NetAbstractPlayingCommand;
+import org.tiwindetea.animewarfare.net.networkrequests.playingcommands.NetPlayingCommand;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -97,18 +97,16 @@ class Utils {
         kryo.register(ArrayList.class);
 
         // network requests
+        kryo.register(NetAbstractPlayingCommand.class);
         kryo.register(NetFirstPlayerSelected.class);
+        kryo.register(NetFirstPlayerSelectionRequest.class);
         kryo.register(NetGameEnded.class);
+        kryo.register(NetHandlePlayerDisconnection.class);
         kryo.register(NetLockFaction.class);
         kryo.register(NetMessage.class);
+        kryo.register(NetPlayingCommand.class);
         kryo.register(NetPlayingOrderChosen.class);
         kryo.register(NetSelectFaction.class);
-        kryo.register(NetFirstPlayerSelectionRequest.class);
-
-        // network events
-        kryo.register(PlayerSelectedFactionNetevent.class);
-        kryo.register(PlayerLockedFactionNetevent.class);
-        kryo.register(GameStartedNetevent.class);
     }
 
     public static void registerAsLogicListener(GameServer.LogicListener logicListener) {

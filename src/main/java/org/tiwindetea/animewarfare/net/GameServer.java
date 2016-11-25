@@ -38,10 +38,11 @@ import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEventL
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
-import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
 import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
@@ -104,6 +105,7 @@ public class GameServer {
 
     /**
      * Instanciate a server given its name and password
+     *
      * @param gameName     Name of the Room
      * @param gamePassword Password of the Room
      */
@@ -179,6 +181,7 @@ public class GameServer {
 
     /**
      * Starts the server if it is not started yet,
+     *
      * @throws IllegalStateException if the number of player was not set
      */
     public void start() {
@@ -223,7 +226,7 @@ public class GameServer {
         this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(this.playersLocks));
         this.playersSelection.clear();
         this.playersLocks.clear();
-        this.server.sendToAllTCP(new GameStartedNetevent());
+        this.server.sendToAllTCP(new NetGameStarted());
     }
 
     public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
@@ -242,7 +245,7 @@ public class GameServer {
 
         @Override
         public void disconnected(Connection connection) {
-            // TODO: something
+            this.server.sendToAllTCP(new NetHandlePlayerDisconnection(GameServer.this.room.removeMember(connection.getID())));
         }
 
         // general

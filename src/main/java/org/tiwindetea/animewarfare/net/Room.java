@@ -166,7 +166,7 @@ public class Room implements Serializable {
         return password == this.gamePassword || (password != null && password.equals(this.gamePassword));
     }
 
-    void removeMember(int id) {
+    GameClientInfo removeMember(int id) {
 
         int i = 0;
         Iterator<GameClientInfo> iterator = this.members.iterator();
@@ -175,7 +175,9 @@ public class Room implements Serializable {
         }
 
         if (i < this.members.size()) {
-            this.members.remove(i);
+            return this.members.remove(i);
+        } else {
+            return null;
         }
     }
 

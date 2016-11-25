@@ -28,6 +28,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
@@ -39,6 +40,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.NetGameStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
 import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
@@ -213,6 +215,15 @@ public class GameClient {
         this.client.sendTCP(netPlayingOrderChosen);
     }
 
+    public void send(NetLockFaction lockFaction) {
+        this.client.sendTCP(lockFaction);
+    }
+
+    public void send(NetSelectFaction selectFaction) {
+        this.client.sendTCP(selectFaction);
+    }
+
+    @SuppressWarnings("unused")
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
         // general
@@ -228,37 +239,36 @@ public class GameClient {
 
         public void received(Connection connection, Room room) {
             GameClient.this.room = room;
-            // TODO : fire I am connected ?
-        }
-
-        public void received(Connection connection, NetMessage message) {
-            GameClient.this.eventDispatcher.fire(new MessageReceivedNetevent(message));
-        }
-
-        // network events
-        public void received(Connection connection, GameStartedNetevent ev) {
-            GameClient.this.eventDispatcher.fire(ev);
-        }
-
-        // network requests
-        public void received(Connection connection, NetSelectFaction faction) {
-            GameClient.this.eventDispatcher.fire(new PlayerSelectedFactionNetevent(faction));
-        }
-
-        public void received(Connection connection, NetLockFaction faction) {
-            GameClient.this.eventDispatcher.fire(new PlayerLockedFactionNetevent(faction));
+            GameClient.this.eventDispatcher.fire(new ConnectedNetevent(room));
         }
 
         public void received(Connection connection, NetFirstPlayerSelected playerSelected) {
             GameClient.this.eventDispatcher.fire(new FirstPlayerSelectedNetevent(playerSelected.getFirstPlayer()));
         }
 
+        public void received(Connection connection, NetGameEnded gameEnded) {
+            GameClient.this.eventDispatcher.fire(new GameEndedNetevent(gameEnded));
+        }
+
+        // network requests
+        public void received(Connection connection, NetGameStarted gameStarted) {
+            GameClient.this.eventDispatcher.fire(new GameStartedNetevent());
+        }
+
+        public void received(Connection connection, NetLockFaction faction) {
+            GameClient.this.eventDispatcher.fire(new PlayerLockedFactionNetevent(faction));
+        }
+
+        public void received(Connection connection, NetMessage message) {
+            GameClient.this.eventDispatcher.fire(new MessageReceivedNetevent(message));
+        }
+
         public void received(Connection connection, NetPlayingOrderChosen playingOrderChosen) {
             GameClient.this.eventDispatcher.fire(new PlayOrderChosenNetevent(playingOrderChosen));
         }
 
-        public void received(Connection connection, NetGameEnded gameEnded) {
-            GameClient.this.eventDispatcher.fire(new GameEndedNetevent(gameEnded));
+        public void received(Connection connection, NetSelectFaction faction) {
+            GameClient.this.eventDispatcher.fire(new PlayerSelectedFactionNetevent(faction));
         }
     }
 }
