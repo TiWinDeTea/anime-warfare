@@ -226,6 +226,36 @@ public class GameServer {
         return this.isRunning;
     }
 
+    /**
+     * @return true if the server is visible for udp broadcasters
+     */
+    public boolean isVisible() {
+        return this.udpListener.isRunning();
+    }
+
+    /**
+     * stops the udp listening
+     */
+    public void hide() {
+        this.udpListener.stop();
+    }
+
+    /**
+     * starts the udp listening. (automatically done
+     * when starting the server through {@link GameServer#start()}
+     *
+     * @throws IllegalStateException if the game server is not running
+     */
+    public void show() {
+        if (this.isRunning) {
+            if (!this.udpListener.isRunning()) {
+                this.udpListener.start();
+            }
+        } else {
+            throw new IllegalStateException("Tried to make visible an unstarted server");
+        }
+    }
+
     void initNew() {
         this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(this.playersLocks));
         this.playersSelection.clear();
