@@ -5,21 +5,26 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GameBoardTest {
 	private GameBoard gameBoard;
-	private final List<FactionType> factions = Arrays.asList(FactionType.NO_NAME,
-			FactionType.HAIYORE,
-			FactionType.F_CLASS_NO_BAKA,
-			FactionType.COOL_GUYS);
+	private static final Map<Integer, FactionType> FACTIONS = new HashMap<>();
+
+	static {
+		FACTIONS.put(1, FactionType.NO_NAME);
+		FACTIONS.put(2, FactionType.HAIYORE);
+		FACTIONS.put(3, FactionType.F_CLASS_NO_BAKA);
+		FACTIONS.put(4, FactionType.COOL_GUYS);
+	}
 
 	@Before
 	public void initialize() {
-		this.gameBoard = new GameBoard(this.factions);
+		this.gameBoard = new GameBoard(this.FACTIONS);
 	}
 
 	@Test
@@ -28,7 +33,7 @@ public class GameBoardTest {
 				.map(Player::getFaction)
 				.collect(Collectors.toList());
 
-		Assert.assertEquals(this.factions, playerFaction);
+		Assert.assertEquals(new ArrayList<>(this.FACTIONS.values()), playerFaction);
 	}
 
 	@Test
@@ -36,7 +41,7 @@ public class GameBoardTest {
 		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
 			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), true);
 
-			List<FactionType> factionsCopy = new ArrayList<>(this.factions);
+			List<FactionType> factionsCopy = new ArrayList<>(this.FACTIONS.values());
 			Collections.rotate(factionsCopy, -i);
 
 			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream()
@@ -52,7 +57,7 @@ public class GameBoardTest {
 		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
 			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), false);
 
-			List<FactionType> factionsCopy = new ArrayList<>(this.factions);
+			List<FactionType> factionsCopy = new ArrayList<>(this.FACTIONS.values());
 			Collections.rotate(factionsCopy, -(i + 1));
 			Collections.reverse(factionsCopy);
 

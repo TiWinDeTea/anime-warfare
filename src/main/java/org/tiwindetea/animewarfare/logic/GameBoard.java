@@ -34,7 +34,7 @@ public class GameBoard {
 	private final List<Zone> zones = new ArrayList<>();
 	private final List<Player> players = new ArrayList<>();
 	private final List<Player> playersInOrder = new ArrayList<>();
-	private int lastFirstPlayerIndex;
+	private Player lastFirstPlayer;
 	private int firstPlayerIndex;
 	private boolean clockWiseRotation;
 
@@ -49,8 +49,8 @@ public class GameBoard {
 		initializeZones(players.size());
 	}
 
-	public int getLastFirstPlayerIndex() {
-		return this.lastFirstPlayerIndex;
+	public int getLastFirstPlayerID() {
+		return this.lastFirstPlayer.getID();
 	}
 
 	public Player getPlayer(int index) {
@@ -88,7 +88,7 @@ public class GameBoard {
 	}
 
 	public void initializeTurn(Player firstPlayer, boolean clockWiseRotation) {
-		this.lastFirstPlayerIndex = this.firstPlayerIndex;
+		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
 		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
 		this.clockWiseRotation = clockWiseRotation;
 
