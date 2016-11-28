@@ -24,7 +24,9 @@ public class GameBoardTest {
 
 	@Test
 	public void getPlayers() throws Exception {
-		List<FactionType> playerFaction = this.gameBoard.getPlayers().stream().map(p -> p.getFaction()).collect(Collectors.toList());
+		List<FactionType> playerFaction = this.gameBoard.getPlayers().stream()
+				.map(Player::getFaction)
+				.collect(Collectors.toList());
 
 		Assert.assertEquals(this.factions, playerFaction);
 	}
@@ -37,7 +39,9 @@ public class GameBoardTest {
 			List<FactionType> factionsCopy = new ArrayList<>(this.factions);
 			Collections.rotate(factionsCopy, -i);
 
-			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream().map(p -> p.getFaction()).collect(Collectors.toList());
+			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream()
+					.map(Player::getFaction)
+					.collect(Collectors.toList());
 
 			Assert.assertEquals(factionsCopy, playerFaction);
 		}
@@ -52,7 +56,9 @@ public class GameBoardTest {
 			Collections.rotate(factionsCopy, -(i + 1));
 			Collections.reverse(factionsCopy);
 
-			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream().map(p -> p.getFaction()).collect(Collectors.toList());
+			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream()
+					.map(Player::getFaction)
+					.collect(Collectors.toList());
 
 			Assert.assertEquals(factionsCopy, playerFaction);
 		}
