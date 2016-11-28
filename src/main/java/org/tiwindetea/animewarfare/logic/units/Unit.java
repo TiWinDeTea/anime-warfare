@@ -31,7 +31,7 @@ import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 public class Unit {
 	private final UnitType type;
 	private Zone zone;
-	private FactionType faction;
+	private final FactionType faction;
 
 	public Unit(UnitType type) {
 		this.faction = type.getDefaultFaction();
@@ -42,8 +42,14 @@ public class Unit {
 	 * Returns the previous zone.
 	 */
 	public Zone move(Zone zone) {
+		Zone previousZone = this.zone;
+		this.zone.removeUnit(this);
+
 		// TODO: Fire event
-		return this.zone = zone;
+		this.zone = zone;
+		zone.addUnit(this);
+
+		return previousZone;
 	}
 
 	/**
@@ -59,6 +65,10 @@ public class Unit {
 
 	public FactionType getFaction() {
 		return this.faction;
+	}
+
+	public UnitType getType() {
+		return this.type;
 	}
 
 	// TODO: getters
