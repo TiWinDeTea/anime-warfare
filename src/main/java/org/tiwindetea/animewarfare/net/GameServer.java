@@ -41,7 +41,6 @@ import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
 import org.tiwindetea.animewarfare.net.networkrequests.NetGameStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
@@ -264,7 +263,6 @@ public class GameServer {
         Log.debug(GameServer.class.toString(), this.room.getGameName() + ": started");
     }
 
-    @SuppressWarnings("unused")
     public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
         private Server server;
@@ -351,7 +349,7 @@ public class GameServer {
 
         @Override
         public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
-            GameServer.this.server.sendToAllTCP(new NetGameEnded(gameEndedEvent.getWinner()));
+            // GameServer.this.server.sendToAllTCP(new NetGameEnded(gameEndedEvent.getWinners())); // FIXME
             Log.trace(GameServer.LogicListener.class.toString(), "Game terminated.");
         }
 

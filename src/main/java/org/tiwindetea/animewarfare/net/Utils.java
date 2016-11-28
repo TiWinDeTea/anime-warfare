@@ -40,7 +40,6 @@ import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
 import org.tiwindetea.animewarfare.net.networkrequests.playingcommands.NetAbstractPlayingCommand;
-import org.tiwindetea.animewarfare.net.networkrequests.playingcommands.NetPlayingCommand;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -62,68 +61,71 @@ import java.util.stream.Collectors;
  */
 class Utils {
 
-    static final String VERSION_HEADER = "Anime-Wafare v0.1.0";
-    static final Charset CHARSET = Charset.defaultCharset();
+	static final String VERSION_HEADER = "Anime-Wafare v0.1.0";
+	static final Charset CHARSET = Charset.defaultCharset();
 
-    static List<InetAddress> findBroadcastAddr() {
+	static List<InetAddress> findBroadcastAddr() {
 
-        LinkedList<InetAddress> broadcastAddresses = new LinkedList<>();
-        Enumeration<NetworkInterface> en = Collections.emptyEnumeration();
+		LinkedList<InetAddress> broadcastAddresses = new LinkedList<>();
+		Enumeration<NetworkInterface> en = Collections.emptyEnumeration();
 
-        try {
-            en = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e) {
-            Log.warn(Utils.class.getName(), "Failed to find broacast addresses", e);
-        }
+		try {
+			en = NetworkInterface.getNetworkInterfaces();
+		} catch (SocketException e) {
+			Log.warn(Utils.class.getName(), "Failed to find broacast addresses", e);
+		}
 
-        while (en.hasMoreElements()) {
-            List<InterfaceAddress> list = en.nextElement().getInterfaceAddresses();
-            broadcastAddresses.addAll(list.stream().filter(ia -> ia.getBroadcast() != null).map(InterfaceAddress::getBroadcast).collect(Collectors.toList()));
-        }
-        return broadcastAddresses;
-    }
+		while (en.hasMoreElements()) {
+			List<InterfaceAddress> list = en.nextElement().getInterfaceAddresses();
+			broadcastAddresses.addAll(list.stream()
+			                              .filter(ia -> ia.getBroadcast() != null)
+			                              .map(InterfaceAddress::getBroadcast)
+			                              .collect(Collectors.toList()));
+		}
+		return broadcastAddresses;
+	}
 
-    /**
-     * Register classes sent by network.
-     */
-    static void registerClasses(EndPoint endPoint) {
-        Kryo kryo = endPoint.getKryo();
+	/**
+	 * Register classes sent by network.
+	 */
+	static void registerClasses(EndPoint endPoint) {
+		Kryo kryo = endPoint.getKryo();
 
-        // general
-        kryo.register(GameClientInfo.class);
-        kryo.register(Room.class);
-        kryo.register(String.class);
-        kryo.register(LinkedList.class);
-        kryo.register(ArrayList.class);
+		// general
+		kryo.register(GameClientInfo.class);
+		kryo.register(Room.class);
+		kryo.register(String.class);
+		kryo.register(LinkedList.class);
+		kryo.register(ArrayList.class);
 
-        // network requests
-        kryo.register(NetAbstractPlayingCommand.class);
-        kryo.register(NetFirstPlayerSelected.class);
-        kryo.register(NetFirstPlayerSelectionRequest.class);
-        kryo.register(NetGameEnded.class);
-        kryo.register(NetHandlePlayerDisconnection.class);
-        kryo.register(NetLockFaction.class);
-        kryo.register(NetMessage.class);
-        kryo.register(NetPlayingCommand.class);
-        kryo.register(NetPlayingOrderChosen.class);
-        kryo.register(NetSelectFaction.class);
-    }
+		// network requests
+		kryo.register(NetAbstractPlayingCommand.class);
+		kryo.register(NetFirstPlayerSelected.class);
+		kryo.register(NetFirstPlayerSelectionRequest.class);
+		kryo.register(NetGameEnded.class);
+		kryo.register(NetHandlePlayerDisconnection.class);
+		kryo.register(NetLockFaction.class);
+		kryo.register(NetMessage.class);
+		// kryo.register(NetPlayingCommand.class); // FIXME
+		kryo.register(NetPlayingOrderChosen.class);
+		kryo.register(NetSelectFaction.class);
+	}
 
-    public static void registerAsLogicListener(GameServer.LogicListener logicListener) {
+	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {
 
-        EventDispatcher ed = EventDispatcher.getInstance();
+		EventDispatcher ed = EventDispatcher.getInstance();
 
-        ed.addListener(AskFirstPlayerEvent.class, logicListener);
-        ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
-        ed.addListener(GameEndedEvent.class, logicListener);
-    }
+		ed.addListener(AskFirstPlayerEvent.class, logicListener);
+		ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
+		ed.addListener(GameEndedEvent.class, logicListener);
+	}
 
-    public static void deregisterLogicListener(GameServer.LogicListener logicListener) {
+	public static void deregisterLogicListener(GameServer.LogicListener logicListener) {
 
-        EventDispatcher ed = EventDispatcher.getInstance();
+		EventDispatcher ed = EventDispatcher.getInstance();
 
-        ed.removeListener(AskFirstPlayerEvent.class, logicListener);
-        ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
-        ed.removeListener(GameEndedEvent.class, logicListener);
-    }
+		ed.removeListener(AskFirstPlayerEvent.class, logicListener);
+		ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
+		ed.removeListener(GameEndedEvent.class, logicListener);
+	}
 }
