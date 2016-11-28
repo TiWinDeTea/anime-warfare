@@ -26,18 +26,33 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Zone {
+	private final int ID;
+
 	private final boolean isCountrySide;
 	private final List<Unit> units = new ArrayList<>();
 
 	private Studio studio;
 
-	public Zone(boolean isCountrySide) {
+	public Zone(int id, boolean isCountrySide) {
+		this.ID = id;
 		this.isCountrySide = isCountrySide;
+	}
+
+	public int getID() {
+		return this.ID;
+	}
+
+	public Unit getUnit(UnitType unitType) {
+		return this.units.stream()
+		                 .filter(unit -> unit.getType() == unitType)
+		                 .findFirst()
+		                 .orElse(null);
 	}
 
 	public void addUnit(Unit unit) {
