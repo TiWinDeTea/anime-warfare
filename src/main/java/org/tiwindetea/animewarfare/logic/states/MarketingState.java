@@ -28,13 +28,14 @@ import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class MarketingState extends GameState {
 	private List<Player> players;
 	private boolean gameEnded;
 	private boolean phaseEnded;
-	private final int winner = -1;
+	private final List<Integer> winners = new LinkedList<>();
 
 	protected MarketingState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -58,7 +59,7 @@ public class MarketingState extends GameState {
 	@Override
 	public State next() {
 		if (this.gameEnded) {
-			return new GameEndedState(this.winner, this.gameBoard);
+			return new GameEndedState(this.winners, this.gameBoard);
 		} else if (this.phaseEnded) {
 			return new ActionState(this.gameBoard);
 		} else {

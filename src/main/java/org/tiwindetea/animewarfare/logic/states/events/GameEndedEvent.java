@@ -2,10 +2,12 @@ package org.tiwindetea.animewarfare.logic.states.events;
 
 import org.lomadriel.lfc.event.Event;
 
-public class GameEndedEvent implements Event<GameEndedEventListener> {
-	private final Integer winner;
+import java.util.List;
 
-	public GameEndedEvent(Integer winner) {
+public class GameEndedEvent implements Event<GameEndedEventListener> {
+	private final List<Integer> winner;
+
+	public GameEndedEvent(List<Integer> winner) {
 		this.winner = winner;
 	}
 
@@ -15,11 +17,11 @@ public class GameEndedEvent implements Event<GameEndedEventListener> {
 	}
 
 	/**
-	 * Returns the id of the winner or null if there is no winner.
+	 * Returns winners' id or an empty list if there is no winner.
 	 *
-	 * @return the id of winner or null if there is no winner.
+	 * @return winners' id or an empty list if there is no winner.
 	 */
-	public Integer getWinner() {
+	public List<Integer> getWinners() {
 		return this.winner;
 	}
 }
