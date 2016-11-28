@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.logic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GameBoard {
@@ -37,7 +38,7 @@ public class GameBoard {
 	private int firstPlayerIndex;
 	private boolean clockWiseRotation;
 
-	public GameBoard(List<FactionType> players) {
+	public GameBoard(Map<Integer, FactionType> players) {
 		if (players.size() < 2 && players.size() > 4) {
 			throw new IllegalArgumentException("Incorrect number of players, "
 					+ players.size()
@@ -94,10 +95,11 @@ public class GameBoard {
 		buildPlayerList();
 	}
 
-	private void initializePlayers(List<FactionType> players) {
-		for (int i = 0; i < players.size(); i++) {
-			this.players.add(new Player(i, players.get(i)));
-		}
+	private void initializePlayers(Map<Integer, FactionType> players) {
+		players.entrySet()
+		       .stream()
+		       .map(entry -> new Player(entry.getKey().intValue(), entry.getValue()))
+		       .collect(Collectors.toList()).addAll(this.players);
 	}
 
 	private void initializeZones(int numberOfPlayers) {

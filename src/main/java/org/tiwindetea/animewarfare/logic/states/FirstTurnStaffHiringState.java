@@ -28,10 +28,10 @@ import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 
-import java.util.List;
+import java.util.Map;
 
 public class FirstTurnStaffHiringState extends StaffHiringState {
-	public FirstTurnStaffHiringState(List<FactionType> players) {
+	public FirstTurnStaffHiringState(Map<Integer, FactionType> players) {
 		super(new GameBoard(players));
 	}
 
