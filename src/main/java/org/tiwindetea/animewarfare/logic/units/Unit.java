@@ -24,9 +24,11 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
+import org.tiwindetea.animewarfare.logic.states.events.UnitMovedEvent;
 
 public class Unit {
 	private final UnitType type;
@@ -43,11 +45,12 @@ public class Unit {
 	 */
 	public Zone move(Zone zone) {
 		Zone previousZone = this.zone;
-		this.zone.removeUnit(this);
+		previousZone.removeUnit(this);
 
-		// TODO: Fire event
 		this.zone = zone;
-		zone.addUnit(this);
+		this.zone.addUnit(this);
+
+		EventDispatcher.getInstance().fire(new UnitMovedEvent(getType(), previousZone.getID(), this.zone.getID()));
 
 		return previousZone;
 	}
