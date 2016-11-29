@@ -32,6 +32,7 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class StaffHiringState extends GameState {
@@ -65,9 +66,9 @@ public class StaffHiringState extends GameState {
 		// TODO
 
 		List<Studio> studios = this.gameBoard.getZones().stream()
-				.map(Zone::getStudio)
-				.filter(studio -> studio != null)
-				.collect(Collectors.toList());
+		                                     .map(Zone::getStudio)
+		                                     .filter(Objects::nonNull)
+		                                     .collect(Collectors.toList());
 
 		int numberOfNonControlledPortal = getNumberOfNonControlledPortal(studios);
 		int maxStaffPoints = 0;
@@ -96,14 +97,14 @@ public class StaffHiringState extends GameState {
 		adjustNumberOfStaffMembersTo(maxStaffPoints / 2);
 	}
 
-	private void adjustNumberOfStaffMembersTo(int halfStaffPoints) {
+	private void adjustNumberOfStaffMembersTo(int minStaffPoints) {
 		this.gameBoard.getPlayers().stream()
-				.filter(player -> player.getStaffAvailable() < halfStaffPoints)
-				.forEach(player -> player.setStaffAvailable(halfStaffPoints));
+		              .filter(player -> player.getStaffAvailable() < minStaffPoints)
+		              .forEach(player -> player.setStaffAvailable(minStaffPoints));
 	}
 
 	private static int getNumberOfNonControlledPortal(List<Studio> studios) {
-		return (int) studios.stream().filter(faction -> faction == null).count();
+		return (int) studios.stream().filter(Objects::isNull).count();
 	}
 
 	private static int getNumberOfControlledPortal(List<Studio> studios, Player player) {
