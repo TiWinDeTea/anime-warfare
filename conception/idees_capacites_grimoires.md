@@ -159,9 +159,9 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
 
         Capturez un personnage de la même façon qu'une mascotte et remportez un employé au tour d'après en rendant l'unité à la réserve adverse.
 
-- **Radin de service** *(1 PP)*
+- **Le studio dans le ciel** *(1 PP)*
 
-        Prenez un studio et sa mascotte pour le mettre en lieu sûr sur votre plateau de faction.
+        Prenez un studio que vous contrôlez et sa mascotte pour le mettre en lieu sûr sur votre plateau de faction.
         Re-dépensez un employé en tant qu'action ultérieure pour le remettre sur zone sans studio.
 
 - **Holocaust** *(2 PP)*
@@ -171,7 +171,7 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
         Sinon, les adversaires ont une minute pour se répartir le résultat du dé en sacrifices de mascottes.
             S'ils n'y parviennent pas, vous choisissez.
 
-- **Cessez de vous ridiculiser, non de dlà !** *(? PP)*
+- **Sourde oreille** *(? PP)*
 
         Choisissez une zone où les humiliations ne peuvent plus avoir lieu pendant le tour.
         Coûte autant d'employés que d'unités alliés dans la zone (+1 employé pour chaque héro allié dans la zone).
