@@ -24,12 +24,14 @@
 
 package org.tiwindetea.animewarfare.gui.menu;
 
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
@@ -80,7 +82,7 @@ public class GameRoomState extends MenuState implements GameRoomEventListener {
 		GlobalChat.getChatController().clear();
 
 		// play the fade transition
-		GameRoomState.fadeTransition.play();
+		AnimationsManager.conditionalPlay(GameRoomState.fadeTransition);
 
 		// listen events.
 		EventDispatcher.getInstance().addListener(GameRoomEvent.class, this);

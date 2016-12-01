@@ -30,6 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEventListener;
@@ -78,7 +79,7 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 		this.rootLayout.setCenter(SettingsMenuState.settingsMenu);
 
 		// play the fade transition
-		SettingsMenuState.fadeTransition.play();
+		AnimationsManager.conditionalPlay(SettingsMenuState.fadeTransition);
 
 		// listen events.
 		EventDispatcher.getInstance().addListener(SettingsMenuEvent.class, this);

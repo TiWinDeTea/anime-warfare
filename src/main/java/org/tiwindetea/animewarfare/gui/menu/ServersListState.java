@@ -30,6 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEventListener;
@@ -79,7 +80,7 @@ public class ServersListState extends MenuState implements ServersListEventListe
 		this.rootLayout.setCenter(ServersListState.serversList);
 
 		// play the fade transition
-		ServersListState.fadeTransition.play();
+		AnimationsManager.conditionalPlay(ServersListState.fadeTransition);
 
 		// listen events.
 		EventDispatcher.getInstance().addListener(ServersListEvent.class, this);

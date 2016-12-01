@@ -129,12 +129,12 @@ public class SettingsMenuController {
 		return !this.playerNameTextField.getText().equals(Settings.getPlayerName())
 				|| (this.enableAutosaveCheckBox.isSelected() && !this.autosaveIntervalTextField.getText().equals(String.valueOf(Settings.getAutoSaveInterval())))
 				|| (!this.enableAutosaveCheckBox.isSelected() && Settings.getAutoSaveInterval() != 0)
-				|| this.enableEffectsCheckBox.isSelected() != Settings.isEnableAnimationEffects();
+				|| this.enableEffectsCheckBox.isSelected() != Settings.areAnimationEffectsEnabled();
 	}
 
 	void resetFieldsFromSettings() {
 		this.playerNameTextField.setText(Settings.getPlayerName());
-		this.enableEffectsCheckBox.setSelected(Settings.isEnableAnimationEffects());
+		this.enableEffectsCheckBox.setSelected(Settings.areAnimationEffectsEnabled());
 
 		if (Settings.getAutoSaveInterval() > 0) {
 			this.enableAutosaveCheckBox.setSelected(true);

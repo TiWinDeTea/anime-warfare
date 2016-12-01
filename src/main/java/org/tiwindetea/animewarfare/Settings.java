@@ -60,7 +60,7 @@ public class Settings {
 		prefs.put("enableAnimationEffects", String.valueOf(Settings.enableAnimationEffects));
 	}
 
-	public static boolean isEnableAnimationEffects() {
+	public static boolean areAnimationEffectsEnabled() {
 		return enableAnimationEffects;
 	}
 
