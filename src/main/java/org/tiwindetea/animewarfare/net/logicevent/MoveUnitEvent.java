@@ -3,17 +3,25 @@ package org.tiwindetea.animewarfare.net.logicevent;
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
+import java.util.Collections;
+import java.util.List;
+
 public class MoveUnitEvent implements Event<MoveUnitEventListener> {
 	private final int playerID;
-	private final UnitType unit;
-	private final int sourceZone;
-	private final int destinationZone;
+	private final List<UnitType> unit;
+	private final List<Integer> sourceZone;
+	private final List<Integer> destinationZone;
 
-	public MoveUnitEvent(int playerID, UnitType unit, int sourceZone, int destinationZone) {
+	public MoveUnitEvent(int playerID, List<UnitType> unit, List<Integer> sourceZone, List<Integer> destinationZone) {
+		if (sourceZone.size() != destinationZone.size()
+				|| sourceZone.size() != unit.size()) {
+			throw new IllegalArgumentException("Those lists should have the same size.");
+		}
+
 		this.playerID = playerID;
-		this.unit = unit;
-		this.sourceZone = sourceZone;
-		this.destinationZone = destinationZone;
+		this.unit = Collections.unmodifiableList(unit);
+		this.sourceZone = Collections.unmodifiableList(sourceZone);
+		this.destinationZone = Collections.unmodifiableList(destinationZone);
 	}
 
 	@Override
@@ -25,15 +33,24 @@ public class MoveUnitEvent implements Event<MoveUnitEventListener> {
 		return this.playerID;
 	}
 
-	public UnitType getUnit() {
+	/**
+	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
+	 */
+	public List<UnitType> getUnits() {
 		return this.unit;
 	}
 
-	public int getSourceZone() {
+	/**
+	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
+	 */
+	public List<Integer> getSourceZones() {
 		return this.sourceZone;
 	}
 
-	public int getDestinationZone() {
+	/**
+	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
+	 */
+	public List<Integer> getDestinationZones() {
 		return this.destinationZone;
 	}
 }
