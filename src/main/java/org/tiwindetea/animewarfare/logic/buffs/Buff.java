@@ -25,9 +25,17 @@
 package org.tiwindetea.animewarfare.logic.buffs;
 
 public abstract class Buff {
-	private int remainingTurns;
+	int remainingTurns;
 
-	public int getRemainingTurns() {
-		return this.remainingTurns;
+	public Buff(int remainingTurns) {
+		this.remainingTurns = remainingTurns;
 	}
+
+	abstract boolean isActionBuff();
+
+	final void updateTurn() {
+		--this.remainingTurns;
+	}
+
+	abstract void destroy();
 }

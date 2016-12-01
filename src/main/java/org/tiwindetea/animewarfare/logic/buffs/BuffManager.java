@@ -26,10 +26,36 @@ package org.tiwindetea.animewarfare.logic.buffs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BuffManager {
-	private final List<Buff> buffs = new ArrayList<>();
+	private final List<Buff> nonActionBuffs = new ArrayList<>();
+	private final List<Buff> actionBuffs = new ArrayList<>();
 
-	public BuffManager() {
+	public void updateNonActionBuffTurn() {
+		updateTurn(this.nonActionBuffs);
+	}
+
+	public void updateActionBuffTurn() {
+		updateTurn(this.actionBuffs);
+	}
+
+	public boolean addActionBuff(Buff actionBuff) {
+		return this.actionBuffs.add(actionBuff);
+	}
+
+	public boolean addNonActionBuffBuff(Buff buff) {
+		return this.nonActionBuffs.add(buff);
+	}
+
+	private static void updateTurn(List<Buff> buffList) {
+		List<Buff> buffToRemove = buffList.stream().filter(b -> {
+			--b.remainingTurns;
+			return b.remainingTurns == 0;
+		}).collect(Collectors.toList());
+
+		buffToRemove.forEach(buff -> buff.destroy());
+
+		buffList.removeAll(buffToRemove);
 	}
 }

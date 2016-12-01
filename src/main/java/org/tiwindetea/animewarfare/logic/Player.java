@@ -37,6 +37,7 @@ public class Player {
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
+	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
 
 	public Player(int id, FactionType faction) {
 		this.ID = id;
@@ -73,5 +74,9 @@ public class Player {
 
 	public void addUnit(UnitType type) {
 		this.unitCounter.addUnit(type);
+	}
+
+	public UnitCostModifier getUnitCostModifier() {
+		return this.unitCostModifier;
 	}
 }

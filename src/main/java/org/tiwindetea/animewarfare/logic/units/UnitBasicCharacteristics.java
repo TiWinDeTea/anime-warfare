@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
-public class UnitAttributes {
+public class UnitBasicCharacteristics {
 	public enum Gender {
 		MALE,
 		FEMALE
@@ -35,7 +35,7 @@ public class UnitAttributes {
 	private final int baseAttackPoints;
 	private final int baseMovementPoints;
 
-	UnitAttributes(Gender gender, boolean isHero, int baseAttackPoints, int baseMovementPoints) {
+	UnitBasicCharacteristics(Gender gender, boolean isHero, int baseAttackPoints, int baseMovementPoints) {
 		this.gender = gender;
 		this.isHero = isHero;
 		this.baseAttackPoints = baseAttackPoints;
