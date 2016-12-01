@@ -21,6 +21,7 @@
                   <Button mnemonicParsing="false" onAction="#handleRefresh" text="%button.refresh" />
                   <Button mnemonicParsing="false" onAction="#handleConnect" text="%button.connect" />
                   <Button mnemonicParsing="false" onAction="#handleHost" text="%button.host" />
+                  <Separator prefWidth="200.0" />
                   <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
                </children>
                <padding>

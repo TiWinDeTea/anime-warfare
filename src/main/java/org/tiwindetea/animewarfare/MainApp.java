@@ -37,12 +37,9 @@ import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEventListener;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
-import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEvent;
-import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEventListener;
 import org.tiwindetea.animewarfare.util.PropertiesReader;
 
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * Main application class.
@@ -102,7 +99,6 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	}
 
 	public static void main(String[] args) {
-		Locale.setDefault(Locale.FRENCH);
 		launch(args);
 	}
 

@@ -26,10 +26,17 @@ package org.tiwindetea.animewarfare.gui.menu;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.Settings;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
+import org.tiwindetea.animewarfare.util.PropertiesReader;
+
+import java.util.Optional;
 
 /**
  * The settings menu controller.
@@ -37,19 +44,103 @@ import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
  * @author Benoît CORTIER
  */
 public class SettingsMenuController {
+	private static final PropertiesReader PROPERTIES_READER
+			= new PropertiesReader("org.tiwindetea.animewarfare.gui.menu.SettingsMenuController");
+
 	@FXML
 	private TextField playerNameTextField;
+
+	@FXML
+	private TextField autosaveIntervalTextField;
+
+	@FXML
+	private CheckBox enableAutosaveCheckBox;
 
 	@FXML
 	private CheckBox enableEffectsCheckBox;
 
 	@FXML
-	void handleSave(ActionEvent event) {
+	private void initialize() {
+		this.autosaveIntervalTextField.disableProperty().bind(this.enableAutosaveCheckBox.selectedProperty().not());
 
+		resetFieldsFromSettings();
+	}
+
+	@FXML
+	void handleSave(ActionEvent event) {
+		String errorMessage = "";
+
+		if (this.playerNameTextField.getText().isEmpty()) {
+			errorMessage += PROPERTIES_READER.getString("alert.saveerror.playername.empty") + "\n";
+		}
+
+		if (this.enableAutosaveCheckBox.isSelected()) {
+			try {
+				Settings.setAutoSaveInterval(Integer.valueOf(this.autosaveIntervalTextField.getText()));
+			} catch (NumberFormatException e) {
+				errorMessage += PROPERTIES_READER.getString("alert.saveerror.interval.autosave.notanumber");
+			}
+		}
+
+		if (!errorMessage.isEmpty()) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle(PROPERTIES_READER.getString("alert.saveerror.title"));
+			alert.setHeaderText(PROPERTIES_READER.getString("alert.saveerror.header"));
+			alert.setContentText(errorMessage);
+			alert.showAndWait();
+			return;
+		}
+
+		if (!this.enableAutosaveCheckBox.isSelected()) {
+			Settings.setAutoSaveInterval(0);
+		}
+
+		Settings.setPlayerName(this.playerNameTextField.getText());
+		Settings.setEnableAnimationEffects(this.enableEffectsCheckBox.isSelected());
+		Settings.savePreferences();
 	}
 
 	@FXML
 	void handleQuit(ActionEvent event) {
+		if (isThereUnsavedChanges()) {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle(PROPERTIES_READER.getString("alert.unsavedchanges.title"));
+			alert.setHeaderText(PROPERTIES_READER.getString("alert.unsavedchanges.header"));
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK) {
+				resetFieldsFromSettings();
+			} else {
+				return;
+			}
+		}
+
 		EventDispatcher.getInstance().fire(new SettingsMenuEvent(SettingsMenuEvent.Type.QUIT));
+	}
+
+	@FXML
+	void onIntervalAutosaveTextChanged(KeyEvent event) {
+		if (!event.getCharacter().matches("[0-9]")) {
+			event.consume();
+		}
+	}
+
+	boolean isThereUnsavedChanges() {
+		return !this.playerNameTextField.getText().equals(Settings.getPlayerName())
+				|| (this.enableAutosaveCheckBox.isSelected() && !this.autosaveIntervalTextField.getText().equals(String.valueOf(Settings.getAutoSaveInterval())))
+				|| (!this.enableAutosaveCheckBox.isSelected() && Settings.getAutoSaveInterval() != 0)
+				|| this.enableEffectsCheckBox.isSelected() != Settings.isEnableAnimationEffects();
+	}
+
+	void resetFieldsFromSettings() {
+		this.playerNameTextField.setText(Settings.getPlayerName());
+		this.enableEffectsCheckBox.setSelected(Settings.isEnableAnimationEffects());
+
+		if (Settings.getAutoSaveInterval() > 0) {
+			this.enableAutosaveCheckBox.setSelected(true);
+			this.autosaveIntervalTextField.setText(String.valueOf(Settings.getAutoSaveInterval()));
+		} else {
+			this.enableAutosaveCheckBox.setSelected(false);
+		}
 	}
 }

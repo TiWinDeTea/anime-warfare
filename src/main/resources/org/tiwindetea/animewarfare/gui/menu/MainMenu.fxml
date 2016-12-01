@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -13,6 +14,7 @@
                   <Button mnemonicParsing="false" onAction="#handlePlay" text="%button.play" />
                   <Button mnemonicParsing="false" onAction="#handleSettings" text="%button.settings" />
                   <Button mnemonicParsing="false" onAction="#handleAbout" text="%button.about" />
+                  <Separator prefWidth="200.0" />
                   <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
                </children>
                <padding>
