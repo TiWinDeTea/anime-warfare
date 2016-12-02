@@ -126,6 +126,10 @@ public class GameBoard {
 		return this.zones;
 	}
 
+	public boolean checkIfZonesAreAdjacent(int source, int destination) {
+		return this.linkBetweenZones[source][destination] == 1;
+	}
+
 	public void setCachedMaxStaffPoints(int cachedMaxStaffPoints) {
 		this.cachedMaxStaffPoints = cachedMaxStaffPoints;
 	}

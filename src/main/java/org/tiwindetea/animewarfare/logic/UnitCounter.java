@@ -24,4 +24,14 @@ public class UnitCounter {
 		--this.numberOfUnitsByType[type.ordinal()];
 		--this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
 	}
+
+	public boolean hasUnits() {
+		for (UnitLevel level : UnitLevel.values()) {
+			if (this.numberOfUnitsByLevel[level.ordinal()] != 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
