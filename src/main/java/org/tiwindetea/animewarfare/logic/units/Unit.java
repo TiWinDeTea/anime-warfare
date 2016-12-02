@@ -62,13 +62,9 @@ public class Unit {
 	 * @return the number of attacks points
 	 */
 	public int getAttackPoints() {
-		// TODO
-		return 0;
-	}
-
-	public int getMovementPoint() {
-		// TODO
-		return 0;
+		return this.unitBuffedCharacteristics.getAttackPoints()
+				+ this.type.getUnitBasicCharacteristics()
+				           .getBaseAttackPoints();
 	}
 
 	public FactionType getFaction() {

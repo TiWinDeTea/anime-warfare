@@ -33,13 +33,11 @@ public class UnitBasicCharacteristics {
 	private final Gender gender;
 	private final boolean isHero;
 	private final int baseAttackPoints;
-	private final int baseMovementPoints;
 
-	UnitBasicCharacteristics(Gender gender, boolean isHero, int baseAttackPoints, int baseMovementPoints) {
+	UnitBasicCharacteristics(Gender gender, boolean isHero, int baseAttackPoints) {
 		this.gender = gender;
 		this.isHero = isHero;
 		this.baseAttackPoints = baseAttackPoints;
-		this.baseMovementPoints = baseMovementPoints;
 	}
 
 	public Gender getGender() {
@@ -52,9 +50,5 @@ public class UnitBasicCharacteristics {
 
 	public int getBaseAttackPoints() {
 		return this.baseAttackPoints;
-	}
-
-	public int getBaseMovementPoints() {
-		return this.baseMovementPoints;
 	}
 }
