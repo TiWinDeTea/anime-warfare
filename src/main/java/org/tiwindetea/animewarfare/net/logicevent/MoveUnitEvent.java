@@ -1,27 +1,42 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 import java.util.Collections;
 import java.util.List;
 
 public class MoveUnitEvent implements Event<MoveUnitEventListener> {
 	private final int playerID;
-	private final List<UnitType> unit;
-	private final List<Integer> sourceZone;
-	private final List<Integer> destinationZone;
+	private final List<Movement> movements;
 
-	public MoveUnitEvent(int playerID, List<UnitType> unit, List<Integer> sourceZone, List<Integer> destinationZone) {
-		if (sourceZone.size() != destinationZone.size()
-				|| sourceZone.size() != unit.size()) {
-			throw new IllegalArgumentException("Those lists should have the same size.");
+	public static class Movement {
+		private final int unitID;
+		private final int sourceZone;
+		private final int destinationZone;
+
+		public Movement(int unitID, int sourceZone, int destinationZone) {
+			this.unitID = unitID;
+			this.sourceZone = sourceZone;
+			this.destinationZone = destinationZone;
 		}
 
+		public int getUnitID() {
+			return this.unitID;
+		}
+
+		public int getSourceZone() {
+			return this.sourceZone;
+		}
+
+		public int getDestinationZone() {
+			return this.destinationZone;
+		}
+	}
+
+	public MoveUnitEvent(int playerID,
+	                     List<Movement> movements) {
 		this.playerID = playerID;
-		this.unit = Collections.unmodifiableList(unit);
-		this.sourceZone = Collections.unmodifiableList(sourceZone);
-		this.destinationZone = Collections.unmodifiableList(destinationZone);
+		this.movements = Collections.unmodifiableList(movements);
 	}
 
 	@Override
@@ -36,21 +51,7 @@ public class MoveUnitEvent implements Event<MoveUnitEventListener> {
 	/**
 	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
 	 */
-	public List<UnitType> getUnits() {
-		return this.unit;
-	}
-
-	/**
-	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
-	 */
-	public List<Integer> getSourceZones() {
-		return this.sourceZone;
-	}
-
-	/**
-	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
-	 */
-	public List<Integer> getDestinationZones() {
-		return this.destinationZone;
+	public List<Movement> getMovements() {
+		return this.movements;
 	}
 }
