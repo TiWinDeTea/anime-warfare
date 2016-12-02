@@ -89,7 +89,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
     }
 
     private void onQuit(WindowEvent event) {
-		EventDispatcher.getInstance().removeListener(AskMenuStateUpdateEvent.class, this);
+	    EventDispatcher.getInstance().removeListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().removeListener(QuitApplicationEvent.class, this);
 	}
 
@@ -105,5 +105,6 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	@Override
 	public void handleQuitApplication() {
 		this.primaryStage.close();
+		onQuit(null);
 	}
 }
