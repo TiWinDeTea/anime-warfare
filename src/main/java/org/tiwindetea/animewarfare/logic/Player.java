@@ -52,7 +52,32 @@ public class Player {
 	}
 
 	public void setStaffAvailable(int staffAvailable) {
+		// TODO: Send Event
 		this.staffAvailable = staffAvailable;
+	}
+
+	public boolean hasRequiredStaffPoints(int actionCost, int numberOfActions) {
+		if (actionCost * numberOfActions < this.staffAvailable) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean hasRequiredStaffPoints(int actionCost) {
+		return hasRequiredStaffPoints(actionCost, 1);
+	}
+
+	public void decrementStaffPoints(int actionCost, int numberOfActions) {
+		assert (hasRequiredStaffPoints(actionCost, numberOfActions));
+
+		this.staffAvailable -= actionCost * numberOfActions;
+
+		// TODO: Fire event
+	}
+
+	public void decrementStaffPoints(int actionCost) {
+		decrementStaffPoints(actionCost, 1);
 	}
 
 	public int getStaffAvailable() {
