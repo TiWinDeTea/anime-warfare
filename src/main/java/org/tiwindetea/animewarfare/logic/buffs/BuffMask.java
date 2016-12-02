@@ -25,23 +25,12 @@
 package org.tiwindetea.animewarfare.logic.buffs;
 
 /**
- * Abstract class for all buffs.
+ * Class holding data used to calculate effective buffed characteristics of a Unit.
  *
  * @author Benoît CORTIER
- * @author Jérôme BOULMIER
  */
-public abstract class Buff {
-	int remainingTurns;
-
-	public Buff(int remainingTurns) {
-		this.remainingTurns = remainingTurns;
-	}
-
-	final void updateTurn() {
-		--this.remainingTurns;
-	}
-
-	abstract boolean isActionBuff();
-
-	abstract void destroy();
+class BuffMask {
+	int attackPoints = 0;
+	boolean canAttack = true;
+	boolean attackable = true;
 }

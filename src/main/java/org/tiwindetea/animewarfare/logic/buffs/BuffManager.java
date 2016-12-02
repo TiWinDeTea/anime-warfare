@@ -28,6 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class that manages buffs.
+ * Holds buffs and get rid of them once they
+ * expired.
+ *
+ * @author Benoît CORTIER
+ * @author Jérôme BOULMIER
+ */
 public class BuffManager {
 	private final List<Buff> nonActionBuffs = new ArrayList<>();
 	private final List<Buff> actionBuffs = new ArrayList<>();
@@ -40,14 +48,15 @@ public class BuffManager {
 		updateTurn(this.actionBuffs);
 	}
 
-	public boolean addActionBuff(Buff actionBuff) {
-		return this.actionBuffs.add(actionBuff);
+	public boolean addBuff(Buff buff) {
+		if (buff.isActionBuff()) {
+			return this.actionBuffs.add(buff);
+		} else {
+			return this.nonActionBuffs.add(buff);
+		}
 	}
 
-	public boolean addNonActionBuffBuff(Buff buff) {
-		return this.nonActionBuffs.add(buff);
-	}
-
+	// helper to update remaining turns of all buffs in the given collection.
 	private static void updateTurn(List<Buff> buffList) {
 		List<Buff> buffToRemove = buffList.stream().filter(b -> {
 			--b.remainingTurns;

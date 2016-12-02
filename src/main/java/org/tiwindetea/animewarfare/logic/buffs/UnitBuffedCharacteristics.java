@@ -24,24 +24,48 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Abstract class for all buffs.
+ * Class holding buff masks applied to a given Unit.
  *
  * @author Benoît CORTIER
- * @author Jérôme BOULMIER
  */
-public abstract class Buff {
-	int remainingTurns;
+public class UnitBuffedCharacteristics {
+	private List<BuffMask> buffMaskList = new ArrayList<>();
 
-	public Buff(int remainingTurns) {
-		this.remainingTurns = remainingTurns;
+	boolean addBuffMask(BuffMask buffMask) {
+		return this.buffMaskList.add(buffMask);
 	}
 
-	final void updateTurn() {
-		--this.remainingTurns;
+	boolean removeBuffMask(BuffMask buffMask) {
+		return this.buffMaskList.remove(buffMask);
 	}
 
-	abstract boolean isActionBuff();
+	public int getAttackPoints() {
+		int attackPoints = 0;
+		for (BuffMask buffMask : buffMaskList) {
+			attackPoints += buffMask.attackPoints;
+		}
+		return attackPoints;
+	}
 
-	abstract void destroy();
+	public boolean isAttackable() {
+		for (BuffMask buffMask : buffMaskList) {
+			if (!buffMask.attackable) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean canAttack() {
+		for (BuffMask buffMask : buffMaskList) {
+			if (!buffMask.canAttack) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

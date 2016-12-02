@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.logic.units;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.buffs.UnitBuffedCharacteristics;
 import org.tiwindetea.animewarfare.logic.states.events.UnitMovedEvent;
 
 public class Unit {
@@ -36,7 +37,7 @@ public class Unit {
 	private final UnitType type;
 	private final FactionType faction;
 
-	private final UnitBuffedCharacteristics unitBuffedCharacteristics;
+	private final UnitBuffedCharacteristics unitBuffedCharacteristics = new UnitBuffedCharacteristics();
 	private Zone zone;
 
 	public Unit(UnitType type) {
@@ -44,7 +45,6 @@ public class Unit {
 
 		this.faction = type.getDefaultFaction();
 		this.type = type;
-		this.unitBuffedCharacteristics = new UnitBuffedCharacteristics(type);
 	}
 
 	public int getID() {
@@ -75,6 +75,10 @@ public class Unit {
 		return this.unitBuffedCharacteristics.getAttackPoints()
 				+ this.type.getUnitBasicCharacteristics()
 				           .getBaseAttackPoints();
+	}
+
+	public UnitBuffedCharacteristics getUnitBuffedCharacteristics() {
+		return this.unitBuffedCharacteristics;
 	}
 
 	public FactionType getFaction() {

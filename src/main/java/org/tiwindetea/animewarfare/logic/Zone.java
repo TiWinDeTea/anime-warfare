@@ -29,6 +29,7 @@ import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Zone {
@@ -46,6 +47,10 @@ public class Zone {
 
 	public int getID() {
 		return this.ID;
+	}
+
+	public List<Unit> getUnits() {
+		return Collections.unmodifiableList(this.units);
 	}
 
 	public Unit getUnit(int unitID) {

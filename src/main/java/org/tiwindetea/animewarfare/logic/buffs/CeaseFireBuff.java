@@ -24,24 +24,47 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
+import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.units.Unit;
+
 /**
- * Abstract class for all buffs.
+ * Cease-fire buff.
+ * In french: "cessez-le-feu".
+ *
+ * No combat in the zone during one action turn.
  *
  * @author Benoît CORTIER
- * @author Jérôme BOULMIER
  */
-public abstract class Buff {
-	int remainingTurns;
-
-	public Buff(int remainingTurns) {
-		this.remainingTurns = remainingTurns;
+public class CeaseFireBuff extends Buff {
+	private static BuffMask buffMask = new BuffMask();
+	static {
+		buffMask.canAttack = false;
 	}
 
-	final void updateTurn() {
-		--this.remainingTurns;
+	private Zone zone;
+
+	public CeaseFireBuff(Zone zone) {
+		super(1);
+		this.zone = zone;
+
+		// apply buff mask on all units in the zone.
+		for (Unit unit : this.zone.getUnits()) {
+			unit.getUnitBuffedCharacteristics().addBuffMask(CeaseFireBuff.buffMask);
+		}
 	}
 
-	abstract boolean isActionBuff();
+	@Override
+	boolean isActionBuff() {
+		return true;
+	}
 
-	abstract void destroy();
+	@Override
+	void destroy() {
+		// remove buff mask on all units in the zone.
+		for (Unit unit : this.zone.getUnits()) {
+			unit.getUnitBuffedCharacteristics().removeBuffMask(CeaseFireBuff.buffMask);
+		}
+	}
+
+	// TODO: listen to events about Unit movements to apply or remove buff mask to unit that enter or leave the area.
 }
