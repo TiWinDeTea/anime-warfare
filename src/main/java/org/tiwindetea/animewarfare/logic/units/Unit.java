@@ -30,15 +30,25 @@ import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.states.events.UnitMovedEvent;
 
 public class Unit {
+	private static int unitCounter;
+
+	private final int ID;
 	private final UnitType type;
-	private Zone zone;
 	private final FactionType faction;
+
 	private final UnitBuffedCharacteristics unitBuffedCharacteristics;
+	private Zone zone;
 
 	public Unit(UnitType type) {
+		this.ID = unitCounter++;
+
 		this.faction = type.getDefaultFaction();
 		this.type = type;
 		this.unitBuffedCharacteristics = new UnitBuffedCharacteristics(type);
+	}
+
+	public int getID() {
+		return this.ID;
 	}
 
 	/**
