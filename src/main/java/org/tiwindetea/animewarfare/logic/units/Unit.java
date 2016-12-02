@@ -79,6 +79,10 @@ public class Unit {
 		return this.type;
 	}
 
+	public boolean isLevel(UnitLevel level) {
+		return this.type.getUnitLevel() == level;
+	}
+
 	// TODO: getters
 
 }

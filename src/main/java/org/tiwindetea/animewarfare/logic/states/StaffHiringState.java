@@ -29,6 +29,7 @@ import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.units.Studio;
+import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class StaffHiringState extends GameState {
 
 	@Override
 	public void onExit() {
-		// TODO
+		this.gameBoard.getPlayers().forEach(this::releaseCapturedUnits);
 	}
 
 	@Override
@@ -73,11 +74,16 @@ public class StaffHiringState extends GameState {
 		int numberOfNonControlledPortal = getNumberOfNonControlledPortal(studios);
 		int maxStaffPoints = 0;
 
-		int numberOfCapturedAcolytes = 0; // TODO
+
 		for (Player player : this.gameBoard.getPlayers()) {
+			int numberOfCapturedMascot = (int) player.getUnitCaptured()
+			                                         .stream()
+			                                         .filter(unit -> unit.isLevel(UnitLevel.MASCOT))
+			                                         .count();
+
 			int staffPoints = 2 * getNumberOfControlledPortal(studios, player)
-					+ player.getNumberOfUnits(UnitLevel.MASCOT)
-					+ numberOfCapturedAcolytes
+					+ player.getUnitCounter().getNumberOfUnits(UnitLevel.MASCOT)
+					+ numberOfCapturedMascot
 					+ numberOfNonControlledPortal;
 
 			player.setStaffAvailable(staffPoints);
@@ -87,7 +93,7 @@ public class StaffHiringState extends GameState {
 			}
 		}
 
-		// TODO Free captured acolytes
+		this.gameBoard.setCachedMaxStaffPoints(maxStaffPoints);
 
 		// Increment maxStaffPoints to an even number.
 		if (maxStaffPoints % 2 == 1) {
@@ -95,6 +101,14 @@ public class StaffHiringState extends GameState {
 		}
 
 		adjustNumberOfStaffMembersTo(maxStaffPoints / 2);
+	}
+
+	private void releaseCapturedUnits(Player player) {
+		for (Unit unit : player.getUnitCaptured()) {
+			this.gameBoard.getPlayer(unit.getFaction()).getUnitCounter().removeUnit(unit.getType());
+		}
+
+		player.getUnitCaptured().clear();
 	}
 
 	private void adjustNumberOfStaffMembersTo(int minStaffPoints) {

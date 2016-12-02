@@ -25,8 +25,10 @@
 package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
-import org.tiwindetea.animewarfare.logic.units.UnitLevel;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
 	private final int ID;
@@ -38,6 +40,7 @@ public class Player {
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
 	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
+	private final List<Unit> unitCaptured = new ArrayList<>();
 
 	public Player(int id, FactionType faction) {
 		this.ID = id;
@@ -64,19 +67,15 @@ public class Player {
 		return this.faction;
 	}
 
-	public int getNumberOfUnits(UnitType type) {
-		return this.unitCounter.getNumberOfUnits(type);
-	}
-
-	public int getNumberOfUnits(UnitLevel level) {
-		return this.unitCounter.getNumberOfUnits(level);
-	}
-
-	public void addUnit(UnitType type) {
-		this.unitCounter.addUnit(type);
+	public UnitCounter getUnitCounter() {
+		return this.unitCounter;
 	}
 
 	public UnitCostModifier getUnitCostModifier() {
 		return this.unitCostModifier;
+	}
+
+	public List<Unit> getUnitCaptured() {
+		return this.unitCaptured;
 	}
 }

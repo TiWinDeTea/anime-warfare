@@ -19,4 +19,9 @@ public class UnitCounter {
 		++this.numberOfUnitsByType[type.ordinal()];
 		++this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
 	}
+
+	public void removeUnit(UnitType type) {
+		--this.numberOfUnitsByType[type.ordinal()];
+		--this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
+	}
 }

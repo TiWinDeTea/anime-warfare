@@ -37,6 +37,7 @@ public class GameBoard {
 	private Player lastFirstPlayer;
 	private int firstPlayerIndex;
 	private boolean clockWiseRotation;
+	private int cachedMaxStaffPoints = -1;
 
 	public GameBoard(Map<Integer, FactionType> players) {
 		if (players.size() < 2 && players.size() > 4) {
@@ -55,6 +56,13 @@ public class GameBoard {
 
 	public Player getPlayer(int index) {
 		return this.players.get(index);
+	}
+
+	public Player getPlayer(FactionType factionType) {
+		return this.players.stream()
+		                   .filter(p -> p.getFaction() == factionType)
+		                   .findFirst()
+		                   .orElse(null);
 	}
 
 	public List<Player> getPlayers() {
@@ -121,5 +129,9 @@ public class GameBoard {
 
 	public List<Zone> getZones() {
 		return this.zones;
+	}
+
+	public void setCachedMaxStaffPoints(int cachedMaxStaffPoints) {
+		this.cachedMaxStaffPoints = cachedMaxStaffPoints;
 	}
 }
