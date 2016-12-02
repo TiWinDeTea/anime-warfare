@@ -32,103 +32,105 @@ public enum UnitType {
 	RUSSELL_JIN(FactionType.NO_NAME,
 			UnitLevel.MASCOT,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	KUROUSAGI(FactionType.NO_NAME,
 			UnitLevel.LVL0,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 	KASUKABE_YOU(FactionType.NO_NAME,
 			UnitLevel.LVL1,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 	KUDOU_ASUKA(FactionType.NO_NAME,
 			UnitLevel.LVL2,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 	SAKAMAKI_IZAYOI(FactionType.NO_NAME,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, true, 0),
-			0),
+			0, 0),
 
 	// F-class no Baka
 	YOSHII_AKIHISA(FactionType.F_CLASS_NO_BAKA,
 			UnitLevel.MASCOT,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	SAKAMOTO_YUUJI(FactionType.F_CLASS_NO_BAKA,
 			UnitLevel.LVL0,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	SHIMADA_MINAMI(FactionType.F_CLASS_NO_BAKA,
 			UnitLevel.LVL1,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 	TSUCHIYA_KOUTA(FactionType.F_CLASS_NO_BAKA,
 			UnitLevel.LVL2,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	HIMEJI_MIZUKI(FactionType.F_CLASS_NO_BAKA,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 
 	// Haiyore
 	YOICHI_TAKEHIKO(FactionType.HAIYORE,
 			UnitLevel.MASCOT,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	YASAKA_MAHIRO(FactionType.HAIYORE,
 			UnitLevel.LVL0,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	HASUTA(FactionType.HAIYORE,
 			UnitLevel.LVL2,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	CTHUKO(FactionType.HAIYORE,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 	NYARUKO(FactionType.HAIYORE,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, false, 0),
-			0),
+			0, 0),
 
 	// Cool Guys
 	KUBOTA_YOSHINOBU(FactionType.COOL_GUYS,
 			UnitLevel.MASCOT,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	ACCHAN(FactionType.COOL_GUYS,
 			UnitLevel.LVL0,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	HAYABUSA_SHOU(FactionType.COOL_GUYS,
 			UnitLevel.LVL1,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	FUKASE(FactionType.COOL_GUYS,
 			UnitLevel.LVL2,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0),
+			0, 0),
 	SAKAMOTO(FactionType.COOL_GUYS,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, false, 0),
-			0);
+			0, 0);
 
 	private final FactionType defaultFaction;
+	private final UnitLevel unitLevel;
 	private final UnitBasicCharacteristics unitBasicCharacteristics;
 	private final int defaultCost;
-	private final UnitLevel unitLevel;
+	private final int maxNumber;
 
 	UnitType(FactionType defaultFaction,
 	         UnitLevel unitLevel,
 	         UnitBasicCharacteristics unitBasicCharacteristics,
-	         int defaultCost) {
+	         int defaultCost, int maxNumber) {
 		this.defaultFaction = defaultFaction;
 		this.unitLevel = unitLevel;
 		this.unitBasicCharacteristics = unitBasicCharacteristics;
 		this.defaultCost = defaultCost;
+		this.maxNumber = maxNumber;
 	}
 
 	public int getDefaultCost() {
@@ -145,5 +147,9 @@ public enum UnitType {
 
 	UnitBasicCharacteristics getUnitBasicCharacteristics() {
 		return this.unitBasicCharacteristics;
+	}
+
+	public int getMaxNumber() {
+		return this.maxNumber;
 	}
 }
