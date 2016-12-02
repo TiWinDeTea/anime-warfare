@@ -32,11 +32,14 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
 	private final List<Zone> zones = new ArrayList<>();
+	private int[][] linkBetweenZones;
+
 	private final List<Player> players = new ArrayList<>();
-	private final List<Player> playersInOrder = new ArrayList<>();
+	private final List<Player> playersInOrder = new ArrayList<>(); // Used to cache.
+
 	private Player lastFirstPlayer;
 	private int firstPlayerIndex;
-	private boolean clockWiseRotation;
+	private boolean clockWiseRotationTurn;
 	private int cachedMaxStaffPoints = -1;
 
 	public GameBoard(Map<Integer, FactionType> players) {
@@ -74,31 +77,22 @@ public class GameBoard {
 	}
 
 	public List<Player> getPlayersWithMaxStaff() {
-		List<Player> playersWithMaxStaff = new ArrayList<>();
+		assert (this.cachedMaxStaffPoints != -1);
 
-		int maxStaff = 0;
-
-		for (Player player : this.players) {
-			if (player.getStaffAvailable() > maxStaff) {
-				playersWithMaxStaff.clear();
-				playersWithMaxStaff.add(player);
-				maxStaff = player.getStaffAvailable();
-			} else if (player.getStaffAvailable() == maxStaff) {
-				playersWithMaxStaff.add(player);
-			}
-		}
-
-		return playersWithMaxStaff;
+		return this.players.stream()
+		                   .filter(p -> p.getStaffAvailable() == this.cachedMaxStaffPoints)
+		                   .collect(Collectors.toList());
 	}
 
 	public static List<Integer> getPlayersIndex(List<Player> players) {
 		return players.stream().map(player -> Integer.valueOf(player.getID())).collect(Collectors.toList());
 	}
 
-	public void initializeTurn(Player firstPlayer, boolean clockWiseRotation) {
+	public void initializeTurn(Player firstPlayer, boolean clockWiseRotationTurn) {
+		this.cachedMaxStaffPoints = -1;
 		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
 		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
-		this.clockWiseRotation = clockWiseRotation;
+		this.clockWiseRotationTurn = clockWiseRotationTurn;
 
 		buildPlayerList();
 	}
@@ -107,16 +101,17 @@ public class GameBoard {
 		players.entrySet()
 		       .stream()
 		       .map(entry -> new Player(entry.getKey().intValue(), entry.getValue()))
-		       .collect(Collectors.toList()).addAll(this.players);
+		       .collect(Collectors.toCollection(() -> this.players));
 	}
 
 	private void initializeZones(int numberOfPlayers) {
-		// TODO
+		// TODO: Initializes zones and link between them.
+		// TODO: Sends events
 	}
 
 	private void buildPlayerList() {
 		this.playersInOrder.clear();
-		if (this.clockWiseRotation) {
+		if (this.clockWiseRotationTurn) {
 			for (int i = 0, j = this.firstPlayerIndex; i < this.players.size(); ++i) {
 				this.playersInOrder.add(this.players.get((i + j) % this.players.size()));
 			}

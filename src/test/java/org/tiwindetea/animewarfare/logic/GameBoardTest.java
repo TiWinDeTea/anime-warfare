@@ -16,15 +16,15 @@ public class GameBoardTest {
 	private static final Map<Integer, FactionType> FACTIONS = new HashMap<>();
 
 	static {
-		FACTIONS.put(1, FactionType.NO_NAME);
-		FACTIONS.put(2, FactionType.HAIYORE);
-		FACTIONS.put(3, FactionType.F_CLASS_NO_BAKA);
-		FACTIONS.put(4, FactionType.COOL_GUYS);
+		FACTIONS.put(Integer.valueOf(1), FactionType.NO_NAME);
+		FACTIONS.put(Integer.valueOf(2), FactionType.HAIYORE);
+		FACTIONS.put(Integer.valueOf(3), FactionType.F_CLASS_NO_BAKA);
+		FACTIONS.put(Integer.valueOf(4), FactionType.COOL_GUYS);
 	}
 
 	@Before
 	public void initialize() {
-		this.gameBoard = new GameBoard(this.FACTIONS);
+		this.gameBoard = new GameBoard(FACTIONS);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class GameBoardTest {
 				.map(Player::getFaction)
 				.collect(Collectors.toList());
 
-		Assert.assertEquals(new ArrayList<>(this.FACTIONS.values()), playerFaction);
+		Assert.assertEquals(new ArrayList<>(FACTIONS.values()), playerFaction);
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class GameBoardTest {
 		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
 			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), true);
 
-			List<FactionType> factionsCopy = new ArrayList<>(this.FACTIONS.values());
+			List<FactionType> factionsCopy = new ArrayList<>(FACTIONS.values());
 			Collections.rotate(factionsCopy, -i);
 
 			List<FactionType> playerFaction = this.gameBoard.getPlayersInOrder().stream()
@@ -57,7 +57,7 @@ public class GameBoardTest {
 		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
 			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), false);
 
-			List<FactionType> factionsCopy = new ArrayList<>(this.FACTIONS.values());
+			List<FactionType> factionsCopy = new ArrayList<>(FACTIONS.values());
 			Collections.rotate(factionsCopy, -(i + 1));
 			Collections.reverse(factionsCopy);
 
