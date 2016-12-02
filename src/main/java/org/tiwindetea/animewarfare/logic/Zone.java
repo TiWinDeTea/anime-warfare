@@ -26,7 +26,7 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +48,17 @@ public class Zone {
 		return this.ID;
 	}
 
-	public Unit getUnit(UnitType unitType) {
+	public Unit getUnit(int unitID) {
 		return this.units.stream()
-		                 .filter(unit -> unit.getType() == unitType)
+		                 .filter(unit -> unit.getID() == unitID)
 		                 .findFirst()
 		                 .orElse(null);
+	}
+
+	public Unit getUnit(UnitLevel level, FactionType faction) {
+		return this.units.stream()
+		                 .filter(unit -> unit.isLevel(level) && unit.getFaction() == faction)
+		                 .findFirst().orElse(null);
 	}
 
 	public void addUnit(Unit unit) {
@@ -73,5 +79,11 @@ public class Zone {
 
 	public boolean isCountrySide() {
 		return this.isCountrySide;
+	}
+
+	public boolean hasUnitOfFaction(FactionType faction) {
+		return this.units.stream()
+		                 .filter(unit -> unit.getFaction() == faction)
+		                 .findFirst().isPresent();
 	}
 }
