@@ -106,7 +106,6 @@ class Utils {
 		kryo.register(NetHandlePlayerDisconnection.class);
 		kryo.register(NetLockFaction.class);
 		kryo.register(NetMessage.class);
-		// kryo.register(NetPlayingCommand.class); // FIXME
 		kryo.register(NetPlayingOrderChosen.class);
 		kryo.register(NetSelectFaction.class);
 	}

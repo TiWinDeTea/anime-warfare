@@ -159,6 +159,9 @@ public class Room implements Serializable {
     }
 
     void addMember(GameClientInfo info) {
+        if (this.isFull()) {
+            throw new IllegalStateException("Trying to add a member into a full room");
+        }
         this.members.add(info);
     }
 
@@ -204,6 +207,10 @@ public class Room implements Serializable {
 
     void setNumberOfExpectedPlayers(int numberOfExpectedPlayers) {
         this.numberOfExpectedPlayers = numberOfExpectedPlayers;
+    }
+
+    boolean isFull() {
+        return this.numberOfExpectedPlayers == this.members.size();
     }
 
     /**
