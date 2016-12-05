@@ -30,6 +30,7 @@ import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
@@ -52,6 +53,8 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 		registerEventListeners();
 
 		selectionFirstPlayer();
+
+		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
 	}
 
 	@Override
@@ -84,8 +87,6 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
 		this.clockWise = event.isClockWiseTurn();
 		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
-
-		// TODO: Send PhaseEnded Event.
 	}
 
 	protected void registerEventListeners() {

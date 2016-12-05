@@ -24,9 +24,11 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +46,8 @@ public class MarketingState extends GameState {
 	@Override
 	public void onEnter() {
 		this.players = this.gameBoard.getPlayersInOrder();
+
+		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.MARKETING));
 	}
 
 	@Override

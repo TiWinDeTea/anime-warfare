@@ -24,9 +24,11 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
@@ -43,7 +45,7 @@ public class StaffHiringState extends GameState {
 	public void onEnter() {
 		computeStaffAvailable();
 
-		// TODO: Send event phase ended.
+		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.STAFF_HIRING));
 	}
 
 	@Override
