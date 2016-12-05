@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.units.events;
 
 import java.util.EventListener;
 

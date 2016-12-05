@@ -37,6 +37,12 @@ public class ActionState extends GameState {
 	private boolean phaseEnded;
 	private final List<Integer> winners = new LinkedList<>();
 
+	private Player currentPlayer;
+	private int currentPlayerPosition;
+
+	private Player huntedPlayer;
+	private Zone huntingZone;
+
 	public ActionState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
