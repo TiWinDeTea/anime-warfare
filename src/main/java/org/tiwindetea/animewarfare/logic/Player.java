@@ -57,11 +57,7 @@ public class Player {
 	}
 
 	public boolean hasRequiredStaffPoints(int actionCost, int numberOfActions) {
-		if (actionCost * numberOfActions < this.staffAvailable) {
-			return false;
-		}
-
-		return true;
+		return actionCost * numberOfActions >= this.staffAvailable;
 	}
 
 	public boolean hasRequiredStaffPoints(int actionCost) {

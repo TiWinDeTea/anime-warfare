@@ -36,12 +36,12 @@ import org.tiwindetea.animewarfare.logic.units.Unit;
  * @author Benoît CORTIER
  */
 public class CeaseFireBuff extends Buff {
-	private static BuffMask buffMask = new BuffMask();
+	private static final BuffMask BUFF_MASK = new BuffMask();
 	static {
-		buffMask.canAttack = false;
+		BUFF_MASK.canAttack = false;
 	}
 
-	private Zone zone;
+	private final Zone zone;
 
 	public CeaseFireBuff(Zone zone) {
 		super(1);
@@ -49,7 +49,7 @@ public class CeaseFireBuff extends Buff {
 
 		// apply buff mask on all units in the zone.
 		for (Unit unit : this.zone.getUnits()) {
-			unit.getUnitBuffedCharacteristics().addBuffMask(CeaseFireBuff.buffMask);
+			unit.getUnitBuffedCharacteristics().addBuffMask(CeaseFireBuff.BUFF_MASK);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class CeaseFireBuff extends Buff {
 	void destroy() {
 		// remove buff mask on all units in the zone.
 		for (Unit unit : this.zone.getUnits()) {
-			unit.getUnitBuffedCharacteristics().removeBuffMask(CeaseFireBuff.buffMask);
+			unit.getUnitBuffedCharacteristics().removeBuffMask(CeaseFireBuff.BUFF_MASK);
 		}
 	}
 

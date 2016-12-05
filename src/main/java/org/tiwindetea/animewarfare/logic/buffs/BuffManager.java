@@ -63,7 +63,7 @@ public class BuffManager {
 			return b.remainingTurns == 0;
 		}).collect(Collectors.toList());
 
-		buffToRemove.forEach(buff -> buff.destroy());
+		buffToRemove.forEach(Buff::destroy);
 
 		buffList.removeAll(buffToRemove);
 	}

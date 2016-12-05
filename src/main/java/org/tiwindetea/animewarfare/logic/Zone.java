@@ -88,7 +88,6 @@ public class Zone {
 
 	public boolean hasUnitOfFaction(FactionType faction) {
 		return this.units.stream()
-		                 .filter(unit -> unit.getFaction() == faction)
-		                 .findFirst().isPresent();
+		                 .anyMatch(unit -> unit.getFaction() == faction);
 	}
 }

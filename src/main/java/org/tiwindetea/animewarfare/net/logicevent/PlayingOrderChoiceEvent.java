@@ -14,7 +14,7 @@ public class PlayingOrderChoiceEvent implements Event<PlayingOrderChoiceEventLis
 		listener.handlePlayingOrder(this);
 	}
 
-	public Boolean getClockWise() {
+	public Boolean isClockWiseTurn() {
 		return this.clockWise;
 	}
 }

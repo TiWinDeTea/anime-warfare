@@ -54,7 +54,7 @@ class UDPListener implements Runnable {
     private Room room;
     private int port;
     private DatagramSocket client;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     UDPListener() {
         this.port = -1;

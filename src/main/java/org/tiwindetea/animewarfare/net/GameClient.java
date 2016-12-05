@@ -82,7 +82,7 @@ public class GameClient {
      * @param timeout The number of milliseconds to wait for a response
      * @return A list containing all servers found on LAN
      */
-    public List<Room> discover(int UDPport, int timeout) {
+    public static List<Room> discover(int UDPport, int timeout) {
 
         List<InetAddress> broadcastAddresses = Utils.findBroadcastAddr();
         List<Room> lanRooms = new ArrayList<>(3);

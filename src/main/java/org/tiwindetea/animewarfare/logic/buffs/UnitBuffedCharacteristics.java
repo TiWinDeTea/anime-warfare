@@ -33,7 +33,7 @@ import java.util.List;
  * @author Benoît CORTIER
  */
 public class UnitBuffedCharacteristics {
-	private List<BuffMask> buffMaskList = new ArrayList<>();
+	private final List<BuffMask> buffMaskList = new ArrayList<>();
 
 	boolean addBuffMask(BuffMask buffMask) {
 		return this.buffMaskList.add(buffMask);
@@ -45,14 +45,14 @@ public class UnitBuffedCharacteristics {
 
 	public int getAttackPoints() {
 		int attackPoints = 0;
-		for (BuffMask buffMask : buffMaskList) {
+		for (BuffMask buffMask : this.buffMaskList) {
 			attackPoints += buffMask.attackPoints;
 		}
 		return attackPoints;
 	}
 
 	public boolean isAttackable() {
-		for (BuffMask buffMask : buffMaskList) {
+		for (BuffMask buffMask : this.buffMaskList) {
 			if (!buffMask.attackable) {
 				return false;
 			}
@@ -61,7 +61,7 @@ public class UnitBuffedCharacteristics {
 	}
 
 	public boolean canAttack() {
-		for (BuffMask buffMask : buffMaskList) {
+		for (BuffMask buffMask : this.buffMaskList) {
 			if (!buffMask.canAttack) {
 				return false;
 			}

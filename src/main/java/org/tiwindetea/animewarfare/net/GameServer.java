@@ -269,7 +269,7 @@ public class GameServer {
 
     public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
-        private Server server;
+        private final Server server;
 
         NetworkListener(Server server) {
             this.server = server;
@@ -326,17 +326,18 @@ public class GameServer {
                 Log.trace(GameServer.NetworkListener.class.toString(), "Faction locking requested: " + faction);
                 boolean isFactionLocked = false;
                 for (Map.Entry<Integer, FactionType> integerFactionTypeEntry : GameServer.this.playersSelection.entrySet()) {
-                    if (integerFactionTypeEntry.getValue().equals(faction.getFaction())) {
+                    if (integerFactionTypeEntry.getValue() == faction.getFaction()) {
                         isFactionLocked = true;
                         break;
                     }
                 }
                 if (!isFactionLocked) {
                     int numberOfTimesTheFactionIsSelected = (int) GameServer.this.playersSelection.entrySet()
-                            .stream()
-                            .filter(integerFactionTypeEntry -> integerFactionTypeEntry.getValue()
-                                    .equals(faction.getFaction()))
-                            .count();
+                                                                                                  .stream()
+                                                                                                  .filter(integerFactionTypeEntry -> integerFactionTypeEntry
+                                                                                                          .getValue() == faction
+                                                                                                          .getFaction())
+                                                                                                  .count();
                     if (numberOfTimesTheFactionIsSelected <= 1) {
                         this.server.sendToAllTCP(faction);
                         GameServer.this.playersLocks.put(new Integer(connection.getID()), faction.getFaction());

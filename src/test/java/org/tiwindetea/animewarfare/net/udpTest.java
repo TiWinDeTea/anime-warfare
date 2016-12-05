@@ -23,13 +23,13 @@ public class udpTest {
         gs2.bind(12355, 6847);
         gs2.start();
         GameClient gc = new GameClient();
-        for (Room room : gc.discover(6845, 500)) {
+        for (Room room : GameClient.discover(6845, 500)) {
             System.out.println("found room " + room.getGameName() + "\twith "
                     + room.getMembers().size() + " members.\tState: "
                     + (room.isLocked() ? "locked" : "open"));
         }
         Room r = null;
-        for (Room room : gc.discover(6847, 500)) {
+        for (Room room : GameClient.discover(6847, 500)) {
             r = room;
             System.out.println("found room " + room.getGameName() + "\twith "
                     + room.getMembers().size() + "members.\tState: "

@@ -82,7 +82,7 @@ public class FirstPlayerSelectionState extends GameState implements FirstPlayerC
 
 	@Override
 	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
-		this.clockWise = event.getClockWise();
+		this.clockWise = event.isClockWiseTurn();
 		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
 
 		// TODO: Send PhaseEnded Event.

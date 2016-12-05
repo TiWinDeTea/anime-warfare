@@ -47,7 +47,7 @@ public class Room implements Serializable {
 
     private transient String gamePassword;
 
-    private ArrayList<GameClientInfo> members = new ArrayList<>();
+    private final ArrayList<GameClientInfo> members = new ArrayList<>();
 
     private boolean isLocked;
 
@@ -166,7 +166,7 @@ public class Room implements Serializable {
     }
 
     boolean checkPassword(String password) {
-        return password == this.gamePassword || (password != null && password.equals(this.gamePassword));
+        return this.gamePassword.equals(password) || (password != null && password.equals(this.gamePassword));
     }
 
     GameClientInfo removeMember(int id) {

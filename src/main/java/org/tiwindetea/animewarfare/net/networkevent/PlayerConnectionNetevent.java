@@ -18,6 +18,7 @@ public class PlayerConnectionNetevent implements Event<PlayerConnectionNeteventL
     /**
      * {@inheritDoc}
      */
+    @Override
     public void notify(PlayerConnectionNeteventListener listener) {
         listener.handlePlayerConnection(this);
     }
