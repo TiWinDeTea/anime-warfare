@@ -24,8 +24,11 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.units.Unit;
+import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
+import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
 
 /**
  * Cease-fire buff.
@@ -35,7 +38,7 @@ import org.tiwindetea.animewarfare.logic.units.Unit;
  *
  * @author Benoît CORTIER
  */
-public class CeaseFireBuff extends Buff {
+public class CeaseFireBuff extends Buff implements UnitMovedEventListener {
 	private static final BuffMask BUFF_MASK = new BuffMask();
 	static {
 		BUFF_MASK.canAttack = false;
@@ -51,6 +54,8 @@ public class CeaseFireBuff extends Buff {
 		for (Unit unit : this.zone.getUnits()) {
 			unit.getUnitBuffedCharacteristics().addBuffMask(CeaseFireBuff.BUFF_MASK);
 		}
+
+		EventDispatcher.getInstance().addListener(UnitMovedEvent.class, this);
 	}
 
 	@Override
@@ -64,7 +69,16 @@ public class CeaseFireBuff extends Buff {
 		for (Unit unit : this.zone.getUnits()) {
 			unit.getUnitBuffedCharacteristics().removeBuffMask(CeaseFireBuff.BUFF_MASK);
 		}
+
+		EventDispatcher.getInstance().removeListener(UnitMovedEvent.class, this);
 	}
 
-	// TODO: listen to events about Unit movements to apply or remove buff mask to unit that enter or leave the area.
+	@Override
+	public void handleUnitMoved(UnitMovedEvent event) {
+		if (event.getSource().equals(this.zone)) {
+			event.getUnit().getUnitBuffedCharacteristics().removeBuffMask(CeaseFireBuff.BUFF_MASK);
+		} else if (event.getDestination().equals(this.zone)) {
+			event.getUnit().getUnitBuffedCharacteristics().addBuffMask(CeaseFireBuff.BUFF_MASK);
+		}
+	}
 }
