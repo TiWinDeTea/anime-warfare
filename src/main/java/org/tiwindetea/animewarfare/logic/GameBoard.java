@@ -31,8 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GameBoard {
-	private final List<Zone> zones = new ArrayList<>();
-	private int[][] linkBetweenZones;
+	private final GameMap gameMap;
 
 	private final List<Player> players = new ArrayList<>();
 	private final List<Player> playersInOrder = new ArrayList<>(); // Used to cache.
@@ -50,7 +49,7 @@ public class GameBoard {
 		}
 
 		initializePlayers(players);
-		initializeZones(players.size());
+		this.gameMap = new GameMap(this.players.size());
 	}
 
 	public int getLastFirstPlayerID() {
@@ -104,11 +103,6 @@ public class GameBoard {
 		       .collect(Collectors.toCollection(() -> this.players));
 	}
 
-	private void initializeZones(int numberOfPlayers) {
-		// TODO: Initializes zones and link between them.
-		// TODO: Sends events
-	}
-
 	private void buildPlayerList() {
 		this.playersInOrder.clear();
 		if (this.clockWiseRotationTurn) {
@@ -122,15 +116,13 @@ public class GameBoard {
 		}
 	}
 
-	public List<Zone> getZones() {
-		return this.zones;
+	public GameMap getMap() {
+		return this.gameMap;
 	}
 
-	public boolean checkIfZonesAreAdjacent(int source, int destination) {
-		return this.linkBetweenZones[source][destination] == 1;
-	}
 
 	public void setCachedMaxStaffPoints(int cachedMaxStaffPoints) {
 		this.cachedMaxStaffPoints = cachedMaxStaffPoints;
 	}
+
 }

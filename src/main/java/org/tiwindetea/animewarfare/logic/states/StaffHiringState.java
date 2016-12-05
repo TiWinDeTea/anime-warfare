@@ -27,14 +27,12 @@ package org.tiwindetea.animewarfare.logic.states;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class StaffHiringState extends GameState {
 	public StaffHiringState(GameBoard gameBoard) {
@@ -66,10 +64,7 @@ public class StaffHiringState extends GameState {
 	private void computeStaffAvailable() {
 		// TODO
 
-		List<Studio> studios = this.gameBoard.getZones().stream()
-		                                     .map(Zone::getStudio)
-		                                     .filter(Objects::nonNull)
-		                                     .collect(Collectors.toList());
+		List<Studio> studios = this.gameBoard.getMap().getStudios();
 
 		int numberOfNonControlledPortal = getNumberOfNonControlledPortal(studios);
 		int maxStaffPoints = 0;
