@@ -31,7 +31,9 @@ import org.tiwindetea.animewarfare.logic.units.Unit;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /*
  * @author Jérôme BOULMIER
@@ -47,7 +49,7 @@ public class Player {
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
 	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
-	private final List<Unit> unitCaptured = new ArrayList<>();
+	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
 
 	public Player(int id, FactionType faction) {
@@ -114,7 +116,11 @@ public class Player {
 		return this.unitCostModifier;
 	}
 
-	public List<Unit> getUnitCaptured() {
+	public boolean addUnitCaptured(Unit unit) {
+		return this.unitCaptured.add(unit);
+	}
+
+	public Set<Unit> getUnitCaptured() {
 		return this.unitCaptured;
 	}
 
