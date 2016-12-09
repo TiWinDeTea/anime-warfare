@@ -43,6 +43,8 @@ public class GameBoard {
 
 	private AdvertisingCampaignRightsPool advertisingCampaignRightsPool = new AdvertisingCampaignRightsPool();
 
+	private final EndGameMonitor endGameMonitor = new EndGameMonitor();
+
 	private final MarketingLadder marketingLadder;
 
 	public GameBoard(Map<Integer, FactionType> players) {
@@ -125,7 +127,6 @@ public class GameBoard {
 		return this.gameMap;
 	}
 
-
 	public void setCachedMaxStaffPoints(int cachedMaxStaffPoints) {
 		this.cachedMaxStaffPoints = cachedMaxStaffPoints;
 	}
@@ -133,7 +134,12 @@ public class GameBoard {
 	public AdvertisingCampaignRightsPool getAdvertisingCampaignRightsPool() {
 		return this.advertisingCampaignRightsPool;
 	}
+
 	public MarketingLadder getMarketingLadder() {
 		return this.marketingLadder;
+	}
+
+	public void destroy() {
+		this.endGameMonitor.destroy();
 	}
 }
