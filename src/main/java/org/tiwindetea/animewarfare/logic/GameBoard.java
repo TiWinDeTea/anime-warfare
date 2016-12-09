@@ -43,6 +43,8 @@ public class GameBoard {
 
 	private AdvertisingCampaignRightsPool advertisingCampaignRightsPool = new AdvertisingCampaignRightsPool();
 
+	private final MarketingLadder marketingLadder;
+
 	public GameBoard(Map<Integer, FactionType> players) {
 		if (players.size() < 2 && players.size() > 4) {
 			throw new IllegalArgumentException("Incorrect number of players, "
@@ -52,6 +54,7 @@ public class GameBoard {
 
 		initializePlayers(players);
 		this.gameMap = new GameMap(this.players.size());
+		this.marketingLadder = new MarketingLadder(players.size());
 	}
 
 	public int getLastFirstPlayerID() {
@@ -129,5 +132,8 @@ public class GameBoard {
 
 	public AdvertisingCampaignRightsPool getAdvertisingCampaignRightsPool() {
 		return this.advertisingCampaignRightsPool;
+	}
+	public MarketingLadder getMarketingLadder() {
+		return this.marketingLadder;
 	}
 }
