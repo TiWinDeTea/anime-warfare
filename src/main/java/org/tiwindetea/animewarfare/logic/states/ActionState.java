@@ -146,19 +146,19 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		}
 	}
 
-	private boolean checkPlayer(ActionEvent<?> event) {
+	private boolean isValidPlayer(ActionEvent<?> event) {
 		if (event.getPlayerID() != this.currentPlayer.getID()) {
 			// TODO: This player should not send this event now.
 			// Cheater.
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override
 	public void handleMoveUnitEvent(MoveUnitEvent event) {
-		if (!checkPlayer(event)) {
+		if (isValidPlayer(event)) {
 			return;
 		}
 
@@ -197,7 +197,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleOpenStudioEvent(OpenStudioEvent event) {
-		if (!checkPlayer(event)) {
+		if (isValidPlayer(event)) {
 			return;
 		}
 
@@ -224,7 +224,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleInvokeUnitEvent(InvokeUnitEvent event) {
-		if (!checkPlayer(event)) {
+		if (isValidPlayer(event)) {
 			return;
 		}
 
@@ -258,7 +258,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleSkipTurnEvent(SkipTurnEvent event) {
-		if (!checkPlayer(event)) {
+		if (isValidPlayer(event)) {
 			return;
 		}
 
@@ -268,11 +268,11 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleBattleEvent(StartBattleEvent event) {
-		if (!checkPlayer(event)) {
+		if (isValidPlayer(event)) {
 			return;
 		}
 
-		if (this.zonesWithBattle.contains(event.getZone())) {
+		if (this.zonesWithBattle.contains(Integer.valueOf(event.getZone()))) {
 			// TODO
 			return;
 		}
@@ -285,7 +285,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleCaptureMascotEvent(CaptureMascotEvent event) {
-		if (!checkPlayer(event)) {
+		if (isValidPlayer(event)) {
 			return;
 		}
 
