@@ -8,7 +8,7 @@
         b. +2 par studio contrôlé.
         c. +1 par studio indépendant.
         d. +1 par mascotte ennemie capturée (rendues dans la réserve de la faction d'origine).
-        e. Augmenter jusqu'à la moitié du score de la faction au plus haut pouvoir (arrondi au supérieur).
+        e. Augmenter jusqu'à la moitié du score de la faction ayant le plus d'employés (arrondi au supérieur).
 
 2. Phase de détermination du premier joueur.
 
@@ -91,29 +91,29 @@ Les actions illimités peuvent être effectuées avant et/ou après.
 ### Actions communes
 
 - -3 membres du staff – ouvrir un studio.
-    Il est nécessaire de disposer d'une mascotte dans une *zone sans stadio* où vous voulez ouvrir votre studio.
+    Il est nécessaire de disposer d'une mascotte dans la *zone sans studio* où vous voulez ouvrir votre studio.
 
 - -N membre(s) du staff – Déplacer N unités d'une case.
 
 - -1 membre du staff – Engager un affrontement.
-    *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'un affrontement par zone** lors de son round round.
+    *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'un affrontement par zone** lors de son round.
 
 - -1 membre du staff – Capturer une mascotte.
     Hiérarchie entre les unités : Héros > Personnage > Mascotte.
-    Pour capturer un adorateur, il faut une unité supérieur en rang à tous les adversaires de la faction concernée de la zone.
+    Pour capturer une mascotte, il faut une unité supérieur en rang à tous les adversaires de la faction concernée de la zone.
     Attention, capturer ≠ combat. L'adorateur ne peut pas se défendre même s'il a des points de combat.
 
 - -1 membre du staff – Recruter une mascotte.
     Il ne peuvent apparaître que dans une zone où il y a déjà une unité du joueur ou
     n'importe où si le joueur n'a plus d'unité.
 
-- -? membre(s) du staff – Invoquer un personnage.
+- -? membre(s) du staff – Dessiner un personnage.
     Un personnage doit apparaître sur un studio contrôlé par le joueur.
 
-- -? membre(s) du staff – Invoquer un Héros.
+- -? membre(s) du staff – Dessiner un Héros.
     cf spécificités de chaque Héros.
 
-- Tout les membres du staff – passer son tour.
+- Tous les membres du staff – passer son tour.
 
 
 ## Affrontement publicitaire
