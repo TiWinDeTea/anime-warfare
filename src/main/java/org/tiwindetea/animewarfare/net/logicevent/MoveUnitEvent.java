@@ -1,12 +1,9 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
-
 import java.util.Collections;
 import java.util.List;
 
-public class MoveUnitEvent implements Event<MoveUnitEventListener> {
-	private final int playerID;
+public class MoveUnitEvent extends ActionEvent<MoveUnitEventListener> {
 	private final List<Movement> movements;
 
 	public static class Movement {
@@ -35,17 +32,13 @@ public class MoveUnitEvent implements Event<MoveUnitEventListener> {
 
 	public MoveUnitEvent(int playerID,
 	                     List<Movement> movements) {
-		this.playerID = playerID;
+		super(playerID);
 		this.movements = Collections.unmodifiableList(movements);
 	}
 
 	@Override
 	public void notify(MoveUnitEventListener listener) {
 		listener.handleMoveUnitEvent(this);
-	}
-
-	public int getPlayerID() {
-		return this.playerID;
 	}
 
 	/**

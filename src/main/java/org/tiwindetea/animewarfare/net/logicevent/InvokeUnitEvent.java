@@ -1,15 +1,13 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
-public class InvokeUnitEvent implements Event<InvokeUnitEventListener> {
-	private final int playerID;
+public class InvokeUnitEvent extends ActionEvent<InvokeUnitEventListener> {
 	private final UnitType unitType;
 	private final int zone;
 
 	public InvokeUnitEvent(int playerID, UnitType unitType, int zone) {
-		this.playerID = playerID;
+		super(playerID);
 		this.unitType = unitType;
 		this.zone = zone;
 	}
@@ -17,10 +15,6 @@ public class InvokeUnitEvent implements Event<InvokeUnitEventListener> {
 	@Override
 	public void notify(InvokeUnitEventListener listener) {
 		listener.handleInvokeUnitEvent(this);
-	}
-
-	public int getPlayerID() {
-		return this.playerID;
 	}
 
 	public UnitType getUnitType() {
