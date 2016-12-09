@@ -32,6 +32,8 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
@@ -59,7 +61,7 @@ import java.util.Optional;
 
 public class ActionState extends GameState implements MoveUnitEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipTurnEventListener, StartBattleEventListener,
-		CaptureMascotEventListener, MascotToCaptureChoiceEventListener {
+		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
 
@@ -95,6 +97,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		EventDispatcher.getInstance().addListener(StartBattleEvent.class, this);
 		EventDispatcher.getInstance().addListener(CaptureMascotEvent.class, this);
 		EventDispatcher.getInstance().addListener(MascotToCaptureChoiceEvent.class, this);
+		EventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 	}
 
 	@Override
@@ -133,12 +136,13 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		EventDispatcher.getInstance().removeListener(StartBattleEvent.class, this);
 		EventDispatcher.getInstance().removeListener(CaptureMascotEvent.class, this);
 		EventDispatcher.getInstance().removeListener(MascotToCaptureChoiceEvent.class, this);
+		EventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 	}
 
 	@Override
 	public State next() {
 		if (this.gameEnded) {
-			return new GameEndedState(this.winners, this.gameBoard);
+			return new GameEndedState(this.gameBoard);
 		} else if (this.phaseEnded) {
 			return new StaffHiringState(this.gameBoard);
 		} else {
@@ -342,5 +346,10 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 		this.huntingZone = null;
 		this.huntedPlayer = null;
+	}
+
+	@Override
+	public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
+		this.gameEnded = true;
 	}
 }

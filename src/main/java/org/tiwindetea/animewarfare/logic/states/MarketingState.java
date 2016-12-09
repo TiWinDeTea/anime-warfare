@@ -26,18 +26,30 @@ package org.tiwindetea.animewarfare.logic.states;
 
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
+import org.tiwindetea.animewarfare.logic.AdvertisingCampaignRightsPool;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.MarketingLadder;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent;
+import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEventListener;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Iterator;
 
-public class MarketingState extends GameState {
-	private List<Player> players;
-	private boolean gameEnded;
-	private boolean phaseEnded;
-	private final List<Integer> winners = new LinkedList<>();
+/*
+ * @author Benoît CORTIER
+ */
+public class MarketingState extends GameState
+		implements OrganizeConventionRequestEventListener, SkipTurnEventListener,
+		GameEndedEventListener {
+	private Iterator<Player> playerIterator;
+	private Player currentPlayer;
+
+	private State nextState = this;
 
 	protected MarketingState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -45,29 +57,83 @@ public class MarketingState extends GameState {
 
 	@Override
 	public void onEnter() {
-		this.players = this.gameBoard.getPlayersInOrder();
-
 		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.MARKETING));
+
+		// TODO: differ in long games.
+		for (Player player : this.gameBoard.getPlayers()) {
+			player.incrementFans(
+					(int) this.gameBoard.getMap().getStudios().stream()
+							.filter(studio -> studio.getCurrentFaction() == player.getFaction())
+							.count()
+			);
+		}
+
+		this.playerIterator = this.gameBoard.getPlayersInOrder().iterator();
+		this.currentPlayer = this.playerIterator.next();
+
+		registerEventListeners();
 	}
 
 	@Override
 	public void update() {
-		// TODO
+		if (this.playerIterator.hasNext()) {
+			this.currentPlayer = this.playerIterator.next();
+		} else {
+			this.nextState = new ActionState(this.gameBoard);
+		}
 	}
 
 	@Override
 	public void onExit() {
-		// TODO
+		unregisterEventListeners();
 	}
 
 	@Override
 	public State next() {
-		if (this.gameEnded) {
-			return new GameEndedState(this.winners, this.gameBoard);
-		} else if (this.phaseEnded) {
-			return new ActionState(this.gameBoard);
-		} else {
-			return this;
+		return this.nextState;
+	}
+
+	protected void registerEventListeners() {
+		EventDispatcher.getInstance().addListener(OrganizeConventionRequestEvent.class, this);
+		EventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
+		EventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
+	}
+
+	private void unregisterEventListeners() {
+		EventDispatcher.getInstance().removeListener(OrganizeConventionRequestEvent.class, this);
+		EventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
+		EventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
+	}
+
+	@Override
+	public void handleOrganizeConventionRequest(OrganizeConventionRequestEvent event) {
+		if (event.getPlayerID() == this.currentPlayer.getID()) {
+			MarketingLadder marketingLadder = this.gameBoard.getMarketingLadder();
+			if (this.currentPlayer.getStaffAvailable() >= marketingLadder.getCurrentCost()) {
+				this.currentPlayer.decrementStaffPoints(marketingLadder.getCurrentCost());
+				marketingLadder.incrementPosition();
+
+				AdvertisingCampaignRightsPool pool = this.gameBoard.getAdvertisingCampaignRightsPool();
+				if (!pool.isEmpty()) {
+					this.currentPlayer.addAdvertisingCampaignRights(pool.getAdvertisingCampaignRight());
+					this.currentPlayer.incrementFans(1);
+				} else {
+					this.currentPlayer.incrementFans(2);
+				}
+
+				// TODO: ask for state machine update.
+			}
 		}
+	}
+
+	@Override
+	public void handleSkipTurnEvent(SkipTurnEvent event) {
+		// TODO: ask for state machine update.
+	}
+
+	@Override
+	public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
+		this.nextState = new GameEndedState(this.gameBoard);
+		// TODO: ask for state machine update.
 	}
 }

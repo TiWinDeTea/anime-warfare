@@ -29,27 +29,29 @@ import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameEndedState extends GameState {
 	private static final String END_GAME_EXCEPTION = "End game event should be catched"; // TODO: Externalize
 
-	private final List<Integer> winner;
+	private final List<Integer> winners = new ArrayList<>();
 
 	/**
 	 * Final state of the game
 	 *
-	 * @param winner    id of the winner.
 	 * @param gameBoard the gameboard.
 	 */
-	public GameEndedState(List<Integer> winner, GameBoard gameBoard) {
+	public GameEndedState(GameBoard gameBoard) {
 		super(gameBoard);
-		this.winner = winner;
+
+		// TODO: compute winners.
 	}
 
 	@Override
 	public void onEnter() {
-		EventDispatcher.getInstance().fire(new GameEndedEvent(this.winner));
+		EventDispatcher.getInstance().fire(new GameEndedEvent(this.winners));
+		this.gameBoard.destroy();
 	}
 
 	@Override
