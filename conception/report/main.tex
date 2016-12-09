@@ -1,0 +1,64 @@
+\documentclass[book, backcover, nodocumentinfo, french]{upmethodology-document}
+\usepackage{textcomp} % for french...
+
+\input{./tex/preamble.tex}
+
+\declaredocument{Rapport de conception de projet LO43}{Sujet: Cthulhu Wars}{LO43-A2016}
+
+\setfrontcover{classic}
+
+\addauthorvalidator*[benoit.cortier@utbm.fr]{Benoît}{CORTIER}{Author}
+\addauthorvalidator*[jerome.boulmier@utbm.fr]{Jérôme}{BOULMIER}{Author}
+\addauthorvalidator*[lucas.lazare@utbm.fr]{Lucas}{LAZARE}{Author}
+
+\setcopyrighter{Benoît CORTIER \& Jérôme BOULMIER \& Lucas Lazare}
+\setprintingaddress{France}
+
+\setpublisher{University of Technology of Belfort-Montbéliard}
+
+%% jj/mm/yyyy
+\incversion{\makedate{09}{12}{2016}}{Initial version.}{\upmpublic}
+\incversion{\makedate{09}{12}{2016}}{Last update.}{\upmpublic}
+
+\setdockeywords{LO43, Conception, Project, \LaTeX}
+
+\makeindex
+
+% to include only those
+%\includeonly{./tex/introduction, ./tex/elementary}
+
+\begin{document}
+
+%######################### list of figures, tables, algo, … ########
+\frontmatter
+
+\tableofcontents
+
+%######################### Main body ###############################
+\mainmatter
+
+\include{./tex/introduction}
+
+\include{./tex/rappel-regles}
+
+\include{./tex/usecases-and-scenarii}
+
+\include{./tex/sequences}
+
+\include{./tex/usecases}
+
+\include{./tex/menu}
+
+\include{./tex/reseau}
+
+\include{./tex/logic}
+
+%##################### (Conclusion), bibliography & index ############
+\backmatter
+
+%\include{./tex/conclusion}
+
+\printindex % see http://winnt.developpez.com/tutoriels/latex-index/
+
+\end{document}
+

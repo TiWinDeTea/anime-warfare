@@ -1,0 +1,45 @@
+%% The TeX code is entering with UTF8
+%% character encoding (Linux and MacOS standards)
+\usepackage[utf8]{inputenc}
+%% For algorithms
+\usepackage[chapter]{algorithm}
+\usepackage{algpseudocode}
+%% For bibtex
+\usepackage{natbib}
+
+%% For trees
+\usepackage{tikz}
+%% For cute boxes
+\usepackage{fancybox}
+
+\usepackage{color}
+
+% for index
+\usepackage{makeidx}
+
+\setdocabstract{}
+
+\makeatletter
+\let\VERversion\upm@package@version@ver
+\let\VERfmt\upm@package@fmt@ver
+\let\VERdoc\upm@package@doc@ver
+\let\VERfp\upm@package@fp@ver
+\let\VERbp\upm@package@bp@ver
+\let\VERext\upm@package@ext@ver
+\let\VERtask\upm@package@task@ver
+\let\VERdocclazz\upm@package@docclazz@ver
+\let\VERcode\upm@package@code@ver
+\makeatother
+
+% Espace insécable (le caractère ~ se traduit par un espace insécable).
+\DeclareUnicodeCharacter{00A0}{~}
+% Sur un clavier bépo, on a un accès direct au ×
+\DeclareUnicodeCharacter{00D7}{\times}
+
+\newcommand{\notion}[1]{{\slshape{}\large{}\color{red}#1}}
+
+\newcommand{\tl}{\textless}
+\newcommand{\tg}{\textgreater}
+
+\newcommand{\bb}[1]{\mathbb{#1}} % the blackboard bold capital is used for sets.
+
