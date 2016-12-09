@@ -41,6 +41,8 @@ public class GameBoard {
 	private boolean clockWiseRotationTurn;
 	private int cachedMaxStaffPoints = -1;
 
+	private AdvertisingCampaignRightsPool advertisingCampaignRightsPool = new AdvertisingCampaignRightsPool();
+
 	public GameBoard(Map<Integer, FactionType> players) {
 		if (players.size() < 2 && players.size() > 4) {
 			throw new IllegalArgumentException("Incorrect number of players, "
@@ -125,4 +127,7 @@ public class GameBoard {
 		this.cachedMaxStaffPoints = cachedMaxStaffPoints;
 	}
 
+	public AdvertisingCampaignRightsPool getAdvertisingCampaignRightsPool() {
+		return this.advertisingCampaignRightsPool;
+	}
 }

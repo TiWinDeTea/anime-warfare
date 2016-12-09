@@ -24,12 +24,19 @@
 
 package org.tiwindetea.animewarfare.logic;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
+import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+/*
+ * @author Jérôme BOULMIER
+ * @author Benoît CORTIER
+ */
 public class Player {
 	private final int ID;
 
@@ -41,6 +48,7 @@ public class Player {
 	private final UnitCounter unitCounter = new UnitCounter();
 	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
 	private final List<Unit> unitCaptured = new ArrayList<>();
+	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
 
 	public Player(int id, FactionType faction) {
 		this.ID = id;
@@ -84,6 +92,16 @@ public class Player {
 		return this.fanNumber;
 	}
 
+	public void incrementFans(int numberOfFans) {
+		this.fanNumber += numberOfFans;
+		EventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, numberOfFans, this.fanNumber));
+	}
+
+	public void decrementFans(int numberOfFans) {
+		this.fanNumber -= numberOfFans;
+		EventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, -numberOfFans, this.fanNumber));
+	}
+
 	public FactionType getFaction() {
 		return this.faction;
 	}
@@ -98,5 +116,17 @@ public class Player {
 
 	public List<Unit> getUnitCaptured() {
 		return this.unitCaptured;
+	}
+
+	public List<AdvertisingCampaignRight> getAdvertisingCampaignRights() {
+		return Collections.unmodifiableList(this.advertisingCampaignRights);
+	}
+
+	public void addAdvertisingCampaignRights(AdvertisingCampaignRight advertisingCampaignRight) {
+		this.advertisingCampaignRights.add(advertisingCampaignRight);
+	}
+
+	public void clearAdvertisingCampaignRights() {
+		this.advertisingCampaignRights.clear();
 	}
 }
