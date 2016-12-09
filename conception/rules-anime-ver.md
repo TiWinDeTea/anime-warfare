@@ -96,7 +96,7 @@ Les actions illimités peuvent être effectuées avant et/ou après.
 - -N membre(s) du staff – Déplacer N unités d'une case.
 
 - -1 membre du staff – Engager un affrontement.
-    *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'une bataille par zone** lors de son round round.
+    *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'un affrontement par zone** lors de son round round.
 
 - -1 membre du staff – Capturer une mascotte.
     Hiérarchie entre les unités : Héros > Personnage > Mascotte.
@@ -131,7 +131,7 @@ Les actions illimités peuvent être effectuées avant et/ou après.
 
 3. Post-affrontement.
 
-        Les blessures et les capacités postbataille sont appliquées (de la même façon que les capacités prébatailles).
+        Les blessures et les capacités post-affrontement sont appliquées (de la même façon que les capacités pré-affrontement).
         Une unité blessée doit se replier sur une zone adjacente où il n'y a pas d'unité de l'autre faction.
         Sinon, l'unité meurt.
         L'attaquant effectue la retraite en premier.
