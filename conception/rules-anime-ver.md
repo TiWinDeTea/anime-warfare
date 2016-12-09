@@ -95,8 +95,8 @@ Les actions illimités peuvent être effectuées avant et/ou après.
 
 - -N membre(s) du staff – Déplacer N unités d'une case.
 
-- -1 membre du staff – Engager une bataille.
-    *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'une bataille par zone** lors du round.
+- -1 membre du staff – Engager un affrontement.
+    *Devient illimité lorsque les six mangas sont collectés*, cependant le round peut s'arrêter si le joueur le souhaite et il n'est **pas possible de lancer plus d'une bataille par zone** lors de son round round.
 
 - -1 membre du staff – Capturer une mascotte.
     Hiérarchie entre les unités : Héros > Personnage > Mascotte.
