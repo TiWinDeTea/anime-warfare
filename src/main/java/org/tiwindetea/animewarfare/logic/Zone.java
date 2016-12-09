@@ -67,10 +67,12 @@ public class Zone {
 	}
 
 	public void addUnit(Unit unit) {
+		// TODO: Send Event
 		this.units.add(unit);
 	}
 
 	public boolean removeUnit(Unit unit) {
+		// TODO: Send Event
 		return this.units.remove(unit);
 	}
 
@@ -79,6 +81,7 @@ public class Zone {
 	}
 
 	public void setStudio(Studio studio) {
+		// TODO: Send Event
 		this.studio = studio;
 	}
 
