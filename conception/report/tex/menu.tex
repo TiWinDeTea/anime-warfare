@@ -11,7 +11,7 @@ Ce diagramme décrit les différents états possibles :
     \item \emph{Jeu} ; une autre state machine prend le relais et gère le jeu en lui-même.
 \end{itemize}
 
-\mfigure[H]{width=0.95\linewidth}{menu_statesmachine.png}{Diagramme états-transitions des menus d'accueil}{menu-statesmachine}
+\mfigure[H]{width=0.95\linewidth}{sm_menu.png}{Diagramme états-transitions des menus d'accueil}{menu-statesmachine}
 
 La figure \figref{menu-classes} est le diagramme des classes des menus d'accueil.
 Pour gérer les différents états présentés plus haut, nous avons choisi d'utiliser une machine à état
@@ -27,5 +27,5 @@ Les états se créeent ensuite les uns les autres : lorsque l'on clic sur le bo
 \emph{MainMenuState}, l'état est \emph{consommé} (détruit). C'est aussi de cette façon que la state machine de
 la logique fonctionne (voir chapitre \ref{chapter:logique}).
 
-\mfigure[H]{width=0.95\linewidth}{menu_classes.png}{Diagramme de classes des menus d'accueil}{menu-classes}
+\mfigure[H]{width=0.95\linewidth}{cl_menu.png}{Diagramme de classes des menus d'accueil}{menu-classes}
 
