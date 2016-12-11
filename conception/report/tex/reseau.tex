@@ -1,4 +1,30 @@
 \chapter{Réseau} \label{chapter:reseau}
 
-%TODO
+    \section{Diagramme de classe}
 
+        \mfigure[H]{width=\linewidth}{cl_server.png}{Diagramme de classe de l'architecture serveur}{cl::server}
+
+        La classe GameServer est un pont entre les clients et les joueurs (clients).
+        Par le biais du réseau, elle reçoit les requêtes des clients qu'elle
+        retransmet à la logique via des évenements. De la même manière,
+        le serveur écoute les évenements de la logique pour les retransmettre
+        aux clients du jeu. C'est aussi la responsabilité de cette classe de
+        lancer le jeu lorsque tout les joueurs sont prêts.
+        \newline
+        La classe Room représente le salon de jeu, avec son nom et une liste
+        des joueurs connectés, ainsi qu'un mot de passe éventuel. L'instance
+        de cette classe présente dans GameServer est partagée avec l'instance
+        de la classe UDPListener.
+        \newline
+        La classe UDPListener, enfin, sert à écouter les requêtes de joueurs
+        non connectés. Ainsi, lorsqu'un client envoie les bonnes donnés à
+        l'UDPListener via un broadcasting, celui-ci répond au client en lui
+        renvoyant la Room, en omettant le mot de passe. Le client peut alors
+        tenter de se connecter au serveur.
+
+    \section{Diagrammes de séquence}
+
+        \mfigure[H]{width=\linewidth}{seq_moveUnit}{Diagramme de séquence – déplacer une unité}{seq::moveUnit}
+
+        \mfigure[H]{width=\linewidth}{seq_joinGame}{Diagramme de séquence – rejoindre une partie}{seq::joinGame}
+        Si le mot de passe est faux, il ne se passe rien et le client ne rejoint pas la partie
