@@ -1,4 +1,31 @@
-\chapter{Menu principal} \label{chapter:menu}
+\chapter{Menus d'accueil}\label{chapter:menu}
 
-%TODO
+La figure \figref{menu-classes} est le diagramme états-transitions des menus d'accueil.
+Ce diagramme décrit les différents états possibles :
+\begin{itemize}
+    \item \emph{Menu principal} ; permet de transiter vers les autres menus spécialisés ou de fermer le programme.
+    \item \emph{Options} ; permet le réglage des paramètres du client de jeu.
+    \item \emph{Liste des serveurs} ; permet de choisir une partie à rejoindre ou d'en créer une.
+    \item \emph{Création du serveur} ; permet de configurer le serveur à créer.
+    \item \emph{Salon de jeu} ; permet de discuter avec les autres joueurs et de lancer le jeu.
+    \item \emph{Jeu} ; une autre state machine prend le relais et gère le jeu en lui-même.
+\end{itemize}
+
+\mfigure[H]{width=0.95\linewidth}{menu_statesmachine.png}{Diagramme états-transitions des menus d'accueil}{menu-statesmachine}
+
+La figure \figref{menu-classes} est le diagramme des classes des menus d'accueil.
+Pour gérer les différents états présentés plus haut, nous avons choisi d'utiliser une machine à état
+(state machine\footnote{automate fini}).
+La classe \emph{DefaultStateMachine} est l'implémentation par défaut de l'interface \emph{StateMachine}.
+Elle est suffisante dans la plupart des cas.
+Tous les états de la machine à état sont des \emph{MenuState} qui ont comme particularité de tous avoir
+le \emph{rootLayout} dans lequel charger le contenu du menu.
+La classe \emph{MainApp} (qui est l'application javafx) créer l'état initial et initialise la state machine avec
+le-dit état au lancement.
+Les états se créeent ensuite les uns les autres : lorsque l'on clic sur le bouton option, le \emph{MainMenuState} créer un
+\emph{SettingsMenuState} qui sera retourné par la méthode \emph{next}. Une fois que la state machine sort de l'état
+\emph{MainMenuState}, l'état est \emph{consommé} (détruit). C'est aussi de cette façon que la state machine de
+la logique fonctionne (voir chapitre \ref{chapter:logique}).
+
+\mfigure[H]{width=0.95\linewidth}{menu_classes.png}{Diagramme de classes des menus d'accueil}{menu-classes}
 
