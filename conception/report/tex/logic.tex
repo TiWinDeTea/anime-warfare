@@ -1,45 +1,51 @@
 \chapter{Logique} \label{chapter:logique}
+\section{Introduction}
+Lorsque nous avons conçu notre logique, nous avons choisi de la diviser en 2
+parties majeures, l'une chargée de décrire l'état actuel du jeu, la deuxième
+étant chargée de contrôler la première.
 
-Pour concevoir la logique, nous avons choisi d'utiliser une
-state-machine\footnote{State-machine: Automate fini} afin d'intéragir avec le
-reste de la logique.
+C'est pourquoi, nous avons choisi d'utiliser une
+state-machine\footnote{State-machine: Automate fini} pour contrôler le jeu.
+Nous avons donc divisé le jeu en plusieurs états, qui sont les phases du jeu de base.
 
-Lorsque le jeu est lancé, nous rentrons automatiquement dans l'état «
-Recrutement du staff» qui nous permet d'effectuer le calcul des points de staff.
-Une fois ce calcul fait le serveur passe à la détermination du premier joueur.
+\section{Diagramme états-transitions}
+% TODO: Put State machine UML here.
+
+Lorsque le jeu est lancé, nous rentrons automatiquement dans la phase «
+Recrutement du staff» qui effectue le calculer le nombre de
+personnes composant le staff des joueurs.
+Une fois ce calcul fait le serveur passe à la phase «Détermination du premier joueur».
 
 La détermination du premier joueur se fait selon les règles, une fois ce joueur
-déterminé, on passe à l'état suivant, la phase d'action si l'on est au premier
-tour, sinon on passe à la phase de marketing.
+déterminé, on passe à la phase suivante, la phase d'action si l'on est au premier
+tour, sinon la phase de marketing.
 
-La phase d'action est composé d'une state machine afin d'effectuer les
-batailles.
+La phase d'action est-elle même composée d'une state-machine pour simplifier la
+réalisation de certaines actions, comme les batailles.
 
 Pour la phase d'action, comme pour la phase de marketing, on passe à l'état
 suivant lorsque tous les joueurs ont joué, ou si l'on a terminé la partie.
+Dans le cas où l'on a terminé la partie, on passe dans l'état final dans lequel
+on détermine les éventuelles gagnants.
 
-Dans le cas ou l'on a terminé la partie, on passe dans l'état final et le jeu
-est terminé.
-
-
-Le diagramme de classe suivant correspond à l'implementation de la state machine
+\section{Diagrammes de classes}
+Le diagramme de classe suivant correspond à l'implémentation de la state machine
 dans la logique.
+
 L'état final est ici représenté par l'état « GameEndedState », qui s'occupe de
-déterminer les vainqueurs de la partie.
+déterminer les vainqueurs éventuelles de la partie.
 De plus nous avons choisi de différencier l'implementation de la phase de
-recrutement en fonction du tour pour éviter la présence d'une vérification du
-tour à chaque fois que nous serions passé dans cet état.
+recrutement en fonction du tour pour éviter de vérifier à quel tour on est.
 Il en est de même pour la phase de sélection du premier joueur.
 
-Nous avons choisi de faire de créer un état abstrait « GameState » pour
-représenté un état du jeu, cet état doit stocker le GameBoard\footnote{Le GameBoard
-  est une classe représentant le plateau de jeu. Voir \ref{description:modele}}
-qui permet aux états d'intéragir sur le modèle (voir \ref{description:modele})
+Nous avons choisi de créer un état abstrait « GameState » pour
+représenter un état du jeu, cet état doit stocker le GameBoard\footnote{Le GameBoard
+  est une classe représentant le plateau de jeu.}
+qui permet aux états d'intéragir sur le jeu.
 
 
-Dans l'UML suivant on retrouve les classes qui font partie du modèle, c'est à
-dire qu'elles ne contiennent que des données.
-Les classes faisant partie du modèle sont les suivantes:
+Dans l'UML suivant on retrouve les classes qui ne contiennent que des données.
+Ces classes sont les suivantes:
 \begin{itemize}
     \item Studio
     \item FactionType
@@ -58,17 +64,19 @@ Les classes faisant partie du modèle sont les suivantes:
     \item MarketingLadder
 \end{itemize}
 
-On retrouve également le système des buffs, chaque joueur possède un
-BuffsManager qui permet de gérer les buffs.
+On retrouve également deux autres systèmes permettant de gérer le jeu.
+Le premier étant le système des buffs, chaque joueur, représenté par la classe
+«Player», possède un «BuffsManager» qui permet de gérer les buffs du joueur.
+Les buffs sont ajoutés dans les «BuffsManager» des joueurs concernés par
+celui-ci.
 
-Buff est une classe abstraite qui écoute des events et se charge d'ajouter un
-BuffMask à la class « UnitBuffedCharacteristics » quand le buff doit
-s'appliquer.
-La classe UnitBasicCharacteristics définit les caractéristiques de base de l'unité.
-Les classes filles de Buff sont créees et ajouté au BuffManager du
-joueur lorsque le joueur lance une capacité.
+«Buff» est une classe abstraite dont l'implémentation se doit d'écouter des events
+afin de s'appliquer quand les conditions sont remplies.
+La classe «BuffMask» permet de modifier les caractéristiques d'une unité en
+l'ajoutant dans la classe «UnitBuffedCharacteristics» d'un joueur.
+La classe «UnitBasicCharacteristics» définit les caractéristiques de base de l'unité.
 
-Les SelfActivables et Activables permettent de débloquer les capacités des
+Les SelfActivables et Activables permettent de débloquer les capacités («Capacity») des
 joueurs au cours de la partie, lorsque les conditions qui doivent être remplies
 pour activer les capacités sont remplies.
 
