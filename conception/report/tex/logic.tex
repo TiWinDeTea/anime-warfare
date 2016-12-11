@@ -5,11 +5,15 @@ parties majeures, l'une chargée de décrire l'état actuel du jeu, la deuxième
 étant chargée de contrôler la première.
 
 C'est pourquoi, nous avons choisi d'utiliser une
-state-machine\footnote{State-machine: Automate fini} pour contrôler le jeu.
+state-machine pour contrôler le jeu.
 Nous avons donc divisé le jeu en plusieurs états, qui sont les phases du jeu de base.
 
 \section{Diagramme états-transitions}
-% TODO: Put State machine UML here.
+
+\mfigure[H]{width=\linewidth}{sm_logic}{Diagramme états-transitions de la logique}{sm::logic} 
+
+Le diagramme ci-dessus présente le fonctionnement global de la logique à travers
+les changements de phases du jeu.
 
 Lorsque le jeu est lancé, nous rentrons automatiquement dans la phase «
 Recrutement du staff» qui effectue le calculer le nombre de
@@ -29,8 +33,12 @@ Dans le cas où l'on a terminé la partie, on passe dans l'état final dans lequ
 on détermine les éventuelles gagnants.
 
 \section{Diagrammes de classes}
+\subsection{États logiques}
+
 Le diagramme de classe suivant correspond à l'implémentation de la state machine
 dans la logique.
+
+\mfigure[H]{width=\linewidth}{cl_logic_states}{Diagramme de classe des états}{cl::logic_states} 
 
 L'état final est ici représenté par l'état « GameEndedState », qui s'occupe de
 déterminer les vainqueurs éventuelles de la partie.
@@ -43,8 +51,10 @@ représenter un état du jeu, cet état doit stocker le GameBoard\footnote{Le Ga
   est une classe représentant le plateau de jeu.}
 qui permet aux états d'intéragir sur le jeu.
 
+\subsection{Données de la logique}
 
-Dans l'UML suivant on retrouve les classes qui ne contiennent que des données.
+Dans l'UML suivant on retrouve les classes qui ne contiennent que des données,
+ainsi que les autres systèmes pour gérer le jeu.
 Ces classes sont les suivantes:
 \begin{itemize}
     \item Studio
@@ -64,6 +74,8 @@ Ces classes sont les suivantes:
     \item MarketingLadder
 \end{itemize}
 
+\mfigure[H]{width=\linewidth}{cl_logic}{Diagramme de classe de la logique}{cl::logic}
+
 On retrouve également deux autres systèmes permettant de gérer le jeu.
 Le premier étant le système des buffs, chaque joueur, représenté par la classe
 «Player», possède un «BuffsManager» qui permet de gérer les buffs du joueur.
@@ -77,9 +89,6 @@ l'ajoutant dans la classe «UnitBuffedCharacteristics» d'un joueur.
 La classe «UnitBasicCharacteristics» définit les caractéristiques de base de l'unité.
 
 Les SelfActivables et Activables permettent de débloquer les capacités («Capacity») des
-joueurs au cours de la partie, lorsque les conditions qui doivent être remplies
-pour activer les capacités sont remplies.
-
-
-%TODO
+joueurs au cours de la partie, lorsque les conditions nécessaires à l'activation
+de la capacité sont remplies.
 
