@@ -4,13 +4,13 @@ Lorsque nous avons conçu notre logique, nous avons choisi de la diviser en 2
 parties majeures, l'une chargée de décrire l'état actuel du jeu, la deuxième
 étant chargée de contrôler la première.
 
-C'est pourquoi, nous avons choisi d'utiliser une state machine pour contrôler le jeu.
-Nous avons donc divisé le jeu en plusieurs états, qui sont les phases du jeu de base.
-Le fonctionnement de la state machine est le même que dans les menus (voir chapitre \ref{chapter:menu}).
+Pour ce faire, nous avons décidé d'utiliser une state machine pour ce jeu.
+Nous avons donc divisé le jeu en plusieurs états, qui sont les phases du jeu original.
+La state machine logique fonctionne de la même manière que celle des menus (voir chapitre \ref{chapter:menu}).
 
 \section{Diagramme états-transitions}
 
-\mfigure[H]{width=\linewidth}{sm_logic}{Diagramme états-transitions de la logique}{sm::logic} 
+\mfigure[H]{width=\linewidth}{sm_logic}{Diagramme états-transitions de la logique}{sm::logic}
 
 Le diagramme ci-dessus présente le fonctionnement global de la logique à travers
 les changements de phases du jeu.
@@ -38,57 +38,58 @@ on détermine les éventuelles gagnants.
 Le diagramme de classe suivant correspond à l'implémentation de la state machine
 dans la logique.
 
-\mfigure[H]{width=\linewidth}{cl_logic_states}{Diagramme de classe des états}{cl::logic_states} 
+\mfigure[H]{width=\linewidth}{cl_logic_states}{Diagramme de classe des états}{cl::logic_states}
 
-L'état final est ici représenté par l'état « GameEndedState », qui s'occupe de
+L'état final est ici représenté par l'état \textit{GameEndedState}, qui s'occupe de
 déterminer les vainqueurs éventuelles de la partie.
 De plus nous avons choisi de différencier l'implementation de la phase de
 recrutement en fonction du tour pour éviter de vérifier à quel tour on est.
-Il en est de même pour la phase de sélection du premier joueur.
+Il en est de même pour la phase de sélection du premier joueur. \newline
+De part la spécificité du premier tour, certains états ont été spécialisé.
 
-Nous avons choisi de créer un état abstrait « GameState » pour
+Nous avons choisi de créer un état abstrait \textit{GameState} pour
 représenter un état du jeu, cet état doit stocker le GameBoard\footnote{Le GameBoard
   est une classe représentant le plateau de jeu.}
 qui permet aux états d'intéragir sur le jeu.
 
 \subsection{Données de la logique}
 
-Dans l'UML suivant on retrouve les classes qui ne contiennent que des données,
-ainsi que les autres systèmes pour gérer le jeu.
+Dans l'UML suivant, on retrouve les classes qui ne contiennent que des données,
+ainsi que d'autres systèmes nécessaires pour gérer le jeu (par traitement externe).
 Ces classes sont les suivantes:
 \begin{itemize}
-    \item Studio
-    \item FactionType
-    \item Player
-    \item UnitBuffedCharacteristics
-    \item UnitBasicCharacteristics
-    \item UnitCostModifier
-    \item UnitCounter
-    \item Unit
-    \item UnitType
-    \item Zone
-    \item UnitType
-    \item GameMap
-    \item UnitLevel
-    \item GameBoard
-    \item MarketingLadder
+    \item \textit{Studio}
+    \item \textit{FactionType}
+    \item \textit{Player}
+    \item \textit{UnitBuffedCharacteristics}
+    \item \textit{UnitBasicCharacteristics}
+    \item \textit{UnitCostModifier}
+    \item \textit{UnitCounter}
+    \item \textit{Unit}
+    \item \textit{UnitType}
+    \item \textit{Zone}
+    \item \textit{UnitType}
+    \item \textit{GameMap}
+    \item \textit{UnitLevel}
+    \item \textit{GameBoard}
+    \item \textit{MarketingLadder}
 \end{itemize}
 
 \mfigure[H]{width=\linewidth}{cl_logic}{Diagramme de classe de la logique}{cl::logic}
 
-On retrouve également deux autres systèmes permettant de gérer le jeu.
-Le premier étant le système des buffs, chaque joueur, représenté par la classe
-«Player», possède un «BuffsManager» qui permet de gérer les buffs du joueur.
-Les buffs sont ajoutés dans les «BuffsManager» des joueurs concernés par
+On retrouve également deux autres systèmes permettant de gérer le jeu,
+le premier étant le système des buffs. Chaque joueur, représenté par la classe
+\textit{Player}, possède un \textit{BuffsManager} qui permet de gérer les buffs du joueur.
+Les buffs sont ajoutés dans les \textit{BuffsManager} des joueurs concernés par
 celui-ci.
 
-«Buff» est une classe abstraite dont l'implémentation se doit d'écouter des events
-afin de s'appliquer quand les conditions sont remplies.
-La classe «BuffMask» permet de modifier les caractéristiques d'une unité en
-l'ajoutant dans la classe «UnitBuffedCharacteristics» d'un joueur.
-La classe «UnitBasicCharacteristics» définit les caractéristiques de base de l'unité.
+\textit{Buff} est une classe abstraite dont l'implémentation se doit d'écouter des évenements,
+afin de s'appliquer lorsque les conditions nécessaires sont remplies.
+La classe \textit{BuffMask} permet de modifier les caractéristiques d'une unité en
+l'ajoutant dans la classe \textit{UnitBuffedCharacteristics} d'un joueur.
+La classe \textit{UnitBasicCharacteristics} définit les caractéristiques de base de l'unité.
 
-Les SelfActivables et Activables permettent de débloquer les capacités («Capacity») des
+Les \textit{SelfActivables} et \textit{Activables} permettent de débloquer les capacités (\textit{Capacity}) des
 joueurs au cours de la partie, lorsque les conditions nécessaires à l'activation
 de la capacité sont remplies.
 

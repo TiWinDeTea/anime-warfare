@@ -2,11 +2,7 @@
 
 \section{usecases}
 
-La figure \figref{uc-client-jeu} est le diagramme de usecases du client de jeu.
-
 \mfigure[H]{width=0.95\linewidth}{uc_client_de_jeu.png}{Diagramme de usecases du client de jeu}{uc-client-jeu}
-
-La figure \figref{uc-serveur-jeu} est le diagramme de usecases du serveur de jeu.
 
 \mfigure[H]{width=0.95\linewidth}{uc_serveur_de_jeu.png}{Diagramme de usecases du serveur de jeu}{uc-serveur-jeu}
 
@@ -15,9 +11,10 @@ La figure \figref{uc-serveur-jeu} est le diagramme de usecases du serveur de jeu
 \subsection{Scénario nominal}
 \begin{enumerate}
     \item Affichage du menu de création de la partie
-    \item Lecture des paramètres de la partie (nom, nombre de joueurs, mot de passe, port)
+    \item Lecture des paramètres de la partie (nom, nombre de joueurs, mot de passe, port, \ldots)
     \item Lancement du salon de jeu
     \item Affichage de l'interface du salon
+    \item Sélection de sa license
     \item Attente des autres joueurs
     \item Démarrage de la partie
 \end{enumerate}
@@ -25,7 +22,7 @@ La figure \figref{uc-serveur-jeu} est le diagramme de usecases du serveur de jeu
 \subsection{Scénario d'exception}
 
 \begin{itemize}
-    \item[3.] Lancement du salon impossible (port déjà utilisé, …), retour à 1.
+    \item[3.] Lancement du salon impossible (port déjà utilisé, \ldots), retour à 1.
 \end{itemize}
 
 \section{Scénarii « rejoindre une partie »}
@@ -33,10 +30,11 @@ La figure \figref{uc-serveur-jeu} est le diagramme de usecases du serveur de jeu
 \subsection{Scénario nominal}
 
 \begin{enumerate}
-    \item Affichage de la liste des parties
+    \item Affichage de la liste des parties disponible
     \item Lecture du nom de la partie à rejoindre
     \item Connexion au salon
     \item Affichage de l'interface du salon
+    \item Sélection de sa license
     \item Attente des autres joueurs
     \item Démarrage de la partie
 \end{enumerate}
@@ -48,8 +46,9 @@ La figure \figref{uc-serveur-jeu} est le diagramme de usecases du serveur de jeu
     \item[4.] Lecture du mot de passe.
     \item[5.] Connexion au salon
     \item[6.] Affichage de l'interface du salon
-    \item[7.] Attente des autres joueurs
-    \item[8.] Démarrage de la partie
+    \item[7.] Sélection de sa license
+    \item[8.] Attente des autres joueurs
+    \item[9.] Démarrage de la partie
 \end{itemize}
 
 \subsection{Scénario d'exception « impossible de se connecter »}

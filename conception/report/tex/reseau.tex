@@ -18,14 +18,16 @@
         \newline
         La classe UDPListener, enfin, sert à écouter les requêtes de joueurs
         non connectés. Ainsi, lorsqu'un client envoie les bonnes donnés à
-        l'UDPListener via un broadcasting, celui-ci répond au client en lui
-        renvoyant la Room, en omettant le mot de passe. Le client peut alors
-        tenter de se connecter au serveur.
+        l'UDPListener via un \textit{broadcasting}, celui-ci répond au client
+        en lui renvoyant la Room, en omettant le mot de passe. Le client peut
+        alors tenter de se connecter au serveur.
 
     \section{Diagrammes de séquence}
 
-        \mfigure[t]{width=\linewidth}{seq_moveUnit}{Diagramme de séquence – déplacer une unité}{seq::moveUnit}
-
-        \mfigure[t]{width=\linewidth}{seq_joinGame}{Diagramme de séquence – rejoindre une partie}{seq::joinGame}
+        \mfigure[H]{width=\linewidth}{seq_joinGame}{Diagramme de séquence – rejoindre une partie}{seq::joinGame}
         Si le mot de passe est faux, il ne se passe rien et le client ne rejoint pas la partie
+
+        \begin{landscape}
+            \mfigure[H]{width=\linewidth}{seq_moveUnit}{Diagramme de séquence – déplacer une unité}{seq::moveUnit}
+        \end{landscape}
 
