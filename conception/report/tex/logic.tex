@@ -15,10 +15,9 @@ La state machine logique fonctionne de la même manière que celle des menus (vo
 Le diagramme ci-dessus présente le fonctionnement global de la logique à travers
 les changements de phases du jeu.
 
-Lorsque le jeu est lancé, nous rentrons automatiquement dans la phase «
-Recrutement du staff» qui effectue le calculer le nombre de
-personnes composant le staff des joueurs.
-Une fois ce calcul fait le serveur passe à la phase «Détermination du premier joueur».
+Lorsque le jeu est lancé, nous rentrons automatiquement dans la phase « Recrutement du staff »
+qui effectue le calcul du nombre d'employés des joueurs.
+Une fois ce calcul fait, on passe à l'état de la phase « Détermination du premier joueur ».
 
 La détermination du premier joueur se fait selon les règles, une fois ce joueur
 déterminé, on passe à la phase suivante, la phase d'action si l'on est au premier
@@ -30,7 +29,7 @@ réalisation de certaines actions, comme les batailles.
 Pour la phase d'action, comme pour la phase de marketing, on passe à l'état
 suivant lorsque tous les joueurs ont joué, ou si l'on a terminé la partie.
 Dans le cas où l'on a terminé la partie, on passe dans l'état final dans lequel
-on détermine les éventuelles gagnants.
+on détermine les éventuels gagnants.
 
 \section{Diagrammes de classes}
 \subsection{États logiques}
@@ -41,15 +40,15 @@ dans la logique.
 \mfigure[H]{width=\linewidth}{cl_logic_states}{Diagramme de classe des états}{cl::logic_states}
 
 L'état final est ici représenté par l'état \textit{GameEndedState}, qui s'occupe de
-déterminer les vainqueurs éventuelles de la partie.
+déterminer les vainqueurs éventuels de la partie.
 De plus nous avons choisi de différencier l'implementation de la phase de
-recrutement en fonction du tour pour éviter de vérifier à quel tour on est.
+recrutement en fonction du tour pour éviter de vérifier à quel tour on est à chaque fois.
 Il en est de même pour la phase de sélection du premier joueur. \newline
 De part la spécificité du premier tour, certains états ont été spécialisé.
 
 Nous avons choisi de créer un état abstrait \textit{GameState} pour
-représenter un état du jeu, cet état doit stocker le GameBoard\footnote{Le GameBoard
-  est une classe représentant le plateau de jeu.}
+représenter un état du jeu générique qui contient une référence sur le
+\textit{GameBoard}\footnote{Le GameBoard est une classe représentant le plateau de jeu.}
 qui permet aux états d'intéragir sur le jeu.
 
 \subsection{Données de la logique}
@@ -88,6 +87,10 @@ afin de s'appliquer lorsque les conditions nécessaires sont remplies.
 La classe \textit{BuffMask} permet de modifier les caractéristiques d'une unité en
 l'ajoutant dans la classe \textit{UnitBuffedCharacteristics} d'un joueur.
 La classe \textit{UnitBasicCharacteristics} définit les caractéristiques de base de l'unité.
+
+Les classes \textit{Buff}, \textit{BuffMask}, \textit{UnitBuffedCharacteristics} sont dans le même package (qui est
+différent de celui de toutes les autres classes). Ainsi, certaines méthodes et attributs sont en visibilité \emph{package}
+et ne peuvent être modifiés que par les classes appropriées.
 
 Les \textit{SelfActivables} et \textit{Activables} permettent de débloquer les capacités (\textit{Capacity}) des
 joueurs au cours de la partie, lorsque les conditions nécessaires à l'activation
