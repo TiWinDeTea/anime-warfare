@@ -34,10 +34,9 @@ import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEventListener;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Servers list menu state.
@@ -52,8 +51,9 @@ public class ServersListState extends MenuState implements ServersListEventListe
 	static {
 		FXMLLoader serversListLoader = new FXMLLoader();
 		serversListLoader.setLocation(ServersListController.class.getResource("ServersList.fxml"));
-		serversListLoader.setResources(ResourceBundle.getBundle("org.tiwindetea.animewarfare.gui.menu.ServersListController",
-				Locale.getDefault()));
+		serversListLoader.setResources(ResourceBundleHelper.getBundle(
+				"org.tiwindetea.animewarfare.gui.menu.ServersListController"));
+
 		try {
 			ServersListState.serversList = serversListLoader.load();
 		} catch (IOException e) {

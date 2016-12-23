@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.gui.menu;
 
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
@@ -36,10 +35,9 @@ import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEventListener;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Game room menu state.
@@ -54,8 +52,9 @@ public class GameRoomState extends MenuState implements GameRoomEventListener {
 	static {
 		FXMLLoader gameRoomLoader = new FXMLLoader();
 		gameRoomLoader.setLocation(GameRoomController.class.getResource("GameRoom.fxml"));
-		gameRoomLoader.setResources(ResourceBundle.getBundle("org.tiwindetea.animewarfare.gui.menu.GameRoomController",
-				Locale.getDefault()));
+		gameRoomLoader.setResources(ResourceBundleHelper.getBundle(
+				"org.tiwindetea.animewarfare.gui.menu.GameRoomController"));
+
 		try {
 			GameRoomState.gameRoom = gameRoomLoader.load();
 		} catch (IOException e) {

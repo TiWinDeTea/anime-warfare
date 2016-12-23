@@ -35,10 +35,9 @@ import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEventListener;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Servers list menu state.
@@ -54,8 +53,8 @@ public class MainMenuState extends MenuState implements MainMenuEventListener {
 	static {
 		FXMLLoader mainMenuLoader = new FXMLLoader();
 		mainMenuLoader.setLocation(MainMenuController.class.getResource("MainMenu.fxml"));
-		mainMenuLoader.setResources(ResourceBundle.getBundle("org.tiwindetea.animewarfare.gui.menu.MainMenuController",
-				Locale.getDefault()));
+		mainMenuLoader.setResources(ResourceBundleHelper.getBundle(
+				"org.tiwindetea.animewarfare.gui.menu.MainMenuController"));
 		try {
 			MainMenuState.mainMenu = mainMenuLoader.load();
 		} catch (IOException e) {

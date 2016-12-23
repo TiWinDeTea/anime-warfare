@@ -34,10 +34,9 @@ import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEventListener;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Settings menu state.
@@ -53,8 +52,9 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 	static {
 		FXMLLoader settingsMenuLoader = new FXMLLoader();
 		settingsMenuLoader.setLocation(MainMenuController.class.getResource("SettingsMenu.fxml"));
-		settingsMenuLoader.setResources(ResourceBundle.getBundle("org.tiwindetea.animewarfare.gui.menu.SettingsMenuController",
-				Locale.getDefault()));
+		settingsMenuLoader.setResources(ResourceBundleHelper.getBundle(
+				"org.tiwindetea.animewarfare.gui.menu.SettingsMenuController"));
+
 		try {
 			SettingsMenuState.settingsMenu = settingsMenuLoader.load();
 		} catch (IOException e) {

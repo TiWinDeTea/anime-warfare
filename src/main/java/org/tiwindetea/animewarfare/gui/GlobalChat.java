@@ -26,11 +26,9 @@ package org.tiwindetea.animewarfare.gui;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
-import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * The global chat is contained here.
@@ -44,8 +42,8 @@ public class GlobalChat {
 	static {
 		FXMLLoader chatLoader = new FXMLLoader();
 		chatLoader.setLocation(ChatController.class.getResource("Chat.fxml"));
-		chatLoader.setResources(ResourceBundle.getBundle("org.tiwindetea.animewarfare.gui.ChatController",
-				Locale.getDefault()));
+		chatLoader.setResources(ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.ChatController"));
+
 		try {
 			GlobalChat.chat = chatLoader.load();
 		} catch (IOException e) {
