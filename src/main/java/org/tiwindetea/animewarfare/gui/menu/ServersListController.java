@@ -38,7 +38,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
-import org.tiwindetea.animewarfare.Settings;
 import org.tiwindetea.animewarfare.gui.ConnectIpDialog;
 import org.tiwindetea.animewarfare.gui.HostServerDialog;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
@@ -50,6 +49,7 @@ import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
+import org.tiwindetea.animewarfare.settings.Settings;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

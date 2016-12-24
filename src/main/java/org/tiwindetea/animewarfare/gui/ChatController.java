@@ -37,7 +37,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
-import org.tiwindetea.animewarfare.Settings;
+import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNeteventListener;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;

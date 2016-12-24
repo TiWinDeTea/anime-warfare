@@ -41,6 +41,9 @@ import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
 import org.tiwindetea.animewarfare.net.GameClient;
 import org.tiwindetea.animewarfare.net.GameServer;
+import org.tiwindetea.animewarfare.settings.LanguageUpdatedEvent;
+import org.tiwindetea.animewarfare.settings.LanguageUpdatedEventListener;
+import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
@@ -52,7 +55,8 @@ import java.util.ResourceBundle;
  *
  * @author Benoît CORTIER
  */
-public class MainApp extends Application implements AskMenuStateUpdateEventListener, QuitApplicationEventListener {
+public class MainApp extends Application implements AskMenuStateUpdateEventListener,
+		QuitApplicationEventListener, LanguageUpdatedEventListener {
 	private static final ResourceBundle BUNDLE
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.MainApp");
 
@@ -69,6 +73,8 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	public void start(Stage stage) {
 		EventDispatcher.getInstance().addListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().addListener(QuitApplicationEvent.class, this);
+		EventDispatcher.getInstance().addListener(LanguageUpdatedEvent.class, this);
+		Settings.init();
 
 		this.primaryStage = stage;
 		this.primaryStage.setTitle(BUNDLE.getString("title"));
@@ -90,6 +96,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		loader.setLocation(MainApp.class.getResource("RootLayout.fxml"));
 		try {
 			this.rootLayout = loader.load();
+			this.rootLayout.getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
 
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(this.rootLayout);
@@ -103,6 +110,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	private void onQuit() {
 	    EventDispatcher.getInstance().removeListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().removeListener(QuitApplicationEvent.class, this);
+		EventDispatcher.getInstance().removeListener(LanguageUpdatedEvent.class, this);
 
 		// stop network things.
 		MainApp.getGameClient().disconnect();
@@ -116,16 +124,6 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		this.menuStateMachine.update();
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
-
-	@Override
-	public void handleQuitApplication() {
-		this.primaryStage.close();
-		onQuit();
-	}
-
 	public static void initANewGameServer() {
 		MainApp.gameServer = new GameServer();
 	}
@@ -136,5 +134,20 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 	public static GameClient getGameClient() {
 		return MainApp.gameClient;
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void handleQuitApplication() {
+		this.primaryStage.close();
+		onQuit();
+	}
+
+	@Override
+	public void onLanguageUpdated() {
+		// TODO
 	}
 }

@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.gui;
 
 import javafx.animation.Transition;
-import org.tiwindetea.animewarfare.Settings;
+import org.tiwindetea.animewarfare.settings.Settings;
 
 /**
  * Helper class containing a static method to

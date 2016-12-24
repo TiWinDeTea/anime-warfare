@@ -34,8 +34,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.Settings;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
+import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.util.Map;
@@ -114,6 +114,15 @@ public class SettingsMenuController {
 			Settings.setAutoSaveInterval(0);
 		}
 
+		Settings.setLanguageTag(LANGUAGES.entrySet()
+		                                 .stream()
+		                                 .filter(e -> e.getValue()
+		                                               .equals(this.languageChoiceBox.getSelectionModel()
+		                                                                             .getSelectedItem()))
+		                                 .map(e -> e.getKey())
+		                                 .findFirst()
+		                                 .orElse(LANGUAGES.get("en")));
+
 		Settings.setPlayerName(this.playerNameTextField.getText());
 		Settings.setEnableAnimationEffects(this.enableEffectsCheckBox.isSelected());
 		Settings.savePreferences();
@@ -161,5 +170,7 @@ public class SettingsMenuController {
 		} else {
 			this.enableAutosaveCheckBox.setSelected(false);
 		}
+
+		this.languageChoiceBox.getSelectionModel().select(LANGUAGES.get(Settings.getLanguageTag()));
 	}
 }

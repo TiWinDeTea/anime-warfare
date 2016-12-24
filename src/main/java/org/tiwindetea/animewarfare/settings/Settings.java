@@ -22,10 +22,13 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare;
+package org.tiwindetea.animewarfare.settings;
 
+import javafx.scene.text.Font;
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
@@ -36,11 +39,13 @@ import java.util.prefs.Preferences;
  */
 public class Settings {
 	private static final ResourceBundle BUNDLE
-			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.Settings");
+			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.settings.Settings");
 
 	private static boolean enableAnimationEffects;
 	private static int autoSaveInterval;
 	private static String playerName;
+	private static String languageTag;
+	private static boolean languageChanged;
 
 	static {
 		Preferences prefs = Preferences.userNodeForPackage(Settings.class);
@@ -48,10 +53,13 @@ public class Settings {
 				prefs.get("playerName", BUNDLE.getString("default.input.playername"));
 		Settings.autoSaveInterval = Integer.valueOf(
 				prefs.get("autoSaveInterval", BUNDLE.getString("default.interval.autosave"))
-		);
+		).intValue();
 		Settings.enableAnimationEffects = Boolean.valueOf(
 				prefs.get("enableAnimationEffects", BUNDLE.getString("default.enable.animationeffects"))
-		);
+		).booleanValue();
+		Settings.languageTag =
+				prefs.get("languageTag", BUNDLE.getString("default.language.tag"));
+		Locale.setDefault(Locale.forLanguageTag(languageTag));
 	}
 
 	public static void savePreferences() {
@@ -59,6 +67,13 @@ public class Settings {
 		prefs.put("playerName", Settings.playerName);
 		prefs.put("autoSaveInterval", String.valueOf(Settings.autoSaveInterval));
 		prefs.put("enableAnimationEffects", String.valueOf(Settings.enableAnimationEffects));
+		prefs.put("languageTag", Settings.languageTag);
+
+		if (languageChanged) {
+			Locale.setDefault(Locale.forLanguageTag(languageTag));
+			EventDispatcher.getInstance().fire(new LanguageUpdatedEvent());
+			languageChanged = false;
+		}
 	}
 
 	public static boolean areAnimationEffectsEnabled() {
@@ -71,6 +86,10 @@ public class Settings {
 
 	public static String getPlayerName() {
 		return playerName;
+	}
+
+	public static String getLanguageTag() {
+		return languageTag;
 	}
 
 	public static void setEnableAnimationEffects(boolean enableAnimationEffects) {
@@ -87,5 +106,17 @@ public class Settings {
 
 	public static void setPlayerName(String playerName) {
 		Settings.playerName = playerName;
+	}
+
+	public static void setLanguageTag(String languageTag) {
+		if (Locale.forLanguageTag(languageTag) != null && !Settings.languageTag.equals(languageTag)) {
+			Settings.languageTag = languageTag;
+			languageChanged = true;
+		}
+	}
+
+	public static void init() {
+		// Init static variable
+		Font.loadFont(Settings.class.getResource("../gui/fonts/LadylikeBB.ttf").toExternalForm(), 13);
 	}
 }
