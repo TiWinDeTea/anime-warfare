@@ -29,6 +29,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
@@ -36,8 +38,10 @@ import org.tiwindetea.animewarfare.Settings;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 /**
  * The settings menu controller.
@@ -61,9 +65,23 @@ public class SettingsMenuController {
 	private CheckBox enableEffectsCheckBox;
 
 	@FXML
+	private ChoiceBox<String> languageChoiceBox;
+
+	@FXML
+	private Slider soundLevelSlider; // TODO
+
+	private static final Map<String, String> LANGUAGES = new TreeMap<>(String::compareTo);
+
+	static {
+		LANGUAGES.put("en", "English");
+		LANGUAGES.put("fr", "Français");
+	}
+
+	@FXML
 	private void initialize() {
 		this.autosaveIntervalTextField.disableProperty().bind(this.enableAutosaveCheckBox.selectedProperty().not());
 
+		this.languageChoiceBox.getItems().addAll(LANGUAGES.values());
 		resetFieldsFromSettings();
 	}
 

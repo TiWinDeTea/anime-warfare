@@ -1,0 +1,105 @@
+.vBoxMainMenu {
+    -fx-spacing: 30;
+    -fx-padding: 10, 0, 10, 0;
+}
+
+.vBoxMainMenu > Button {
+    -fx-pref-width: 250;
+    -fx-pref-height: 50;
+    -fx-background-color: #694b23;
+    -fx-text-fill: white;
+    -fx-font-family: "Ladylike BB";
+    -fx-font-size: 28;
+    -fx-border-radius: 0;
+    -fx-border-color: #342411;
+    -fx-border-width: 4;
+}
+
+.vBoxMainMenu > Button:pressed {
+    -fx-background-color: #c18c3b !important;
+}
+
+.vBoxMainMenu > Button:hover {
+    -fx-background-color: #9b6f32;
+    -fx-translate-x: 10;
+}
+
+.vBoxMainMenu > Button:focused {
+    -fx-background-color: #9b6f32;
+    -fx-translate-x: 10;
+}
+
+.serverList {
+    /*-fx-background-color: black;*/
+}
+
+.settingsMenu {
+    -fx-font-family: "Ladylike BB" !important;
+    -fx-font-size: 21 !important;
+}
+
+.settingsMenu > GridPane {
+    -fx-border-width: 2;
+    -fx-border-color: #2d2d2d88;
+    -fx-padding: 8 8 8 8;
+    -fx-background-image: url("../pictures/ui/background.png");
+}
+
+.settingsMenu > * > .text-field, .settingsMenu > * > .choice-box {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../pictures/ui/textfield.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 95%;
+    -fx-border-width: 0;
+    -fx-effect: innershadow( gaussian, black, 10, 0, 5, 5 );
+}
+
+.settingsMenu > * > .choice-box .arrow {
+    -fx-background-color: #694b23;
+}
+
+.settingsMenu > * > .choice-box .menu-item:focused {
+    -fx-background-color: #c18c3b;
+}
+
+.settingsMenu > * > .check-box > * {
+    -fx-background-color: transparent;
+}
+
+.settingsMenu > * > .check-box > * > .box {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+}
+
+.settingsMenu > * > .check-box > .box > .mark {
+    -fx-background-image: url("../pictures/ui/checkbox-unmarked.png");
+    -fx-background-position: 25% 50%;
+    -fx-background-repeat: stretch;
+    -fx-shape: none;
+}
+
+.settingsMenu > * > .slider {
+    -fx-background-image: url("../pictures/ui/slider-track.png");
+    -fx-background-position: 50% 48%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 101% 100%;
+    -fx-pref-height: 30;
+}
+
+.settingsMenu > * > .slider .thumb {
+    -fx-background-color: transparent;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image: url("../pictures/ui/slider-thumb.png");
+    -fx-background-position: 50% 50%;
+    -fx-pref-height: 30;
+}
+
+.settingsMenu > * > .slider .track {
+    -fx-background-color: transparent;
+}
+
+.settingsMenu > * > .check-box:selected > .box > .mark {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../pictures/ui/checkbox-marked.png");
+}
