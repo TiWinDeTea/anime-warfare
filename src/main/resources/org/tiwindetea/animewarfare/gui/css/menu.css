@@ -51,7 +51,6 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 100% 95%;
     -fx-border-width: 0;
-    -fx-effect: innershadow( gaussian, black, 10, 0, 5, 5 );
 }
 
 .settingsMenu > * > .choice-box .arrow {

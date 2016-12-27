@@ -76,7 +76,7 @@
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                <children>
                   <Button mnemonicParsing="false" onAction="#handleSave" text="%button.save" />
-                  <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
                </children>
                <opaqueInsets>
                   <Insets right="5.0" />
