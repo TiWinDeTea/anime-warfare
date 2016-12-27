@@ -70,7 +70,6 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 	private List<Player> players;
 	private boolean gameEnded;
 	private boolean phaseEnded;
-	private final List<Integer> winners = new LinkedList<>();
 
 	private Player currentPlayer;
 	private int currentPlayerPosition;
@@ -241,7 +240,6 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 			if (event.getUnitType().getUnitLevel() == UnitLevel.MASCOT) {
 				if (!this.currentPlayer.getUnitCounter().hasUnits()) {
 					this.gameBoard.getMap().getZone(event.getZone()).addUnit(new Unit(event.getUnitType()));
-					// TODO: Send Event
 					return;
 				}
 			}
@@ -251,7 +249,6 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 				.getMaxNumber()) {
 			if (this.gameBoard.getMap().getZone(event.getZone()).hasUnitOfFaction(this.currentPlayer.getFaction())) {
 				this.gameBoard.getMap().getZone(event.getZone()).addUnit(new Unit(event.getUnitType()));
-				// TODO: Send Event
 			} else {
 				// TODO: No unit of the faction in the target zone.
 			}
