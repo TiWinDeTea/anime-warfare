@@ -9,12 +9,12 @@
    <children>
       <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
-            <VBox alignment="CENTER" prefWidth="300.0" spacing="20.0" styleClass="vBoxMainMenu" BorderPane.alignment="CENTER">
+            <VBox fx:id="buttonContainer" alignment="CENTER" onKeyReleased="#handleFocusRequest" prefWidth="300.0" spacing="20.0" styleClass="vBoxMainMenu" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#handlePlay" text="%button.play" />
-                  <Button mnemonicParsing="false" onAction="#handleSettings" text="%button.settings" />
-                  <Button mnemonicParsing="false" onAction="#handleAbout" text="%button.about" />
-                  <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
+                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#handlePlay" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.play" />
+                  <Button mnemonicParsing="false" onAction="#handleSettings" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.settings" />
+                  <Button mnemonicParsing="false" onAction="#handleAbout" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.about" />
+                  <Button mnemonicParsing="false" onAction="#handleQuit" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.quit" />
                </children>
                <padding>
                   <Insets bottom="5.0" top="5.0" />

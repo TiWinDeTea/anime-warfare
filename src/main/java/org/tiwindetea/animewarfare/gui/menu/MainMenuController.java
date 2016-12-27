@@ -24,36 +24,61 @@
 
 package org.tiwindetea.animewarfare.gui.menu;
 
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEvent;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
+import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
  * The main menu controller.
  *
  * @author Benoît CORTIER
+ * @author Jérôme BOULMIER
  */
-public class MainMenuController {
+public class MainMenuController implements Initializable {
 	private static final ResourceBundle BUNDLE
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.menu.MainMenuController");
 
 	@FXML
-	void handlePlay(ActionEvent event) {
+	private VBox buttonContainer;
+
+	@FXML
+	private Button playButton;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		this.playButton.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				MainMenuController.this.buttonContainer.requestFocus();
+				MainMenuController.this.playButton.focusedProperty().removeListener(this);
+			}
+		});
+	}
+
+	@FXML
+	private void handlePlay() {
 		EventDispatcher.getInstance().fire(new MainMenuEvent(MainMenuEvent.Type.PLAY));
 	}
 
 	@FXML
-	void handleSettings(ActionEvent event) {
+	private void handleSettings() {
 		EventDispatcher.getInstance().fire(new MainMenuEvent(MainMenuEvent.Type.SETTINGS));
 	}
 
 	@FXML
-	void handleAbout(ActionEvent event) {
+	private void handleAbout() {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(BUNDLE.getString("alert.about.title"));
 		alert.setHeaderText(BUNDLE.getString("alert.about.header"));
@@ -63,7 +88,25 @@ public class MainMenuController {
 	}
 
 	@FXML
-	void handleQuit(ActionEvent event) {
+	private void handleQuit() {
 		EventDispatcher.getInstance().fire(new MainMenuEvent(MainMenuEvent.Type.QUIT));
+	}
+
+	@FXML
+	private void handleFocusRequest() {
+		if (this.buttonContainer.focusedProperty().getValue().booleanValue()) {
+			this.playButton.requestFocus();
+		}
+	}
+
+	@FXML
+	private void handleMouseEnteredEvent(MouseEvent event) {
+		Node button = (Node) event.getSource();
+		button.requestFocus();
+	}
+
+	@FXML
+	private void handleMouseExitedEvent() {
+		this.buttonContainer.requestFocus();
 	}
 }
