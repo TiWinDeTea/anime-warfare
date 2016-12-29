@@ -38,4 +38,16 @@ public class GameClientInfo implements NetworkedClass {
     public int getId() {
         return this.id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GameClientInfo) {
+            return this.equals((GameClientInfo) o);
+        }
+        return false;
+    }
+
+    public boolean equals(GameClientInfo gci) {
+        return gci.id == this.id && (gci.gameClientName == null ? this.gameClientName == null : gci.gameClientName.equals(this.gameClientName));
+    }
 }

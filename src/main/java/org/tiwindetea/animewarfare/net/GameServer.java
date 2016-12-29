@@ -320,11 +320,12 @@ public class GameServer {
         @Override
         public void connected(Connection connection) {
             if (GameServer.this.room.isFull()) {
-                Log.trace(NetworkListener.class.toString(),
-                          "Refused incomming connection: " + connection.getID());
+                Log.debug(NetworkListener.class.toString(),
+                        "Refused incoming connection: " + connection.getID());
                 connection.close();
             } else {
-                Log.trace(NetworkListener.class.toString(), "Incomming connection: " + connection.getID());
+                Log.debug(NetworkListener.class.toString(), "Incoming connection: " + connection.getID());
+                GameServer.this.legitConnections.add(new Integer(connection.getID()));
                 connection.sendTCP(new GameClientInfo(connection.getID()));
                 connection.sendTCP(GameServer.this.room);
             }

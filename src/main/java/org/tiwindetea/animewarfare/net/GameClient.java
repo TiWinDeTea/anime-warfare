@@ -72,7 +72,7 @@ public class GameClient {
 
     private final Client client = new Client();
     private Room room;
-    private final GameClientInfo myName = new GameClientInfo();
+    private final GameClientInfo me = new GameClientInfo();
     private boolean isConnected = false;
     private final Listener listener = new Listener();
 
@@ -152,7 +152,7 @@ public class GameClient {
      * @param name client name
      */
     public GameClient(String name) {
-        this.myName.gameClientName = name;
+        this.me.gameClientName = name;
         Utils.registerClasses(this.client);
     }
 
@@ -166,7 +166,7 @@ public class GameClient {
         if (this.isConnected) {
             throw new IllegalStateException();
         } else {
-            this.myName.gameClientName = name;
+            this.me.gameClientName = name;
         }
     }
 
@@ -177,7 +177,7 @@ public class GameClient {
      * @throws IOException if an I/O error occurs
      */
     public void connect(Room room) throws IOException {
-        if (this.myName.gameClientName == null) {
+        if (this.me.gameClientName == null) {
             throw new IllegalStateException();
         }
         Log.debug(GameClient.class.toString(), "Connecting to " + room);
@@ -191,6 +191,13 @@ public class GameClient {
      */
     public Room getRoom() {
         return this.room;
+    }
+
+    /**
+     * @return GameClientInfo representing this connection
+     */
+    public GameClientInfo getClientInfo() {
+        return this.me;
     }
 
     /**
@@ -223,8 +230,6 @@ public class GameClient {
         this.client.sendTCP(sendable);
     }
 
-    //todo : check benoit's use of this API
-
     @SuppressWarnings("unused")
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
@@ -235,8 +240,8 @@ public class GameClient {
             Log.trace(GameClient.Listener.class.toString(), "Incoming GameClientInfo: " + info);
             if (info.gameClientName == null) {
                 Log.debug(GameClient.Listener.class.toString(), "Finalizing connection to server");
-                GameClient.this.myName.id = info.id;
-                GameClient.this.client.sendTCP(GameClient.this.myName);
+                GameClient.this.me.id = info.id;
+                GameClient.this.client.sendTCP(GameClient.this.me);
             } else {
                 Log.debug(GameClient.Listener.class.toString(), "A new player connected: " + info);
                 GameClient.this.room.addMember(info);
@@ -246,6 +251,7 @@ public class GameClient {
 
         public void received(Connection connection, Room room) {
             Log.debug(GameClient.Listener.class.toString(), "Connected.");
+            room.addMember(GameClient.this.me);
             GameClient.this.room = room;
             this.eventDispatcher.fire(new ConnectedNetevent(room));
         }
@@ -334,6 +340,11 @@ public class GameClient {
         public void received(Connection connection, NetUnitEvent unitEvent) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + unitEvent);
             this.eventDispatcher.fire(new UnitNetevent(unitEvent));
+        }
+
+        @Override
+        public void disconnected(Connection connection) {
+            this.eventDispatcher.fire(new PlayerDisconnectionNetevent(GameClient.this.me));
         }
     }
 }

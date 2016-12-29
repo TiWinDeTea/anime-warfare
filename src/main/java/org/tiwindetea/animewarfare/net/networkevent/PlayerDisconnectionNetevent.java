@@ -36,6 +36,10 @@ public class PlayerDisconnectionNetevent implements Event<PlayerDisconnectionNet
 
     private final GameClientInfo player;
 
+    public PlayerDisconnectionNetevent(GameClientInfo player) {
+        this.player = player;
+    }
+
     public PlayerDisconnectionNetevent(NetHandlePlayerDisconnection playerDisconnection) {
         this.player = playerDisconnection.getPlayer();
     }
