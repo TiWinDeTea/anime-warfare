@@ -28,18 +28,33 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
+import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.event.StudioAddedEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
-import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
-import org.tiwindetea.animewarfare.net.networkrequests.playingcommands.NetAbstractPlayingCommand;
+import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -99,32 +114,61 @@ class Utils {
 		kryo.register(ArrayList.class);
 
 		// network requests
-		kryo.register(NetAbstractPlayingCommand.class);
+		kryo.register(NetBattleStarted.class);
+		kryo.register(NetFanNumberUpdated.class);
 		kryo.register(NetFirstPlayerSelected.class);
 		kryo.register(NetFirstPlayerSelectionRequest.class);
 		kryo.register(NetGameEnded.class);
+		kryo.register(NetGameEndConditionsReached.class);
 		kryo.register(NetHandlePlayerDisconnection.class);
-		kryo.register(NetLockFaction.class);
+		kryo.register(NetLockFactionRequest.class);
+		kryo.register(NetMarketingLadderUpdated.class);
 		kryo.register(NetMessage.class);
+		kryo.register(NetNewStudio.class);
+		kryo.register(NetPhaseChange.class);
 		kryo.register(NetPlayingOrderChosen.class);
-		kryo.register(NetSelectFaction.class);
+		kryo.register(NetSelectFactionRequest.class);
+		kryo.register(NetSelectMascotToCapture.class);
+		kryo.register(NetUnitEvent.class);
 	}
 
 	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {
 
 		EventDispatcher ed = EventDispatcher.getInstance();
 
+		//logic.states.events
 		ed.addListener(AskFirstPlayerEvent.class, logicListener);
+		ed.addListener(AskMascotToCaptureEvent.class, logicListener);
+		ed.addListener(BattleStartedEvent.class, logicListener);
 		ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.addListener(GameEndedEvent.class, logicListener);
+		ed.addListener(PhaseChangedEvent.class, logicListener);
+
+		//logic.event
+		ed.addListener(GameEndConditionsReachedEvent.class, logicListener);
+		ed.addListener(MarketingLadderUpdatedEvent.class, logicListener);
+		ed.addListener(NumberOfFansChangedEvent.class, logicListener);
+		ed.addListener(StudioAddedEvent.class, logicListener);
+		ed.addListener(UnitEvent.class, logicListener);
 	}
 
 	public static void deregisterLogicListener(GameServer.LogicListener logicListener) {
 
 		EventDispatcher ed = EventDispatcher.getInstance();
 
+		//logic.states.events
 		ed.removeListener(AskFirstPlayerEvent.class, logicListener);
+		ed.removeListener(AskMascotToCaptureEvent.class, logicListener);
+		ed.removeListener(BattleStartedEvent.class, logicListener);
 		ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.removeListener(GameEndedEvent.class, logicListener);
+		ed.removeListener(PhaseChangedEvent.class, logicListener);
+
+		//logic.event
+		ed.removeListener(GameEndConditionsReachedEvent.class, logicListener);
+		ed.removeListener(MarketingLadderUpdatedEvent.class, logicListener);
+		ed.removeListener(NumberOfFansChangedEvent.class, logicListener);
+		ed.removeListener(StudioAddedEvent.class, logicListener);
+		ed.removeListener(UnitEvent.class, logicListener);
 	}
 }

@@ -31,23 +31,65 @@ import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
+import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEventListener;
+import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEventListener;
+import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEventListener;
+import org.tiwindetea.animewarfare.logic.event.StudioAddedEvent;
+import org.tiwindetea.animewarfare.logic.event.StudioEventListener;
+import org.tiwindetea.animewarfare.logic.event.UnitEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitEventListener;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
+import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
+import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.NetGameStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.NetLockFaction;
-import org.tiwindetea.animewarfare.net.networkrequests.NetMessage;
+import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
+import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFaction;
+import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -74,7 +116,7 @@ public class GameServer {
 
     private final Room room = new Room();
     private final NetworkListener networkNetworkListener = new NetworkListener(this.server);
-    private final LogicListener logicListener = new LogicListener();
+    private final LogicListener logicListener = new LogicListener(this.server);
     private final UDPListener udpListener = new UDPListener();
     private boolean isRunning = false;
 
@@ -310,17 +352,17 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetMessage message) {
+        public void received(Connection connection, String message) {
             if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
                 this.server.sendToAllExceptTCP(connection.getID(),
-                                               new NetMessage(message.getMessage(),
-                                                              GameServer.this.room.find(connection.getID())));
-                Log.debug(GameServer.NetworkListener.class.toString(), "Received message: " + message.getMessage());
+                        new NetMessage(message,
+                                GameServer.this.room.find(connection.getID())));
+                Log.trace(GameServer.NetworkListener.class.toString(), "Received message: " + message);
             }
         }
 
-        // network requests
-        public void received(Connection connection, NetLockFaction faction) {
+        // NetworkedClass classes
+        public void received(Connection connection, NetLockFactionRequest faction) {
             if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
 
                 Log.trace(GameServer.NetworkListener.class.toString(), "Faction locking requested: " + faction);
@@ -352,23 +394,93 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetSelectFaction faction) {
-
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
-                GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
-                this.server.sendToAllTCP(faction);
-                Log.trace(GameServer.NetworkListener.class.toString(),
-                          GameServer.this.room.find(connection.getID()) + " selected " + faction);
-            }
-        }
-
         public void received(Connection connection, NetPlayingOrderChosen netPlayingOrderChosen) {
 
             if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
                 GameServer.this.eventDispatcher.fire(new PlayingOrderChoiceEvent(netPlayingOrderChosen.isClockwise()));
                 this.server.sendToAllTCP(netPlayingOrderChosen);
                 Log.trace(GameServer.NetworkListener.class.toString(),
-                          "Play order was choosen (" + netPlayingOrderChosen);
+                        "Play order was choosen (" + netPlayingOrderChosen);
+            }
+        }
+
+        public void received(Connection connection, NetSelectFactionRequest faction) {
+
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
+                this.server.sendToAllTCP(faction);
+                Log.trace(GameServer.NetworkListener.class.toString(),
+                        GameServer.this.room.find(connection.getID()) + " selected " + faction);
+            }
+        }
+
+        public void received(Connection connection, NetUnitEvent unitEvent) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new UnitEvent(unitEvent.getType(), unitEvent.getUnitID(), unitEvent.getZoneID()));
+            }
+        }
+
+
+        // NetSendable classes
+        public void received(Connection connection, NetCapturedMascotSelection selection) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(), selection.getUnitID()));
+            }
+        }
+
+        public void received(Connection connection, NetConventionRequest conventionRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new OrganizeConventionRequestEvent(connection.getID()));
+            }
+        }
+
+        public void received(Connection connection, NetFirstPlayerSelection player) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new FirstPlayerChoiceEvent(player.getPlayerID()));
+            }
+        }
+
+        public void received(Connection connection, NetInvokeUnitRequest unitRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new InvokeUnitEvent(connection.getID(), unitRequest.getUnitType(), unitRequest.getZoneID()));
+            }
+        }
+
+        public void received(Connection connection, NetMascotCaptureRequest mascotRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new CaptureMascotEvent(
+                        connection.getID(),
+                        mascotRequest.getTargetPlayer(),
+                        mascotRequest.getZoneID()
+                ));
+            }
+        }
+
+        public void received(Connection connection, NetMoveUnitRequest unitMoveRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new MoveUnitEvent(connection.getID(), unitMoveRequest.getMovements()));
+            }
+        }
+
+        public void received(Connection connection, NetOpenStudioRequest studioRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new OpenStudioEvent(connection.getID(), studioRequest.getZoneID()));
+            }
+        }
+
+        public void received(Connection connection, NetSkipTurnRequest skipRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new SkipTurnEvent(connection.getID()));
+            }
+        }
+
+        public void received(Connection connection, NetStartBattleRequest battleRequest) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                GameServer.this.eventDispatcher.fire(new StartBattleEvent(
+                        connection.getID(),
+                        battleRequest.getTargetPlayerID(),
+                        battleRequest.getZoneID()
+                ));
             }
         }
 
@@ -376,23 +488,90 @@ public class GameServer {
         // don't forget to check that the client is a legit client (ie : is in the player that sent the good password)
     }
 
-    public class LogicListener implements AskFirstPlayerEventListener, FirstPlayerSelectedEventListener, GameEndedEventListener {
+    public class LogicListener implements
+            AskFirstPlayerEventListener,
+            AskUnitToCaptureEventListener,
+            BattleStartedEventListener,
+            FirstPlayerSelectedEventListener,
+            GameEndedEventListener,
+            PhaseChangedEventListener,
 
-        @Override
-        public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
-            GameServer.this.server.sendToAllTCP(new NetGameEnded(GameServer.this.room.findAll(gameEndedEvent.getWinners())));
-            Log.trace(GameServer.LogicListener.class.toString(), "Game terminated.");
+            GameEndConditionsReachedEventListener,
+            MarketingLadderUpdatedEventListener,
+            NumberOfFansChangedEventListener,
+            StudioEventListener,
+            UnitEventListener {
+
+        private final Server server;
+
+        public LogicListener(Server server) {
+            this.server = server;
         }
+
+
+        // logic.states.events
 
         @Override
         public void askFirstPlayerEvent(AskFirstPlayerEvent event) {
-            GameServer.this.server.sendToAllTCP(new NetFirstPlayerSelectionRequest(GameServer.this.room.find(event.getLastPlayer()),
-                                                                                   GameServer.this.room.findAll(event.getDrawPlayers())));
+            this.server.sendToAllTCP(new NetFirstPlayerSelectionRequest(GameServer.this.room.find(event.getLastPlayer()),
+                    GameServer.this.room.findAll(event.getDrawPlayers())));
+        }
+
+        @Override
+        public void askUnitToCaptureEvent(AskMascotToCaptureEvent event) {
+            this.server.sendToTCP(event.getPlayer(), new NetSelectMascotToCapture(event));
+        }
+
+        @Override
+        public void handleBattleStartedEvent(BattleStartedEvent event) {
+            this.server.sendToAllTCP(new NetBattleStarted(
+                    event,
+                    GameServer.this.room.find(event.getAttacker().getID()),
+                    GameServer.this.room.find(event.getDefensor().getID())
+            ));
         }
 
         @Override
         public void firstPlayerSelected(FirstPlayerSelectedEvent event) {
-            GameServer.this.server.sendToAllTCP(new NetFirstPlayerSelected(GameServer.this.room.find(event.getFirstPlayer())));
+            this.server.sendToAllTCP(new NetFirstPlayerSelected(GameServer.this.room.find(event.getFirstPlayer())));
+        }
+
+        @Override
+        public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
+            this.server.sendToAllTCP(new NetGameEnded(GameServer.this.room.findAll(gameEndedEvent.getWinners())));
+            Log.trace(GameServer.LogicListener.class.toString(), "Game terminated.");
+        }
+
+        @Override
+        public void handlePhaseChanged(PhaseChangedEvent event) {
+            this.server.sendToAllTCP(new NetPhaseChange(event));
+        }
+
+
+        // logic.event
+        @Override
+        public void handleGameEndConditionsReached(GameEndConditionsReachedEvent event) {
+            this.server.sendToAllTCP(new NetGameEndConditionsReached(event));
+        }
+
+        @Override
+        public void handleMarketingLadderUpdated(MarketingLadderUpdatedEvent event) {
+            this.server.sendToAllTCP(new NetMarketingLadderUpdated(event));
+        }
+
+        @Override
+        public void handleNumberOfFansChanged(NumberOfFansChangedEvent event) {
+            this.server.sendToAllTCP(new NetFanNumberUpdated(event, GameServer.this.room.find(event.getPlayer().getID())));
+        }
+
+        @Override
+        public void handleStudioAddedEvent(StudioAddedEvent event) {
+            this.server.sendToAllTCP(new NetNewStudio(event));
+        }
+
+        @Override
+        public void handleUnitEvent(UnitEvent event) {
+            this.server.sendToAllTCP(new NetUnitEvent(event));
         }
 
         // todo (idem)

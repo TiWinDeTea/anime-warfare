@@ -1,6 +1,6 @@
 package org.tiwindetea.animewarfare.net;
 
-import java.io.Serializable;
+import org.tiwindetea.animewarfare.net.networkrequests.NetworkedClass;
 
 /**
  * Class to represent a game client
@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GameClientInfo implements Serializable {
+public class GameClientInfo implements NetworkedClass {
     String gameClientName;
     int id;
 
