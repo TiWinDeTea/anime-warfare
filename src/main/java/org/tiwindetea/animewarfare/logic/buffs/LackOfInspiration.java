@@ -22,37 +22,35 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
 
-public class BattleStartedEvent implements Event<BattleStartedEventListener> {
-	private final Player attacker;
-	private final Player defensor;
-	private final Zone zone;
+import java.util.List;
 
-	public BattleStartedEvent(Player attacker, Player defensor, Zone zone) {
-		this.attacker = attacker;
-		this.defensor = defensor;
-		this.zone = zone;
+public class LackOfInspiration extends Buff {
+	private final List<Player> players;
+
+	public LackOfInspiration(List<Player> players) {
+		super(1);
+
+		this.players = players;
+		modifyCost(1);
 	}
 
 	@Override
-	public void notify(BattleStartedEventListener listener) {
-		listener.handleBattleStartedEvent(this);
+	boolean isActionBuff() {
+		return false;
 	}
 
-	public Player getAttacker() {
-		return this.attacker;
+	@Override
+	void destroy() {
+		modifyCost(-1);
 	}
 
-	public Player getDefensor() {
-		return this.defensor;
-	}
-
-	public Zone getZone() {
-		return this.zone;
+	private void modifyCost(int modifier) {
+		for (Player player : this.players) {
+			player.modifyUniqueActionCost(modifier);
+		}
 	}
 }

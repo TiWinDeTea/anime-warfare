@@ -22,37 +22,14 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
 
-public class BattleStartedEvent implements Event<BattleStartedEventListener> {
-	private final Player attacker;
-	private final Player defensor;
-	private final Zone zone;
+import java.util.List;
 
-	public BattleStartedEvent(Player attacker, Player defensor, Zone zone) {
-		this.attacker = attacker;
-		this.defensor = defensor;
-		this.zone = zone;
-	}
-
-	@Override
-	public void notify(BattleStartedEventListener listener) {
-		listener.handleBattleStartedEvent(this);
-	}
-
-	public Player getAttacker() {
-		return this.attacker;
-	}
-
-	public Player getDefensor() {
-		return this.defensor;
-	}
-
-	public Zone getZone() {
-		return this.zone;
+public class BlankPaperFear extends UnitCostModifierBuff {
+	public BlankPaperFear(List<Player> players) {
+		super(players, -1);
 	}
 }

@@ -22,37 +22,19 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.units.UnitBasicCharacteristics;
 
-public class BattleStartedEvent implements Event<BattleStartedEventListener> {
-	private final Player attacker;
-	private final Player defensor;
-	private final Zone zone;
-
-	public BattleStartedEvent(Player attacker, Player defensor, Zone zone) {
-		this.attacker = attacker;
-		this.defensor = defensor;
-		this.zone = zone;
+public class Misandry extends Sexism {
+	public Misandry() {
+		super(UnitBasicCharacteristics.Gender.FEMALE);
 	}
 
 	@Override
-	public void notify(BattleStartedEventListener listener) {
-		listener.handleBattleStartedEvent(this);
-	}
-
-	public Player getAttacker() {
-		return this.attacker;
-	}
-
-	public Player getDefensor() {
-		return this.defensor;
-	}
-
-	public Zone getZone() {
-		return this.zone;
+	protected void applyEffect() {
+		if (this.nbrOfGenderDefensor >= this.nbrOfGenderAttacker) {
+			// Asks last player
+		}
 	}
 }

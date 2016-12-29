@@ -22,37 +22,28 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
 
-public class BattleStartedEvent implements Event<BattleStartedEventListener> {
-	private final Player attacker;
-	private final Player defensor;
-	private final Zone zone;
+import java.util.List;
 
-	public BattleStartedEvent(Player attacker, Player defensor, Zone zone) {
-		this.attacker = attacker;
-		this.defensor = defensor;
-		this.zone = zone;
+public class GoodDoseOfCoffee extends Buff {
+	public GoodDoseOfCoffee(List<Player> players) {
+		super(1);
+
+		for (Player player : players) {
+			player.setStaffAvailable((int) Math.ceil(player.getStaffAvailable() * 1.25));
+		}
 	}
 
 	@Override
-	public void notify(BattleStartedEventListener listener) {
-		listener.handleBattleStartedEvent(this);
+	boolean isActionBuff() {
+		return false;
 	}
 
-	public Player getAttacker() {
-		return this.attacker;
-	}
-
-	public Player getDefensor() {
-		return this.defensor;
-	}
-
-	public Zone getZone() {
-		return this.zone;
+	@Override
+	void destroy() {
+		// Nothing to do
 	}
 }

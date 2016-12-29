@@ -26,15 +26,16 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UnitCostModifier {
-	private Map<UnitType, Integer> cost;
+	private final Map<UnitType, Integer> cost = new HashMap<>();
 
 	public int getCost(UnitType unitType) {
-		assert (this.cost.containsKey(unitType));
+		int cost = this.cost.get(unitType).intValue() + unitType.getDefaultCost();
 
-		return this.cost.get(unitType).intValue() + unitType.getDefaultCost();
+		return cost < 0 ? 0 : cost;
 	}
 
 	public void modifyCost(UnitType unitType, int relativeInt) {

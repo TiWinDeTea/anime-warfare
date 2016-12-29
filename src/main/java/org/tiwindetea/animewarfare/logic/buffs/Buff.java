@@ -30,10 +30,10 @@ package org.tiwindetea.animewarfare.logic.buffs;
  * @author Benoît CORTIER
  * @author Jérôme BOULMIER
  */
-public abstract class Buff {
+abstract class Buff {
 	int remainingTurns;
 
-	public Buff(int remainingTurns) {
+	protected Buff(int remainingTurns) {
 		this.remainingTurns = remainingTurns;
 	}
 

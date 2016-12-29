@@ -145,7 +145,7 @@ public enum UnitType {
 		return this.unitLevel;
 	}
 
-	UnitBasicCharacteristics getUnitBasicCharacteristics() {
+	public UnitBasicCharacteristics getUnitBasicCharacteristics() {
 		return this.unitBasicCharacteristics;
 	}
 

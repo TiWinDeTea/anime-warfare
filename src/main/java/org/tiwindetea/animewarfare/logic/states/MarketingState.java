@@ -30,6 +30,7 @@ import org.tiwindetea.animewarfare.logic.AdvertisingCampaignRightsPool;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.MarketingLadder;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.states.events.ConventionOrganizedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
@@ -121,6 +122,7 @@ public class MarketingState extends GameState
 					this.currentPlayer.incrementFans(2);
 				}
 
+				EventDispatcher.getInstance().fire(new ConventionOrganizedEvent(this.currentPlayer));
 				// TODO: ask for state machine update.
 			}
 		}

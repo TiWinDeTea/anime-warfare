@@ -44,6 +44,8 @@ public class Player {
 
 	private int fanNumber;
 	private int staffAvailable;
+	private int battleCostModifier;
+	private int uniqueActionModifier;
 
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
@@ -95,11 +97,19 @@ public class Player {
 	}
 
 	public void incrementFans(int numberOfFans) {
+		if (numberOfFans <= 0) {
+			throw new IllegalArgumentException();
+		}
+
 		this.fanNumber += numberOfFans;
 		EventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, numberOfFans, this.fanNumber));
 	}
 
 	public void decrementFans(int numberOfFans) {
+		if (numberOfFans >= 0) {
+			throw new IllegalArgumentException();
+		}
+
 		this.fanNumber -= numberOfFans;
 		EventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, -numberOfFans, this.fanNumber));
 	}
@@ -130,9 +140,26 @@ public class Player {
 
 	public void addAdvertisingCampaignRights(AdvertisingCampaignRight advertisingCampaignRight) {
 		this.advertisingCampaignRights.add(advertisingCampaignRight);
+		// TODO: Events
 	}
 
 	public void clearAdvertisingCampaignRights() {
 		this.advertisingCampaignRights.clear();
+	}
+
+	public int getBattleCostModifier() {
+		return this.battleCostModifier;
+	}
+
+	public void modifyBattleCost(int battleCostModifier) {
+		this.battleCostModifier += battleCostModifier;
+	}
+
+	public int getUniqueActionModifier() {
+		return this.uniqueActionModifier;
+	}
+
+	public void modifyUniqueActionCost(int uniqueActionModifier) {
+		this.uniqueActionModifier += uniqueActionModifier;
 	}
 }

@@ -149,7 +149,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		}
 	}
 
-	private boolean isValidPlayer(ActionEvent<?> event) {
+	private boolean isInvalidPlayer(ActionEvent<?> event) {
 		if (event.getPlayerID() != this.currentPlayer.getID()) {
 			// TODO: This player should not send this event now.
 			// Cheater.
@@ -161,7 +161,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleMoveUnitEvent(MoveUnitEvent event) {
-		if (isValidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 
@@ -200,7 +200,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleOpenStudioEvent(OpenStudioEvent event) {
-		if (isValidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 
@@ -227,7 +227,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleInvokeUnitEvent(InvokeUnitEvent event) {
-		if (isValidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 
@@ -236,7 +236,8 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 			return;
 		}
 
-		if (this.currentPlayer.hasRequiredStaffPoints(event.getUnitType().getDefaultCost())) {
+		if (this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getUnitCostModifier()
+		                                                                .getCost(event.getUnitType()))) {
 			if (event.getUnitType().getUnitLevel() == UnitLevel.MASCOT) {
 				if (!this.currentPlayer.getUnitCounter().hasUnits()) {
 					this.gameBoard.getMap().getZone(event.getZone()).addUnit(new Unit(event.getUnitType()));
@@ -259,7 +260,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleSkipTurnEvent(SkipTurnEvent event) {
-		if (isValidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 
@@ -269,7 +270,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 
 	@Override
 	public void handleBattleEvent(StartBattleEvent event) {
-		if (isValidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 
@@ -281,12 +282,14 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		// TODO: Setup battle.
 
 		EventDispatcher.getInstance()
-				.fire(new BattleStartedEvent(event.getAttackerID(), event.getDefenderID(), event.getZone()));
+		               .fire(new BattleStartedEvent(this.gameBoard.getPlayer(event.getAttackerID()),
+				               this.gameBoard.getPlayer(event.getDefenderID()),
+				               this.gameBoard.getMap().getZone(event.getZone())));
 	}
 
 	@Override
 	public void handleCaptureMascotEvent(CaptureMascotEvent event) {
-		if (isValidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 
