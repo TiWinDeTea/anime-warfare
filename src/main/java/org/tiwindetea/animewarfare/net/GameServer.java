@@ -77,6 +77,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
@@ -93,7 +94,9 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToC
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
@@ -119,6 +122,7 @@ public class GameServer {
     private final LogicListener logicListener = new LogicListener(this.server);
     private final UDPListener udpListener = new UDPListener();
     private boolean isRunning = false;
+    private int TCPPort = -1;
 
     private final HashMap<Integer, FactionType> playersSelection = new HashMap<>(4, 1);
     private final HashMap<Integer, FactionType> playersLocks = new HashMap<>(4, 1);
@@ -219,8 +223,11 @@ public class GameServer {
      * @param UDPport Port to use for clients broadcasting when discovering
      * @throws IOException If the server could not be opened
      */
+
     public void bind(int TCPport, int UDPport) throws IOException {
         Log.trace(GameServer.class.toString(), "Binding server to " + TCPport + " - " + UDPport);
+        this.room.setPort(TCPport);
+        this.TCPPort = TCPport;
         this.server.bind(TCPport);
         this.room.setPort(TCPport);
         this.udpListener.bind(UDPport);
@@ -278,6 +285,29 @@ public class GameServer {
     }
 
     /**
+     * @return The UDPPort to which this server is binded
+     */
+    public int getUDPPort() {
+        return this.udpListener.getPort();
+    }
+
+    /**
+     * @return The TCPPort to which this server is binded
+     */
+    public int getTCPPort() {
+        return this.TCPPort;
+    }
+
+    /**
+     * @return The room of this server
+     */
+    public Room getRoom() {
+        return this.room;
+    }
+
+
+
+    /**
      * stops the udp listening
      */
     public void hide() {
@@ -312,6 +342,7 @@ public class GameServer {
     public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
         private final Server server;
+        private final List<Integer> incomingConnections = new ArrayList<>();
 
         NetworkListener(Server server) {
             this.server = server;
@@ -325,9 +356,13 @@ public class GameServer {
                 connection.close();
             } else {
                 Log.debug(NetworkListener.class.toString(), "Incoming connection: " + connection.getID());
-                GameServer.this.legitConnections.add(new Integer(connection.getID()));
-                connection.sendTCP(new GameClientInfo(connection.getID()));
-                connection.sendTCP(GameServer.this.room);
+                if (GameServer.this.room.isLocked()) {
+                    this.incomingConnections.add(new Integer(connection.getID()));
+                } else {
+                    GameServer.this.legitConnections.add(new Integer(connection.getID()));
+                    connection.sendTCP(new GameClientInfo(connection.getID()));
+                    connection.sendTCP(GameServer.this.room);
+                }
             }
         }
 
@@ -359,6 +394,16 @@ public class GameServer {
                         new NetMessage(message,
                                 GameServer.this.room.find(connection.getID())));
                 Log.trace(GameServer.NetworkListener.class.toString(), "Received message: " + message);
+            } else if (this.incomingConnections.contains(new Integer(connection.getID()))) {
+                this.incomingConnections.remove(new Integer(connection.getID()));
+                if (GameServer.this.room.checkPassword(message)) {
+                    GameServer.this.legitConnections.add(new Integer(connection.getID()));
+                    connection.sendTCP(new GameClientInfo(connection.getID()));
+                    connection.sendTCP(GameServer.this.room);
+                } else {
+                    connection.sendTCP(new NetBadPassword());
+                    connection.close();
+                }
             }
         }
 

@@ -75,6 +75,10 @@ class UDPListener implements Runnable {
         this.room = room;
     }
 
+    int getPort() {
+        return this.port;
+    }
+
     boolean isRunning() {
         return this.isRunning;
     }

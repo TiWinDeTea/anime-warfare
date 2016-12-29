@@ -43,6 +43,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
@@ -130,6 +131,7 @@ class Utils {
 		kryo.register(NetSelectFactionRequest.class);
 		kryo.register(NetSelectMascotToCapture.class);
 		kryo.register(NetUnitEvent.class);
+		kryo.register(NetBadPassword.class);
 	}
 
 	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {

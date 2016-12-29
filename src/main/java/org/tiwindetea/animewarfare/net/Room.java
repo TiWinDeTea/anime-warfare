@@ -51,7 +51,7 @@ public class Room implements Serializable {
 
     private boolean isLocked;
 
-    private InetAddress address;
+    private transient InetAddress address;
 
     private int port;
 
@@ -219,5 +219,9 @@ public class Room implements Serializable {
     @Override
     public String toString() {
         return this.gameName;
+    }
+
+    String getGamePassword() {
+        return this.gamePassword;
     }
 }

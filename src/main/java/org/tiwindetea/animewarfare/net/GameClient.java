@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.net;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
+import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.net.networkevent.*;
 import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
@@ -34,6 +35,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
@@ -177,6 +179,17 @@ public class GameClient {
      * @throws IOException if an I/O error occurs
      */
     public void connect(Room room) throws IOException {
+        this.connect(room, null);
+    }
+
+    /**
+     * Connects the client to a server, given its room and its password
+     *
+     * @param room     Room to connect to
+     * @param password Password of the server, null if there is no password
+     * @throws IOException if an I/O error occurs
+     */
+    public void connect(Room room, @Nullable String password) throws IOException {
         if (this.me.gameClientName == null) {
             throw new IllegalStateException();
         }
@@ -184,7 +197,24 @@ public class GameClient {
         this.client.addListener(this.listener);
         this.client.start();
         this.client.connect(500, room.getAddress(), room.getPort());
+
+        if (password != null) {
+            this.client.sendTCP(password);
+        }
     }
+
+    /**
+     * Connects to a local server
+     *
+     * @param server Server to connect to
+     * @throws IOException if an I/O error occurs
+     */
+    public void connect(GameServer server) throws IOException {
+        Room room = server.getRoom();
+        room.setAddress(InetAddress.getLocalHost());
+        this.connect(room, room.getGamePassword());
+    }
+
 
     /**
      * @return Gets the room to which this client is connected
@@ -257,6 +287,10 @@ public class GameClient {
         }
 
         // network requests
+        public void received(Connection connection, NetBadPassword bpw) {
+            this.eventDispatcher.fire(new BadPasswordNetevent());
+        }
+
         public void received(Connection connection, NetBattleStarted battleStarted) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + battleStarted);
             this.eventDispatcher.fire(new BattleStartedNetevent(battleStarted));
