@@ -32,7 +32,7 @@ import org.lomadriel.lfc.statemachine.State;
  *
  * @author Benoît CORTIER
  */
-public abstract class MenuState implements State {
+public abstract class MenuState extends State {
 	protected BorderPane rootLayout;
 
 	protected State nextState = this;

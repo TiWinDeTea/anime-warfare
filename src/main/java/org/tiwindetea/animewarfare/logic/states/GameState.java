@@ -32,7 +32,7 @@ import org.tiwindetea.animewarfare.logic.GameBoard;
  *
  * @author Jérôme BOULMIER
  */
-abstract class GameState implements State {
+abstract class GameState extends State {
 	protected final GameBoard gameBoard;
 
 	protected GameState(GameBoard gameBoard) {
