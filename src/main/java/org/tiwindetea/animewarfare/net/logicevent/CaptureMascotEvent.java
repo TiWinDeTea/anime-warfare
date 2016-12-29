@@ -27,12 +27,10 @@ package org.tiwindetea.animewarfare.net.logicevent;
 public class CaptureMascotEvent extends ActionEvent<CaptureMascotEventListener> {
 	private final int huntedPlayerID;
 	private final int zone;
-	private final int hunterUnit;
 
-	public CaptureMascotEvent(int playerID, int huntedPlayerID, int hunterUnit, int zone) {
+	public CaptureMascotEvent(int playerID, int huntedPlayerID, int zone) {
 		super(playerID);
 		this.huntedPlayerID = huntedPlayerID;
-		this.hunterUnit = hunterUnit;
 		this.zone = zone;
 	}
 
@@ -43,10 +41,6 @@ public class CaptureMascotEvent extends ActionEvent<CaptureMascotEventListener> 
 
 	public int getHuntedPlayerID() {
 		return this.huntedPlayerID;
-	}
-
-	public int getHunterUnit() {
-		return this.hunterUnit;
 	}
 
 	public int getZone() {

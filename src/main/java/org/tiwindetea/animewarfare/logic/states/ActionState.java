@@ -299,19 +299,27 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		}
 
 		this.huntingZone = this.gameBoard.getMap().getZone(event.getZone());
-		Unit hunter = this.huntingZone.getUnit(event.getHunterUnit());
 
 		this.huntedPlayer = this.gameBoard.getPlayer(event.getHuntedPlayerID());
-		if (hunter.getFaction() == this.huntedPlayer.getFaction()) {
+		if (this.currentPlayer.getFaction() == this.huntedPlayer.getFaction()) {
 			// TODO
+			return;
+		}
+
+		Optional<Unit> hunter = this.huntingZone.getUnits()
+		                                        .stream()
+		                                        .filter(u -> u.getFaction() == this.currentPlayer.getFaction())
+		                                        .max(ActionState::findBestUnitInZone);
+
+		if (!hunter.isPresent()) {
 			return;
 		}
 
 		Optional<Unit> mascotProtector =
 				this.huntingZone.getUnits()
-						.stream()
-						.filter(u -> isMascotProtector(hunter, u))
-						.findFirst();
+				                .stream()
+				                .filter(u -> isMascotProtector(hunter.get(), u))
+				                .findFirst();
 
 		if (mascotProtector.isPresent()) {
 			// TODO
@@ -319,6 +327,16 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 		}
 
 		EventDispatcher.getInstance().fire(new AskMascotToCaptureEvent(event.getHuntedPlayerID()));
+	}
+
+	private static int findBestUnitInZone(Unit o1, Unit o2) {
+		if (o1.getType().getUnitLevel() == o2.getType().getUnitLevel()) {
+			return 0;
+		} else if (o1.getType().getUnitLevel().ordinal() < o2.getType().getUnitLevel().ordinal()) {
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 
 	private boolean isMascotProtector(Unit hunter, Unit unit) {
