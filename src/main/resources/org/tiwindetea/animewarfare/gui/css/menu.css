@@ -50,11 +50,12 @@ PaperButton:pressed {
     -fx-font-size: 21 !important;
 }
 
-.settingsMenu > GridPane {
-    -fx-border-width: 2;
-    -fx-border-color: #2d2d2d88;
-    -fx-padding: 8 8 8 8;
+.settingsMenu > PaperGridPane {
+    -fx-padding: 15 60 40 15;
     -fx-background-image: url("../pictures/ui/background.png");
+    -fx-background-position: center center;
+    -fx-background-size: 100% 100%;
+    -fx-effect: dropshadow(gaussian, #4b4d4b, 20, 0, 5, 5);
 }
 
 .settingsMenu > * > .text-field, .settingsMenu > * > .choice-box {
