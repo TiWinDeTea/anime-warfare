@@ -27,7 +27,7 @@ package org.tiwindetea.animewarfare.net.networkrequests.client;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Lucas Lazare
@@ -35,16 +35,16 @@ import java.util.List;
  */
 public class NetMoveUnitRequest implements NetSendable {
 
-    private final List<MoveUnitEvent.Movement> movements;
+    private final Set<MoveUnitEvent.Movement> movements;
 
     /**
      * @param movements List of the movements you want to do
      */
-    public NetMoveUnitRequest(List<MoveUnitEvent.Movement> movements) {
-        this.movements = Collections.unmodifiableList(movements);
+    public NetMoveUnitRequest(Set<MoveUnitEvent.Movement> movements) {
+        this.movements = Collections.unmodifiableSet(movements);
     }
 
-    public List<MoveUnitEvent.Movement> getMovements() {
+    public Set<MoveUnitEvent.Movement> getMovements() {
         return this.movements;
     }
 }
