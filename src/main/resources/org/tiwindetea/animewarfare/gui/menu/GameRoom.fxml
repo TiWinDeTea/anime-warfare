@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
+<?import org.tiwindetea.animewarfare.gui.PaperButton?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.menu.GameRoomController">
    <children>
       <BorderPane fx:id="borderPane" layoutX="82.0" layoutY="56.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -43,8 +37,11 @@
          <bottom>
             <HBox alignment="CENTER" spacing="5.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />
-                  <Button fx:id="lockFactionButton" mnemonicParsing="false" onAction="#handleLockFaction" text="%button.lockfaction" />
+                  <PaperButton mnemonicParsing="false" onAction="#handleQuit" prefHeight="30.0" prefWidth="150.0"
+                               text="%button.quit"/>
+                  <PaperButton fx:id="lockFactionButton" mnemonicParsing="false" onAction="#handleLockFaction"
+                               prefHeight="30.0" prefWidth="150.0"
+                               text="%button.lockfaction"/>
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

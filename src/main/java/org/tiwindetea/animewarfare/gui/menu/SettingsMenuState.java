@@ -54,7 +54,7 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 	private static AnchorPane settingsMenu;
 	private static SettingsMenuController settingsMenuController;
 
-	private static final Duration animationDuration = Duration.millis(350);
+	private static final Duration ANIMATION_DURATION = Duration.millis(350);
 	private static ParallelTransition transition;
 	private static FadeTransition fadeTransition;
 	private static Timeline scaleTimeline;
@@ -75,13 +75,14 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 		}
 		SettingsMenuState.settingsMenuController = settingsMenuLoader.getController();
 
-		fadeTransition = new FadeTransition(animationDuration, SettingsMenuState.settingsMenu);
+		fadeTransition = new FadeTransition(ANIMATION_DURATION, SettingsMenuState.settingsMenu);
 		fadeTransition.setFromValue(0.0);
 		fadeTransition.setToValue(1.0);
 		fadeTransition.setCycleCount(1);
 		fadeTransition.setAutoReverse(false);
 
-		scaleTimeline = new Timeline(new KeyFrame(animationDuration, new KeyValue(SettingsMenuState.settingsMenu.scaleXProperty(), 1)));
+		scaleTimeline = new Timeline(new KeyFrame(ANIMATION_DURATION,
+				new KeyValue(SettingsMenuState.settingsMenu.scaleXProperty(), 1)));
 		scaleTimeline.setCycleCount(1);
 		scaleTimeline.setAutoReverse(false);
 
@@ -97,7 +98,7 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 		bt = new BlurTransition(settingsMenu);
 		bt.setBegin(10, 10);
 		bt.setEnd(0, 0);
-		bt.setDuration(animationDuration);
+		bt.setDuration(ANIMATION_DURATION);
 	}
 
 	public SettingsMenuState(BorderPane rootLayout) {
@@ -114,7 +115,9 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 				case 0:
 					SettingsMenuState.settingsMenu.setTranslateX(-2 * this.rootLayout.getWidth() / 5. + 15);
 					SettingsMenuState.settingsMenu.setScaleX(0.1);
-					positionTimeline.getKeyFrames().setAll(new KeyFrame(animationDuration, new KeyValue(SettingsMenuState.settingsMenu.translateXProperty(), 0)));
+					positionTimeline.getKeyFrames()
+					                .setAll(new KeyFrame(ANIMATION_DURATION,
+							                new KeyValue(SettingsMenuState.settingsMenu.translateXProperty(), 0)));
 					transition.play();
 					break;
 				case 1:

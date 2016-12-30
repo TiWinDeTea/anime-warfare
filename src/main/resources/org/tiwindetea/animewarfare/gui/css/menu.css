@@ -1,31 +1,43 @@
+PaperButton {
+    -fx-background-image: url("../pictures/ui/button_bg.jpg");
+    -fx-text-fill: black;
+    -fx-font-family: "Ladylike BB";
+    -fx-font-size: 18;
+    -fx-effect: dropshadow(gaussian, #4b4d4b, 10, 0, 5, 5);
+    /*-fx-pref-width: 150;
+    -fx-pref-height: 40;*/
+    -fx-background-repeat: no-repeat;
+}
+
+PaperButton:hover {
+    -fx-effect: dropshadow(gaussian, gray, 20, 0, 5, 5);
+}
+
+PaperButton:pressed {
+    -fx-effect: dropshadow(gaussian, #1d1f1d, 20, 0, 5, 5);
+}
+
 .vBoxMainMenu {
     -fx-spacing: 30;
     -fx-padding: 10, 0, 10, 0;
 }
 
-.vBoxMainMenu > Button {
+.vBoxMainMenu > PaperButton {
     -fx-pref-width: 250;
     -fx-pref-height: 50;
-    -fx-background-color: #694b23;
-    -fx-text-fill: white;
-    -fx-font-family: "Ladylike BB";
     -fx-font-size: 28;
     -fx-border-radius: 0;
     -fx-border-color: #342411;
-    -fx-border-width: 4;
+    -fx-border-width: 0;
 }
 
-.vBoxMainMenu > Button:pressed {
-    -fx-background-color: #c18c3b !important;
-}
-
-.vBoxMainMenu > Button:hover {
-    -fx-background-color: #9b6f32;
+.vBoxMainMenu > PaperButton:hover {
+    /*-fx-border-color: darkgray;*/
     -fx-translate-x: 10;
 }
 
-.vBoxMainMenu > Button:focused {
-    -fx-background-color: #9b6f32;
+.vBoxMainMenu > PaperButton:focused {
+    /*-fx-border-color: #a4a4a4;*/
     -fx-translate-x: 10;
 }
 

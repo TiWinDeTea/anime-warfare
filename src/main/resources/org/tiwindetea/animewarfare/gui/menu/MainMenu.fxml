@@ -2,19 +2,24 @@
 
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.tiwindetea.animewarfare.gui.PaperButton?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="mainMenuBackground" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.menu.MainMenuController">
+<AnchorPane styleClass="mainMenuBackground" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.menu.MainMenuController">
    <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
-            <VBox fx:id="buttonContainer" alignment="CENTER" onKeyReleased="#handleFocusRequest" prefWidth="300.0" spacing="20.0" styleClass="vBoxMainMenu" BorderPane.alignment="CENTER">
+            <VBox fx:id="buttonContainer" alignment="CENTER" onKeyReleased="#handleFocusRequest" spacing="20.0" styleClass="vBoxMainMenu" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#handlePlay" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.play" />
-                  <Button mnemonicParsing="false" onAction="#handleSettings" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.settings" />
-                  <Button mnemonicParsing="false" onAction="#handleAbout" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.about" />
-                  <Button mnemonicParsing="false" onAction="#handleQuit" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.quit" />
+                  <PaperButton fx:id="playButton" mnemonicParsing="false" onAction="#handlePlay" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.play" />
+                  <PaperButton mnemonicParsing="false" onAction="#handleSettings" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.settings" />
+                  <PaperButton mnemonicParsing="false" onAction="#handleAbout" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.about" />
+                  <PaperButton mnemonicParsing="false" onAction="#handleQuit" onMouseEntered="#handleMouseEnteredEvent" onMouseExited="#handleMouseExitedEvent" text="%button.quit" />
                </children>
                <padding>
                   <Insets bottom="5.0" top="5.0" />
