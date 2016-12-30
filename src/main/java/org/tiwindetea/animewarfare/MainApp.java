@@ -36,9 +36,10 @@ import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEventListener;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
-import org.tiwindetea.animewarfare.util.PropertiesReader;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 /**
  * Main application class.
@@ -47,8 +48,8 @@ import java.io.IOException;
  * @author Benoît CORTIER
  */
 public class MainApp extends Application implements AskMenuStateUpdateEventListener, QuitApplicationEventListener {
-	private static final PropertiesReader PROPERTIES_READER
-			= new PropertiesReader("org.tiwindetea.animewarfare.MainApp");
+	private static final ResourceBundle BUNDLE
+			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.MainApp");
 
 	private Stage primaryStage;
 
@@ -62,7 +63,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		EventDispatcher.getInstance().addListener(QuitApplicationEvent.class, this);
 
 		this.primaryStage = stage;
-		this.primaryStage.setTitle(PROPERTIES_READER.getString("title"));
+		this.primaryStage.setTitle(BUNDLE.getString("title"));
 
 		initRootLayout();
 

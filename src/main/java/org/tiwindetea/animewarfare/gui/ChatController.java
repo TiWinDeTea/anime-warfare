@@ -32,10 +32,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.tiwindetea.animewarfare.Settings;
-import org.tiwindetea.animewarfare.util.PropertiesReader;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.ResourceBundle;
 
 /**
  * The chat controller.
@@ -43,8 +44,8 @@ import java.util.Deque;
  * @author Benoît CORTIER
  */
 public class ChatController {
-	private static final PropertiesReader PROPERTIES_READER
-			= new PropertiesReader("org.tiwindetea.animewarfare.gui.ChatController");
+	private static final ResourceBundle BUNDLE
+			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.ChatController");
 
 	@FXML
 	private VBox chatMessages;
@@ -59,7 +60,7 @@ public class ChatController {
 
 	private Deque<Label> chatContent = new ArrayDeque<>();
 
-	private static final int MAX_MESSAGES = Integer.valueOf(PROPERTIES_READER.getString("messages.max"));
+	private static final int MAX_MESSAGES = Integer.valueOf(BUNDLE.getString("messages.max"));
 
 	public void clear() {
 		this.chatMessages.getChildren().clear();
@@ -68,9 +69,9 @@ public class ChatController {
 
 	@FXML
 	private void initialize() {
-		chatMessagesScroll.vvalueProperty().addListener((obs, oldval, newval) -> {
+		this.chatMessagesScroll.vvalueProperty().addListener((obs, oldval, newval) -> {
 			if (oldval.doubleValue() == 1.0 && this.needScrollBarUpdate) {
-				chatMessagesScroll.setVvalue(1.0);
+				this.chatMessagesScroll.setVvalue(1.0);
 				this.needScrollBarUpdate = false;
 			}
 		});

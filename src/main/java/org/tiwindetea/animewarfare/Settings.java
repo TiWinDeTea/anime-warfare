@@ -24,8 +24,9 @@
 
 package org.tiwindetea.animewarfare;
 
-import org.tiwindetea.animewarfare.util.PropertiesReader;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
+import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 /**
@@ -34,8 +35,8 @@ import java.util.prefs.Preferences;
  * @author Benoît CORTIER
  */
 public class Settings {
-	private static final PropertiesReader PROPERTIES_READER
-			= new PropertiesReader("org.tiwindetea.animewarfare.Settings");
+	private static final ResourceBundle BUNDLE
+			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.Settings");
 
 	private static boolean enableAnimationEffects;
 	private static int autoSaveInterval;
@@ -44,12 +45,12 @@ public class Settings {
 	static {
 		Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 		Settings.playerName =
-				prefs.get("playerName", PROPERTIES_READER.getString("default.input.playername"));
+				prefs.get("playerName", BUNDLE.getString("default.input.playername"));
 		Settings.autoSaveInterval = Integer.valueOf(
-				prefs.get("autoSaveInterval", PROPERTIES_READER.getString("default.interval.autosave"))
+				prefs.get("autoSaveInterval", BUNDLE.getString("default.interval.autosave"))
 		);
 		Settings.enableAnimationEffects = Boolean.valueOf(
-				prefs.get("enableAnimationEffects", PROPERTIES_READER.getString("default.enable.animationeffects"))
+				prefs.get("enableAnimationEffects", BUNDLE.getString("default.enable.animationeffects"))
 		);
 	}
 

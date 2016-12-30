@@ -34,9 +34,10 @@ import javafx.scene.input.KeyEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.Settings;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
-import org.tiwindetea.animewarfare.util.PropertiesReader;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * The settings menu controller.
@@ -44,8 +45,8 @@ import java.util.Optional;
  * @author Benoît CORTIER
  */
 public class SettingsMenuController {
-	private static final PropertiesReader PROPERTIES_READER
-			= new PropertiesReader("org.tiwindetea.animewarfare.gui.menu.SettingsMenuController");
+	private static final ResourceBundle BUNDLE
+			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.menu.SettingsMenuController");
 
 	@FXML
 	private TextField playerNameTextField;
@@ -71,21 +72,21 @@ public class SettingsMenuController {
 		String errorMessage = "";
 
 		if (this.playerNameTextField.getText().isEmpty()) {
-			errorMessage += PROPERTIES_READER.getString("alert.saveerror.playername.empty") + "\n";
+			errorMessage += BUNDLE.getString("alert.saveerror.playername.empty") + "\n";
 		}
 
 		if (this.enableAutosaveCheckBox.isSelected()) {
 			try {
 				Settings.setAutoSaveInterval(Integer.valueOf(this.autosaveIntervalTextField.getText()));
 			} catch (NumberFormatException e) {
-				errorMessage += PROPERTIES_READER.getString("alert.saveerror.interval.autosave.notanumber");
+				errorMessage += BUNDLE.getString("alert.saveerror.interval.autosave.notanumber");
 			}
 		}
 
 		if (!errorMessage.isEmpty()) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle(PROPERTIES_READER.getString("alert.saveerror.title"));
-			alert.setHeaderText(PROPERTIES_READER.getString("alert.saveerror.header"));
+			alert.setTitle(BUNDLE.getString("alert.saveerror.title"));
+			alert.setHeaderText(BUNDLE.getString("alert.saveerror.header"));
 			alert.setContentText(errorMessage);
 			alert.showAndWait();
 			return;
@@ -104,8 +105,8 @@ public class SettingsMenuController {
 	void handleQuit(ActionEvent event) {
 		if (isThereUnsavedChanges()) {
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle(PROPERTIES_READER.getString("alert.unsavedchanges.title"));
-			alert.setHeaderText(PROPERTIES_READER.getString("alert.unsavedchanges.header"));
+			alert.setTitle(BUNDLE.getString("alert.unsavedchanges.title"));
+			alert.setHeaderText(BUNDLE.getString("alert.unsavedchanges.header"));
 
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {

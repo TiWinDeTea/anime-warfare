@@ -29,7 +29,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEvent;
-import org.tiwindetea.animewarfare.util.PropertiesReader;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
+
+import java.util.ResourceBundle;
 
 /**
  * The main menu controller.
@@ -37,8 +39,8 @@ import org.tiwindetea.animewarfare.util.PropertiesReader;
  * @author Benoît CORTIER
  */
 public class MainMenuController {
-	private static final PropertiesReader PROPERTIES_READER
-			= new PropertiesReader("org.tiwindetea.animewarfare.gui.menu.MainMenuController");
+	private static final ResourceBundle BUNDLE
+			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.menu.MainMenuController");
 
 	@FXML
 	void handlePlay(ActionEvent event) {
@@ -53,9 +55,9 @@ public class MainMenuController {
 	@FXML
 	void handleAbout(ActionEvent event) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle(PROPERTIES_READER.getString("alert.about.title"));
-		alert.setHeaderText(PROPERTIES_READER.getString("alert.about.header"));
-		alert.setContentText(PROPERTIES_READER.getString("alert.about.content.text"));
+		alert.setTitle(BUNDLE.getString("alert.about.title"));
+		alert.setHeaderText(BUNDLE.getString("alert.about.header"));
+		alert.setContentText(BUNDLE.getString("alert.about.content.text"));
 
 		alert.showAndWait();
 	}
