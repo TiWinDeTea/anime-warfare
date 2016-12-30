@@ -25,15 +25,22 @@
 package org.tiwindetea.animewarfare.gui.menu;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.Timeline;
+import javafx.animation.Transition;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEventListener;
+import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
@@ -47,7 +54,13 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 	private static AnchorPane settingsMenu;
 	private static SettingsMenuController settingsMenuController;
 
+	private static final Duration animationDuration = Duration.millis(350);
+	private static ParallelTransition transition;
 	private static FadeTransition fadeTransition;
+	private static Timeline scaleTimeline;
+	private static Timeline positionTimeline;
+
+	private static BlurTransition bt;
 
 	static {
 		FXMLLoader settingsMenuLoader = new FXMLLoader();
@@ -62,11 +75,29 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 		}
 		SettingsMenuState.settingsMenuController = settingsMenuLoader.getController();
 
-		SettingsMenuState.fadeTransition = new FadeTransition(Duration.millis(400), SettingsMenuState.settingsMenu);
-		SettingsMenuState.fadeTransition.setFromValue(0.0);
-		SettingsMenuState.fadeTransition.setToValue(1.0);
-		SettingsMenuState.fadeTransition.setCycleCount(1);
-		SettingsMenuState.fadeTransition.setAutoReverse(false);
+		fadeTransition = new FadeTransition(animationDuration, SettingsMenuState.settingsMenu);
+		fadeTransition.setFromValue(0.0);
+		fadeTransition.setToValue(1.0);
+		fadeTransition.setCycleCount(1);
+		fadeTransition.setAutoReverse(false);
+
+		scaleTimeline = new Timeline(new KeyFrame(animationDuration, new KeyValue(SettingsMenuState.settingsMenu.scaleXProperty(), 1)));
+		scaleTimeline.setCycleCount(1);
+		scaleTimeline.setAutoReverse(false);
+
+		positionTimeline = new Timeline();
+		positionTimeline.setCycleCount(1);
+		positionTimeline.setAutoReverse(false);
+
+		transition = new ParallelTransition(fadeTransition, scaleTimeline, positionTimeline);
+		transition.setAutoReverse(false);
+		transition.setCycleCount(1);
+
+
+		bt = new BlurTransition(settingsMenu);
+		bt.setBegin(10, 10);
+		bt.setEnd(0, 0);
+		bt.setDuration(animationDuration);
 	}
 
 	public SettingsMenuState(BorderPane rootLayout) {
@@ -75,11 +106,26 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 
 	@Override
 	public void onEnter() {
+
+		int selectedTransition = 1;
+
+		if (Settings.areAnimationEffectsEnabled()) {
+			switch (selectedTransition) {
+				case 0:
+					SettingsMenuState.settingsMenu.setTranslateX(-2 * this.rootLayout.getWidth() / 5. + 15);
+					SettingsMenuState.settingsMenu.setScaleX(0.1);
+					positionTimeline.getKeyFrames().setAll(new KeyFrame(animationDuration, new KeyValue(SettingsMenuState.settingsMenu.translateXProperty(), 0)));
+					transition.play();
+					break;
+				case 1:
+				default:
+					bt.play();
+			}
+		}
+
 		// place the node in the root layout.
 		this.rootLayout.setCenter(SettingsMenuState.settingsMenu);
 
-		// play the fade transition
-		AnimationsManager.conditionalPlay(SettingsMenuState.fadeTransition);
 
 		// listen events.
 		EventDispatcher.getInstance().addListener(SettingsMenuEvent.class, this);
@@ -95,5 +141,53 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 	public void handleSettingsMenuQuit() {
 		this.nextState = new MainMenuState(this.rootLayout);
 		EventDispatcher.getInstance().fire(new AskMenuStateUpdateEvent());
+	}
+
+	public static class BlurTransition extends Transition {
+
+		private final Node node;
+		private BoxBlur blur = new BoxBlur();
+		private double wb, hb, we, he;
+
+		public BlurTransition(Node node, double widthBeg, double heightBeg, double widthEnd, double heightEnd) {
+			setCycleDuration(Duration.millis(1000));
+			this.node = node;
+			this.wb = widthBeg;
+			this.hb = heightBeg;
+			this.we = widthEnd;
+			this.he = heightEnd;
+		}
+
+		public BlurTransition(Node node) {
+			this.node = node;
+		}
+
+		@Override
+		public void play() {
+			this.blur.setWidth(this.wb);
+			this.blur.setHeight(this.wb);
+			this.node.setEffect(this.blur);
+			super.play();
+		}
+
+		@Override
+		protected void interpolate(double v) {
+			this.blur.setHeight(this.hb + (this.he - this.hb) * v);
+			this.blur.setWidth(this.wb + (this.we - this.wb) * v);
+		}
+
+		public void setBegin(int width, int height) {
+			this.wb = width;
+			this.hb = height;
+		}
+
+		public void setDuration(Duration duration) {
+			setCycleDuration(duration);
+		}
+
+		public void setEnd(int width, int height) {
+			this.we = width;
+			this.he = height;
+		}
 	}
 }
