@@ -70,6 +70,8 @@ public class GameRoomState extends MenuState implements GameRoomEventListener {
 		GameRoomState.fadeTransition.setAutoReverse(false);
 	}
 
+	public static void initStaticFields() {}
+
 	public GameRoomState(BorderPane rootLayout) {
 		super(rootLayout);
 	}

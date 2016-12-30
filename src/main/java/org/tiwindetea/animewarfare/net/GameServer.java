@@ -391,7 +391,7 @@ public class GameServer {
             if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
                 this.server.sendToAllExceptTCP(connection.getID(), info);
                 GameServer.this.room.addMember(info);
-                if (GameServer.this.room.getMembers().size() == GameServer.this.room.getNumberOfExpectedPlayers()) {
+                if (GameServer.this.room.getMembers().size() == GameServer.this.room.getNumberOfExpectedPlayers()) { // FIXME: are you sure?
                     GameServer.this.initNew();
                 }
                 Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " connected");

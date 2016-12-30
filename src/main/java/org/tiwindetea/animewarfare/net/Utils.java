@@ -159,9 +159,9 @@ class Utils {
 		kryo.register(NetUnitEvent.class);
 		kryo.register(NetBadPassword.class);
 
-		//inner
-		kryo.register(String.class);
+		// inner
 		kryo.register(FactionType.class);
+		kryo.register(String.class);
 	}
 
 	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {

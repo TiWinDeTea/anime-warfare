@@ -15,11 +15,15 @@
                 <TableColumn fx:id="numberOfUsersList" editable="false" minWidth="6.0" prefWidth="131.0" text="%tablecolumn.number.players" />
                   <TableColumn fx:id="passwordsList" editable="false" prefWidth="83.0" text="%tablecolumn.exist.password" />
               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
             <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="326.0" spacing="10.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#handleRefresh" text="%button.refresh" />
                   <Button mnemonicParsing="false" onAction="#handleConnect" text="%button.connect" />
+                  <Button mnemonicParsing="false" onAction="#handleConnectIp" text="%button.connectip" />
                   <Button mnemonicParsing="false" onAction="#handleHost" text="%button.host" />
                   <Separator prefWidth="200.0" />
                   <Button mnemonicParsing="false" onAction="#handleQuit" text="%button.quit" />

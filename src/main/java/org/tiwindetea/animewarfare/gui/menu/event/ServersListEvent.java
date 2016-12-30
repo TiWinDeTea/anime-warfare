@@ -42,12 +42,6 @@ public class ServersListEvent implements Event<ServersListEventListener> {
 			void handle(ServersListEventListener listener) {
 				listener.handleJoinServer();
 			}
-		},
-		HOST {
-			@Override
-			void handle(ServersListEventListener listener) {
-				listener.handleHostServer();
-			}
 		};
 
 		abstract void handle(ServersListEventListener listener);

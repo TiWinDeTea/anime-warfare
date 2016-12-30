@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare;
 
+import com.esotericsoftware.minlog.Log;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -31,11 +32,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEventListener;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
+import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
+import org.tiwindetea.animewarfare.net.GameClient;
+import org.tiwindetea.animewarfare.net.GameServer;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
@@ -51,6 +56,9 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	private static final ResourceBundle BUNDLE
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.MainApp");
 
+	private static GameClient gameClient = new GameClient();
+	private static GameServer gameServer = new GameServer();
+
 	private Stage primaryStage;
 
 	private BorderPane rootLayout;
@@ -65,7 +73,11 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		this.primaryStage = stage;
 		this.primaryStage.setTitle(BUNDLE.getString("title"));
 
+		Log.set(Log.LEVEL_DEBUG);
+
 		initRootLayout();
+		GlobalChat.getChatController().initShortcuts(this.primaryStage);
+		GameRoomState.initStaticFields();
 
 		this.menuStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 
@@ -91,6 +103,12 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	private void onQuit() {
 	    EventDispatcher.getInstance().removeListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().removeListener(QuitApplicationEvent.class, this);
+
+		// stop network things.
+		MainApp.getGameClient().disconnect();
+		if (MainApp.getGameServer().isRunning()) {
+			MainApp.getGameServer().stop();
+		}
 	}
 
 	@Override
@@ -106,5 +124,17 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	public void handleQuitApplication() {
 		this.primaryStage.close();
 		onQuit();
+	}
+
+	public static void initANewGameServer() {
+		MainApp.gameServer = new GameServer();
+	}
+
+	public static GameServer getGameServer() {
+		return MainApp.gameServer;
+	}
+
+	public static GameClient getGameClient() {
+		return MainApp.gameClient;
 	}
 }

@@ -30,7 +30,7 @@ import java.util.EventListener;
  * @author Benoît CORTIER
  */
 public interface ServersListEventListener extends EventListener {
-	void handleHostServer();
-	void handleJoinServer();
 	void handleServersListQuit();
+
+	void handleJoinServer();
 }

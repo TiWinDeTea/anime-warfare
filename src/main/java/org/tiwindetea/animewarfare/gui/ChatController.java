@@ -24,14 +24,22 @@
 
 package org.tiwindetea.animewarfare.gui;
 
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.Settings;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNeteventListener;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.util.ArrayDeque;
@@ -43,7 +51,7 @@ import java.util.ResourceBundle;
  *
  * @author Benoît CORTIER
  */
-public class ChatController {
+public class ChatController implements MessageReceivedNeteventListener {
 	private static final ResourceBundle BUNDLE
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.ChatController");
 
@@ -69,28 +77,32 @@ public class ChatController {
 
 	@FXML
 	private void initialize() {
+		EventDispatcher.getInstance().addListener(MessageReceivedNetevent.class, this);
+
 		this.chatMessagesScroll.vvalueProperty().addListener((obs, oldval, newval) -> {
 			if (oldval.doubleValue() == 1.0 && this.needScrollBarUpdate) {
 				this.chatMessagesScroll.setVvalue(1.0);
 				this.needScrollBarUpdate = false;
 			}
 		});
+	}
 
-		/* TODO: add a shortcut to send messages by pressing CTRL+ENTER.
-		this.mainApp.getPrimaryStage().getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.SHIFT, KeyCombination.SHORTCUT_DOWN), () -> handleSend());
-		button.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));*/
+	public void initShortcuts(Stage primaryStage) {
+		primaryStage.getScene().getAccelerators().put(
+				new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHIFT_ANY), () -> handleSend()
+		);
 	}
 
 	@FXML
-	private void handleSend(ActionEvent event) {
+	private void handleSend() {
 		if (!this.answerTextArea.getText().isEmpty()) {
-			// TODO: send message over network.
+			MainApp.getGameClient().send(this.answerTextArea.getText());
 			addMessage(Settings.getPlayerName() + ": " + this.answerTextArea.getText(), Color.DARKBLUE);
 			this.answerTextArea.setText("");
 		}
 	}
 
-	private void addMessage(String message, Color color) {
+	public void addMessage(String message, Color color) {
 		Label newMessage = new Label(message);
 		newMessage.setTextFill(color);
 
@@ -102,6 +114,12 @@ public class ChatController {
 		}
 
 		this.needScrollBarUpdate = true;
+	}
+
+	@Override
+	public void handleMessage(MessageReceivedNetevent message) {
+		Platform.runLater(() ->
+				addMessage(message.getSenderInfos().getGameClientName() + ": " + message.getMessage(), Color.DARKRED));
 	}
 }
 

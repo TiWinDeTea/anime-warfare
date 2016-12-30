@@ -51,8 +51,9 @@ public class ServersListState extends MenuState implements ServersListEventListe
 	static {
 		FXMLLoader serversListLoader = new FXMLLoader();
 		serversListLoader.setLocation(ServersListController.class.getResource("ServersList.fxml"));
-		serversListLoader.setResources(ResourceBundleHelper.getBundle(
-				"org.tiwindetea.animewarfare.gui.menu.ServersListController"));
+		serversListLoader.setResources(
+				ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.menu.ServersListController")
+		);
 
 		try {
 			ServersListState.serversList = serversListLoader.load();
@@ -93,15 +94,7 @@ public class ServersListState extends MenuState implements ServersListEventListe
 	}
 
 	@Override
-	public void handleHostServer() {
-		// TODO: network things?
-		this.nextState = new GameRoomState(this.rootLayout);
-		EventDispatcher.getInstance().fire(new AskMenuStateUpdateEvent());
-	}
-
-	@Override
 	public void handleJoinServer() {
-		// TODO: network things?
 		this.nextState = new GameRoomState(this.rootLayout);
 		EventDispatcher.getInstance().fire(new AskMenuStateUpdateEvent());
 	}

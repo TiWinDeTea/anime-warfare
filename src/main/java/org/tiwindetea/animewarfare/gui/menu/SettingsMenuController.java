@@ -68,7 +68,7 @@ public class SettingsMenuController {
 	}
 
 	@FXML
-	void handleSave(ActionEvent event) {
+	void handleSave() {
 		String errorMessage = "";
 
 		if (this.playerNameTextField.getText().isEmpty()) {
@@ -102,7 +102,7 @@ public class SettingsMenuController {
 	}
 
 	@FXML
-	void handleQuit(ActionEvent event) {
+	void handleQuit() {
 		if (isThereUnsavedChanges()) {
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 			alert.setTitle(BUNDLE.getString("alert.unsavedchanges.title"));
