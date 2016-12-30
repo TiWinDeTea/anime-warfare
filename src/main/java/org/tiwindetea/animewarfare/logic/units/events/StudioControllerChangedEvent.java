@@ -22,46 +22,49 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.units;
+package org.tiwindetea.animewarfare.logic.units.events;
 
-import org.lomadriel.lfc.event.EventDispatcher;
+import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 
-public class Studio {
+public class StudioControllerChangedEvent implements Event<StudioControllerChangedEventListener> {
 	private final int zoneID;
-	private FactionType currentFaction;
-	private Unit controller;
+	private final FactionType controllerFaction;
+	private final int controllerID;
 
-	public Studio(int zoneID) {
+	public StudioControllerChangedEvent(int zoneID, FactionType controllerFaction, int controllerID) {
 		this.zoneID = zoneID;
+		this.controllerFaction = controllerFaction;
+		this.controllerID = controllerID;
 	}
 
-	private void setCurrentFaction(FactionType currentFaction) {
-		this.currentFaction = currentFaction;
+	@Override
+	public void notify(StudioControllerChangedEventListener listener) {
+		listener.handleStudioController(this);
 	}
 
-	public FactionType getCurrentFaction() {
-		return this.currentFaction;
+	/**
+	 * @return the id of the zone where is the studio
+	 */
+	public int getZoneID() {
+		return this.zoneID;
 	}
 
-	public Unit getController() {
-		return this.controller;
+	/**
+	 * Returns the id of the controller or null if nobody controls the studio.
+	 *
+	 * @return the id of the controller or null if nobody controls the studio.
+	 */
+	public FactionType getControllerFaction() {
+		return this.controllerFaction;
 	}
 
-	public void setController(Unit controller) {
-		this.controller = controller;
-
-		if (this.controller != null) {
-			setCurrentFaction(controller.getFaction());
-
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID,
-					controller.getFaction(),
-					controller.getID()));
-		} else {
-			setCurrentFaction(null);
-
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID, null, -1));
-		}
+	/**
+	 * Returns the id of the unit controlling the studio or -1 if nobody controls the studio.
+	 *
+	 * @return the id of the unit controlling the studio or -1 if nobody controls the studio.
+	 */
+	public int getControllerID() {
+		return this.controllerID;
 	}
 }

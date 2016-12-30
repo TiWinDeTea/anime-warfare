@@ -22,46 +22,21 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.units;
+package org.tiwindetea.animewarfare.logic.event;
 
-import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
+import org.lomadriel.lfc.event.Event;
 
-public class Studio {
-	private final int zoneID;
-	private FactionType currentFaction;
-	private Unit controller;
+public class StaffPointUpdatedEvent implements Event<StaffPointUpdatedEventListener> {
+	private final int playerID;
+	private final int staffAvailable;
 
-	public Studio(int zoneID) {
-		this.zoneID = zoneID;
+	public StaffPointUpdatedEvent(int playerID, int staffAvailable) {
+		this.playerID = playerID;
+		this.staffAvailable = staffAvailable;
 	}
 
-	private void setCurrentFaction(FactionType currentFaction) {
-		this.currentFaction = currentFaction;
-	}
-
-	public FactionType getCurrentFaction() {
-		return this.currentFaction;
-	}
-
-	public Unit getController() {
-		return this.controller;
-	}
-
-	public void setController(Unit controller) {
-		this.controller = controller;
-
-		if (this.controller != null) {
-			setCurrentFaction(controller.getFaction());
-
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID,
-					controller.getFaction(),
-					controller.getID()));
-		} else {
-			setCurrentFaction(null);
-
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID, null, -1));
-		}
+	@Override
+	public void notify(StaffPointUpdatedEventListener listener) {
+		listener.onStaffPointChange(this);
 	}
 }

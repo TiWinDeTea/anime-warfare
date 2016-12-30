@@ -25,10 +25,11 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class MoveUnitEvent extends ActionEvent<MoveUnitEventListener> {
-	private final List<Movement> movements;
+	private final Set<Movement> movements;
 
 	public static class Movement {
 		private final int unitID;
@@ -52,12 +53,25 @@ public class MoveUnitEvent extends ActionEvent<MoveUnitEventListener> {
 		public int getDestinationZone() {
 			return this.destinationZone;
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Movement movement = (Movement) o;
+			return this.unitID == movement.unitID;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(this.unitID);
+		}
 	}
 
 	public MoveUnitEvent(int playerID,
-	                     List<Movement> movements) {
+	                     Set<Movement> movements) {
 		super(playerID);
-		this.movements = Collections.unmodifiableList(movements);
+		this.movements = Collections.unmodifiableSet(movements);
 	}
 
 	@Override
@@ -66,9 +80,9 @@ public class MoveUnitEvent extends ActionEvent<MoveUnitEventListener> {
 	}
 
 	/**
-	 * @return an unmodifiable list as specified in {@link Collections#unmodifiableList(List)}
+	 * @return an unmodifiable set as specified in {@link Collections#unmodifiableSet(Set)}
 	 */
-	public List<Movement> getMovements() {
+	public Set<Movement> getMovements() {
 		return this.movements;
 	}
 }

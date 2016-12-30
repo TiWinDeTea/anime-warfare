@@ -30,6 +30,8 @@ import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.buffs.UnitBuffedCharacteristics;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 
+import java.util.Objects;
+
 public class Unit {
 	private static int unitCounter;
 
@@ -93,6 +95,34 @@ public class Unit {
 		return this.type.getUnitLevel() == level;
 	}
 
-	// TODO: getters
+	public boolean hasFaction(FactionType faction) {
+		return this.faction == faction;
+	}
 
+	public static int bestUnitComparator(Unit o1, Unit o2) {
+		if (o1.getType().getUnitLevel() == o2.getType().getUnitLevel()) {
+			return 0;
+		} else if (o1.getType().getUnitLevel().ordinal() < o2.getType().getUnitLevel().ordinal()) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Unit unit = (Unit) o;
+		return this.ID == unit.ID;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.ID);
+	}
 }

@@ -22,46 +22,10 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.units;
+package org.tiwindetea.animewarfare.logic.units.events;
 
-import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
+import java.util.EventListener;
 
-public class Studio {
-	private final int zoneID;
-	private FactionType currentFaction;
-	private Unit controller;
-
-	public Studio(int zoneID) {
-		this.zoneID = zoneID;
-	}
-
-	private void setCurrentFaction(FactionType currentFaction) {
-		this.currentFaction = currentFaction;
-	}
-
-	public FactionType getCurrentFaction() {
-		return this.currentFaction;
-	}
-
-	public Unit getController() {
-		return this.controller;
-	}
-
-	public void setController(Unit controller) {
-		this.controller = controller;
-
-		if (this.controller != null) {
-			setCurrentFaction(controller.getFaction());
-
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID,
-					controller.getFaction(),
-					controller.getID()));
-		} else {
-			setCurrentFaction(null);
-
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID, null, -1));
-		}
-	}
+public interface StudioControllerChangedEventListener extends EventListener {
+	void handleStudioController(StudioControllerChangedEvent event);
 }

@@ -27,12 +27,14 @@ package org.tiwindetea.animewarfare.logic;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.event.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /*
@@ -46,6 +48,8 @@ public class Player {
 	private int staffAvailable;
 	private int battleCostModifier;
 	private int uniqueActionModifier;
+
+	private boolean canPass;
 
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
@@ -64,8 +68,9 @@ public class Player {
 	}
 
 	public void setStaffAvailable(int staffAvailable) {
-		// TODO: Send Event
 		this.staffAvailable = staffAvailable;
+
+		EventDispatcher.send(new StaffPointUpdatedEvent(this.ID, this.staffAvailable));
 	}
 
 	public boolean hasRequiredStaffPoints(int actionCost, int numberOfActions) {
@@ -79,9 +84,7 @@ public class Player {
 	public void decrementStaffPoints(int actionCost, int numberOfActions) {
 		assert (hasRequiredStaffPoints(actionCost, numberOfActions));
 
-		this.staffAvailable -= actionCost * numberOfActions;
-
-		// TODO: Fire event
+		setStaffAvailable(this.staffAvailable - actionCost * numberOfActions);
 	}
 
 	public void decrementStaffPoints(int actionCost) {
@@ -161,5 +164,32 @@ public class Player {
 
 	public void modifyUniqueActionCost(int uniqueActionModifier) {
 		this.uniqueActionModifier += uniqueActionModifier;
+	}
+
+	public boolean canPass() {
+		return this.canPass;
+	}
+
+	public void setCanPass(boolean canPass) {
+		this.canPass = canPass;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Player player = (Player) o;
+		return this.ID == player.ID;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(Integer.valueOf(this.ID));
 	}
 }

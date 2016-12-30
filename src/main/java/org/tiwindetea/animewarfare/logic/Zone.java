@@ -34,6 +34,7 @@ import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Zone {
 	private final int ID;
@@ -75,8 +76,15 @@ public class Zone {
 	}
 
 	public boolean removeUnit(Unit unit) {
+		Objects.requireNonNull(unit);
+
 		if (this.units.remove(unit)) {
 			EventDispatcher.getInstance().fire(new UnitEvent(UnitEvent.Type.REMOVED, unit.getID(), this.ID));
+
+			if (unit.isLevel(UnitLevel.MASCOT) && this.studio != null && unit.equals(this.studio.getController())) {
+				this.studio.setController(null);
+			}
+
 			return true;
 		}
 
@@ -85,6 +93,10 @@ public class Zone {
 
 	public Studio getStudio() {
 		return this.studio;
+	}
+
+	public boolean hasStudio() {
+		return this.studio != null;
 	}
 
 	public void setStudio(Studio studio) {
