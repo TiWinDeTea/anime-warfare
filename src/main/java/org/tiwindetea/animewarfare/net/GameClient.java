@@ -34,6 +34,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
@@ -88,8 +89,21 @@ public class GameClient {
     public static List<Room> discover(int UDPport, int timeout) {
 
         List<InetAddress> broadcastAddresses = Utils.findBroadcastAddr();
-        List<Room> lanRooms = new ArrayList<>(3);
-        List<InetSocketAddress> retrievedFrom = new ArrayList<>(3);
+        return discoverAt(UDPport, timeout, broadcastAddresses.toArray(new InetAddress[broadcastAddresses.size()]));
+    }
+
+    /**
+     * Looks for available servers on a specified list of addresses
+     *
+     * @param UDPport   UDP port on which server(s) are running
+     * @param timeout   The number of milliseconds to wait for a response
+     * @param addresses Addresses of the servers
+     * @return A list containing all servers found on LAN
+     */
+    public static List<Room> discoverAt(int UDPport, int timeout, InetAddress... addresses) {
+
+        List<Room> lanRooms = new ArrayList<>();
+        List<InetSocketAddress> retrievedFrom = new ArrayList<>();
 
         try (DatagramSocket lookup = new DatagramSocket()) {
             byte[] header = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
@@ -97,7 +111,7 @@ public class GameClient {
             System.arraycopy(header, 0, request, 0, header.length);
             request[header.length] = NetworkCommand.SCANNING.getValue();
 
-            for (InetAddress address : broadcastAddresses) {
+            for (InetAddress address : addresses) {
                 DatagramPacket packet = new DatagramPacket(request, request.length, address, UDPport);
                 Log.trace(GameClient.class.getName(), "Broadcasting to " + address);
                 lookup.send(packet);
@@ -177,6 +191,8 @@ public class GameClient {
      *
      * @param room Room to connect to
      * @throws IOException if an I/O error occurs
+     * @throws IllegalStateException if the name of the client was not set
+     * @throws IllegalArgumentException if the room is locked and no password was given, or if the room is not locked and a password was given.
      */
     public void connect(Room room) throws IOException {
         this.connect(room, null);
@@ -188,17 +204,24 @@ public class GameClient {
      * @param room     Room to connect to
      * @param password Password of the server, null if there is no password
      * @throws IOException if an I/O error occurs
+     * @throws IllegalStateException if the name of the client was not set
+     * @throws IllegalArgumentException if the room is locked and no password was given, or if the room is not locked and a password was given.
      */
-    public void connect(Room room, @Nullable String password) throws IOException {
+    public void connect(Room room, @Nullable NetPassword password) throws IOException {
         if (this.me.gameClientName == null) {
             throw new IllegalStateException();
+        }
+        if (room.isLocked()
+                ? password == null || password.getPassword() == null
+                : password != null && password.getPassword() != null) {
+            throw new IllegalArgumentException("Invalid arguments correspondance: room.isLocked() = " + room.isLocked() + " ; password = " + password);
         }
         Log.debug(GameClient.class.toString(), "Connecting to " + room);
         this.client.addListener(this.listener);
         this.client.start();
         this.client.connect(500, room.getAddress(), room.getPort());
 
-        if (password != null) {
+        if (password != null && password.getPassword() != null) {
             this.client.sendTCP(password);
         }
     }
@@ -208,11 +231,13 @@ public class GameClient {
      *
      * @param server Server to connect to
      * @throws IOException if an I/O error occurs
+     * @throws IllegalStateException if the name of the client was not set
+     * @throws IllegalArgumentException if the room is locked and no password was given, or if the room is not locked and a password was given.
      */
     public void connect(GameServer server) throws IOException {
         Room room = server.getRoom();
         room.setAddress(InetAddress.getLocalHost());
-        this.connect(room, room.getGamePassword());
+        this.connect(room, new NetPassword(room.getGamePassword()));
     }
 
 

@@ -22,22 +22,33 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkevent;
-
-import java.util.EventListener;
+package org.tiwindetea.animewarfare.net.networkrequests.client;
 
 /**
- * Interface fo PlayerConnectionNetevent listeners
- *
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface PlayerConnectionNeteventListener extends EventListener {
+public class NetPassword implements NetSendable {
+
+    private final String password;
 
     /**
-     * Method invoked when a new player connects
-     *
-     * @param event The newly connected player
+     * Default constructor, required by kryonet
      */
-    void handlePlayerConnection(PlayerConnectionNetevent event);
+    public NetPassword() {
+        this.password = null;
+    }
+
+    public NetPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String toString() {
+        return this.password;
+    }
 }

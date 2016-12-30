@@ -75,6 +75,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitReque
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
@@ -226,10 +227,11 @@ public class GameServer {
 
     public void bind(int TCPport, int UDPport) throws IOException {
         Log.trace(GameServer.class.toString(), "Binding server to " + TCPport + " - " + UDPport);
-        this.room.setPort(TCPport);
-        this.TCPPort = TCPport;
-        this.server.bind(TCPport);
-        this.room.setPort(TCPport);
+        if (TCPport != this.TCPPort) {
+            this.room.setPort(TCPport);
+            this.TCPPort = TCPport;
+            this.server.bind(TCPport);
+        }
         this.udpListener.bind(UDPport);
     }
 
@@ -259,13 +261,18 @@ public class GameServer {
      */
     public void stop() {
         if (this.isRunning) {
+            this.isRunning = false;
             if (this.udpListener.isRunning()) {
                 this.udpListener.stop();
             }
             this.server.stop();
+            try {
+                this.server.dispose();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             this.server.removeListener(this.networkNetworkListener);
             this.room.clear();
-            this.isRunning = false;
             Utils.deregisterLogicListener(this.logicListener);
         }
     }
@@ -330,7 +337,7 @@ public class GameServer {
         }
     }
 
-    void initNew() {
+    private void initNew() {
         this.udpListener.stop();
         this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(this.playersLocks));
         this.playersSelection.clear();
@@ -394,16 +401,6 @@ public class GameServer {
                         new NetMessage(message,
                                 GameServer.this.room.find(connection.getID())));
                 Log.trace(GameServer.NetworkListener.class.toString(), "Received message: " + message);
-            } else if (this.incomingConnections.contains(new Integer(connection.getID()))) {
-                this.incomingConnections.remove(new Integer(connection.getID()));
-                if (GameServer.this.room.checkPassword(message)) {
-                    GameServer.this.legitConnections.add(new Integer(connection.getID()));
-                    connection.sendTCP(new GameClientInfo(connection.getID()));
-                    connection.sendTCP(GameServer.this.room);
-                } else {
-                    connection.sendTCP(new NetBadPassword());
-                    connection.close();
-                }
             }
         }
 
@@ -511,6 +508,20 @@ public class GameServer {
         public void received(Connection connection, NetOpenStudioRequest studioRequest) {
             if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
                 GameServer.this.eventDispatcher.fire(new OpenStudioEvent(connection.getID(), studioRequest.getZoneID()));
+            }
+        }
+
+        public void received(Connection connection, NetPassword password) {
+            if (this.incomingConnections.contains(new Integer(connection.getID()))) {
+                this.incomingConnections.remove(new Integer(connection.getID()));
+                if (password != null && GameServer.this.room.checkPassword(password.getPassword())) {
+                    GameServer.this.legitConnections.add(new Integer(connection.getID()));
+                    connection.sendTCP(new GameClientInfo(connection.getID()));
+                    connection.sendTCP(GameServer.this.room);
+                } else {
+                    connection.sendTCP(new NetBadPassword());
+                    connection.close();
+                }
             }
         }
 

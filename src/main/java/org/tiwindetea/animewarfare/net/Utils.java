@@ -28,6 +28,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
@@ -43,6 +44,16 @@ import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
@@ -114,24 +125,43 @@ class Utils {
 		kryo.register(LinkedList.class);
 		kryo.register(ArrayList.class);
 
-		// network requests
+		// client
+		kryo.register(NetCapturedMascotSelection.class);
+		kryo.register(NetConventionRequest.class);
+		kryo.register(NetFirstPlayerSelection.class);
+		kryo.register(NetInvokeUnitRequest.class);
+		kryo.register(NetMascotCaptureRequest.class);
+		kryo.register(NetMoveUnitRequest.class);
+		kryo.register(NetOpenStudioRequest.class);
+		kryo.register(NetPassword.class);
+		kryo.register(NetSkipTurnRequest.class);
+		kryo.register(NetStartBattleRequest.class);
+
+		// server
+		kryo.register(NetBadPassword.class);
 		kryo.register(NetBattleStarted.class);
 		kryo.register(NetFanNumberUpdated.class);
 		kryo.register(NetFirstPlayerSelected.class);
 		kryo.register(NetFirstPlayerSelectionRequest.class);
-		kryo.register(NetGameEnded.class);
 		kryo.register(NetGameEndConditionsReached.class);
+		kryo.register(NetGameEnded.class);
 		kryo.register(NetHandlePlayerDisconnection.class);
-		kryo.register(NetLockFactionRequest.class);
 		kryo.register(NetMarketingLadderUpdated.class);
 		kryo.register(NetMessage.class);
 		kryo.register(NetNewStudio.class);
 		kryo.register(NetPhaseChange.class);
+
+		// networkrequests
+		kryo.register(NetLockFactionRequest.class);
 		kryo.register(NetPlayingOrderChosen.class);
 		kryo.register(NetSelectFactionRequest.class);
 		kryo.register(NetSelectMascotToCapture.class);
 		kryo.register(NetUnitEvent.class);
 		kryo.register(NetBadPassword.class);
+
+		//inner
+		kryo.register(String.class);
+		kryo.register(FactionType.class);
 	}
 
 	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {
