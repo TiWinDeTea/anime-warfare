@@ -34,10 +34,12 @@ import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEventListener;
@@ -58,6 +60,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * Action phase of the game
  *
@@ -70,6 +74,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
 
 	private final List<Integer> zonesWithBattle = new ArrayList<>();
+	private final List<Integer> movedUnit = new ArrayList<>();
 
 	private List<Player> players;
 	private boolean gameEnded;
@@ -105,13 +110,15 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 	@Override
 	public void update() {
-		// TODO
+		this.zonesWithBattle.clear();
+		this.movedUnit.clear();
+
+		setNextPlayer();
 	}
 
 	private void setNextPlayer() {
-		this.zonesWithBattle.clear(); // TODO: Move this out of this method.
-
 		int counter = 0;
+
 		do {
 			this.currentPlayerPosition = (this.currentPlayerPosition + 1) % this.players.size();
 			this.currentPlayer = this.players.get(this.currentPlayerPosition);
@@ -122,12 +129,16 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			// End the phase.
 			this.phaseEnded = true;
 		} else {
-			// TODO: Send next player event.
+			EventDispatcher.send(new NextPlayerEvent(this.currentPlayer.getID()));
 		}
 	}
 
 	@Override
 	public void onExit() {
+		for (Player player : this.players) {
+			player.setCanPass(false);
+		}
+
 		unregisterEventListeners();
 	}
 
@@ -154,13 +165,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	private boolean isInvalidPlayer(ActionEvent<?> event) {
-		if (event.getPlayerID() != this.currentPlayer.getID()) {
-			// TODO: This player should not send this event now.
-			// Cheater.
-			return true;
-		}
-
-		return false;
+		return event.getPlayerID() != this.currentPlayer.getID();
 	}
 
 	@Override
@@ -169,37 +174,42 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-		if (this.currentPlayer.hasRequiredStaffPoints(MOVE_COST, event.getMovements().size())) {
-			List<Pair<Unit, MoveUnitEvent.Movement>> validMovements = new LinkedList<>();
-			for (MoveUnitEvent.Movement movement : event.getMovements()) {
-				if (this.gameBoard.getMap().isValid(movement.getSourceZone()) && this.gameBoard.getMap()
-						.isValid(movement.getDestinationZone())) {
-					Unit unitToMove = this.gameBoard.getMap()
-							.getZone(movement.getSourceZone())
-							.getUnit(movement.getUnitID());
 
-					if (unitToMove != null) {
-						if (this.gameBoard.getMap().areAdjacent(movement.getSourceZone(),
-								movement.getDestinationZone())) {
-							validMovements.add(new Pair<>(unitToMove, movement));
-						} else {
-							// TODO: Illegal Movement
-						}
-					} else {
-						// TODO: No such unit.
+		List<Pair<Unit, MoveUnitEvent.Movement>> validMovements = new LinkedList<>();
+
+		for (MoveUnitEvent.Movement movement : event.getMovements()) {
+			if (this.gameBoard.getMap().isValid(movement.getSourceZone())
+					&& this.gameBoard.getMap().isValid(movement.getDestinationZone())) {
+
+				Unit unitToMove = this.gameBoard.getMap()
+				                                .getZone(movement.getSourceZone())
+				                                .getUnit(movement.getUnitID());
+
+				if (unitToMove != null
+						&& unitToMove.hasFaction(this.currentPlayer.getFaction())
+						&& !this.movedUnit.contains(Integer.valueOf(unitToMove.getID()))) { // A Unit can only be moved once per Action.
+
+					if (this.gameBoard.getMap().areAdjacent(movement.getSourceZone(),
+							movement.getDestinationZone())) {
+						validMovements.add(new Pair<>(unitToMove, movement));
 					}
-				}
-			}
-
-			if (event.getMovements().size() == validMovements.size()) {
-				this.currentPlayer.decrementStaffPoints(MOVE_COST, validMovements.size());
-				for (Pair<Unit, MoveUnitEvent.Movement> movement : validMovements) {
-					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
 				}
 			}
 		}
 
-		// TODO: Get next action or get next player.
+		if (this.currentPlayer.hasRequiredStaffPoints(MOVE_COST, validMovements.size())) {
+			if (event.getMovements().size() == validMovements.size()) {
+				this.currentPlayer.decrementStaffPoints(MOVE_COST, validMovements.size());
+				this.currentPlayer.setCanPass(true);
+
+				for (Pair<Unit, MoveUnitEvent.Movement> movement : validMovements) {
+					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
+					this.movedUnit.add(Integer.valueOf(movement.getKey().getID()));
+				}
+			}
+		}
+
+		this.machine.get().update();
 	}
 
 	@Override
@@ -210,23 +220,22 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 		if (this.currentPlayer.hasRequiredStaffPoints(OPEN_STUDIO_COST)) {
 			if (this.gameBoard.getMap().isValid(event.getZone())) {
-				if (this.gameBoard.getMap().getZone(event.getZone()).getStudio() != null) {
+				if (!this.gameBoard.getMap().getZone(event.getZone()).hasStudio()) {
 					Unit mascot = this.gameBoard.getMap()
-							.getZone(event.getZone())
-							.getUnit(UnitLevel.MASCOT,
-									this.currentPlayer.getFaction());
+					                            .getZone(event.getZone())
+					                            .getUnit(UnitLevel.MASCOT, this.currentPlayer.getFaction());
 
 					if (mascot != null) {
-						this.gameBoard.getMap().getZone(event.getZone()).setStudio(new Studio());
 						this.currentPlayer.decrementStaffPoints(OPEN_STUDIO_COST);
-					} else {
-						// TODO: Invalid action.
+						Studio newStudio = new Studio(event.getZone());
+						this.gameBoard.getMap().getZone(event.getZone()).setStudio(newStudio);
+						newStudio.setController(mascot);
 					}
-				} else {
-					// TODO: Invalid action, a studio already exists in this zone.
 				}
 			}
 		}
+
+		this.machine.get().update();
 	}
 
 	@Override
@@ -236,35 +245,33 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		}
 
 		if (!this.gameBoard.getMap().isValid(event.getZone())) {
-			// TODO: Invalid zone.
 			return;
 		}
 
 		if (this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getUnitCostModifier()
 		                                                                .getCost(event.getUnitType()))) {
-			if (event.getUnitType().getUnitLevel() == UnitLevel.MASCOT) {
-				if (!this.currentPlayer.getUnitCounter().hasUnits()) {
-					this.gameBoard.getMap().getZone(event.getZone()).addUnit(new Unit(event.getUnitType()));
-					return;
+			if (this.currentPlayer.getUnitCounter().getNumberOfUnits(event.getUnitType()) <= event.getUnitType()
+			                                                                                      .getMaxNumber()) {
+				Zone invocationZone = this.gameBoard.getMap().getZone(event.getZone());
+
+				if (invocationZone.hasStudio() && invocationZone.getStudio()
+				                                                .getCurrentFaction() == this.currentPlayer.getFaction()
+						|| !this.currentPlayer.getUnitCounter().hasUnits() && event.getUnitType()
+						                                                           .getUnitLevel() == UnitLevel.MASCOT) {
+					invokeUnit(invocationZone, event.getUnitType());
 				}
 			}
 		}
+	}
 
-		if (this.currentPlayer.getUnitCounter().getNumberOfUnits(event.getUnitType()) <= event.getUnitType()
-				.getMaxNumber()) {
-			if (this.gameBoard.getMap().getZone(event.getZone()).hasUnitOfFaction(this.currentPlayer.getFaction())) {
-				this.gameBoard.getMap().getZone(event.getZone()).addUnit(new Unit(event.getUnitType()));
-			} else {
-				// TODO: No unit of the faction in the target zone.
-			}
-		} else {
-			// TODO: Too much unit.
-		}
+	private void invokeUnit(Zone zone, UnitType unitType) {
+		zone.addUnit(new Unit(unitType));
+		this.currentPlayer.getUnitCounter().addUnit(unitType);
 	}
 
 	@Override
 	public void handleSkipTurnEvent(SkipTurnEvent event) {
-		if (isInvalidPlayer(event)) {
+		if (isInvalidPlayer(event) || !this.currentPlayer.canPass()) {
 			return;
 		}
 
@@ -279,7 +286,6 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		}
 
 		if (this.zonesWithBattle.contains(Integer.valueOf(event.getZone()))) {
-			// TODO
 			return;
 		}
 
@@ -298,24 +304,32 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		}
 
 		if (!this.gameBoard.getMap().isValid(event.getZone())) {
-			// TODO
+			return;
+		}
+
+		if (this.currentPlayer.getID() == event.getHuntedPlayerID()) {
 			return;
 		}
 
 		this.huntingZone = this.gameBoard.getMap().getZone(event.getZone());
-
 		this.huntedPlayer = this.gameBoard.getPlayer(event.getHuntedPlayerID());
-		if (this.currentPlayer.getFaction() == this.huntedPlayer.getFaction()) {
-			// TODO
-			return;
-		}
 
 		Optional<Unit> hunter = this.huntingZone.getUnits()
 		                                        .stream()
-		                                        .filter(u -> u.getFaction() == this.currentPlayer.getFaction())
-		                                        .max(ActionState::findBestUnitInZone);
+		                                        .filter(u -> u.hasFaction(this.currentPlayer.getFaction()))
+		                                        .max(Unit::bestUnitComparator);
 
 		if (!hunter.isPresent()) {
+			return;
+		}
+
+		List<Unit> huntedUnits = this.huntingZone.getUnits()
+		                                         .stream()
+		                                         .filter(u -> u.isLevel(UnitLevel.MASCOT)
+				                                         && u.hasFaction(this.huntedPlayer.getFaction()))
+		                                         .collect(Collectors.toList());
+
+		if (huntedUnits.isEmpty()) {
 			return;
 		}
 
@@ -326,40 +340,30 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 				                .findFirst();
 
 		if (mascotProtector.isPresent()) {
-			// TODO
 			return;
 		}
 
-		EventDispatcher.getInstance().fire(new AskMascotToCaptureEvent(event.getHuntedPlayerID()));
-	}
-
-	private static int findBestUnitInZone(Unit o1, Unit o2) {
-		if (o1.getType().getUnitLevel() == o2.getType().getUnitLevel()) {
-			return 0;
-		} else if (o1.getType().getUnitLevel().ordinal() < o2.getType().getUnitLevel().ordinal()) {
-			return 1;
+		if (huntedUnits.size() == 1) {
+			handleMascotToCaptureChoiceEvent(new MascotToCaptureChoiceEvent(event.getHuntedPlayerID(),
+					huntedUnits.get(0).getID()));
 		} else {
-			return -1;
+			EventDispatcher.getInstance().fire(new AskMascotToCaptureEvent(event.getHuntedPlayerID(), event.getZone()));
 		}
 	}
 
 	private boolean isMascotProtector(Unit hunter, Unit unit) {
 		return unit.getFaction() == this.huntedPlayer.getFaction()
-				&& hunter.getType().getUnitLevel().ordinal() <= unit.getType()
-				.getUnitLevel()
-				.ordinal();
+				&& Unit.bestUnitComparator(hunter, unit) <= 0;
 	}
 
 	@Override
 	public void handleMascotToCaptureChoiceEvent(MascotToCaptureChoiceEvent event) {
 		if (this.huntedPlayer.getID() != event.getPlayerID()) {
-			// TODO
 			return;
 		}
 
 		Unit mascot = this.huntingZone.getUnit(event.getMascotID());
-		if (mascot == null || mascot.getType().getUnitLevel() != UnitLevel.MASCOT) {
-			// TODO
+		if (mascot == null || !mascot.isLevel(UnitLevel.MASCOT)) {
 			return;
 		}
 

@@ -25,12 +25,20 @@
 package org.tiwindetea.animewarfare.logic.states.events;
 
 public class AskMascotToCaptureEvent extends RemoveUnitEvent<AskUnitToCaptureEventListener> {
-	public AskMascotToCaptureEvent(int player) {
+	private final int zoneID;
+
+	public AskMascotToCaptureEvent(int player, int zoneID) {
 		super(player, 1);
+
+		this.zoneID = zoneID;
 	}
 
 	@Override
 	public void notify(AskUnitToCaptureEventListener listener) {
 		listener.askUnitToCaptureEvent(this);
+	}
+
+	public int getZoneID() {
+		return this.zoneID;
 	}
 }
