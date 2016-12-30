@@ -113,6 +113,9 @@ import java.util.TreeSet;
  */
 public class GameServer {
 
+    public static final int MAXIMUM_PLAYER_NBR = 4;
+    public static final int MINIMUM_PLAYER_NBR = 2;
+
     private DefaultStateMachine stateMachine;
     private final Server server = new Server();
 
@@ -209,7 +212,7 @@ public class GameServer {
     public void setNumberOfExpectedPlayer(int numberOfExpectedPlayer) {
         if (this.isRunning) {
             throw new IllegalStateException("Server already running");
-        } else if (numberOfExpectedPlayer < 2 || numberOfExpectedPlayer > 4) {
+        } else if (numberOfExpectedPlayer < MINIMUM_PLAYER_NBR || numberOfExpectedPlayer > MAXIMUM_PLAYER_NBR) {
             throw new IllegalArgumentException("Passed argument outside of the [2-4] range. (got " + numberOfExpectedPlayer + ")");
         } else {
             this.room.setNumberOfExpectedPlayers(numberOfExpectedPlayer);

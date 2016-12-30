@@ -78,11 +78,11 @@ public class ServersListController {
 	 */
 	@FXML
 	private void initialize() {
-		chatroomsNamesList.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-		passwordsList.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isLocked()));
-		numberOfUsersList.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getMembers().size())));
+		this.chatroomsNamesList.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+		this.passwordsList.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isLocked()));
+		this.numberOfUsersList.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getMembers().size())));
 
-		roomsTableView.setItems(this.roomsList);
+		this.roomsTableView.setItems(this.roomsList);
 	}
 
 	@FXML
@@ -92,7 +92,7 @@ public class ServersListController {
 
 	@FXML
 	private void handleConnect(ActionEvent event) {
-		int selectedIndex = roomsTableView.getSelectionModel().getSelectedIndex();
+		int selectedIndex = this.roomsTableView.getSelectionModel().getSelectedIndex();
 		if (selectedIndex != -1) {
 			// TODO: try connection to the selected room.
 			// which is roomsTableView.getItems().get(selectedIndex)
