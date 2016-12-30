@@ -58,8 +58,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
-public class ActionState extends GameState implements MoveUnitEventListener, OpenStudioEventListener,
+/**
+ * Action phase of the game
+ *
+ * @author Jérome BOULMIER
+ */
+class ActionState extends GameState implements MoveUnitEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipTurnEventListener, StartBattleEventListener,
 		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
@@ -77,7 +81,7 @@ public class ActionState extends GameState implements MoveUnitEventListener, Ope
 	private Player huntedPlayer;
 	private Zone huntingZone;
 
-	public ActionState(GameBoard gameBoard) {
+	ActionState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
 

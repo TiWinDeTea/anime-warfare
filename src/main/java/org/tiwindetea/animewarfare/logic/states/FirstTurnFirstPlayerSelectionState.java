@@ -29,8 +29,8 @@ import org.tiwindetea.animewarfare.logic.GameBoard;
 
 import java.util.Random;
 
-public class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
-	public FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
+class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
+	FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
 

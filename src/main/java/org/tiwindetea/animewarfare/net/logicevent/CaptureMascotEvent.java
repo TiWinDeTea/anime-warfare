@@ -30,6 +30,11 @@ public class CaptureMascotEvent extends ActionEvent<CaptureMascotEventListener> 
 
 	public CaptureMascotEvent(int playerID, int huntedPlayerID, int zone) {
 		super(playerID);
+
+		if (playerID == huntedPlayerID) {
+			throw new IllegalArgumentException("The hunter can't be the hunted player.");
+		}
+
 		this.huntedPlayerID = huntedPlayerID;
 		this.zone = zone;
 	}

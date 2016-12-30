@@ -26,7 +26,7 @@ package org.tiwindetea.animewarfare.logic;
 
 public enum FactionType {
 	NO_NAME,
-	COOL_GUYS,
+	THE_BLACK_KNIGHTS,
 	HAIYORE,
 	F_CLASS_NO_BAKA
 }

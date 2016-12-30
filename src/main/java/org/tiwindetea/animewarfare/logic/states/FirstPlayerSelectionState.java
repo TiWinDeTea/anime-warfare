@@ -38,13 +38,13 @@ import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEventListene
 
 import java.util.List;
 
-public class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEventListener, PlayingOrderChoiceEventListener {
+class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEventListener, PlayingOrderChoiceEventListener {
 	protected static final String TURN_NOT_INITIALIZED = "Turn not initialized"; // TODO: Externalize
 
 	protected Player firstPlayer;
 	protected Boolean clockWise;
 
-	public FirstPlayerSelectionState(GameBoard gameBoard) {
+	FirstPlayerSelectionState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
 

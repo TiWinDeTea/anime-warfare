@@ -29,7 +29,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
@@ -69,7 +68,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 		this.menuStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 
-		this.primaryStage.setOnCloseRequest(this::onQuit);
+		this.primaryStage.setOnCloseRequest((event) -> onQuit());
 	}
 
     private void initRootLayout() {
@@ -88,7 +87,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		}
     }
 
-    private void onQuit(WindowEvent event) {
+	private void onQuit() {
 	    EventDispatcher.getInstance().removeListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().removeListener(QuitApplicationEvent.class, this);
 	}
@@ -105,6 +104,6 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	@Override
 	public void handleQuitApplication() {
 		this.primaryStage.close();
-		onQuit(null);
+		onQuit();
 	}
 }

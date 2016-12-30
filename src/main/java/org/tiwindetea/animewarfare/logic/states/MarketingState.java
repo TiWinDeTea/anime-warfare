@@ -41,10 +41,11 @@ import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEventListener;
 
 import java.util.Iterator;
 
-/*
+/**
+ * Marketing phase of the game
  * @author Benoît CORTIER
  */
-public class MarketingState extends GameState
+class MarketingState extends GameState
 		implements OrganizeConventionRequestEventListener, SkipTurnEventListener,
 		GameEndedEventListener {
 	private Iterator<Player> playerIterator;
@@ -52,7 +53,7 @@ public class MarketingState extends GameState
 
 	private State nextState = this;
 
-	protected MarketingState(GameBoard gameBoard) {
+	MarketingState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
 
@@ -94,7 +95,7 @@ public class MarketingState extends GameState
 		return this.nextState;
 	}
 
-	protected void registerEventListeners() {
+	private void registerEventListeners() {
 		EventDispatcher.getInstance().addListener(OrganizeConventionRequestEvent.class, this);
 		EventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
 		EventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
@@ -123,19 +124,21 @@ public class MarketingState extends GameState
 				}
 
 				EventDispatcher.getInstance().fire(new ConventionOrganizedEvent(this.currentPlayer));
-				// TODO: ask for state machine update.
+
+				this.machine.get().update();
 			}
 		}
 	}
 
 	@Override
 	public void handleSkipTurnEvent(SkipTurnEvent event) {
-		// TODO: ask for state machine update.
+		this.machine.get().update();
 	}
 
 	@Override
 	public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
 		this.nextState = new GameEndedState(this.gameBoard);
-		// TODO: ask for state machine update.
+
+		this.machine.get().update();
 	}
 }
