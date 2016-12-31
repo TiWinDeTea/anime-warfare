@@ -33,7 +33,7 @@ import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 public class MarketingLadder {
 	private int[] costs;
 
-	private int currentPosition = 0;
+	private int currentPosition;
 
 	public MarketingLadder(int numberOfPlayers) {
 		// TODO: check rules about that:

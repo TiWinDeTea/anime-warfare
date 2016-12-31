@@ -254,10 +254,10 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			                                                                                      .getMaxNumber()) {
 				Zone invocationZone = this.gameBoard.getMap().getZone(event.getZone());
 
-				if (invocationZone.hasStudio() && invocationZone.getStudio()
-				                                                .getCurrentFaction() == this.currentPlayer.getFaction()
+				if (invocationZone.hasStudio() && this.currentPlayer.hasFaction(invocationZone.getStudio()
+				                                                                              .getCurrentFaction())
 						|| !this.currentPlayer.getUnitCounter().hasUnits() && event.getUnitType()
-						                                                           .getUnitLevel() == UnitLevel.MASCOT) {
+						                                                           .isLevel(UnitLevel.MASCOT)) {
 					invokeUnit(invocationZone, event.getUnitType());
 				}
 			}
@@ -352,7 +352,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	private boolean isMascotProtector(Unit hunter, Unit unit) {
-		return unit.getFaction() == this.huntedPlayer.getFaction()
+		return unit.hasFaction(this.huntedPlayer.getFaction())
 				&& Unit.bestUnitComparator(hunter, unit) <= 0;
 	}
 

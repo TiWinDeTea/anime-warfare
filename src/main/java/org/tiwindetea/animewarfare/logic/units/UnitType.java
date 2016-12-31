@@ -145,6 +145,10 @@ public enum UnitType {
 		return this.unitLevel;
 	}
 
+	public boolean isLevel(UnitLevel level) {
+		return this.unitLevel == level;
+	}
+
 	public UnitBasicCharacteristics getUnitBasicCharacteristics() {
 		return this.unitBasicCharacteristics;
 	}

@@ -30,7 +30,7 @@ package org.tiwindetea.animewarfare.logic.buffs;
  * @author Benoît CORTIER
  */
 class BuffMask {
-	int attackPoints = 0;
+	int attackPoints;
 	boolean canAttack = true;
 	boolean attackable = true;
 }

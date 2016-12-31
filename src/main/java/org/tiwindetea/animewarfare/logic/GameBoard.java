@@ -69,7 +69,7 @@ public class GameBoard {
 
 	public Player getPlayer(FactionType factionType) {
 		return this.players.stream()
-		                   .filter(p -> p.getFaction() == factionType)
+		                   .filter(p -> p.hasFaction(factionType))
 		                   .findFirst()
 		                   .orElse(null);
 	}

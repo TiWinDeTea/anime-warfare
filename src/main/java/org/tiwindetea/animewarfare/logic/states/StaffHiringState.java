@@ -120,6 +120,6 @@ public class StaffHiringState extends GameState {
 
 	private static int getNumberOfControlledPortal(List<Studio> studios, Player player) {
 		return (int) studios.stream().map(Studio::getCurrentFaction)
-				.filter(faction -> faction == player.getFaction()).count();
+		                    .filter(faction -> player.hasFaction(faction)).count();
 	}
 }

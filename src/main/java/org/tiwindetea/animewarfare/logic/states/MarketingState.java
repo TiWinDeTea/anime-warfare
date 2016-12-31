@@ -65,8 +65,8 @@ class MarketingState extends GameState
 		for (Player player : this.gameBoard.getPlayers()) {
 			player.incrementFans(
 					(int) this.gameBoard.getMap().getStudios().stream()
-							.filter(studio -> studio.getCurrentFaction() == player.getFaction())
-							.count()
+					                    .filter(studio -> player.hasFaction(studio.getCurrentFaction()))
+					                    .count()
 			);
 		}
 

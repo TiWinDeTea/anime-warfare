@@ -121,6 +121,10 @@ public class Player {
 		return this.faction;
 	}
 
+	public boolean hasFaction(FactionType factionType) {
+		return this.faction == factionType;
+	}
+
 	public UnitCounter getUnitCounter() {
 		return this.unitCounter;
 	}

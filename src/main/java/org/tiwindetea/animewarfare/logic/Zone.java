@@ -66,7 +66,7 @@ public class Zone {
 
 	public Unit getUnit(UnitLevel level, FactionType faction) {
 		return this.units.stream()
-		                 .filter(unit -> unit.isLevel(level) && unit.getFaction() == faction)
+		                 .filter(unit -> unit.isLevel(level) && unit.hasFaction(faction))
 		                 .findFirst().orElse(null);
 	}
 
@@ -110,6 +110,6 @@ public class Zone {
 
 	public boolean hasUnitOfFaction(FactionType faction) {
 		return this.units.stream()
-		                 .anyMatch(unit -> unit.getFaction() == faction);
+		                 .anyMatch(unit -> unit.hasFaction(faction));
 	}
 }

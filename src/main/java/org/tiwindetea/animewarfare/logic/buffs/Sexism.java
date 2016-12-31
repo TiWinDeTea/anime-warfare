@@ -59,13 +59,13 @@ abstract class Sexism extends Buff implements BattleStartedEventListener {
 
 	private void updateGender(BattleStartedEvent event) {
 		for (Unit unit : event.getZone().getUnits()) {
-			if (unit.getFaction() == event.getAttacker().getFaction() && unit.getType()
-			                                                                 .getUnitBasicCharacteristics()
-			                                                                 .getGender() == this.gender) {
+			if (unit.hasFaction(event.getAttacker().getFaction()) && unit.getType()
+			                                                             .getUnitBasicCharacteristics()
+			                                                             .getGender() == this.gender) {
 				++this.nbrOfGenderAttacker;
-			} else if (unit.getFaction() == event.getDefensor().getFaction() && unit.getType()
-			                                                                        .getUnitBasicCharacteristics()
-			                                                                        .getGender() == this.gender) {
+			} else if (unit.hasFaction(event.getDefensor().getFaction()) && unit.getType()
+			                                                                    .getUnitBasicCharacteristics()
+			                                                                    .getGender() == this.gender) {
 				++this.nbrOfGenderDefensor;
 			}
 		}

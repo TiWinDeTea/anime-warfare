@@ -92,7 +92,7 @@ public class Unit {
 	}
 
 	public boolean isLevel(UnitLevel level) {
-		return this.type.getUnitLevel() == level;
+		return this.type.isLevel(level);
 	}
 
 	public boolean hasFaction(FactionType faction) {
@@ -100,7 +100,7 @@ public class Unit {
 	}
 
 	public static int bestUnitComparator(Unit o1, Unit o2) {
-		if (o1.getType().getUnitLevel() == o2.getType().getUnitLevel()) {
+		if (o1.getType().isLevel(o2.getType().getUnitLevel())) {
 			return 0;
 		} else if (o1.getType().getUnitLevel().ordinal() < o2.getType().getUnitLevel().ordinal()) {
 			return -1;
