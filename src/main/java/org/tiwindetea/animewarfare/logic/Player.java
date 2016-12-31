@@ -26,6 +26,8 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
+import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightAddedEvent;
+import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightRevealedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.event.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.units.Unit;
@@ -135,6 +137,8 @@ public class Player {
 
 	public boolean addUnitCaptured(Unit unit) {
 		return this.unitCaptured.add(unit);
+
+		// TODO: Event
 	}
 
 	public Set<Unit> getUnitCaptured() {
@@ -147,10 +151,26 @@ public class Player {
 
 	public void addAdvertisingCampaignRights(AdvertisingCampaignRight advertisingCampaignRight) {
 		this.advertisingCampaignRights.add(advertisingCampaignRight);
-		// TODO: Events
+
+		EventDispatcher.send(new AdvertisingCampaignRightAddedEvent(this.ID, advertisingCampaignRight.getWeight()));
 	}
 
-	public void clearAdvertisingCampaignRights() {
+	public boolean revealAdvertisingCampainRights(int weight) { // FIXME: Don't forget this
+		AdvertisingCampaignRight campaignRight = this.advertisingCampaignRights.stream()
+		                                                                       .filter(a -> a.getWeight() == weight)
+		                                                                       .findFirst()
+		                                                                       .orElse(null);
+
+		if (campaignRight != null) {
+			this.advertisingCampaignRights.remove(campaignRight);
+			EventDispatcher.send(new AdvertisingCampaignRightRevealedEvent(this.ID, campaignRight.getWeight()));
+			return true;
+		}
+
+		return false;
+	}
+
+	public void clearAdvertisingCampaignRights() { // TODO: Is this realy needed ?
 		this.advertisingCampaignRights.clear();
 	}
 
@@ -160,14 +180,18 @@ public class Player {
 
 	public void modifyBattleCost(int battleCostModifier) {
 		this.battleCostModifier += battleCostModifier;
+
+		// TODO: Event
 	}
 
-	public int getUniqueActionModifier() {
+	public int getUniqueActionModifier() { // FIXME: Don't forget to use this.
 		return this.uniqueActionModifier;
 	}
 
 	public void modifyUniqueActionCost(int uniqueActionModifier) {
 		this.uniqueActionModifier += uniqueActionModifier;
+
+		// TODO: Event
 	}
 
 	public boolean canPass() {
@@ -176,6 +200,8 @@ public class Player {
 
 	public void setCanPass(boolean canPass) {
 		this.canPass = canPass;
+
+		// TODO: Event
 	}
 
 	@Override

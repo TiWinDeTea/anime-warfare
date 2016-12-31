@@ -72,6 +72,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
+	private static final int BATTLE_COST = 1; // TODO: Externalize
 
 	private final List<Integer> zonesWithBattle = new ArrayList<>();
 	private final List<Integer> movedUnit = new ArrayList<>();
@@ -286,6 +287,10 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		}
 
 		if (this.zonesWithBattle.contains(Integer.valueOf(event.getZone()))) {
+			return;
+		}
+
+		if (!this.currentPlayer.hasRequiredStaffPoints(BATTLE_COST + this.currentPlayer.getBattleCostModifier())) {
 			return;
 		}
 

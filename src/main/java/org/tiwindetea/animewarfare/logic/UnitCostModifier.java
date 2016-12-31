@@ -42,5 +42,7 @@ public class UnitCostModifier {
 		this.cost.put(unitType,
 				new Integer(this.cost.getOrDefault(unitType,
 						new Integer(0)).intValue() + relativeInt));
+
+		// TODO: Event
 	}
 }

@@ -42,11 +42,15 @@ public class UnitCounter {
 	public void addUnit(UnitType type) {
 		++this.numberOfUnitsByType[type.ordinal()];
 		++this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
+
+		// TODO: Event
 	}
 
 	public void removeUnit(UnitType type) {
 		--this.numberOfUnitsByType[type.ordinal()];
 		--this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
+
+		// TODO: Event
 	}
 
 	public boolean hasUnits() {
