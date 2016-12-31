@@ -42,10 +42,53 @@ PaperButton:pressed {
 }
 
 .serverList {
-    /*-fx-background-color: black;*/
 }
 
-.settingsMenu {
+.serverList, .serverList .column-header-background {
+    -fx-background-image: url("../pictures/ui/background.png");
+    -fx-background-repeat: repeat;
+}
+
+.serverList .column-header {
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+}
+
+.serverList .table-cell {
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+}
+
+.serverList .table-row-cell:selected .label {
+    -fx-text-fill: black !important;
+}
+
+.serverList .table-row-cell:odd:selected .label {
+    -fx-text-fill: black !important;
+}
+
+.serverList .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-font-family: "Ladylike BB" !important;
+    -fx-font-size: 18 !important;
+}
+
+.serverList .table-row-cell:odd {
+    -fx-background-color: rgba(193, 140, 59, 0.1);
+}
+
+.serverList .table-row-cell:selected, .serverList .table-row-cell:odd:selected {
+    -fx-background-image: url("../pictures/ui/textfield.png");
+    -fx-background-size: 103% 100%;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+.serverList .table-row-cell:selected > *, .serverList .table-row-cell:odd:selected > * {
+    -fx-text-fill: black;
+}
+
+.settingsMenu, .serverList .column-header {
     -fx-font-family: "Ladylike BB" !important;
     -fx-font-size: 21 !important;
 }
@@ -74,17 +117,17 @@ PaperButton:pressed {
     -fx-background-color: #c18c3b;
 }
 
-.settingsMenu > * > .check-box > * {
+.settingsMenu > * > .check-box > *, .serverList .table-cell .check-box > * {
     -fx-background-color: transparent;
 }
 
-.settingsMenu > * > .check-box > * > .box {
+.settingsMenu > * > .check-box > * > .box, .serverList .table-cell .check-box > * > .box {
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-background-color: transparent;
 }
 
-.settingsMenu > * > .check-box > .box > .mark {
+.settingsMenu > * > .check-box > .box > .mark, .serverList .table-cell .check-box > .box > .mark {
     -fx-background-image: url("../pictures/ui/checkbox-unmarked.png");
     -fx-background-position: 25% 50%;
     -fx-background-repeat: stretch;
@@ -111,7 +154,7 @@ PaperButton:pressed {
     -fx-background-color: transparent;
 }
 
-.settingsMenu > * > .check-box:selected > .box > .mark {
+.settingsMenu > * > .check-box:selected > .box > .mark, .serverList .table-cell .check-box:selected > .box > .mark {
     -fx-background-color: transparent;
     -fx-background-image: url("../pictures/ui/checkbox-marked.png");
 }
