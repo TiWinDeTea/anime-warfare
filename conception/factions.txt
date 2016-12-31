@@ -3,7 +3,7 @@
 ╠═══════════════════╪════════════════════╪═════════════════╪════════════════╪═════════════════╪════════════════════╣
 ║ No Name           │ Jin Russel   6 1 0 │ Kurousagi 4 1 1 │ You      2 2 2 │ Asuka     2 3 3 │ Izayoi    1 10/4 6 ║
 ╟───────────────────┼────────────────────┼─────────────────┼────────────────┼─────────────────┼────────────────────╢
-║ F-class no Baka   │ Yoshii       6 1 0 │ Yuuji     2 1 0 │ Minami   4 2 1 │ Kouta     3 3 2 │ Himeji       1 8 H ║
+║ F-class no Baka   │ Yoshii       6 1 0 │ Yuuji   2 1 0.5 │ Minami   4 2 1 │ Kouta     3 3 2 │ Himeji       1 8 H ║
 ╟───────────────────┼────────────────────┼─────────────────┼────────────────┼─────────────────┼────────────────────╢
 ║ Haiyore           │ Yoichi       6 1 0 │ Mahiro    4 1 1 │ /              │ Hasuta    4 ? 3 │ Nyaruko / Cthuko   ║
 ╟───────────────────┼────────────────────┼─────────────────┼────────────────┼─────────────────┼────────────────────╢
@@ -14,6 +14,8 @@ Réserve - Cout - Score d'insulte
 
 Izayoi : Coute 10PP pour la première invocation, 4 pour les prochaines
 Izayoi : Condition d'invocation : Un portail est présent dans la zone de départ des No Name. Izayoi apparait dans cette zone.
+
+Yuuji : si les deux yuuji sont dans la meme zone, ils rapportent 1 score d'insulte
 
 H: Somme de vos mascottes en jeux + studios.
 Himeji : Condition d'invocation -- Avoir deux mascottes en jeux et un portail controlé. perte de deux adorateurs et invocation sur le portail controlé

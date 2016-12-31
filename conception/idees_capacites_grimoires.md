@@ -155,7 +155,7 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
 
         Vous capturez une mascotte comme habituellement, mais vous volez en plus 1k fans à l'adversaire
 
-- **Sang froid** *(3 PP, une fois par phase d'action)*
+- **Sang froid** *(4 PP, une fois par phase d'action)*
 
         Vous choisissez une unitée (alliée ou ennemie).
         Pendant toute la phase, si cette unité est insultée à mort, la redessiner est gratuit. 
