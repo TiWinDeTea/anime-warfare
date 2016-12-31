@@ -39,7 +39,6 @@ public class GameBoard {
 	private Player lastFirstPlayer;
 	private int firstPlayerIndex;
 	private boolean clockWiseRotationTurn;
-	private int cachedMaxStaffPoints = -1;
 
 	private AdvertisingCampaignRightsPool advertisingCampaignRightsPool = new AdvertisingCampaignRightsPool();
 
@@ -82,20 +81,11 @@ public class GameBoard {
 		return Collections.unmodifiableList(this.playersInOrder);
 	}
 
-	public List<Player> getPlayersWithMaxStaff() {
-		assert (this.cachedMaxStaffPoints != -1);
-
-		return this.players.stream()
-		                   .filter(p -> p.getStaffAvailable() == this.cachedMaxStaffPoints)
-		                   .collect(Collectors.toList());
-	}
-
 	public static List<Integer> getPlayersIndex(List<Player> players) {
 		return players.stream().map(player -> Integer.valueOf(player.getID())).collect(Collectors.toList());
 	}
 
 	public void initializeTurn(Player firstPlayer, boolean clockWiseRotationTurn) {
-		this.cachedMaxStaffPoints = -1;
 		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
 		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
 		this.clockWiseRotationTurn = clockWiseRotationTurn;
@@ -125,10 +115,6 @@ public class GameBoard {
 
 	public GameMap getMap() {
 		return this.gameMap;
-	}
-
-	public void setCachedMaxStaffPoints(int cachedMaxStaffPoints) {
-		this.cachedMaxStaffPoints = cachedMaxStaffPoints;
 	}
 
 	public AdvertisingCampaignRightsPool getAdvertisingCampaignRightsPool() {

@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
@@ -33,11 +34,14 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class StaffHiringState extends GameState {
-	public StaffHiringState(GameBoard gameBoard) {
+class StaffHiringState extends GameState {
+	private final List<Player> drawPlayers = new LinkedList<>();
+
+	StaffHiringState(GameBoard gameBoard) {
 		super(gameBoard);
 	}
 
@@ -50,7 +54,7 @@ public class StaffHiringState extends GameState {
 
 	@Override
 	public void update() {
-		// TODO
+		// Nothing to do
 	}
 
 	@Override
@@ -60,18 +64,17 @@ public class StaffHiringState extends GameState {
 
 	@Override
 	public State next() {
-		return new FirstPlayerSelectionState(this.gameBoard);
+		return new FirstPlayerSelectionState(this.gameBoard, this.drawPlayers);
 	}
 
 	private void computeStaffAvailable() {
-		// TODO
-
 		List<Studio> studios = this.gameBoard.getMap().getStudios();
 
 		int numberOfNonControlledPortal = getNumberOfNonControlledPortal(studios);
 		int maxStaffPoints = 0;
 
 
+		List<Pair<Integer, Integer>> playerStaff = new LinkedList<>();
 		for (Player player : this.gameBoard.getPlayers()) {
 			int numberOfCapturedMascot = (int) player.getUnitCaptured()
 			                                         .stream()
@@ -83,21 +86,25 @@ public class StaffHiringState extends GameState {
 					+ numberOfCapturedMascot
 					+ numberOfNonControlledPortal;
 
-			player.setStaffAvailable(staffPoints);
+			playerStaff.add(new Pair<>(Integer.valueOf(player.getID()), Integer.valueOf(staffPoints)));
 
 			if (staffPoints > maxStaffPoints) {
 				maxStaffPoints = staffPoints;
+				this.drawPlayers.clear();
+				this.drawPlayers.add(player);
+			} else if (staffPoints == maxStaffPoints) {
+				this.drawPlayers.add(player);
 			}
 		}
-
-		this.gameBoard.setCachedMaxStaffPoints(maxStaffPoints);
 
 		// Increment maxStaffPoints to an even number.
 		if (maxStaffPoints % 2 == 1) {
 			++maxStaffPoints;
 		}
 
-		adjustNumberOfStaffMembersTo(maxStaffPoints / 2);
+		adjusteAndSetStaffPoint(playerStaff, maxStaffPoints / 2);
+
+		this.machine.get().update();
 	}
 
 	private void releaseCapturedUnits(Player player) {
@@ -108,10 +115,14 @@ public class StaffHiringState extends GameState {
 		player.getUnitCaptured().clear();
 	}
 
-	private void adjustNumberOfStaffMembersTo(int minStaffPoints) {
-		this.gameBoard.getPlayers().stream()
-		              .filter(player -> player.getStaffAvailable() < minStaffPoints)
-		              .forEach(player -> player.setStaffAvailable(minStaffPoints));
+	private void adjusteAndSetStaffPoint(List<Pair<Integer, Integer>> playerStaff, int minStaffPoints) {
+		for (Pair<Integer, Integer> staff : playerStaff) {
+			if (staff.getValue().intValue() < minStaffPoints) {
+				this.gameBoard.getPlayer(staff.getKey()).setStaffAvailable(minStaffPoints);
+			} else {
+				this.gameBoard.getPlayer(staff.getKey()).setStaffAvailable(staff.getValue());
+			}
+		}
 	}
 
 	private static int getNumberOfNonControlledPortal(List<Studio> studios) {

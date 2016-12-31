@@ -41,11 +41,19 @@ import java.util.List;
 class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEventListener, PlayingOrderChoiceEventListener {
 	protected static final String TURN_NOT_INITIALIZED = "Turn not initialized"; // TODO: Externalize
 
+	private List<Player> drawPlayers;
+
 	protected Player firstPlayer;
 	protected Boolean clockWise;
 
-	FirstPlayerSelectionState(GameBoard gameBoard) {
+	protected FirstPlayerSelectionState(GameBoard gameBoard) {
 		super(gameBoard);
+	}
+
+	FirstPlayerSelectionState(GameBoard gameBoard, List<Player> drawPlayers) {
+		super(gameBoard);
+
+		this.drawPlayers = drawPlayers;
 	}
 
 	@Override
@@ -55,6 +63,8 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 		selectionFirstPlayer();
 
 		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
+
+		this.machine.get().update();
 	}
 
 	@Override
@@ -100,14 +110,12 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 	}
 
 	private void selectionFirstPlayer() {
-		List<Player> drawPlayers = this.gameBoard.getPlayersWithMaxStaff();
-
-		if (drawPlayers.size() == 1) { // No draw
-			this.firstPlayer = drawPlayers.get(0);
+		if (this.drawPlayers.size() == 1) { // No draw
+			this.firstPlayer = this.drawPlayers.get(0);
 			EventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
 		} else {
 			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerID(),
-					GameBoard.getPlayersIndex(drawPlayers)));
+					GameBoard.getPlayersIndex(this.drawPlayers)));
 		}
 	}
 }
