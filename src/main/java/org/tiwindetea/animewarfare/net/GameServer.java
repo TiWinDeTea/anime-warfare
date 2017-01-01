@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.net;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
@@ -64,7 +65,6 @@ import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
@@ -72,26 +72,14 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotS
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -349,13 +337,22 @@ public class GameServer {
         Log.debug(GameServer.class.toString(), this.room.getGameName() + ": started");
     }
 
-    public class NetworkListener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
+    public class NetworkListener extends Listener.ReflectionListener {
 
         private final Server server;
         private final List<Integer> incomingConnections = new ArrayList<>();
 
         NetworkListener(Server server) {
             this.server = server;
+        }
+
+        private boolean isLegit(Connection connection) {
+            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+                return true;
+            } else {
+                connection.close();
+                return false;
+            }
         }
 
         @Override
@@ -383,23 +380,20 @@ public class GameServer {
                 GameServer.this.legitConnections.remove(new Integer(connection.getID()));
                 Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " disconnected");
                 this.server.sendToAllTCP(new NetHandlePlayerDisconnection(info));
-            }
+            } // fixme : unselect & unlock faction
         }
 
         // general
         public void received(Connection connection, GameClientInfo info) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 this.server.sendToAllExceptTCP(connection.getID(), info);
                 GameServer.this.room.addMember(info);
-                if (GameServer.this.room.getMembers().size() == GameServer.this.room.getNumberOfExpectedPlayers()) { // FIXME: are you sure?
-                    GameServer.this.initNew();
-                }
                 Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " connected");
             }
         }
 
         public void received(Connection connection, String message) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 this.server.sendToAllExceptTCP(connection.getID(),
                         new NetMessage(message,
                                 GameServer.this.room.find(connection.getID())));
@@ -409,16 +403,19 @@ public class GameServer {
 
         // NetworkedClass classes
         public void received(Connection connection, NetLockFactionRequest faction) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+
+            if (isLegit(connection) && !GameServer.this.playersLocks.containsKey(new Integer(connection.getID()))) {
 
                 Log.trace(GameServer.NetworkListener.class.toString(), "Faction locking requested: " + faction);
                 boolean isFactionLocked = false;
-                for (Map.Entry<Integer, FactionType> integerFactionTypeEntry : GameServer.this.playersSelection.entrySet()) {
+
+                for (Map.Entry<Integer, FactionType> integerFactionTypeEntry : GameServer.this.playersLocks.entrySet()) {
                     if (integerFactionTypeEntry.getValue() == faction.getFaction()) {
                         isFactionLocked = true;
                         break;
                     }
                 }
+
                 if (!isFactionLocked) {
                     int numberOfTimesTheFactionIsSelected = (int) GameServer.this.playersSelection.entrySet()
                                                                                                   .stream()
@@ -427,7 +424,7 @@ public class GameServer {
                                                                                                           .getFaction())
                                                                                                   .count();
                     if (numberOfTimesTheFactionIsSelected <= 1) {
-                        this.server.sendToAllTCP(faction);
+                        this.server.sendToAllTCP(new NetFactionLocked(GameServer.this.room.find(connection.getID()), faction.getFaction()));
                         GameServer.this.playersLocks.put(new Integer(connection.getID()), faction.getFaction());
                         Log.debug(GameServer.NetworkListener.class.toString(),
                                   "Player " + GameServer.this.room.find(connection.getID()) + " locked " + faction);
@@ -442,7 +439,7 @@ public class GameServer {
 
         public void received(Connection connection, NetPlayingOrderChosen netPlayingOrderChosen) {
 
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new PlayingOrderChoiceEvent(netPlayingOrderChosen.isClockwise()));
                 this.server.sendToAllTCP(netPlayingOrderChosen);
                 Log.trace(GameServer.NetworkListener.class.toString(),
@@ -452,7 +449,7 @@ public class GameServer {
 
         public void received(Connection connection, NetSelectFactionRequest faction) {
 
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection) && !GameServer.this.playersLocks.containsKey(new Integer(connection.getID()))) {
                 GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
                 this.server.sendToAllTCP(faction);
                 Log.trace(GameServer.NetworkListener.class.toString(),
@@ -461,7 +458,7 @@ public class GameServer {
         }
 
         public void received(Connection connection, NetUnitEvent unitEvent) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new UnitEvent(unitEvent.getType(), unitEvent.getUnitID(), unitEvent.getZoneID()));
             }
         }
@@ -469,31 +466,31 @@ public class GameServer {
 
         // NetSendable classes
         public void received(Connection connection, NetCapturedMascotSelection selection) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(), selection.getUnitID()));
             }
         }
 
         public void received(Connection connection, NetConventionRequest conventionRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new OrganizeConventionRequestEvent(connection.getID()));
             }
         }
 
         public void received(Connection connection, NetFirstPlayerSelection player) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new FirstPlayerChoiceEvent(player.getPlayerID()));
             }
         }
 
         public void received(Connection connection, NetInvokeUnitRequest unitRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new InvokeUnitEvent(connection.getID(), unitRequest.getUnitType(), unitRequest.getZoneID()));
             }
         }
 
         public void received(Connection connection, NetMascotCaptureRequest mascotRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new CaptureMascotEvent(
                         connection.getID(),
                         mascotRequest.getTargetPlayer(),
@@ -503,13 +500,13 @@ public class GameServer {
         }
 
         public void received(Connection connection, NetMoveUnitRequest unitMoveRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new MoveUnitEvent(connection.getID(), unitMoveRequest.getMovements()));
             }
         }
 
         public void received(Connection connection, NetOpenStudioRequest studioRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new OpenStudioEvent(connection.getID(), studioRequest.getZoneID()));
             }
         }
@@ -529,13 +526,13 @@ public class GameServer {
         }
 
         public void received(Connection connection, NetSkipTurnRequest skipRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new SkipTurnEvent(connection.getID()));
             }
         }
 
         public void received(Connection connection, NetStartBattleRequest battleRequest) {
-            if (GameServer.this.legitConnections.contains(new Integer(connection.getID()))) {
+            if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new StartBattleEvent(
                         connection.getID(),
                         battleRequest.getTargetPlayerID(),

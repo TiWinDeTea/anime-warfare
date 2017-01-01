@@ -49,8 +49,8 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -157,7 +157,7 @@ public class GameRoomController
 	@FXML
 	private void handleLockFaction() {
 		if (this.selectedFaction != null) {
-			MainApp.getGameClient().send(new NetLockFactionRequest(this.selectedFaction, MainApp.getGameClient().getClientInfo()));
+			MainApp.getGameClient().send(new NetLockFactionRequest(this.selectedFaction));
 		}
 	}
 

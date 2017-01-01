@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests;
+package org.tiwindetea.animewarfare.net.networkrequests.server;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
@@ -31,29 +31,29 @@ import org.tiwindetea.animewarfare.net.GameClientInfo;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class NetSelectFactionRequest implements NetworkedClass {
+public class NetFactionLocked implements NetReceivable {
 
-    private final FactionType factionType;
-    private final GameClientInfo gameClientInfo; // fixme
+    private final GameClientInfo client;
+    private final FactionType faction;
 
     /**
-     * Empty NetSelectFactionRequest instance. Required by kryonet lib
+     * Default constructor, required by kryonet
      */
-    public NetSelectFactionRequest() {
-        this.factionType = null;
-        this.gameClientInfo = null;
+    public NetFactionLocked() {
+        this.client = null;
+        this.faction = null;
     }
 
-    public NetSelectFactionRequest(FactionType factionType, GameClientInfo info) {
-        this.factionType = factionType;
-        this.gameClientInfo = info;
+    public NetFactionLocked(GameClientInfo client, FactionType faction) {
+        this.client = client;
+        this.faction = faction;
     }
 
-    public FactionType getFactionType() {
-        return this.factionType;
+    public FactionType getFaction() {
+        return this.faction;
     }
 
-    public GameClientInfo getGameClientInfo() {
-        return this.gameClientInfo;
+    public GameClientInfo getClient() {
+        return this.client;
     }
 }

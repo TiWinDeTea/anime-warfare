@@ -22,38 +22,30 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests;
+package org.tiwindetea.animewarfare.net.networkrequests.client;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class NetLockFactionRequest implements NetworkedClass {
+public class NetLockFactionRequest implements NetSendable {
 
     private final FactionType faction;
-    private final GameClientInfo gameClientInfo;
 
     /**
      * Empty Lockfaction instance. Required by kryonet lib
      */
     public NetLockFactionRequest() {
         this.faction = null;
-        this.gameClientInfo = null;
     }
 
-    public NetLockFactionRequest(FactionType faction, GameClientInfo info) {
+    public NetLockFactionRequest(FactionType faction) {
         this.faction = faction;
-        this.gameClientInfo = info;
     }
 
     public FactionType getFaction() {
         return this.faction;
-    }
-
-    public GameClientInfo getGameClientInfo() {
-        return this.gameClientInfo;
     }
 }

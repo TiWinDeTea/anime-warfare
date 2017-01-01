@@ -40,7 +40,6 @@ import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
@@ -48,6 +47,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotS
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
@@ -56,6 +56,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
@@ -150,6 +151,7 @@ class Utils {
 		kryo.register(NetMessage.class);
 		kryo.register(NetNewStudio.class);
 		kryo.register(NetPhaseChange.class);
+		kryo.register(NetFactionLocked.class);
 
 		// networkrequests
 		kryo.register(NetLockFactionRequest.class);

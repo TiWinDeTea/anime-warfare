@@ -30,26 +30,12 @@ import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.net.networkevent.*;
-import org.tiwindetea.animewarfare.net.networkrequests.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -101,7 +87,6 @@ public class GameClient {
     /**
      * Looks for available servers on a specified list of addresses
      *
-     * @param UDPport   UDP port on which server(s) are running
      * @param timeout   The number of milliseconds to wait for a response
      * @param addresses Addresses of the servers
      * @return A list containing all servers found on LAN
@@ -317,8 +302,6 @@ public class GameClient {
     @SuppressWarnings("unused")
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
-        private final EventDispatcher eventDispatcher = EventDispatcher.getInstance();
-        
         // general
         public void received(Connection connection, GameClientInfo info) {
             Log.trace(GameClient.Listener.class.toString(), "Incoming GameClientInfo: " + info);
@@ -329,7 +312,7 @@ public class GameClient {
             } else {
                 Log.debug(GameClient.Listener.class.toString(), "A new player connected: " + info);
                 GameClient.this.room.addMember(info);
-                this.eventDispatcher.fire(new PlayerConnectionNetevent(info));
+                EventDispatcher.send(new PlayerConnectionNetevent(info));
             }
         }
 
@@ -337,102 +320,102 @@ public class GameClient {
             Log.debug(GameClient.Listener.class.toString(), "Connected.");
             room.addMember(GameClient.this.me);
             GameClient.this.room = room;
-            this.eventDispatcher.fire(new ConnectedNetevent(room));
+            EventDispatcher.send(new ConnectedNetevent(room));
         }
 
         // network requests
         public void received(Connection connection, NetBadPassword bpw) {
-            this.eventDispatcher.fire(new BadPasswordNetevent());
+            EventDispatcher.send(new BadPasswordNetevent());
         }
 
         public void received(Connection connection, NetBattleStarted battleStarted) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + battleStarted);
-            this.eventDispatcher.fire(new BattleStartedNetevent(battleStarted));
+            EventDispatcher.send(new BattleStartedNetevent(battleStarted));
         }
 
         public void received(Connection connection, NetFanNumberUpdated fanNumberUpdated) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + fanNumberUpdated);
-            this.eventDispatcher.fire(new FanNumberUpdatedNetevent(fanNumberUpdated));
+            EventDispatcher.send(new FanNumberUpdatedNetevent(fanNumberUpdated));
         }
 
         public void received(Connection connection, NetFirstPlayerSelected playerSelected) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + playerSelected);
-            this.eventDispatcher.fire(new FirstPlayerSelectedNetevent(playerSelected.getFirstPlayer()));
+            EventDispatcher.send(new FirstPlayerSelectedNetevent(playerSelected.getFirstPlayer()));
         }
 
         public void received(Connection connection, NetFirstPlayerSelectionRequest firstPlayerSelectionRequest) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + firstPlayerSelectionRequest);
-            this.eventDispatcher.fire(new FirstPlayerSelectionRequestNetvent(firstPlayerSelectionRequest));
+            EventDispatcher.send(new FirstPlayerSelectionRequestNetvent(firstPlayerSelectionRequest));
         }
 
         public void received(Connection connection, NetGameEndConditionsReached gameEndConditionsReached) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + gameEndConditionsReached);
-            this.eventDispatcher.fire(new GameEndConditionsReachedNetevent(gameEndConditionsReached));
+            EventDispatcher.send(new GameEndConditionsReachedNetevent(gameEndConditionsReached));
         }
 
         public void received(Connection connection, NetGameEnded gameEnded) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + gameEnded);
-            this.eventDispatcher.fire(new GameEndedNetevent(gameEnded));
+            EventDispatcher.send(new GameEndedNetevent(gameEnded));
         }
 
         public void received(Connection connection, NetGameStarted gameStarted) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + gameStarted);
-            this.eventDispatcher.fire(new GameStartedNetevent());
+            EventDispatcher.send(new GameStartedNetevent());
         }
 
         public void received(Connection connection, NetHandlePlayerDisconnection playerDisconnection) {
             Log.debug(GameClient.Listener.class.toString(), "Received " + playerDisconnection);
-            this.eventDispatcher.fire(new PlayerDisconnectionNetevent(playerDisconnection));
+            EventDispatcher.send(new PlayerDisconnectionNetevent(playerDisconnection));
         }
 
-        public void received(Connection connection, NetLockFactionRequest faction) {
+        public void received(Connection connection, NetFactionLocked faction) {
             Log.debug(GameClient.Listener.class.toString(), "Received " + faction);
-            this.eventDispatcher.fire(new PlayerLockedFactionNetevent(faction));
+            EventDispatcher.send(new PlayerLockedFactionNetevent(faction));
         }
 
         public void received(Connection connection, NetMarketingLadderUpdated marketingLadderUpdated) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + marketingLadderUpdated);
-            this.eventDispatcher.fire(new MarketingLadderUpdatedNetevent(marketingLadderUpdated));
+            EventDispatcher.send(new MarketingLadderUpdatedNetevent(marketingLadderUpdated));
         }
 
         public void received(Connection connection, NetMessage message) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + message);
-            this.eventDispatcher.fire(new MessageReceivedNetevent(message));
+            EventDispatcher.send(new MessageReceivedNetevent(message));
         }
 
         public void received(Connection connection, NetNewStudio newStudio) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + newStudio);
-            this.eventDispatcher.fire(new StudioCreatedNetevent(newStudio));
+            EventDispatcher.send(new StudioCreatedNetevent(newStudio));
         }
 
         public void received(Connection connection, NetPhaseChange phaseChange) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + phaseChange);
-            this.eventDispatcher.fire(new PhaseChangeNetevent(phaseChange));
+            EventDispatcher.send(new PhaseChangeNetevent(phaseChange));
         }
 
         public void received(Connection connection, NetPlayingOrderChosen playingOrderChosen) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + playingOrderChosen);
-            this.eventDispatcher.fire(new PlayOrderChosenNetevent(playingOrderChosen));
+            EventDispatcher.send(new PlayOrderChosenNetevent(playingOrderChosen));
         }
 
         public void received(Connection connection, NetSelectFactionRequest faction) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + faction);
-            this.eventDispatcher.fire(new PlayerSelectedFactionNetevent(faction));
+            EventDispatcher.send(new PlayerSelectedFactionNetevent(faction));
         }
 
         public void received(Connection connection, NetSelectMascotToCapture selectMascotToCapture) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + selectMascotToCapture);
-            this.eventDispatcher.fire(new SelectMascotToCaptureRequestNetevent(selectMascotToCapture));
+            EventDispatcher.send(new SelectMascotToCaptureRequestNetevent(selectMascotToCapture));
         }
 
         public void received(Connection connection, NetUnitEvent unitEvent) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + unitEvent);
-            this.eventDispatcher.fire(new UnitNetevent(unitEvent));
+            EventDispatcher.send(new UnitNetevent(unitEvent));
         }
 
         @Override
         public void disconnected(Connection connection) {
-            this.eventDispatcher.fire(new PlayerDisconnectionNetevent(GameClient.this.me));
+            EventDispatcher.send(new PlayerDisconnectionNetevent(GameClient.this.me));
         }
     }
 }
