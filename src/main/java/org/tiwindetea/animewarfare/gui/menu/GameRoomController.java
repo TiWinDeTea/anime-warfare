@@ -114,6 +114,8 @@ public class GameRoomController
 
 	private FactionType selectedFaction = null;
 
+	private boolean factionLocked = false;
+
 	public BorderPane getBorderPane() {
 		return this.borderPane;
 	}
@@ -137,6 +139,17 @@ public class GameRoomController
 			MainApp.getGameServer().stop();
 			MainApp.initANewGameServer();
 		}
+
+		// re-initialize states.
+		this.selectedFaction = null;
+		this.factionLocked = false;
+
+		this.userNamesLabels.clear();
+		this.usersList.getChildren().clear();
+		this.fClassNoBakaImageView.setEffect(null);
+		this.haiyoreImageView.setEffect(null);
+		this.noNameImageView.setEffect(null);
+		this.theBlackKnightsImageView.setEffect(null);
 
 		EventDispatcher.getInstance().fire(new GameRoomEvent(GameRoomEvent.Type.QUIT));
 	}
@@ -194,18 +207,12 @@ public class GameRoomController
 	public void handlePlayerDisconnection(PlayerDisconnectionNetevent event) {
 		Platform.runLater(() -> {
 			if (event.getPlayer().equals(MainApp.getGameClient().getClientInfo())) {
-				this.userNamesLabels.clear();
-				this.usersList.getChildren().clear();
-				this.fClassNoBakaImageView.setEffect(null);
-				this.haiyoreImageView.setEffect(null);
-				this.noNameImageView.setEffect(null);
-				this.theBlackKnightsImageView.setEffect(null);
+				handleQuit();
 			} else {
 				this.usersList.getChildren().remove(this.userNamesLabels.get(event.getPlayer().getId()));
 				this.userNamesLabels.remove(event.getPlayer().getId());
+				GlobalChat.getChatController().addMessage(event.getPlayer().getGameClientName() + " disconnected.", Color.GRAY); // TODO: externalize.
 			}
-
-			GlobalChat.getChatController().addMessage(event.getPlayer().getGameClientName() + " disconnected.", Color.GRAY); // TODO: externalize.
 		});
 	}
 
