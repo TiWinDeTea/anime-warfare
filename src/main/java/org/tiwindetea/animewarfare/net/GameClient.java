@@ -337,19 +337,23 @@ public class GameClient {
         }
 
         public void received(Connection connection, NetFactionLocked faction) {
+            GameClient.this.room.modifiableLocks().put(faction.getClient(), faction.getFaction());
             Log.debug(GameClient.Listener.class.toString(), "Received " + faction);
             EventDispatcher.send(new PlayerLockedFactionNetevent(faction));
         }
 
         public void received(Connection connection, NetFactionSelected faction) {
+            GameClient.this.room.modifiableSelection().put(faction.getGameClientInfo(), faction.getFaction());
             EventDispatcher.send(new PlayerSelectedFactionNetevent(faction));
         }
 
         public void received(Connection connection, NetFactionUnlocked faction) {
+            GameClient.this.room.modifiableLocks().remove(faction.getClient());
             EventDispatcher.send(new FactionUnlockedNetevent(faction.getFaction()));
         }
 
         public void received(Connection connection, NetFactionUnselected faction) {
+            GameClient.this.room.modifiableSelection().remove(faction.getClient());
             EventDispatcher.send(new FactionUnselectedNetevent(faction.getFaction()));
         }
 

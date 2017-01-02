@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
  * @author Lucas Lazare
@@ -33,19 +34,26 @@ import org.tiwindetea.animewarfare.logic.FactionType;
 public class NetFactionUnselected implements NetReceivable {
 
     private final FactionType faction;
+    private final GameClientInfo client;
 
     /**
      * Default constructor, used by kryonet
      */
     public NetFactionUnselected() {
         this.faction = null;
+        this.client = null;
     }
 
-    public NetFactionUnselected(FactionType faction) {
+    public NetFactionUnselected(GameClientInfo client, FactionType faction) {
+        this.client = client;
         this.faction = faction;
     }
 
     public FactionType getFaction() {
         return this.faction;
+    }
+
+    public GameClientInfo getClient() {
+        return this.client;
     }
 }

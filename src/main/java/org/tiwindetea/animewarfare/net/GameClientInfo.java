@@ -35,6 +35,9 @@ public class GameClientInfo implements NetworkedClass {
         return this.gameClientName;
     }
 
+    /**
+     * If the id is -1, it should be consider to be a special server client.
+     */
     public int getId() {
         return this.id;
     }
@@ -48,11 +51,16 @@ public class GameClientInfo implements NetworkedClass {
     }
 
     public boolean equals(GameClientInfo gci) {
-        return gci.id == this.id && (gci.gameClientName == null ? this.gameClientName == null : gci.gameClientName.equals(this.gameClientName));
+        return gci.id == this.id;
     }
 
     @Override
     public String toString() {
         return this.gameClientName;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(this.id);
     }
 }

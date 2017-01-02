@@ -24,13 +24,17 @@
 
 package org.tiwindetea.animewarfare.net;
 
+import org.tiwindetea.animewarfare.logic.FactionType;
+
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a game room with players.
@@ -56,6 +60,9 @@ public class Room implements Serializable {
     private int port;
 
     private int numberOfExpectedPlayers = -1;
+
+    private final Map<GameClientInfo, FactionType> selections = new HashMap<>(4, 1);
+    private final Map<GameClientInfo, FactionType> locks = new HashMap<>(4, 1);
 
     Room() {
         this.gameName = null;
@@ -158,6 +165,32 @@ public class Room implements Serializable {
         return this.numberOfExpectedPlayers;
     }
 
+    /**
+     * @return An unmodifiable map of infos about players' selections,
+     * as sepcified in {@link Collections#unmodifiableMap(Map)}
+     */
+    public Map<GameClientInfo, FactionType> getSelections() {
+        return Collections.unmodifiableMap(this.selections);
+    }
+
+    /**
+     * @return An unmodifiable map of infos about players' locked factions,
+     * as sepcified in {@link Collections#unmodifiableMap(Map)}
+     */
+    public Map<GameClientInfo, FactionType> getLocks() {
+        return Collections.unmodifiableMap(this.locks);
+    }
+
+    Map<GameClientInfo, FactionType> modifiableSelection() {
+        return this.selections;
+    }
+
+    Map<GameClientInfo, FactionType> modifiableLocks() {
+        return this.locks;
+    }
+
+
+
     void addMember(GameClientInfo info) {
         if (this.isFull()) {
             throw new IllegalStateException("Trying to add a member into a full room");
@@ -186,6 +219,8 @@ public class Room implements Serializable {
 
     void clear() {
         this.members.clear();
+        this.locks.clear();
+        this.selections.clear();
     }
 
     void setGameName(String gameName) {

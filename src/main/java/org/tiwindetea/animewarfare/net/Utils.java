@@ -66,6 +66,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,6 +117,7 @@ class Utils {
 		kryo.register(ArrayList.class);
 		kryo.register(NetPlayingOrderChosen.class);
 		kryo.register(NetUnitEvent.class);
+		kryo.register(HashMap.class);
 
 		// client
 		kryo.register(NetCapturedMascotSelection.class);
