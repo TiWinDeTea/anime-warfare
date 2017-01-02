@@ -432,20 +432,27 @@ public class GameServer {
                 }
 
                 if (!isFactionLocked) {
-                    int numberOfTimesTheFactionIsSelected = (int) this.room.modifiableSelection().entrySet()
-                            .stream()
-                            .filter(entry -> entry.getValue() == faction.getFaction())
-                            .count();
 
-                    if (numberOfTimesTheFactionIsSelected <= 1) {
-                        this.server.sendToAllTCP(new NetFactionLocked(this.room.find(connection.getID()), faction.getFaction()));
-                        this.room.modifiableLocks().put(this.room.find(connection.getID()), faction.getFaction());
-                        Log.debug(GameServer.NetworkListener.class.toString(),
-                                "Player " + this.room.find(connection.getID()) + " locked " + faction);
+                    ArrayList<GameClientInfo> clients = new ArrayList<>(4);
 
-                        if (this.room.modifiableLocks().size() == this.room.getNumberOfExpectedPlayers()) {
-                            initNew();
+                    this.room.modifiableSelection().forEach((gc, fac) -> {
+                        if (fac.equals(faction.getFaction())) {
+                            clients.add(gc);
+                            this.server.sendToAllTCP(new NetFactionUnselected(gc, fac));
                         }
+                    });
+
+                    for (GameClientInfo client : clients) {
+                        this.room.modifiableSelection().remove(client);
+                    }
+
+                    this.server.sendToAllTCP(new NetFactionLocked(this.room.find(connection.getID()), faction.getFaction()));
+                    this.room.modifiableLocks().put(this.room.find(connection.getID()), faction.getFaction());
+                    Log.debug(GameServer.NetworkListener.class.toString(),
+                            "Player " + this.room.find(connection.getID()) + " locked " + faction);
+
+                    if (this.room.modifiableLocks().size() == this.room.getNumberOfExpectedPlayers()) {
+                        initNew();
                     }
                 }
             }
@@ -463,9 +470,10 @@ public class GameServer {
 
         public void received(Connection connection, NetSelectFactionRequest faction) {
 
-            if (isLegit(connection) && !this.room.modifiableLocks().containsKey(new GameClientInfo(connection.getID()))) {
+            if (isLegit(connection) && !this.room.modifiableLocks().containsKey(new GameClientInfo(connection.getID()))) { // fixme
                 FactionType previousFaction = this.room.modifiableSelection().get(new GameClientInfo(connection.getID()));
                 this.room.modifiableSelection().put(this.room.find(connection.getID()), faction.getFactionType());
+
                 if (previousFaction != null) {
                     this.server.sendToAllTCP(new NetFactionUnselected(this.room.find(connection.getID()), previousFaction));
                 }
