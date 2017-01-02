@@ -276,7 +276,6 @@ public class GameClient {
             Log.debug(GameClient.class.toString(), "Disconnecting");
             this.client.stop();
             this.client.removeListener(this.listener);
-            this.isConnected = false;
         }
     }
 
@@ -300,6 +299,11 @@ public class GameClient {
 
     @SuppressWarnings("unused")
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
+
+        @Override
+        public void connected(Connection connection) {
+            GameClient.this.isConnected = true;
+        }
 
         // general
         public void received(Connection connection, GameClientInfo info) {
@@ -421,6 +425,7 @@ public class GameClient {
 
         @Override
         public void disconnected(Connection connection) {
+            GameClient.this.isConnected = false;
             EventDispatcher.send(new PlayerDisconnectionNetevent(GameClient.this.me));
         }
     }

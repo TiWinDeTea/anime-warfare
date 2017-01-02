@@ -382,14 +382,14 @@ public class GameServer {
                 GameServer.this.legitConnections.remove(new Integer(connection.getID()));
                 Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " disconnected");
 
-                FactionType faction = GameServer.this.playersSelections.remove(new Integer(connection.getID()));
-                if (faction != null) {
-                    this.server.sendToAllTCP(new NetFactionUnselected(faction));
-                }
-
-                faction = GameServer.this.playersLocks.remove(new Integer(connection.getID()));
+                FactionType faction = GameServer.this.playersLocks.remove(new Integer(connection.getID()));
                 if (faction != null) {
                     this.server.sendToAllTCP(new NetFactionUnlocked(faction));
+                }
+
+                faction = GameServer.this.playersSelections.remove(new Integer(connection.getID()));
+                if (faction != null) {
+                    this.server.sendToAllTCP(new NetFactionUnselected(faction));
                 }
 
                 this.server.sendToAllTCP(new NetHandlePlayerDisconnection(info));
