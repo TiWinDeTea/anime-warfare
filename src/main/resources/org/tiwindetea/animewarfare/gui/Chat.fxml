@@ -7,39 +7,44 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.tiwindetea.animewarfare.gui.PaperButton?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.ChatController">
-   <children>
-      <BorderPane layoutX="82.0" layoutY="56.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <bottom>
-            <BorderPane prefHeight="73.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-               <right>
-                  <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <PaperButton prefHeight="30.0" prefWidth="100.0" text="%button.send"/>
-                     </children>
-                     <padding>
-                        <Insets left="5.0"/>
-                     </padding>
-                  </VBox>
-               </right>
-               <padding>
-                  <Insets bottom="5.0" right="5.0" top="5.0"/>
-               </padding>
-               <center>
-                  <TextArea fx:id="answerTextArea" prefHeight="165.0" prefWidth="400.0" BorderPane.alignment="CENTER"/>
-               </center>
-            </BorderPane>
-         </bottom>
-         <center>
-            <ScrollPane fx:id="chatMessagesScroll" prefHeight="200.0" prefWidth="200.0" vvalue="1.0" BorderPane.alignment="CENTER">
-               <content>
-                  <VBox fx:id="chatMessages" spacing="5.0" />
-               </content>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </ScrollPane>
-         </center>
-      </BorderPane>
-   </children>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.tiwindetea.animewarfare.gui.ChatController">
+    <children>
+        <BorderPane layoutX="82.0" layoutY="56.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <bottom>
+                <BorderPane prefHeight="73.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <right>
+                        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <PaperButton prefHeight="30.0" prefWidth="100.0" text="%button.send"
+                                             onAction="#handleSend"/>
+                            </children>
+                            <padding>
+                                <Insets left="5.0"/>
+                            </padding>
+                        </VBox>
+                    </right>
+                    <padding>
+                        <Insets bottom="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                    <center>
+                        <TextArea fx:id="answerTextArea" prefHeight="165.0" prefWidth="400.0"
+                                  BorderPane.alignment="CENTER"/>
+                    </center>
+                </BorderPane>
+            </bottom>
+            <center>
+                <ScrollPane fx:id="chatMessagesScroll" prefHeight="200.0" prefWidth="200.0" vvalue="1.0"
+                            BorderPane.alignment="CENTER">
+                    <content>
+                        <VBox fx:id="chatMessages" spacing="5.0"/>
+                    </content>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </children>
 </AnchorPane>
