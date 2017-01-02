@@ -31,6 +31,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
+import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
@@ -44,7 +45,7 @@ import java.io.IOException;
  *
  * @author Benoît CORTIER
  */
-public class GameRoomState extends MenuState implements GameRoomEventListener {
+public class GameRoomState extends GUIState implements GameRoomEventListener {
 	private static AnchorPane gameRoom;
 	private static GameRoomController gameRoomController;
 	private static FadeTransition fadeTransition;
@@ -70,7 +71,8 @@ public class GameRoomState extends MenuState implements GameRoomEventListener {
 		GameRoomState.fadeTransition.setAutoReverse(false);
 	}
 
-	public static void initStaticFields() {}
+	public static void initStaticFields() {
+	}
 
 	public GameRoomState(BorderPane rootLayout) {
 		super(rootLayout);

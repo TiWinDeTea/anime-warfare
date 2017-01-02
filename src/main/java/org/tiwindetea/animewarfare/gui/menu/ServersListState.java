@@ -31,6 +31,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
+import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEventListener;
@@ -43,7 +44,7 @@ import java.io.IOException;
  *
  * @author Benoît CORTIER
  */
-public class ServersListState extends MenuState implements ServersListEventListener {
+public class ServersListState extends GUIState implements ServersListEventListener {
 	private static AnchorPane serversList;
 	private static ServersListController serversListController;
 	private static FadeTransition fadeTransition;

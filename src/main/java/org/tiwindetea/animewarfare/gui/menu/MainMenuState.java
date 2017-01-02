@@ -31,6 +31,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
+import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.MainMenuEvent;
@@ -44,7 +45,7 @@ import java.io.IOException;
  *
  * @author Benoît CORTIER
  */
-public class MainMenuState extends MenuState implements MainMenuEventListener {
+public class MainMenuState extends GUIState implements MainMenuEventListener {
 	private static AnchorPane mainMenu;
 	private static MainMenuController mainMenuController;
 

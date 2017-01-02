@@ -37,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.SettingsMenuEventListener;
@@ -50,7 +51,7 @@ import java.io.IOException;
  *
  * @author Benoît CORTIER
  */
-public class SettingsMenuState extends MenuState implements SettingsMenuEventListener {
+public class SettingsMenuState extends GUIState implements SettingsMenuEventListener {
 	private static AnchorPane settingsMenu;
 	private static SettingsMenuController settingsMenuController;
 
@@ -116,8 +117,8 @@ public class SettingsMenuState extends MenuState implements SettingsMenuEventLis
 					SettingsMenuState.settingsMenu.setTranslateX(-2 * this.rootLayout.getWidth() / 5. + 15);
 					SettingsMenuState.settingsMenu.setScaleX(0.1);
 					positionTimeline.getKeyFrames()
-					                .setAll(new KeyFrame(ANIMATION_DURATION,
-							                new KeyValue(SettingsMenuState.settingsMenu.translateXProperty(), 0)));
+							.setAll(new KeyFrame(ANIMATION_DURATION,
+									new KeyValue(SettingsMenuState.settingsMenu.translateXProperty(), 0)));
 					transition.play();
 					break;
 				case 1:

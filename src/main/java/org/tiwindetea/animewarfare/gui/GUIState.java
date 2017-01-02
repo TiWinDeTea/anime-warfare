@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.menu;
+package org.tiwindetea.animewarfare.gui;
 
 import javafx.scene.layout.BorderPane;
 import org.lomadriel.lfc.statemachine.State;
@@ -32,12 +32,12 @@ import org.lomadriel.lfc.statemachine.State;
  *
  * @author Benoît CORTIER
  */
-public abstract class MenuState extends State {
+public abstract class GUIState extends State {
 	protected BorderPane rootLayout;
 
 	protected State nextState = this;
 
-	public MenuState(BorderPane rootLayout) {
+	public GUIState(BorderPane rootLayout) {
 		this.rootLayout = rootLayout;
 	}
 
