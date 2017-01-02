@@ -66,7 +66,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 	private BorderPane rootLayout;
 
-	private DefaultStateMachine menuStateMachine;
+	private DefaultStateMachine guiStateMachine;
 
 	@Override
 	public void start(Stage stage) {
@@ -82,7 +82,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		GlobalChat.getChatController().initShortcuts(this.primaryStage);
 		GameRoomState.initStaticFields();
 
-		this.menuStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
+		this.guiStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 
 		this.primaryStage.setOnCloseRequest((event) -> onQuit());
 	}
@@ -118,7 +118,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 	@Override
 	public void handleAskMenuStateUpdate() {
-		this.menuStateMachine.update();
+		this.guiStateMachine.update();
 	}
 
 	public static void initANewGameServer() {
