@@ -26,7 +26,6 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.event.StudioAddedEvent;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
@@ -72,15 +71,12 @@ public class Zone {
 
 	public void addUnit(Unit unit) {
 		this.units.add(unit);
-		EventDispatcher.getInstance().fire(new UnitEvent(UnitEvent.Type.ADDED, unit.getID(), this.ID));
 	}
 
 	public boolean removeUnit(Unit unit) {
 		Objects.requireNonNull(unit);
 
 		if (this.units.remove(unit)) {
-			EventDispatcher.getInstance().fire(new UnitEvent(UnitEvent.Type.REMOVED, unit.getID(), this.ID));
-
 			if (unit.isLevel(UnitLevel.MASCOT) && this.studio != null && unit.equals(this.studio.getController())) {
 				this.studio.setController(null);
 			}

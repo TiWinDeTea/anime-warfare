@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
+import org.tiwindetea.animewarfare.logic.capacity.Capacity;
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightAddedEvent;
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightRevealedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
@@ -193,6 +194,8 @@ public class Player {
 		// TODO: Event
 	}
 
+	public void activateCapacity(Capacity capacity) {
+		this.capacities.add(capacity);
 	}
 
 	@Override
