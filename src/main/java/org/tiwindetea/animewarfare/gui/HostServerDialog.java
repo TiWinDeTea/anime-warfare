@@ -35,7 +35,7 @@ public class HostServerDialog extends Stage implements Initializable {
 	@FXML
 	private TextField passwordTextField;
 
-	private boolean canceled = false;
+	private boolean canceled = true;
 
 	public HostServerDialog(Parent parent) {
 		FXMLLoader loader = new FXMLLoader();
@@ -63,12 +63,12 @@ public class HostServerDialog extends Stage implements Initializable {
 
 	@FXML
 	private void handleCancel() {
-		this.canceled = true;
 		close();
 	}
 
 	@FXML
 	private void handleStart() {
+		this.canceled = false;
 		close();
 	}
 
