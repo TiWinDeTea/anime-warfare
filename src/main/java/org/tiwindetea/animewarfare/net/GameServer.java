@@ -66,7 +66,6 @@ import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
@@ -77,8 +76,11 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRe
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.io.IOException;
@@ -116,7 +118,7 @@ public class GameServer {
     private boolean isRunning = false;
     private int TCPPort = -1;
 
-    private final HashMap<Integer, FactionType> playersSelection = new HashMap<>(4, 1);
+    private final HashMap<Integer, FactionType> playersSelections = new HashMap<>(4, 1);
     private final HashMap<Integer, FactionType> playersLocks = new HashMap<>(4, 1);
     private final TreeSet<Integer> legitConnections = new TreeSet<>(Integer::compareTo);
 
@@ -331,7 +333,7 @@ public class GameServer {
     private void initNew() {
         this.udpListener.stop();
         this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(this.playersLocks));
-        this.playersSelection.clear();
+        this.playersSelections.clear();
         this.playersLocks.clear();
         this.server.sendToAllTCP(new NetGameStarted());
         Log.debug(GameServer.class.toString(), this.room.getGameName() + ": started");
@@ -379,8 +381,19 @@ public class GameServer {
                 GameClientInfo info = GameServer.this.room.removeMember(connection.getID());
                 GameServer.this.legitConnections.remove(new Integer(connection.getID()));
                 Log.debug(GameServer.NetworkListener.class.toString(), "Player " + info + " disconnected");
+
+                FactionType faction = GameServer.this.playersSelections.remove(new Integer(connection.getID()));
+                if (faction != null) {
+                    this.server.sendToAllTCP(new NetFactionUnselected(faction));
+                }
+
+                faction = GameServer.this.playersLocks.remove(new Integer(connection.getID()));
+                if (faction != null) {
+                    this.server.sendToAllTCP(new NetFactionUnlocked(faction));
+                }
+
                 this.server.sendToAllTCP(new NetHandlePlayerDisconnection(info));
-            } // fixme : unselect & unlock faction
+            }
         }
 
         // general
@@ -417,7 +430,7 @@ public class GameServer {
                 }
 
                 if (!isFactionLocked) {
-                    int numberOfTimesTheFactionIsSelected = (int) GameServer.this.playersSelection.entrySet()
+                    int numberOfTimesTheFactionIsSelected = (int) GameServer.this.playersSelections.entrySet()
                                                                                                   .stream()
                                                                                                   .filter(integerFactionTypeEntry -> integerFactionTypeEntry
                                                                                                           .getValue() == faction
@@ -450,8 +463,12 @@ public class GameServer {
         public void received(Connection connection, NetSelectFactionRequest faction) {
 
             if (isLegit(connection) && !GameServer.this.playersLocks.containsKey(new Integer(connection.getID()))) {
-                GameServer.this.playersSelection.put(new Integer(connection.getID()), faction.getFactionType());
-                this.server.sendToAllTCP(faction);
+                FactionType previousFaction = GameServer.this.playersSelections.get(new Integer(connection.getID()));
+                GameServer.this.playersSelections.put(new Integer(connection.getID()), faction.getFactionType());
+                if (previousFaction != null) {
+                    this.server.sendToAllTCP(new NetFactionUnselected(previousFaction));
+                }
+                this.server.sendToAllTCP(new NetFactionSelected(faction.getFactionType(), GameServer.this.room.find(connection.getID())));
                 Log.trace(GameServer.NetworkListener.class.toString(),
                         GameServer.this.room.find(connection.getID()) + " selected " + faction);
             }
@@ -471,7 +488,7 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetConventionRequest conventionRequest) {
+        public void received(Connection connection, NetConventionRequest ignored) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new OrganizeConventionRequestEvent(connection.getID()));
             }
@@ -525,7 +542,7 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetSkipTurnRequest skipRequest) {
+        public void received(Connection connection, NetSkipTurnRequest ignored) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new SkipTurnEvent(connection.getID()));
             }
@@ -538,6 +555,20 @@ public class GameServer {
                         battleRequest.getTargetPlayerID(),
                         battleRequest.getZoneID()
                 ));
+            }
+        }
+
+        public void received(Connection connection, NetUnlockFactionRequest ignored) {
+            FactionType faction;
+            if (isLegit(connection) && (faction = GameServer.this.playersLocks.remove(connection.getID())) != null) {
+                this.server.sendToAllTCP(new NetFactionUnlocked(faction));
+            }
+        }
+
+        public void received(Connection connection, NetUnselectFactionRequest ignored) {
+            FactionType faction;
+            if (isLegit(connection) && (faction = GameServer.this.playersSelections.remove(connection.getID())) != null) {
+                this.server.sendToAllTCP(new NetFactionUnselected(faction));
             }
         }
 

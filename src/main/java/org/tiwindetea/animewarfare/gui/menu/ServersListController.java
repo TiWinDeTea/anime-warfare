@@ -176,7 +176,7 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 			MainApp.getGameServer().start();
 			MainApp.getGameClient().setName(Settings.getPlayerName());
 			MainApp.getGameClient().connect(MainApp.getGameServer());
-		} catch (IOException e) {
+		} catch (IOException | IllegalArgumentException e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setContentText(e.getLocalizedMessage());
 			alert.showAndWait();

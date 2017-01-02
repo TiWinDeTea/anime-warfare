@@ -31,7 +31,6 @@ import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.net.networkevent.*;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
@@ -333,6 +332,23 @@ public class GameClient {
             EventDispatcher.send(new BattleStartedNetevent(battleStarted));
         }
 
+        public void received(Connection connection, NetFactionLocked faction) {
+            Log.debug(GameClient.Listener.class.toString(), "Received " + faction);
+            EventDispatcher.send(new PlayerLockedFactionNetevent(faction));
+        }
+
+        public void received(Connection connection, NetFactionSelected faction) {
+            EventDispatcher.send(new PlayerSelectedFactionNetevent(faction));
+        }
+
+        public void received(Connection connection, NetFactionUnlocked faction) {
+            EventDispatcher.send(new FactionUnlockedNetevent(faction.getFaction()));
+        }
+
+        public void received(Connection connection, NetFactionUnselected faction) {
+            EventDispatcher.send(new FactionUnselectedNetevent(faction.getFaction()));
+        }
+
         public void received(Connection connection, NetFanNumberUpdated fanNumberUpdated) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + fanNumberUpdated);
             EventDispatcher.send(new FanNumberUpdatedNetevent(fanNumberUpdated));
@@ -368,11 +384,6 @@ public class GameClient {
             EventDispatcher.send(new PlayerDisconnectionNetevent(playerDisconnection));
         }
 
-        public void received(Connection connection, NetFactionLocked faction) {
-            Log.debug(GameClient.Listener.class.toString(), "Received " + faction);
-            EventDispatcher.send(new PlayerLockedFactionNetevent(faction));
-        }
-
         public void received(Connection connection, NetMarketingLadderUpdated marketingLadderUpdated) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + marketingLadderUpdated);
             EventDispatcher.send(new MarketingLadderUpdatedNetevent(marketingLadderUpdated));
@@ -396,11 +407,6 @@ public class GameClient {
         public void received(Connection connection, NetPlayingOrderChosen playingOrderChosen) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + playingOrderChosen);
             EventDispatcher.send(new PlayOrderChosenNetevent(playingOrderChosen));
-        }
-
-        public void received(Connection connection, NetSelectFactionRequest faction) {
-            Log.trace(GameClient.Listener.class.toString(), "Received " + faction);
-            EventDispatcher.send(new PlayerSelectedFactionNetevent(faction));
         }
 
         public void received(Connection connection, NetSelectMascotToCapture selectMascotToCapture) {

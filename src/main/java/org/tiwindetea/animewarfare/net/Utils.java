@@ -41,7 +41,6 @@ import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
@@ -52,22 +51,12 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRe
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -125,22 +114,33 @@ class Utils {
 		kryo.register(String.class);
 		kryo.register(LinkedList.class);
 		kryo.register(ArrayList.class);
+		kryo.register(NetPlayingOrderChosen.class);
+		kryo.register(NetUnitEvent.class);
 
 		// client
 		kryo.register(NetCapturedMascotSelection.class);
 		kryo.register(NetConventionRequest.class);
 		kryo.register(NetFirstPlayerSelection.class);
 		kryo.register(NetInvokeUnitRequest.class);
+		kryo.register(NetLockFactionRequest.class);
 		kryo.register(NetMascotCaptureRequest.class);
 		kryo.register(NetMoveUnitRequest.class);
 		kryo.register(NetOpenStudioRequest.class);
 		kryo.register(NetPassword.class);
 		kryo.register(NetSkipTurnRequest.class);
+		kryo.register(NetSelectFactionRequest.class);
 		kryo.register(NetStartBattleRequest.class);
+		kryo.register(NetUnselectFactionRequest.class);
+		kryo.register(NetUnlockFactionRequest.class);
+
 
 		// server
 		kryo.register(NetBadPassword.class);
 		kryo.register(NetBattleStarted.class);
+		kryo.register(NetFactionLocked.class);
+		kryo.register(NetFactionSelected.class);
+		kryo.register(NetFactionUnlocked.class);
+		kryo.register(NetFactionUnselected.class);
 		kryo.register(NetFanNumberUpdated.class);
 		kryo.register(NetFirstPlayerSelected.class);
 		kryo.register(NetFirstPlayerSelectionRequest.class);
@@ -151,19 +151,10 @@ class Utils {
 		kryo.register(NetMessage.class);
 		kryo.register(NetNewStudio.class);
 		kryo.register(NetPhaseChange.class);
-		kryo.register(NetFactionLocked.class);
-
-		// networkrequests
-		kryo.register(NetLockFactionRequest.class);
-		kryo.register(NetPlayingOrderChosen.class);
-		kryo.register(NetSelectFactionRequest.class);
 		kryo.register(NetSelectMascotToCapture.class);
-		kryo.register(NetUnitEvent.class);
-		kryo.register(NetBadPassword.class);
 
 		// inner
 		kryo.register(FactionType.class);
-		kryo.register(String.class);
 	}
 
 	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {

@@ -41,6 +41,10 @@ import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
@@ -49,8 +53,8 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkrequests.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +67,8 @@ import java.util.Map;
 public class GameRoomController
 		implements ConnectedNeteventListener, PlayerConnectionNeteventListener,
 		PlayerDisconnectionNeteventListener, PlayerSelectedFactionNeteventListener,
-		PlayerLockedFactionNeteventListener {
+		PlayerLockedFactionNeteventListener, FactionUnselectedNeteventListener,
+		FactionUnlockedNeteventListener {
 	private static final ColorAdjust EFFECT_MONOCHROME = new ColorAdjust();
 	private static final ColorAdjust GREENIFY;
 
@@ -115,11 +120,13 @@ public class GameRoomController
 
 	@FXML
 	private void initialize() {
-		EventDispatcher.getInstance().addListener(ConnectedNetevent.class, this);
-		EventDispatcher.getInstance().addListener(PlayerConnectionNetevent.class, this);
-		EventDispatcher.getInstance().addListener(PlayerDisconnectionNetevent.class, this);
-		EventDispatcher.getInstance().addListener(PlayerSelectedFactionNetevent.class, this);
-		EventDispatcher.getInstance().addListener(PlayerLockedFactionNetevent.class, this);
+		EventDispatcher.registerListener(ConnectedNetevent.class, this);
+		EventDispatcher.registerListener(PlayerConnectionNetevent.class, this);
+		EventDispatcher.registerListener(PlayerDisconnectionNetevent.class, this);
+		EventDispatcher.registerListener(PlayerSelectedFactionNetevent.class, this);
+		EventDispatcher.registerListener(PlayerLockedFactionNetevent.class, this);
+		EventDispatcher.registerListener(FactionUnselectedNetevent.class, this);
+		EventDispatcher.registerListener(FactionUnlockedNetevent.class, this);
 	}
 
 	@FXML
@@ -136,22 +143,22 @@ public class GameRoomController
 
 	@FXML
 	private void handleTheBlackKnightsClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.THE_BLACK_KNIGHTS, MainApp.getGameClient().getClientInfo()));
+		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.THE_BLACK_KNIGHTS));
 	}
 
 	@FXML
 	private void handleFClassNoBakaClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.F_CLASS_NO_BAKA, MainApp.getGameClient().getClientInfo()));
+		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.F_CLASS_NO_BAKA));
 	}
 
 	@FXML
 	private void handleHaiyoreClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.HAIYORE, MainApp.getGameClient().getClientInfo()));
+		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.HAIYORE));
 	}
 
 	@FXML
 	private void handleNoNameClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.NO_NAME, MainApp.getGameClient().getClientInfo()));
+		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.NO_NAME));
 	}
 
 	@FXML
@@ -211,8 +218,18 @@ public class GameRoomController
 	}
 
 	@Override
+	public void handleFactionUnselected(FactionUnselectedNetevent factionUnselectedNetevent) {
+		getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
+	}
+
+	@Override
 	public void handleFactionLock(PlayerLockedFactionNetevent playerLockedFactionNetevent) {
 		getImageViewByFactionType(playerLockedFactionNetevent.getFaction()).setEffect(EFFECT_MONOCHROME);
+	}
+
+	@Override
+	public void handleFactionUnlocked(FactionUnlockedNetevent factionUnlockedNetevent) {
+		getImageViewByFactionType(factionUnlockedNetevent.getFaction()).setEffect(null);
 	}
 
 	// helper method

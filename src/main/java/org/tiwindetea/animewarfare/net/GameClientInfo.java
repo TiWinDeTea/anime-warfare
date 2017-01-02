@@ -50,4 +50,9 @@ public class GameClientInfo implements NetworkedClass {
     public boolean equals(GameClientInfo gci) {
         return gci.id == this.id && (gci.gameClientName == null ? this.gameClientName == null : gci.gameClientName.equals(this.gameClientName));
     }
+
+    @Override
+    public String toString() {
+        return this.gameClientName;
+    }
 }

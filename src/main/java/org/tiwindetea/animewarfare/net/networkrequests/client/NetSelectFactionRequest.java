@@ -22,44 +22,27 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkevent;
+package org.tiwindetea.animewarfare.net.networkrequests.client;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class PlayerSelectedFactionNetevent implements Event<PlayerSelectedFactionNeteventListener> {
+public class NetSelectFactionRequest implements NetSendable {
 
-    private final GameClientInfo playerInfo;
     private final FactionType factionType;
 
-    public PlayerSelectedFactionNetevent() {
-        this.playerInfo = null;
+    /**
+     * Empty NetSelectFactionRequest instance. Required by kryonet lib
+     */
+    public NetSelectFactionRequest() {
         this.factionType = null;
     }
 
-    public PlayerSelectedFactionNetevent(GameClientInfo playerId, FactionType factionType) {
-        this.playerInfo = playerId;
+    public NetSelectFactionRequest(FactionType factionType) {
         this.factionType = factionType;
-    }
-
-    public PlayerSelectedFactionNetevent(NetFactionSelected faction) {
-        this.playerInfo = faction.getGameClientInfo();
-        this.factionType = faction.getFaction();
-    }
-
-    @Override
-    public void notify(PlayerSelectedFactionNeteventListener listener) {
-        listener.handleFactionChoice(this);
-    }
-
-    public GameClientInfo getPlayerInfo() {
-        return this.playerInfo;
     }
 
     public FactionType getFactionType() {

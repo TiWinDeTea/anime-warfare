@@ -26,43 +26,25 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class PlayerSelectedFactionNetevent implements Event<PlayerSelectedFactionNeteventListener> {
+public class FactionUnlockedNetevent implements Event<FactionUnlockedNeteventListener> {
 
-    private final GameClientInfo playerInfo;
-    private final FactionType factionType;
+    private final FactionType faction;
 
-    public PlayerSelectedFactionNetevent() {
-        this.playerInfo = null;
-        this.factionType = null;
+    public FactionUnlockedNetevent(FactionType faction) {
+        this.faction = faction;
     }
 
-    public PlayerSelectedFactionNetevent(GameClientInfo playerId, FactionType factionType) {
-        this.playerInfo = playerId;
-        this.factionType = factionType;
-    }
-
-    public PlayerSelectedFactionNetevent(NetFactionSelected faction) {
-        this.playerInfo = faction.getGameClientInfo();
-        this.factionType = faction.getFaction();
+    public FactionType getFaction() {
+        return this.faction;
     }
 
     @Override
-    public void notify(PlayerSelectedFactionNeteventListener listener) {
-        listener.handleFactionChoice(this);
-    }
-
-    public GameClientInfo getPlayerInfo() {
-        return this.playerInfo;
-    }
-
-    public FactionType getFactionType() {
-        return this.factionType;
+    public void notify(FactionUnlockedNeteventListener listener) {
+        listener.handleFactionUnlocked(this);
     }
 }

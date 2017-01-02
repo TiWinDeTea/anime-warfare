@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare;
 
-import com.esotericsoftware.minlog.Log;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -78,8 +77,6 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 		this.primaryStage = stage;
 		this.primaryStage.setTitle(BUNDLE.getString("title"));
-
-		Log.set(Log.LEVEL_DEBUG);
 
 		initRootLayout();
 		GlobalChat.getChatController().initShortcuts(this.primaryStage);
