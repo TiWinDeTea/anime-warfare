@@ -39,4 +39,12 @@ public class StaffPointUpdatedEvent implements Event<StaffPointUpdatedEventListe
 	public void notify(StaffPointUpdatedEventListener listener) {
 		listener.onStaffPointChange(this);
 	}
+
+	public int getPlayerID() {
+		return this.playerID;
+	}
+
+	public int getStaffAvailable() {
+		return this.staffAvailable;
+	}
 }

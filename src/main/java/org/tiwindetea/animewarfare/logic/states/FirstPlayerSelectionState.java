@@ -60,11 +60,9 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 	public void onEnter() {
 		registerEventListeners();
 
-		selectionFirstPlayer();
-
 		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
 
-		this.machine.get().update();
+		selectionFirstPlayer();
 	}
 
 	@Override
@@ -97,6 +95,8 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 	public void handlePlayingOrder(PlayingOrderChoiceEvent event) {
 		this.clockWise = event.isClockWiseTurn();
 		this.gameBoard.initializeTurn(this.firstPlayer, this.clockWise.booleanValue());
+
+		this.machine.get().update();
 	}
 
 	protected void registerEventListeners() {

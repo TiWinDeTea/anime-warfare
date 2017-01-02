@@ -51,12 +51,11 @@ public class Player {
 	private int battleCostModifier;
 	private int uniqueActionModifier;
 
-	private boolean canPass;
-
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
 	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
+	private final List<Capacity> capacities = new ArrayList<>();
 	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
 
@@ -194,14 +193,6 @@ public class Player {
 		// TODO: Event
 	}
 
-	public boolean canPass() {
-		return this.canPass;
-	}
-
-	public void setCanPass(boolean canPass) {
-		this.canPass = canPass;
-
-		// TODO: Event
 	}
 
 	@Override

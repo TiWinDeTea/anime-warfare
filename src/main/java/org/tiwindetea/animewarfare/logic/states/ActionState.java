@@ -136,10 +136,6 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 	@Override
 	public void onExit() {
-		for (Player player : this.players) {
-			player.setCanPass(false);
-		}
-
 		unregisterEventListeners();
 	}
 
@@ -201,7 +197,6 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		if (this.currentPlayer.hasRequiredStaffPoints(MOVE_COST, validMovements.size())) {
 			if (event.getMovements().size() == validMovements.size()) {
 				this.currentPlayer.decrementStaffPoints(MOVE_COST, validMovements.size());
-				this.currentPlayer.setCanPass(true);
 
 				for (Pair<Unit, MoveUnitEvent.Movement> movement : validMovements) {
 					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
@@ -272,7 +267,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 	@Override
 	public void handleSkipTurnEvent(SkipTurnEvent event) {
-		if (isInvalidPlayer(event) || !this.currentPlayer.canPass()) {
+		if (isInvalidPlayer(event)) {
 			return;
 		}
 

@@ -112,4 +112,17 @@ public class Zone {
 		return this.units.stream()
 		                 .anyMatch(unit -> unit.hasFaction(faction));
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Zone zone = (Zone) o;
+		return this.ID == zone.ID;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.ID);
+	}
 }

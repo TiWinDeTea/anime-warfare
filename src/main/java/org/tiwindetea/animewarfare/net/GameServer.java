@@ -81,7 +81,24 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -306,7 +323,6 @@ public class GameServer {
     }
 
 
-
     /**
      * stops the udp listening
      */
@@ -431,16 +447,17 @@ public class GameServer {
 
                 if (!isFactionLocked) {
                     int numberOfTimesTheFactionIsSelected = (int) GameServer.this.playersSelections.entrySet()
-                                                                                                  .stream()
-                                                                                                  .filter(integerFactionTypeEntry -> integerFactionTypeEntry
-                                                                                                          .getValue() == faction
-                                                                                                          .getFaction())
-                                                                                                  .count();
+                                                                                                   .stream()
+                                                                                                   .filter(integerFactionTypeEntry -> integerFactionTypeEntry
+                                                                                                           .getValue() == faction
+                                                                                                           .getFaction())
+                                                                                                   .count();
                     if (numberOfTimesTheFactionIsSelected <= 1) {
-                        this.server.sendToAllTCP(new NetFactionLocked(GameServer.this.room.find(connection.getID()), faction.getFaction()));
+                        this.server.sendToAllTCP(new NetFactionLocked(GameServer.this.room.find(connection.getID()),
+                                faction.getFaction()));
                         GameServer.this.playersLocks.put(new Integer(connection.getID()), faction.getFaction());
                         Log.debug(GameServer.NetworkListener.class.toString(),
-                                  "Player " + GameServer.this.room.find(connection.getID()) + " locked " + faction);
+                                "Player " + GameServer.this.room.find(connection.getID()) + " locked " + faction);
 
                         if (GameServer.this.playersLocks.size() == GameServer.this.room.getNumberOfExpectedPlayers()) {
                             initNew();
@@ -468,7 +485,8 @@ public class GameServer {
                 if (previousFaction != null) {
                     this.server.sendToAllTCP(new NetFactionUnselected(previousFaction));
                 }
-                this.server.sendToAllTCP(new NetFactionSelected(faction.getFactionType(), GameServer.this.room.find(connection.getID())));
+                this.server.sendToAllTCP(new NetFactionSelected(faction.getFactionType(),
+                        GameServer.this.room.find(connection.getID())));
                 Log.trace(GameServer.NetworkListener.class.toString(),
                         GameServer.this.room.find(connection.getID()) + " selected " + faction);
             }
@@ -476,7 +494,10 @@ public class GameServer {
 
         public void received(Connection connection, NetUnitEvent unitEvent) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new UnitEvent(unitEvent.getType(), unitEvent.getUnitID(), unitEvent.getZoneID()));
+                GameServer.this.eventDispatcher.fire(new UnitEvent(unitEvent.getType(),
+                        unitEvent.getUnitID(),
+                        unitEvent.getZoneID(),
+                        unitEvent.getFactionType(), unitEvent.getUnitType()));
             }
         }
 
@@ -484,7 +505,8 @@ public class GameServer {
         // NetSendable classes
         public void received(Connection connection, NetCapturedMascotSelection selection) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(), selection.getUnitID()));
+                GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(),
+                        selection.getUnitID()));
             }
         }
 
@@ -502,7 +524,9 @@ public class GameServer {
 
         public void received(Connection connection, NetInvokeUnitRequest unitRequest) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new InvokeUnitEvent(connection.getID(), unitRequest.getUnitType(), unitRequest.getZoneID()));
+                GameServer.this.eventDispatcher.fire(new InvokeUnitEvent(connection.getID(),
+                        unitRequest.getUnitType(),
+                        unitRequest.getZoneID()));
             }
         }
 
@@ -518,13 +542,15 @@ public class GameServer {
 
         public void received(Connection connection, NetMoveUnitRequest unitMoveRequest) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new MoveUnitEvent(connection.getID(), unitMoveRequest.getMovements()));
+                GameServer.this.eventDispatcher.fire(new MoveUnitEvent(connection.getID(),
+                        unitMoveRequest.getMovements()));
             }
         }
 
         public void received(Connection connection, NetOpenStudioRequest studioRequest) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new OpenStudioEvent(connection.getID(), studioRequest.getZoneID()));
+                GameServer.this.eventDispatcher.fire(new OpenStudioEvent(connection.getID(),
+                        studioRequest.getZoneID()));
             }
         }
 
@@ -649,7 +675,8 @@ public class GameServer {
 
         @Override
         public void handleNumberOfFansChanged(NumberOfFansChangedEvent event) {
-            this.server.sendToAllTCP(new NetFanNumberUpdated(event, GameServer.this.room.find(event.getPlayer().getID())));
+            this.server.sendToAllTCP(new NetFanNumberUpdated(event,
+                    GameServer.this.room.find(event.getPlayer().getID())));
         }
 
         @Override
