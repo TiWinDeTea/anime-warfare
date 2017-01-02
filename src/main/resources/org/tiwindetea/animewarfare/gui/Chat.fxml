@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.tiwindetea.animewarfare.gui.PaperButton?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.ChatController">
    <children>
       <BorderPane layoutX="82.0" layoutY="56.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
             <BorderPane prefHeight="73.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-               <center>
-                  <TextArea fx:id="answerTextArea" prefHeight="165.0" prefWidth="500.0" />
-               </center>
                <right>
-                  <VBox alignment="CENTER" prefHeight="63.0" prefWidth="78.0" spacing="10.0" BorderPane.alignment="CENTER">
+                  <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#handleSend" text="%button.send" />
+                        <PaperButton prefHeight="30.0" prefWidth="100.0" text="%button.send"/>
                      </children>
+                     <padding>
+                        <Insets left="5.0"/>
+                     </padding>
                   </VBox>
                </right>
                <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets bottom="5.0" right="5.0" top="5.0"/>
                </padding>
+               <center>
+                  <TextArea fx:id="answerTextArea" prefHeight="165.0" prefWidth="400.0" BorderPane.alignment="CENTER"/>
+               </center>
             </BorderPane>
          </bottom>
          <center>
