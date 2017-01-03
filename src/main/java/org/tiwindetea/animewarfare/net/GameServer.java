@@ -38,7 +38,7 @@ import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEventListener;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEventListener;
-import org.tiwindetea.animewarfare.logic.event.StudioAddedEvent;
+import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 import org.tiwindetea.animewarfare.logic.event.StudioEventListener;
 import org.tiwindetea.animewarfare.logic.event.UnitEvent;
 import org.tiwindetea.animewarfare.logic.event.UnitEventListener;
@@ -680,8 +680,13 @@ public class GameServer {
         }
 
         @Override
-        public void handleStudioAddedEvent(StudioAddedEvent event) {
+        public void handleStudioAddedEvent(StudioEvent event) {
             this.server.sendToAllTCP(new NetNewStudio(event));
+        }
+
+        @Override
+        public void handleStudioRemovedEvent(StudioEvent event) {
+            // TODO
         }
 
         @Override

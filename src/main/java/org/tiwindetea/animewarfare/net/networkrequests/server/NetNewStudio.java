@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.tiwindetea.animewarfare.logic.event.StudioAddedEvent;
+import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 
 /**
  * @author Lucas Lazare
@@ -42,7 +42,7 @@ public class NetNewStudio implements NetReceivable {
         this.studioID = 0;
     }
 
-    public NetNewStudio(StudioAddedEvent event) {
+    public NetNewStudio(StudioEvent event) {
         this.studioID = event.getStudioID();
     }
 

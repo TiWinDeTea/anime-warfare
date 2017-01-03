@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.logic;
 
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.logic.event.StudioAddedEvent;
+import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
@@ -97,7 +97,12 @@ public class Zone {
 
 	public void setStudio(Studio studio) {
 		this.studio = studio;
-		EventDispatcher.getInstance().fire(new StudioAddedEvent(this.ID));
+
+		if (studio != null) {
+			EventDispatcher.send(new StudioEvent(StudioEvent.Type.ADDED, this.ID));
+		} else {
+			EventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED, this.ID));
+		}
 	}
 
 	public boolean isCountrySide() {
