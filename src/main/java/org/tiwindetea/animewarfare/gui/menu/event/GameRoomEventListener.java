@@ -31,4 +31,6 @@ import java.util.EventListener;
  */
 public interface GameRoomEventListener extends EventListener {
 	void handleGameRoomQuit();
+
+	void handleGameStart();
 }

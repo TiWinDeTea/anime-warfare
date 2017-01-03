@@ -34,6 +34,7 @@ import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
+import org.tiwindetea.animewarfare.gui.game.GameState;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEventListener;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
@@ -100,6 +101,12 @@ public class GameRoomState extends GUIState implements GameRoomEventListener {
 	@Override
 	public void handleGameRoomQuit() {
 		this.nextState = new ServersListState(this.rootLayout);
+		EventDispatcher.getInstance().fire(new AskMenuStateUpdateEvent());
+	}
+
+	@Override
+	public void handleGameStart() {
+		this.nextState = new GameState(this.rootLayout);
 		EventDispatcher.getInstance().fire(new AskMenuStateUpdateEvent());
 	}
 }

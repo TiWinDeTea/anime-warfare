@@ -81,7 +81,24 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -335,9 +352,9 @@ public class GameServer {
     private void initNew() {
         this.udpListener.stop();
         Map<Integer, FactionType> shadow = new HashMap<>();
-        this.room.modifiableLocks().forEach((gc, faction) -> shadow.put(new Integer(gc.gameClientName), faction));
-        this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(shadow));
+        this.room.modifiableLocks().forEach((gc, faction) -> shadow.put(new Integer(gc.id), faction));
         this.server.sendToAllTCP(new NetGameStarted());
+        this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(shadow));
         Log.info(GameServer.class.toString(), this.room + ": game started");
     }
 

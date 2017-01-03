@@ -36,6 +36,12 @@ public class GameRoomEvent implements Event<GameRoomEventListener> {
 			void handle(GameRoomEventListener listener) {
 				listener.handleGameRoomQuit();
 			}
+		},
+		GAME_START {
+			@Override
+			void handle(GameRoomEventListener listener) {
+				listener.handleGameStart();
+			}
 		};
 
 		abstract void handle(GameRoomEventListener listener);

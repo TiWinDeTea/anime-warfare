@@ -47,6 +47,8 @@ import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
@@ -74,7 +76,7 @@ public class GameRoomController
 		implements ConnectedNeteventListener, PlayerConnectionNeteventListener,
 		PlayerDisconnectionNeteventListener, PlayerSelectedFactionNeteventListener,
 		PlayerLockedFactionNeteventListener, FactionUnselectedNeteventListener,
-		FactionUnlockedNeteventListener {
+		FactionUnlockedNeteventListener, GameStartedNeteventListener {
 	private static final ColorAdjust EFFECT_MONOCHROME = new ColorAdjust();
 	private static final ColorAdjust GREENIFY;
 
@@ -137,6 +139,7 @@ public class GameRoomController
 		EventDispatcher.registerListener(PlayerLockedFactionNetevent.class, this);
 		EventDispatcher.registerListener(FactionUnselectedNetevent.class, this);
 		EventDispatcher.registerListener(FactionUnlockedNetevent.class, this);
+		EventDispatcher.registerListener(GameStartedNetevent.class, this);
 
 		initColorsQueue();
 	}
@@ -278,6 +281,11 @@ public class GameRoomController
 								? GREENIFY
 								: null
 				);
+	}
+
+	@Override
+	public void handleGameStart() {
+		Platform.runLater(() -> EventDispatcher.getInstance().fire(new GameRoomEvent(GameRoomEvent.Type.GAME_START)));
 	}
 
 	// helper method
