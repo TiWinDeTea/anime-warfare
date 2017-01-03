@@ -1,41 +1,34 @@
 package org.tiwindetea.animewarfare.logic.capacity;
 
-import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
-import org.tiwindetea.animewarfare.logic.event.UnitEventListener;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
 
-public class MagicMovement extends PlayerCapacity {
-	public static class MagicMovementActivable extends PlayerActivable implements UnitEventListener {
-		public MagicMovementActivable(Player player) {
+public class MagicMovement implements Capacity {
+	public static class MagicMovementActivable extends PlayerActivable {
+		private final GameMap map;
+
+		public MagicMovementActivable(Player player, GameMap map) {
 			super(player);
-
-			EventDispatcher.registerListener(UnitEvent.class, this);
+			this.map = map;
 		}
 
 		@Override
 		public void destroy() {
-			EventDispatcher.unregisterListener(UnitEvent.class, this);
 		}
 
-		@Override
-		public void handleUnitEvent(UnitEvent event) {
-			if (event.getType() == UnitEvent.Type.REMOVED && this.player.hasFaction(event.getFaction()) && event.getUnitType() == UnitType.NYARUKO) {
-				this.player.activateCapacity(new MagicMovement(this.player));
-				// TODO: Teleport Nyaruko.
-
-				destroy();
-			}
-		}
+		// TODO
 	}
 
-	private MagicMovement(Player player) {
-		super(player);
+	MagicMovement() {
 	}
 
 	@Override
 	public void use() {
 
+	}
+
+	@Override
+	public CapacityType getType() {
+		return CapacityType.MAGIC_MOVEMENT;
 	}
 }

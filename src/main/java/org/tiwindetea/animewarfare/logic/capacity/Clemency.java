@@ -22,18 +22,22 @@ public class Clemency extends PlayerCapacity {
 		@Override
 		public void handleUnitEvent(UnitEvent event) {
 			if (event.getType() == UnitEvent.Type.ADDED && event.getUnitType() == UnitType.SAKAMAKI_IZAYOI) {
-				this.player.activateCapacity(new Clemency(this.player));
-				destroy();
+				activateAndDestroy(new Clemency(getPlayer()));
 			}
 		}
 	}
 
-	private Clemency(Player player) {
+	Clemency(Player player) {
 		super(player);
 	}
 
 	@Override
 	public void use() {
 		// TODO
+	}
+
+	@Override
+	public CapacityType getType() {
+		return CapacityType.CLEMENCY;
 	}
 }

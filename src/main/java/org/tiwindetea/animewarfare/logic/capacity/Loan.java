@@ -26,29 +26,34 @@ public class Loan extends PlayerCapacity {
 
 		@Override
 		public void handleStudioController(StudioControllerChangedEvent event) {
-			if (this.player.hasFaction(event.getControllerFaction())) {
+			if (getPlayer().hasFaction(event.getControllerFaction())) {
 				++this.controlledStudioCount;
 			}
 
 			if (this.controlledStudioCount == 4) {
-				this.player.activateCapacity(new Loan(this.player));
+				getPlayer().activateCapacity(new Loan(getPlayer()));
 			}
 		}
 
 		@Override
 		public void onStaffPointChange(StaffPointUpdatedEvent event) {
-			if (this.player.getID() == event.getPlayerID() && event.getStaffAvailable() >= 10) {
-				this.player.activateCapacity(new Loan(this.player));
+			if (getPlayer().getID() == event.getPlayerID() && event.getStaffAvailable() >= 10) {
+				getPlayer().activateCapacity(new Loan(getPlayer()));
 			}
 		}
 	}
 
-	private Loan(Player player) {
+	Loan(Player player) {
 		super(player);
 	}
 
 	@Override
 	public void use() {
 		// TODO
+	}
+
+	@Override
+	public CapacityType getType() {
+		return CapacityType.LOAN;
 	}
 }
