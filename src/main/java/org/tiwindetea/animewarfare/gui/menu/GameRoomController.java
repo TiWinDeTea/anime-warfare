@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.gui.menu;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -39,6 +40,7 @@ import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.Room;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
@@ -55,6 +57,8 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNeteven
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNeteventListener;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -156,29 +160,57 @@ public class GameRoomController
 
 	@FXML
 	private void handleTheBlackKnightsClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.THE_BLACK_KNIGHTS));
+		if (FactionType.THE_BLACK_KNIGHTS.equals(this.selectedFaction)) {
+			MainApp.getGameClient().send(new NetUnselectFactionRequest());
+		} else {
+			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.THE_BLACK_KNIGHTS));
+		}
 	}
 
 	@FXML
 	private void handleFClassNoBakaClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.F_CLASS_NO_BAKA));
+		if (FactionType.F_CLASS_NO_BAKA.equals(this.selectedFaction)) {
+			MainApp.getGameClient().send(new NetUnselectFactionRequest());
+		} else {
+			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.F_CLASS_NO_BAKA));
+		}
 	}
 
 	@FXML
 	private void handleHaiyoreClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.HAIYORE));
+		if (FactionType.HAIYORE.equals(this.selectedFaction)) {
+			
+		} else {
+			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.HAIYORE));
+		}
 	}
 
 	@FXML
 	private void handleNoNameClicked() {
-		MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.NO_NAME));
+		if (FactionType.NO_NAME.equals(this.selectedFaction)) {
+			MainApp.getGameClient().send(new NetUnselectFactionRequest());
+		} else {
+			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.NO_NAME));
+		}
 	}
 
 	@FXML
 	private void handleLockFaction() {
 		if (this.selectedFaction != null) {
 			MainApp.getGameClient().send(new NetLockFactionRequest(this.selectedFaction));
+			this.lockFactionButton.setText("Unlock faction"); // TODO externalize
+			this.lockFactionButton.setOnAction(this::handleUnlockFaction);
 		}
+	}
+
+	private void handleUnlockFaction(ActionEvent actionEvent) {
+		MainApp.getGameClient().send(new NetUnlockFactionRequest());
+		this.lockFactionButton.setText("Lock faction"); // TODO externalize
+		this.lockFactionButton.setOnAction(this::handleLockFaction);
+	}
+
+	private void handleLockFaction(ActionEvent actionEvent) {
+		handleLockFaction();
 	}
 
 	@Override
@@ -200,6 +232,10 @@ public class GameRoomController
 				this.userNamesLabels.put(gameClientInfo.getId(), playerName);
 				this.usersList.getChildren().add(playerName);
 			}
+
+			Room room = MainApp.getGameClient().getRoom();
+			room.getSelections().forEach((gc, faction) -> this.handleFactionChoice(new PlayerSelectedFactionNetevent(gc, faction)));
+			room.getLocks().forEach((gc, faction) -> this.handleFactionLock(new PlayerLockedFactionNetevent(gc, faction)));
 		});
 	}
 
@@ -226,7 +262,14 @@ public class GameRoomController
 
 	@Override
 	public void handleFactionUnselected(FactionUnselectedNetevent factionUnselectedNetevent) {
-		getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
+
+		if (!MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnselectedNetevent.getFaction())) {
+			getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
+		}
+
+		if (MainApp.getGameClient().getClientInfo().equals(factionUnselectedNetevent.getClient())) {
+			this.selectedFaction = null;
+		}
 	}
 
 	@Override
@@ -236,7 +279,12 @@ public class GameRoomController
 
 	@Override
 	public void handleFactionUnlocked(FactionUnlockedNetevent factionUnlockedNetevent) {
-		getImageViewByFactionType(factionUnlockedNetevent.getFaction()).setEffect(null);
+		getImageViewByFactionType(factionUnlockedNetevent.getFaction())
+				.setEffect(
+						MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnlockedNetevent.getFaction())
+								? GREENIFY
+								: null
+				);
 	}
 
 	// helper method
