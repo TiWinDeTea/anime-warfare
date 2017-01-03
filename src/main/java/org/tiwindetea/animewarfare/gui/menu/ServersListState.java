@@ -71,6 +71,9 @@ public class ServersListState extends GUIState implements ServersListEventListen
 		ServersListState.fadeTransition.setAutoReverse(false);
 	}
 
+	public static void initStaticFields() {
+	}
+
 	public ServersListState(BorderPane rootLayout) {
 		super(rootLayout);
 	}

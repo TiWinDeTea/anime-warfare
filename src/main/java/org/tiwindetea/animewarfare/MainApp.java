@@ -36,8 +36,11 @@ import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEventListener;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
+import org.tiwindetea.animewarfare.gui.game.GameState;
 import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
+import org.tiwindetea.animewarfare.gui.menu.ServersListState;
+import org.tiwindetea.animewarfare.gui.menu.SettingsMenuState;
 import org.tiwindetea.animewarfare.net.GameClient;
 import org.tiwindetea.animewarfare.net.GameServer;
 import org.tiwindetea.animewarfare.settings.LanguageUpdatedEvent;
@@ -80,7 +83,11 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 		initRootLayout();
 		GlobalChat.getChatController().initShortcuts(this.primaryStage);
+		MainMenuState.initStaticFields();
+		SettingsMenuState.initStaticFields();
+		ServersListState.initStaticFields();
 		GameRoomState.initStaticFields();
+		GameState.initStaticFields();
 
 		this.guiStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 

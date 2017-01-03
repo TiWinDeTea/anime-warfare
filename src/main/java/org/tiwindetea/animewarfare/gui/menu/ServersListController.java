@@ -57,6 +57,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The servers list controller.
@@ -72,9 +74,6 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	@FXML
 	private TableColumn<Room, String> numberOfUsersList;
 
-	//@FXML
-	//private TableColumn<Room, String> numberOfUsersMaxList;
-
 	@FXML
 	private TableColumn<Room, Boolean> passwordsList;
 
@@ -85,6 +84,8 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	private TableView<Room> roomsTableView;
 
 	private final ObservableList<Room> roomsList = FXCollections.observableArrayList();
+
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	/**
 	 * Initializes the controller class. This method is automatically called

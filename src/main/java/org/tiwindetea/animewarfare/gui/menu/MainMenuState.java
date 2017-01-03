@@ -70,6 +70,9 @@ public class MainMenuState extends GUIState implements MainMenuEventListener {
 		MainMenuState.fadeTransition.setAutoReverse(false);
 	}
 
+	public static void initStaticFields() {
+	}
+
 	public MainMenuState(BorderPane rootLayout) {
 		super(rootLayout);
 	}

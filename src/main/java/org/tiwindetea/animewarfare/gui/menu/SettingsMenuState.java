@@ -102,6 +102,9 @@ public class SettingsMenuState extends GUIState implements SettingsMenuEventList
 		bt.setDuration(ANIMATION_DURATION);
 	}
 
+	public static void initStaticFields() {
+	}
+
 	public SettingsMenuState(BorderPane rootLayout) {
 		super(rootLayout);
 	}
