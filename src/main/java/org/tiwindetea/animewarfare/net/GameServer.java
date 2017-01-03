@@ -577,7 +577,7 @@ public class GameServer {
 
         public void received(Connection connection, NetUnselectFactionRequest ignored) {
             FactionType faction;
-            if (isLegit(connection) && (faction = this.room.modifiableSelection().remove(connection.getID())) != null) {
+            if (isLegit(connection) && (faction = this.room.modifiableSelection().remove(new GameClientInfo(connection.getID()))) != null) {
                 this.server.sendToAllTCP(new NetFactionUnselected(this.room.find(connection.getID()), faction));
             }
         }

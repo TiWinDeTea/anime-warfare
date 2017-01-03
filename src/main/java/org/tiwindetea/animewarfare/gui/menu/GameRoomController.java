@@ -158,40 +158,32 @@ public class GameRoomController
 		EventDispatcher.getInstance().fire(new GameRoomEvent(GameRoomEvent.Type.QUIT));
 	}
 
-	@FXML
-	private void handleTheBlackKnightsClicked() {
-		if (FactionType.THE_BLACK_KNIGHTS.equals(this.selectedFaction)) {
+	private void handleFactionClicked(FactionType faction){
+		if (faction.equals(this.selectedFaction)) {
 			MainApp.getGameClient().send(new NetUnselectFactionRequest());
 		} else {
-			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.THE_BLACK_KNIGHTS));
+			MainApp.getGameClient().send(new NetSelectFactionRequest(faction));
 		}
+	}
+
+	@FXML
+	private void handleTheBlackKnightsClicked() {
+		this.handleFactionClicked(FactionType.THE_BLACK_KNIGHTS);
 	}
 
 	@FXML
 	private void handleFClassNoBakaClicked() {
-		if (FactionType.F_CLASS_NO_BAKA.equals(this.selectedFaction)) {
-			MainApp.getGameClient().send(new NetUnselectFactionRequest());
-		} else {
-			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.F_CLASS_NO_BAKA));
-		}
+		this.handleFactionClicked(FactionType.F_CLASS_NO_BAKA);
 	}
 
 	@FXML
 	private void handleHaiyoreClicked() {
-		if (FactionType.HAIYORE.equals(this.selectedFaction)) {
-			
-		} else {
-			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.HAIYORE));
-		}
+		this.handleFactionClicked(FactionType.HAIYORE);
 	}
 
 	@FXML
 	private void handleNoNameClicked() {
-		if (FactionType.NO_NAME.equals(this.selectedFaction)) {
-			MainApp.getGameClient().send(new NetUnselectFactionRequest());
-		} else {
-			MainApp.getGameClient().send(new NetSelectFactionRequest(FactionType.NO_NAME));
-		}
+		this.handleFactionClicked(FactionType.NO_NAME);
 	}
 
 	@FXML
