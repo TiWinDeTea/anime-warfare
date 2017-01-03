@@ -80,8 +80,9 @@ public class ServersListState extends GUIState implements ServersListEventListen
 
 	@Override
 	public void onEnter() {
+		ServersListState.serversListController.startDiscovery();
+
 		// place the node in the root layout.
-		ServersListState.serversListController.handleRefresh();
 		this.rootLayout.setCenter(ServersListState.serversList);
 
 		// play the fade transition
@@ -93,6 +94,8 @@ public class ServersListState extends GUIState implements ServersListEventListen
 
 	@Override
 	public void onExit() {
+		ServersListState.serversListController.stopDiscovory();
+
 		// stop listening events.
 		EventDispatcher.getInstance().removeListener(ServersListEvent.class, this);
 	}

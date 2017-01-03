@@ -40,6 +40,8 @@ import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.ConnectIpDialog;
 import org.tiwindetea.animewarfare.gui.HostServerDialog;
+import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
+import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEvent;
 import org.tiwindetea.animewarfare.net.Room;
@@ -53,8 +55,8 @@ import org.tiwindetea.animewarfare.settings.Settings;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -65,7 +67,8 @@ import java.util.concurrent.Executors;
  *
  * @author Benoît CORTIER
  */
-public class ServersListController implements Initializable, ConnectedNeteventListener, BadPasswordNeteventListener {
+public class ServersListController implements Initializable, ConnectedNeteventListener,
+		BadPasswordNeteventListener, QuitApplicationEventListener {
 	private ResourceBundle resourceBundle;
 
 	private static final int DEFAULT_UDP_PORT = 9513;
@@ -87,6 +90,8 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+	private final ServerScanner serverScanner = new ServerScanner();
+
 	/**
 	 * Initializes the controller class. This method is automatically called
 	 * after the fxml file has been loaded.
@@ -105,6 +110,25 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 
 		EventDispatcher.getInstance().addListener(ConnectedNetevent.class, this);
 		EventDispatcher.getInstance().addListener(BadPasswordNetevent.class, this);
+		EventDispatcher.getInstance().addListener(QuitApplicationEvent.class, this);
+
+		this.serverScanner.setOnDiscovery(this::handleNewServerDiscovered);
+		this.serverScanner.setOnDisappear(this::handleServerDisappeared);
+	}
+
+	public void startDiscovery() {
+		try {
+			this.serverScanner.parallelDiscovery(DEFAULT_UDP_PORT);
+		} catch (SocketException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setContentText(e.getLocalizedMessage());
+			alert.showAndWait();
+		}
+	}
+
+	public void stopDiscovory() {
+		this.roomsList.clear();
+		this.serverScanner.stop();
 	}
 
 	@FXML
@@ -185,10 +209,16 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	}
 
 	@FXML
-	public void handleRefresh() {
-		List<Room> rooms = ServerScanner.discover(DEFAULT_UDP_PORT, DEFAULT_DISCOVER_TIMEOUT);
-		this.roomsList.clear();
-		this.roomsList.addAll(rooms);
+	private void handleRefresh() {
+		this.serverScanner.forceUpdate();
+	}
+
+	private void handleNewServerDiscovered(Room room) {
+		this.roomsList.add(room);
+	}
+
+	private void handleServerDisappeared(Room room) {
+		this.roomsList.remove(room);
 	}
 
 	@FXML
@@ -209,5 +239,10 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	@Override
 	public void handleSelfConnection(ConnectedNetevent event) {
 		Platform.runLater(() -> EventDispatcher.getInstance().fire(new ServersListEvent(ServersListEvent.Type.JOIN)));
+	}
+
+	@Override
+	public void handleQuitApplication() {
+		this.serverScanner.shutdown();
 	}
 }
