@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
  * @author Lucas Lazare
@@ -34,13 +35,19 @@ import org.tiwindetea.animewarfare.logic.FactionType;
 public class FactionUnselectedNetevent implements Event<FactionUnselectedNeteventListener> {
 
     private final FactionType faction;
+    private final GameClientInfo client;
 
-    public FactionUnselectedNetevent(FactionType faction) {
+    public FactionUnselectedNetevent(GameClientInfo client, FactionType faction) {
+        this.client = client;
         this.faction = faction;
     }
 
     public FactionType getFaction() {
         return this.faction;
+    }
+
+    public GameClientInfo getClient() {
+        return this.client;
     }
 
     @Override

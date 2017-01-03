@@ -43,7 +43,7 @@ public class PlayerLockedFactionNetevent implements Event<PlayerLockedFactionNet
         this.playerInfo = null;
     }
 
-    public PlayerLockedFactionNetevent(FactionType faction, GameClientInfo playerId) {
+    public PlayerLockedFactionNetevent(GameClientInfo playerId, FactionType faction) {
         this.faction = faction;
         this.playerInfo = playerId;
     }

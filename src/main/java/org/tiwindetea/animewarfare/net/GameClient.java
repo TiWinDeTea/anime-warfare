@@ -297,6 +297,16 @@ public class GameClient {
         this.client.sendTCP(sendable);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GameClientInfo) {
+            return this.me.equals((GameClientInfo) o);
+        } else if (o instanceof GameClient) {
+            return this.me.equals(((GameClient) o).getClientInfo());
+        }
+        return false;
+    }
+
     @SuppressWarnings("unused")
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
@@ -354,7 +364,7 @@ public class GameClient {
 
         public void received(Connection connection, NetFactionUnselected faction) {
             GameClient.this.room.modifiableSelection().remove(faction.getClient());
-            EventDispatcher.send(new FactionUnselectedNetevent(faction.getFaction()));
+            EventDispatcher.send(new FactionUnselectedNetevent(faction.getClient(), faction.getFaction()));
         }
 
         public void received(Connection connection, NetFanNumberUpdated fanNumberUpdated) {
