@@ -28,6 +28,7 @@ import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
@@ -65,7 +66,7 @@ import java.util.stream.Collectors;
 /**
  * Action phase of the game
  *
- * @author Jérome BOULMIER
+ * @author Jérôme BOULMIER
  */
 class ActionState extends GameState implements MoveUnitEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipTurnEventListener, StartBattleEventListener,
@@ -186,8 +187,8 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 						&& unitToMove.hasFaction(this.currentPlayer.getFaction())
 						&& !this.movedUnit.contains(Integer.valueOf(unitToMove.getID()))) { // A Unit can only be moved once per Action.
 
-					if (this.gameBoard.getMap().areAdjacent(movement.getSourceZone(),
-							movement.getDestinationZone())) {
+					if (GameMap.getDistanceBetween(movement.getSourceZone(),
+							movement.getDestinationZone()) < 1) { // FIXME: replace the 1 by the unit movement capacity.
 						validMovements.add(new Pair<>(unitToMove, movement));
 					}
 				}
