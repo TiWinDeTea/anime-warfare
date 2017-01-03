@@ -19,7 +19,7 @@ public class GameBoardTest {
 		FACTIONS.put(Integer.valueOf(1), FactionType.NO_NAME);
 		FACTIONS.put(Integer.valueOf(2), FactionType.HAIYORE);
 		FACTIONS.put(Integer.valueOf(3), FactionType.F_CLASS_NO_BAKA);
-		FACTIONS.put(Integer.valueOf(4), FactionType.COOL_GUYS);
+		FACTIONS.put(Integer.valueOf(4), FactionType.THE_BLACK_KNIGHTS);
 	}
 
 	@Before

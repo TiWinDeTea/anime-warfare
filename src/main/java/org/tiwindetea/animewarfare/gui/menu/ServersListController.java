@@ -42,8 +42,8 @@ import org.tiwindetea.animewarfare.gui.ConnectIpDialog;
 import org.tiwindetea.animewarfare.gui.HostServerDialog;
 import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.gui.menu.event.ServersListEvent;
-import org.tiwindetea.animewarfare.net.GameClient;
 import org.tiwindetea.animewarfare.net.Room;
+import org.tiwindetea.animewarfare.net.ServerScanner;
 import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
@@ -186,7 +186,7 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 
 	@FXML
 	public void handleRefresh() {
-		List<Room> rooms = GameClient.discover(DEFAULT_UDP_PORT, DEFAULT_DISCOVER_TIMEOUT);
+		List<Room> rooms = ServerScanner.discover(DEFAULT_UDP_PORT, DEFAULT_DISCOVER_TIMEOUT);
 		this.roomsList.clear();
 		this.roomsList.addAll(rooms);
 	}

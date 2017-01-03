@@ -36,16 +36,9 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
 import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The game client class
@@ -63,87 +56,6 @@ public class GameClient {
     private final GameClientInfo me = new GameClientInfo();
     private boolean isConnected = false;
     private final Listener listener = new Listener();
-
-    /**
-     * Looks for available servers on local network
-     *
-     * @param UDPport UDP port on which servers are running
-     * @param timeout The number of milliseconds to wait for a response
-     * @return A list containing all servers found on LAN
-     */
-    public static List<Room> discover(int UDPport, int timeout) {
-
-        List<InetAddress> broadcastAddresses = Utils.findBroadcastAddr();
-        InetSocketAddress addresses[] = new InetSocketAddress[broadcastAddresses.size()];
-        int i = 0;
-        for (InetAddress broadcastAddress : broadcastAddresses) {
-            addresses[i] = new InetSocketAddress(broadcastAddress, UDPport);
-            ++i;
-        }
-        return discoverAt(timeout, addresses);
-    }
-
-    /**
-     * Looks for available servers on a specified list of addresses
-     *
-     * @param timeout   The number of milliseconds to wait for a response
-     * @param addresses Addresses of the servers
-     * @return A list containing all servers found on LAN
-     */
-    public static List<Room> discoverAt(int timeout, InetSocketAddress... addresses) {
-
-        List<Room> lanRooms = new ArrayList<>();
-        List<InetSocketAddress> retrievedFrom = new ArrayList<>();
-
-        try (DatagramSocket lookup = new DatagramSocket()) {
-            byte[] header = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
-            byte[] request = new byte[header.length + 1];
-            System.arraycopy(header, 0, request, 0, header.length);
-            request[header.length] = NetworkCommand.SCANNING.getValue();
-
-            for (InetSocketAddress address : addresses) {
-                DatagramPacket packet = new DatagramPacket(request, request.length, address.getAddress(), address.getPort());
-                Log.trace(GameClient.class.getName(), "Broadcasting to " + address);
-                lookup.send(packet);
-            }
-            lookup.setSoTimeout(timeout);
-
-            Log.trace(GameClient.class.getName(), "Listening for server answers");
-            //noinspection InfiniteLoopStatement
-            for (; ; ) {
-                byte[] reception = new byte[8192];
-                DatagramPacket rpacket = new DatagramPacket(reception, reception.length);
-                lookup.receive(rpacket);
-                Log.trace(GameClient.class.getName(), "Received data from " + rpacket.getAddress());
-                reception = rpacket.getData();
-                try (ByteArrayInputStream bais = new ByteArrayInputStream(reception)) {
-                    try (ObjectInputStream ois = new ObjectInputStream(bais)) {
-                        String serverVersionHeader;
-                        Room serverRoom;
-                        serverVersionHeader = (String) ois.readObject();
-                        serverRoom = (Room) ois.readObject();
-
-                        if (Utils.VERSION_HEADER.equals(serverVersionHeader)) {
-                            InetSocketAddress sender = new InetSocketAddress(rpacket.getAddress(), rpacket.getPort());
-                            serverRoom.setAddress(rpacket.getAddress());
-                            if (serverRoom != null && !retrievedFrom.contains(sender)) {
-                                Log.trace(GameClient.class.getName(), "Adding " + serverRoom + " to rooms list");
-                                lanRooms.add(serverRoom);
-                                retrievedFrom.add(sender);
-                            }
-                        }
-                    } catch (ClassNotFoundException e) {
-                        Log.warn(GameClient.class.getName(), "Failed to read room from remote " + rpacket.getAddress(), e);
-                    }
-                }
-            }
-        } catch (SocketTimeoutException ignored) {
-            Log.trace(GameClient.class.getName(), "Stopping servers lookup (timed out)");
-        } catch (IOException e) {
-            Log.warn(GameClient.class.getName(), "Unexpected IOException", e);
-        }
-        return lanRooms;
-    }
 
     /**
      * Instanciate a new GameClient with to name
@@ -399,6 +311,7 @@ public class GameClient {
 
         public void received(Connection connection, NetHandlePlayerDisconnection playerDisconnection) {
             Log.debug(GameClient.Listener.class.toString(), "Received " + playerDisconnection);
+            GameClient.this.room.removeMember(playerDisconnection.getPlayer());
             EventDispatcher.send(new PlayerDisconnectionNetevent(playerDisconnection));
         }
 

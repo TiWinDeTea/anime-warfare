@@ -202,6 +202,10 @@ public class Room implements Serializable {
         return this.gamePassword.equals(password) || (password != null && password.equals(this.gamePassword));
     }
 
+    void removeMember(GameClientInfo member) {
+        this.removeMember(member.id);
+    }
+
     GameClientInfo removeMember(int id) {
 
         int i = 0;
@@ -248,6 +252,10 @@ public class Room implements Serializable {
         return this.numberOfExpectedPlayers == this.members.size();
     }
 
+    String getGamePassword() {
+        return this.gamePassword;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -256,7 +264,21 @@ public class Room implements Serializable {
         return this.gameName;
     }
 
-    String getGamePassword() {
-        return this.gamePassword;
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Room) {
+            return this.equals((Room) o);
+        }
+        return false;
+    }
+
+    public boolean equals(Room room) {
+        return this.address.equals(room.address)
+                && this.port == room.port;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.address.hashCode() + this.port;
     }
 }
