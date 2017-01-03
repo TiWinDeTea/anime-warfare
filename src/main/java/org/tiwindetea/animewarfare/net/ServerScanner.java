@@ -59,6 +59,7 @@ public class ServerScanner implements Runnable {
     private static final byte[] REQUEST = new byte[HEADER.length + 1];
 
     private volatile boolean isRunning = false;
+    private volatile boolean haveBeenNotified = false;
     private final ExecutorService THREAD = Executors.newSingleThreadExecutor();
     private InetSocketAddress[] addresses;
 
@@ -245,9 +246,15 @@ public class ServerScanner implements Runnable {
         this.onFailure = onFailure;
     }
 
+    public synchronized void forceUpdate() {
+        this.haveBeenNotified = true;
+        notify();
+    }
+
     @Override
     public void run() {
 
+        this.isRunning = true;
         int errorCount = 0;
 
         final TreeSet<Room> retrieved = new TreeSet<>();
@@ -263,33 +270,20 @@ public class ServerScanner implements Runnable {
                     sendHeader(this.socket, address);
                 }
 
-                Room room = ServerScanner.listenForServer(this.socket);
-                if (room != null && !currentRun.contains(room)) {
-                    currentRun.add(room);
-                    if (!retrieved.contains(room)) {
-                        if (this.onDiscovery != null) {
-                            this.onDiscovery.accept(room);
-                        }
-                        retrieved.add(room);
-                    }
-                    //Log.trace(ServerScanner.class.getName(), "Parallel discovery: found " + room.rhs);
-                }
-
-                retrieved.forEach(room1 -> {
-                    if (!currentRun.contains(room1)) {
-                        if (this.onDisappear != null) {
-                            this.onDisappear.accept(room1);
-                            toDelete.add(room1);
+                for (; ; ) {
+                    Room room = ServerScanner.listenForServer(this.socket);
+                    if (room != null && !currentRun.contains(room)) {
+                        currentRun.add(room);
+                        if (!retrieved.contains(room)) {
+                            Consumer<Room> discoveryHandler = this.onDiscovery;
+                            if (discoveryHandler != null) {
+                                discoveryHandler.accept(room);
+                            }
+                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: found " + room);
+                            retrieved.add(room);
                         }
                     }
-                });
-
-                for (Room room1 : toDelete) {
-                    retrieved.remove(room1);
                 }
-
-                currentRun.clear();
-
             } catch (SocketTimeoutException ignored) {
                 Log.trace(ServerScanner.class.getName(), "Stopping servers lookup (timed out)");
             } catch (IOException e) {
@@ -305,10 +299,41 @@ public class ServerScanner implements Runnable {
                 }
             }
 
-            try {
-                Thread.sleep(REFRESH_RATE_MS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            retrieved.forEach(room1 -> {
+                if (!currentRun.contains(room1)) {
+                    Consumer<Room> disappearenceHandler = this.onDisappear;
+                    if (disappearenceHandler != null) {
+                        disappearenceHandler.accept(room1);
+                        toDelete.add(room1);
+                    }
+                }
+            });
+
+            retrieved.removeAll(toDelete);
+            toDelete.clear();
+
+            currentRun.clear();
+
+            if (!this.haveBeenNotified) {
+                try {
+                    synchronized (this) {
+                        wait(REFRESH_RATE_MS);
+                    }
+                } catch (InterruptedException ignored) {
+                    Log.trace(ServerScanner.class.getName(), "Was woken up");
+                }
+            }
+
+            if (this.haveBeenNotified) {
+                Consumer<Room> disappearenceHandler;
+                for (Room room : retrieved) {
+                    disappearenceHandler = this.onDisappear;
+                    if (disappearenceHandler != null) {
+                        disappearenceHandler.accept(room);
+                    }
+                }
+                retrieved.clear();
+                this.haveBeenNotified = false;
             }
         }
     }

@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class Room implements Serializable {
+public class Room implements Serializable, Comparable<Room> {
 
     private String gameName;
 
@@ -63,6 +63,9 @@ public class Room implements Serializable {
 
     private final Map<GameClientInfo, FactionType> selections = new HashMap<>(4, 1);
     private final Map<GameClientInfo, FactionType> locks = new HashMap<>(4, 1);
+
+    private static int NEXT_ID_VAL = 0;
+    private final int roomID = NEXT_ID_VAL++;
 
     Room() {
         this.gameName = null;
@@ -274,11 +277,17 @@ public class Room implements Serializable {
 
     public boolean equals(Room room) {
         return this.address.equals(room.address)
-                && this.port == room.port;
+                && this.port == room.port
+                && this.roomID == room.roomID;
     }
 
     @Override
     public int hashCode() {
         return this.address.hashCode() + this.port;
+    }
+
+    @Override
+    public int compareTo(Room o) {
+        return hashCode() - o.hashCode();
     }
 }
