@@ -26,9 +26,13 @@ package org.tiwindetea.animewarfare.gui;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The global chat is contained here.
@@ -38,6 +42,8 @@ import java.io.IOException;
 public class GlobalChat {
 	private static AnchorPane chat;
 	private static ChatController chatController;
+
+	private static Map<GameClientInfo, Color> colorsByClient = new HashMap<>();
 
 	static {
 		FXMLLoader chatLoader = new FXMLLoader();
@@ -58,5 +64,13 @@ public class GlobalChat {
 
 	public static ChatController getChatController() {
 		return GlobalChat.chatController;
+	}
+
+	public static void registerClientColor(GameClientInfo gameClientInfo, Color color) {
+		GlobalChat.colorsByClient.put(gameClientInfo, color);
+	}
+
+	public static Color getClientColor(GameClientInfo gameClientInfo) {
+		return GlobalChat.colorsByClient.getOrDefault(gameClientInfo, Color.BLACK);
 	}
 }

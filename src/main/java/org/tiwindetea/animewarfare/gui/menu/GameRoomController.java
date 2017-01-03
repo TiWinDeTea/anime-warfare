@@ -60,6 +60,8 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRe
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,6 +122,8 @@ public class GameRoomController
 
 	private boolean factionLocked = false;
 
+	private Deque<Color> playerColorQueue = new ArrayDeque<>();
+
 	public BorderPane getBorderPane() {
 		return this.borderPane;
 	}
@@ -133,6 +137,8 @@ public class GameRoomController
 		EventDispatcher.registerListener(PlayerLockedFactionNetevent.class, this);
 		EventDispatcher.registerListener(FactionUnselectedNetevent.class, this);
 		EventDispatcher.registerListener(FactionUnlockedNetevent.class, this);
+
+		initColorsQueue();
 	}
 
 	@FXML
@@ -154,6 +160,8 @@ public class GameRoomController
 		this.haiyoreImageView.setEffect(null);
 		this.noNameImageView.setEffect(null);
 		this.theBlackKnightsImageView.setEffect(null);
+
+		initColorsQueue();
 
 		EventDispatcher.getInstance().fire(new GameRoomEvent(GameRoomEvent.Type.QUIT));
 	}
@@ -208,10 +216,7 @@ public class GameRoomController
 	@Override
 	public void handlePlayerConnection(PlayerConnectionNetevent event) {
 		Platform.runLater(() -> {
-			Label playerName = new Label(event.getClient().getGameClientName());
-			this.userNamesLabels.put(event.getClient().getId(), playerName);
-			this.usersList.getChildren().add(playerName);
-
+			addPlayer(event.getClient());
 			GlobalChat.getChatController().addMessage(event.getClient().getGameClientName() + " connected.", Color.GRAY); // TODO: externalize.
 		});
 	}
@@ -219,11 +224,7 @@ public class GameRoomController
 	@Override
 	public void handleSelfConnection(ConnectedNetevent event) {
 		Platform.runLater(() -> {
-			for (GameClientInfo gameClientInfo : event.getRoom().getMembers()) {
-				Label playerName = new Label(gameClientInfo.getGameClientName());
-				this.userNamesLabels.put(gameClientInfo.getId(), playerName);
-				this.usersList.getChildren().add(playerName);
-			}
+			event.getRoom().getMembers().forEach(this::addPlayer);
 
 			Room room = MainApp.getGameClient().getRoom();
 			room.getSelections().forEach((gc, faction) -> this.handleFactionChoice(new PlayerSelectedFactionNetevent(gc, faction)));
@@ -237,6 +238,7 @@ public class GameRoomController
 			if (event.getPlayer().equals(MainApp.getGameClient().getClientInfo())) {
 				handleQuit();
 			} else {
+				this.playerColorQueue.addFirst(GlobalChat.getClientColor(event.getPlayer()));
 				this.usersList.getChildren().remove(this.userNamesLabels.get(event.getPlayer().getId()));
 				this.userNamesLabels.remove(event.getPlayer().getId());
 				GlobalChat.getChatController().addMessage(event.getPlayer().getGameClientName() + " disconnected.", Color.GRAY); // TODO: externalize.
@@ -254,7 +256,6 @@ public class GameRoomController
 
 	@Override
 	public void handleFactionUnselected(FactionUnselectedNetevent factionUnselectedNetevent) {
-
 		if (!MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnselectedNetevent.getFaction())) {
 			getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
 		}
@@ -296,6 +297,24 @@ public class GameRoomController
 	}
 
 	// helper
+	private void initColorsQueue() {
+		this.playerColorQueue.clear();
+		this.playerColorQueue.addLast(Color.DARKBLUE);
+		this.playerColorQueue.addLast(Color.DARKRED);
+		this.playerColorQueue.addLast(Color.DARKGREEN);
+		this.playerColorQueue.addLast(Color.DARKORANGE);
+	}
+
+	// helper
+	private void addPlayer(GameClientInfo gameClientInfo) {
+		GlobalChat.registerClientColor(gameClientInfo, this.playerColorQueue.pop());
+		Label playerName = new Label(gameClientInfo.getGameClientName());
+		playerName.setTextFill(GlobalChat.getClientColor(gameClientInfo));
+		this.userNamesLabels.put(gameClientInfo.getId(), playerName);
+		this.usersList.getChildren().add(playerName);
+	}
+
+	// static helper
 	private static double map(double value, double start, double stop, double targetStart, double targetStop) {
 		return targetStart + (targetStop - targetStart) * ((value - start) / (stop - start));
 	}
