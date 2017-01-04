@@ -53,7 +53,7 @@ public class ServerScanner implements Runnable {
     public static final int TOLERANCE = 100;
 
     private static final int REFRESH_RATE_MS = 1000;
-    private static final int DISCOVERY_TIMEOUT = 100;
+    private static final int DISCOVERY_TIMEOUT = 500;
 
     private static final byte[] HEADER = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
     private static final byte[] REQUEST = new byte[HEADER.length + 1];
@@ -269,89 +269,109 @@ public class ServerScanner implements Runnable {
         final TreeSet<Room> currentRun = new TreeSet<>();
 
         final List<Room> toDelete = new ArrayList<>(5);
+        try {
+            while (this.isRunning) {
 
-        while (this.isRunning) {
+                try {
+                    for (InetSocketAddress address : this.addresses) {
+                        sendHeader(this.socket, address);
+                    }
 
-            try {
-                for (InetSocketAddress address : this.addresses) {
-                    sendHeader(this.socket, address);
-                }
-
-                for (; ; ) {
-                    Room room = ServerScanner.listenForServer(this.socket);
-                    if (room != null && !currentRun.contains(room)) {
-                        currentRun.add(room);
-                        Room r = retrieved.floor(room);
-                        if (r == null || !r.equals(room)) {
-                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: found " + room);
-                            Consumer<Room> discoveryHandler = this.onDiscovery;
-                            if (discoveryHandler != null) {
-                                discoveryHandler.accept(room);
+                    for (; ; ) {
+                        Room room = ServerScanner.listenForServer(this.socket);
+                        if (room != null && !currentRun.contains(room)) {
+                            currentRun.add(room);
+                            Room r = retrieved.floor(room);
+                            if (r == null || !r.equals(room)) {
+                                Log.trace(ServerScanner.class.getName(), "Parallel discovery: found " + room);
+                                Consumer<Room> discoveryHandler = this.onDiscovery;
+                                if (discoveryHandler != null) {
+                                    discoveryHandler.accept(room);
+                                }
+                                retrieved.add(room);
+                            } else if (r != null && r.updateable(room)) {
+                                Log.trace(ServerScanner.class.getName(), "Parallel discovery: updated " + room);
+                                Consumer<Room> updateHandler = this.onUpdate;
+                                if (updateHandler != null) {
+                                    updateHandler.accept(room);
+                                }
+                                retrieved.remove(r);
+                                retrieved.add(room);
                             }
-                            retrieved.add(room);
-                        } else if (r != null && r.updateable(room)) {
-                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: updated " + room);
-                            Consumer<Room> updateHandler = this.onUpdate;
-                            if (updateHandler != null) {
-                                updateHandler.accept(room);
-                            }
-                            retrieved.remove(r);
-                            retrieved.add(room);
+                        }
+                    }
+                } catch (SocketTimeoutException ignored) {
+                    Log.trace(ServerScanner.class.getName(), "Stopping servers lookup (timed out)");
+                } catch (IOException e) {
+                    Log.warn(ServerScanner.class.getName(), "Unexpected IOException", e);
+                    if (++errorCount > TOLERANCE) {
+                        Log.error(GameServer.class.getName() + "#run()", "error count overcame tolerance.", e);
+
+                        if (this.onFailure != null && this.onFailure.apply(e).booleanValue()) {
+                            errorCount = 0;
+                        } else {
+                            this.isRunning = false;
+                        }
+                    }
+
+                    if (this.socket.isClosed()) {   // I didn't close it at this point, but fortunatly, java often closes it without asking me before.
+                        DatagramSocket localSocket;
+                        try {
+                            localSocket = new DatagramSocket();
+                            this.socket.close();
+                            this.socket = localSocket;
+                            this.socket.setSoTimeout(ServerScanner.DISCOVERY_TIMEOUT);
+                        } catch (SocketException ignored) {
+                        }
+                        this.haveBeenNotified = true;
+                        try {
+                            Thread.sleep(25);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
                         }
                     }
                 }
-            } catch (SocketTimeoutException ignored) {
-                Log.trace(ServerScanner.class.getName(), "Stopping servers lookup (timed out)");
-            } catch (IOException e) {
-                Log.warn(ServerScanner.class.getName(), "Unexpected IOException", e);
-                if (++errorCount > TOLERANCE) {
-                    Log.error(GameServer.class.getName() + "#run()", "error count overcame tolerance.", e);
 
-                    if (this.onFailure != null && this.onFailure.apply(e).booleanValue()) {
-                        errorCount = 0;
-                    } else {
-                        this.isRunning = false;
+                retrieved.forEach(room1 -> {
+                    if (!currentRun.contains(room1)) {
+                        Consumer<Room> disappearenceHandler = this.onDisappear;
+                        if (disappearenceHandler != null) {
+                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: removing " + room1);
+                            disappearenceHandler.accept(room1);
+                            toDelete.add(room1);
+                        }
                     }
+                });
+
+                retrieved.removeAll(toDelete);
+                toDelete.clear();
+
+                currentRun.clear();
+
+                if (!this.haveBeenNotified) {
+                    try {
+                        synchronized (this) {
+                            wait(REFRESH_RATE_MS);
+                        }
+                    } catch (InterruptedException ignored) {
+                        Log.trace(ServerScanner.class.getName(), "Was woken up");
+                    }
+                }
+
+                if (this.haveBeenNotified) {
+                    Consumer<Room> disappearenceHandler;
+                    for (Room room : retrieved) {
+                        disappearenceHandler = this.onDisappear;
+                        if (disappearenceHandler != null) {
+                            disappearenceHandler.accept(room);
+                        }
+                    }
+                    retrieved.clear();
+                    this.haveBeenNotified = false;
                 }
             }
-
-            retrieved.forEach(room1 -> {
-                if (!currentRun.contains(room1)) {
-                    Consumer<Room> disappearenceHandler = this.onDisappear;
-                    if (disappearenceHandler != null) {
-                        Log.trace(ServerScanner.class.getName(), "Parallel discovery: removing " + room1);
-                        disappearenceHandler.accept(room1);
-                        toDelete.add(room1);
-                    }
-                }
-            });
-
-            retrieved.removeAll(toDelete);
-            toDelete.clear();
-
-            currentRun.clear();
-
-            if (!this.haveBeenNotified) {
-                try {
-                    synchronized (this) {
-                        wait(REFRESH_RATE_MS);
-                    }
-                } catch (InterruptedException ignored) {
-                    Log.trace(ServerScanner.class.getName(), "Was woken up");
-                }
-            }
-
-            if (this.haveBeenNotified) {
-                Consumer<Room> disappearenceHandler;
-                for (Room room : retrieved) {
-                    disappearenceHandler = this.onDisappear;
-                    if (disappearenceHandler != null) {
-                        disappearenceHandler.accept(room);
-                    }
-                }
-                retrieved.clear();
-                this.haveBeenNotified = false;
-            }
+        } finally {
+            this.socket.close();
         }
     }
 
@@ -385,6 +405,7 @@ public class ServerScanner implements Runnable {
 
         byte[] reception = new byte[8192];
         DatagramPacket rpacket = new DatagramPacket(reception, reception.length);
+        int kk = socket.getLocalPort();
         socket.receive(rpacket);
         Log.trace(ServerScanner.class.getName(), "Received data from " + rpacket.getAddress());
         reception = rpacket.getData();
