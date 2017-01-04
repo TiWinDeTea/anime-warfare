@@ -72,7 +72,6 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	private ResourceBundle resourceBundle;
 
 	private static final int DEFAULT_UDP_PORT = 9513;
-	private static final int DEFAULT_DISCOVER_TIMEOUT = 1000;
 
 	@FXML
 	private TableColumn<Room, String> numberOfUsersList;
@@ -114,6 +113,7 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 
 		this.serverScanner.setOnDiscovery(this::handleNewServerDiscovered);
 		this.serverScanner.setOnDisappear(this::handleServerDisappeared);
+		this.serverScanner.setOnUpdate(this::handleServerRoomUpdated);
 	}
 
 	public void startDiscovery() {
@@ -126,7 +126,7 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 		}
 	}
 
-	public void stopDiscovory() {
+	public void stopDiscovery() {
 		this.roomsList.clear();
 		this.serverScanner.stop();
 	}
@@ -219,6 +219,11 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 
 	private void handleServerDisappeared(Room room) {
 		this.roomsList.remove(room);
+	}
+
+	private void handleServerRoomUpdated(Room room) {
+		this.roomsList.remove(room);
+		this.roomsList.add(room);
 	}
 
 	@FXML

@@ -94,7 +94,7 @@ public class ServersListState extends GUIState implements ServersListEventListen
 
 	@Override
 	public void onExit() {
-		ServersListState.serversListController.stopDiscovory();
+		ServersListState.serversListController.stopDiscovery();
 
 		// stop listening events.
 		EventDispatcher.getInstance().removeListener(ServersListEvent.class, this);

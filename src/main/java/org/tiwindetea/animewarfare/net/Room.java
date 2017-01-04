@@ -65,7 +65,7 @@ public class Room implements Serializable, Comparable<Room> {
     private final Map<GameClientInfo, FactionType> locks = new HashMap<>(4, 1);
 
     private static int NEXT_ID_VAL = 0;
-    private final int roomID = NEXT_ID_VAL++;
+    private final int ROOM_ID = NEXT_ID_VAL++;
 
     Room() {
         this.gameName = null;
@@ -259,6 +259,10 @@ public class Room implements Serializable, Comparable<Room> {
         return this.gamePassword;
     }
 
+    boolean updateable(Room r) {
+        return this.ROOM_ID == r.ROOM_ID && !this.members.equals(r.members);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -276,9 +280,9 @@ public class Room implements Serializable, Comparable<Room> {
     }
 
     public boolean equals(Room room) {
-        return this.address.equals(room.address)
-                && this.port == room.port
-                && this.roomID == room.roomID;
+        return this.ROOM_ID == room.ROOM_ID
+                && this.address.equals(room.address)
+                && this.port == room.port;
     }
 
     @Override
@@ -288,6 +292,7 @@ public class Room implements Serializable, Comparable<Room> {
 
     @Override
     public int compareTo(Room o) {
-        return hashCode() - o.hashCode();
+        return this.ROOM_ID - o.ROOM_ID;
     }
+
 }

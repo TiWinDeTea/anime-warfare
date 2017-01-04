@@ -65,6 +65,7 @@ public class ServerScanner implements Runnable {
 
     private Consumer<Room> onDiscovery;
     private Consumer<Room> onDisappear;
+    private Consumer<Room> onUpdate;
     private Function<IOException, Boolean> onFailure;
 
     private DatagramSocket socket;
@@ -235,6 +236,13 @@ public class ServerScanner implements Runnable {
     }
 
     /**
+     * @param onUpdate Consumer called when a room is updated (ie: change in players)
+     */
+    public void setOnUpdate(Consumer<Room> onUpdate) {
+        this.onUpdate = onUpdate;
+    }
+
+    /**
      * Sometimes, things doesn't go as expected. This may help you to settle things
      *
      * @param onFailure Function called when the number of IOExceptions received when trying to listen
@@ -264,7 +272,6 @@ public class ServerScanner implements Runnable {
 
         while (this.isRunning) {
 
-
             try {
                 for (InetSocketAddress address : this.addresses) {
                     sendHeader(this.socket, address);
@@ -274,12 +281,21 @@ public class ServerScanner implements Runnable {
                     Room room = ServerScanner.listenForServer(this.socket);
                     if (room != null && !currentRun.contains(room)) {
                         currentRun.add(room);
-                        if (!retrieved.contains(room)) {
+                        Room r = retrieved.floor(room);
+                        if (r == null || !r.equals(room)) {
+                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: found " + room);
                             Consumer<Room> discoveryHandler = this.onDiscovery;
                             if (discoveryHandler != null) {
                                 discoveryHandler.accept(room);
                             }
-                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: found " + room);
+                            retrieved.add(room);
+                        } else if (r != null && r.updateable(room)) {
+                            Log.trace(ServerScanner.class.getName(), "Parallel discovery: updated " + room);
+                            Consumer<Room> updateHandler = this.onUpdate;
+                            if (updateHandler != null) {
+                                updateHandler.accept(room);
+                            }
+                            retrieved.remove(r);
                             retrieved.add(room);
                         }
                     }
@@ -303,6 +319,7 @@ public class ServerScanner implements Runnable {
                 if (!currentRun.contains(room1)) {
                     Consumer<Room> disappearenceHandler = this.onDisappear;
                     if (disappearenceHandler != null) {
+                        Log.trace(ServerScanner.class.getName(), "Parallel discovery: removing " + room1);
                         disappearenceHandler.accept(room1);
                         toDelete.add(room1);
                     }
@@ -342,6 +359,7 @@ public class ServerScanner implements Runnable {
      * Shutdowns this {@link ServerScanner}'s. It cannot be reused afterwards
      */
     public void shutdown() {
+        this.isRunning = false;
         this.THREAD.shutdown();
     }
 
