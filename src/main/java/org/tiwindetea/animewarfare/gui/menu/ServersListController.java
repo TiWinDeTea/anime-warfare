@@ -80,6 +80,9 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	private TableColumn<Room, Boolean> passwordsList;
 
 	@FXML
+	private TableColumn<Room, String> IPAddressList;
+
+	@FXML
 	private TableColumn<Room, String> chatroomsNamesList;
 
 	@FXML
@@ -103,9 +106,12 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 		this.numberOfUsersList.setCellValueFactory(cellData ->
 				new SimpleStringProperty(String.valueOf(cellData.getValue().getMembers().size())
 						+ "/" + String.valueOf(cellData.getValue().getNumberOfExpectedPlayers())));
+		this.IPAddressList.setCellValueFactory(cellData ->
+				new SimpleStringProperty(cellData.getValue().getAddress().toString().substring(1) + ":" + cellData.getValue().getPort()));
 		this.passwordsList.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isLocked()));
 		this.passwordsList.setCellFactory(tc -> new CheckBoxTableCell<>());
 		this.roomsTableView.setItems(this.roomsList);
+
 
 		EventDispatcher.getInstance().addListener(ConnectedNetevent.class, this);
 		EventDispatcher.getInstance().addListener(BadPasswordNetevent.class, this);

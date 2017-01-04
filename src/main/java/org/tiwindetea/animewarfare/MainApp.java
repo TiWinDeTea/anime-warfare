@@ -91,7 +91,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 		this.guiStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 
-		this.primaryStage.setOnCloseRequest((event) -> onQuit());
+		this.primaryStage.setOnCloseRequest((event) -> EventDispatcher.send(new QuitApplicationEvent()));
 	}
 
     private void initRootLayout() {
