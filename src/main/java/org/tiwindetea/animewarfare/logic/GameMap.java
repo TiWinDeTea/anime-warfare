@@ -29,6 +29,7 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -93,6 +94,16 @@ public class GameMap {
 
 	public Zone getZone(int id) {
 		return this.zones.get(id);
+	}
+
+	public Zone getRandomZone(int exceptionID) {
+		Random random = new Random();
+		int selected;
+		do {
+			selected = random.nextInt(this.zones.size());
+		} while (selected == exceptionID);
+
+		return this.zones.get(selected);
 	}
 
 	public boolean isValid(int zoneID) {

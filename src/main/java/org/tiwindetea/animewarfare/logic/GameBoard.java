@@ -25,19 +25,22 @@
 package org.tiwindetea.animewarfare.logic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class GameBoard {
 	private final GameMap gameMap;
 
-	private final List<Player> players = new ArrayList<>();
+	private final Map<Integer, Player> players = new HashMap<>();
 	private final List<Player> playersInOrder = new ArrayList<>(); // Used to cache.
 
 	private Player lastFirstPlayer;
-	private int firstPlayerIndex;
+	private int firstPlayerID;
 	private boolean clockWiseRotationTurn;
 
 	private AdvertisingCampaignRightsPool advertisingCampaignRightsPool = new AdvertisingCampaignRightsPool();
@@ -62,19 +65,23 @@ public class GameBoard {
 		return this.lastFirstPlayer.getID();
 	}
 
-	public Player getPlayer(int index) {
-		return this.players.get(index);
+	public Player getPlayer(int id) {
+		return this.players.get(new Integer(id));
 	}
 
 	public Player getPlayer(FactionType factionType) {
-		return this.players.stream()
+		return this.players.values().stream()
 		                   .filter(p -> p.hasFaction(factionType))
 		                   .findFirst()
 		                   .orElse(null);
 	}
 
-	public List<Player> getPlayers() {
-		return Collections.unmodifiableList(this.players);
+	public Collection<Player> getPlayers() {
+		return Collections.unmodifiableCollection(this.players.values());
+	}
+
+	public Player selectRandomPlayer() {
+		return this.players.get(new Random().nextInt(this.players.size()));
 	}
 
 	public List<Player> getPlayersInOrder() {
@@ -86,8 +93,8 @@ public class GameBoard {
 	}
 
 	public void initializeTurn(Player firstPlayer, boolean clockWiseRotationTurn) {
-		this.lastFirstPlayer = this.players.get(this.firstPlayerIndex);
-		this.firstPlayerIndex = this.players.indexOf(firstPlayer);
+		this.lastFirstPlayer = getPlayer(this.firstPlayerID);
+		this.firstPlayerID = firstPlayer.getID();
 		this.clockWiseRotationTurn = clockWiseRotationTurn;
 
 		buildPlayerList();
@@ -97,17 +104,17 @@ public class GameBoard {
 		players.entrySet()
 		       .stream()
 		       .map(entry -> new Player(entry.getKey().intValue(), entry.getValue()))
-		       .collect(Collectors.toCollection(() -> this.players));
+		       .collect(Collectors.toMap(Player::getID, player -> player));
 	}
 
-	private void buildPlayerList() {
+	private void buildPlayerList() { // FIXME: Doesn't work (Linked list of players ??)
 		this.playersInOrder.clear();
 		if (this.clockWiseRotationTurn) {
-			for (int i = 0, j = this.firstPlayerIndex; i < this.players.size(); ++i) {
+			for (int i = 0, j = this.firstPlayerID; i < this.players.size(); ++i) {
 				this.playersInOrder.add(this.players.get((i + j) % this.players.size()));
 			}
 		} else {
-			for (int i = this.players.size(), j = this.firstPlayerIndex; i > 0; --i) {
+			for (int i = this.players.size(), j = this.firstPlayerID; i > 0; --i) {
 				this.playersInOrder.add(this.players.get((i + j) % this.players.size()));
 			}
 		}

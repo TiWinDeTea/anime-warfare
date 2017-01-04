@@ -27,8 +27,6 @@ package org.tiwindetea.animewarfare.logic.states;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 
-import java.util.Random;
-
 class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
 	FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -38,8 +36,7 @@ class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
 	public void onEnter() {
 		registerEventListeners();
 
-		this.firstPlayer = this.gameBoard.getPlayers()
-				.get(new Random().nextInt(this.gameBoard.getPlayers().size()));
+		this.firstPlayer = this.gameBoard.selectRandomPlayer();
 	}
 
 	@Override

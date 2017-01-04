@@ -103,10 +103,10 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToC
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -351,7 +351,7 @@ public class GameServer {
 
     private void initNew() {
         this.udpListener.stop();
-        Map<Integer, FactionType> shadow = new HashMap<>();
+        Map<Integer, FactionType> shadow = new TreeMap<>();
         this.room.modifiableLocks().forEach((gc, faction) -> shadow.put(new Integer(gc.id), faction));
         this.server.sendToAllTCP(new NetGameStarted());
         this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(shadow));

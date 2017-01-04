@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.logic;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 import org.tiwindetea.animewarfare.logic.capacity.Capacity;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightAddedEvent;
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightRevealedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
@@ -35,8 +36,10 @@ import org.tiwindetea.animewarfare.logic.units.Unit;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -56,7 +59,7 @@ public class Player {
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
 	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
-	private final List<Capacity> capacities = new ArrayList<>();
+	private final Map<CapacityType, Capacity> capacities = new HashMap<>();
 	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
 
@@ -195,7 +198,15 @@ public class Player {
 	}
 
 	public void activateCapacity(Capacity capacity) {
-		this.capacities.add(capacity);
+		this.capacities.put(capacity.getType(), capacity);
+	}
+
+	public boolean hasCapacity(CapacityType type) {
+		return this.capacities.containsKey(type);
+	}
+
+	public void desactivateCapactiy(Capacity capacity) {
+		this.capacities.remove(capacity);
 	}
 
 	@Override
