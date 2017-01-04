@@ -70,6 +70,10 @@ public class GlobalChat {
 		GlobalChat.colorsByClient.put(gameClientInfo, color);
 	}
 
+	public static void unregisterClientColor(GameClientInfo gameClientInfo) {
+		GlobalChat.colorsByClient.remove(gameClientInfo);
+	}
+
 	public static Color getClientColor(GameClientInfo gameClientInfo) {
 		return GlobalChat.colorsByClient.getOrDefault(gameClientInfo, Color.BLACK);
 	}
