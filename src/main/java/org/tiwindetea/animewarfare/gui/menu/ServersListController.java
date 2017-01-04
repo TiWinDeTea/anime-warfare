@@ -123,18 +123,22 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	}
 
 	public void startDiscovery() {
-		try {
-			this.serverScanner.parallelDiscovery(DEFAULT_UDP_PORT);
-		} catch (SocketException e) {
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setContentText(e.getLocalizedMessage());
-			alert.showAndWait();
+		if (this.serverScanner.isRunning()) {
+			this.serverScanner.resume();
+		} else {
+			try {
+				this.serverScanner.parallelDiscovery(DEFAULT_UDP_PORT);
+			} catch (SocketException e) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setContentText(e.getLocalizedMessage());
+				alert.showAndWait();
+			}
 		}
 	}
 
 	public void stopDiscovery() {
 		this.roomsList.clear();
-		this.serverScanner.stop();
+		this.serverScanner.pause();
 	}
 
 	@FXML

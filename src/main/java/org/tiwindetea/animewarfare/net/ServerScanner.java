@@ -87,9 +87,12 @@ public class ServerScanner implements Runnable {
 
     private static final int DISCOVERY_TIMEOUT = 500;
     private static final byte[] HEADER = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
-    private static final byte[] REQUEST = new byte[HEADER.length + 1];
 
+    private static final byte[] REQUEST = new byte[HEADER.length + 1];
     private volatile boolean isRunning = false;
+    private volatile boolean isPaused;
+    private boolean selfStarted = false;
+
     private volatile boolean haveBeenNotified = false;
     private final ExecutorService THREAD = Executors.newSingleThreadExecutor();
     private InetSocketAddress[] addresses;
@@ -246,6 +249,7 @@ public class ServerScanner implements Runnable {
         }
 
         this.addresses = addresses;
+        this.selfStarted = true;
         this.THREAD.submit(this);
     }
 
@@ -334,6 +338,30 @@ public class ServerScanner implements Runnable {
     }
 
     /**
+     * Pauses the discovery of rooms.
+     *
+     * @see ServerScanner#resume()
+     * @see ServerScanner#stop()
+     * @see ServerScanner#parallelDiscovery(int)
+     */
+    public synchronized void pause() {
+        this.isPaused = true;
+        this.notify();
+    }
+
+    /**
+     * Resumes the discovery of rooms
+     *
+     * @see ServerScanner#pause()
+     * @see ServerScanner#parallelDiscovery(int)
+     * @see ServerScanner#stop()
+     */
+    public synchronized void resume() {
+        this.isPaused = false;
+        this.haveBeenNotified = true;
+        this.notify();
+    }
+
     /**
      * @throws IllegalCallException if this method have been called
      */
@@ -415,6 +443,16 @@ public class ServerScanner implements Runnable {
                     }
                 }
 
+                while (this.isPaused) {
+                    try {
+                        synchronized (this) {
+                            wait(10 * REFRESH_RATE_MS);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 retrieved.forEach(room1 -> {
                     if (!currentRun.contains(room1)) {
                         Consumer<Room> disappearenceHandler = this.onDisappear;
@@ -463,9 +501,12 @@ public class ServerScanner implements Runnable {
      *
      * @see ServerScanner#stop()
      * @see ServerScanner#parallelDiscovery(int)
+     * @see ServerScanner#pause()
      */
-    public void shutdown() {
+    public synchronized void shutdown() {
         this.isRunning = false;
+        this.isPaused = false;
+        this.notify();
         this.THREAD.shutdown();
     }
 
