@@ -317,7 +317,7 @@ public class GameClient {
 
         public void received(Connection connection, NetFactionUnlocked faction) {
             GameClient.this.room.modifiableLocks().remove(faction.getClient());
-            EventDispatcher.send(new FactionUnlockedNetevent(faction.getFaction()));
+            EventDispatcher.send(new FactionUnlockedNetevent(faction.getClient(), faction.getFaction()));
         }
 
         public void received(Connection connection, NetFactionUnselected faction) {
