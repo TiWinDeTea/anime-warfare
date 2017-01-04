@@ -41,22 +41,7 @@ import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.Room;
-import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.ConnectedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.GameStartedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.*;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
@@ -163,6 +148,7 @@ public class GameRoomController
 		this.haiyoreImageView.setEffect(null);
 		this.noNameImageView.setEffect(null);
 		this.theBlackKnightsImageView.setEffect(null);
+		this.handleUnlockFaction(new ActionEvent());
 
 		initColorsQueue();
 

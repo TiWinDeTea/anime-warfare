@@ -81,24 +81,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -171,7 +154,8 @@ public class GameServer {
      */
     public GameServer(int numberOfExpectedPlayers, @Nullable String gameName, @Nullable String gamePassword) {
         if (gameName == null) {
-            gameName = new BigInteger(17, new Random()).toString(Character.MAX_RADIX);
+            gameName = new BigInteger(67, new Random()).toString(Character.MAX_RADIX).replaceAll("[0-9]", "");
+            gameName = gameName.substring(0, gameName.length() < 11 ? gameName.length() : 10);
             Log.trace(GameServer.class.toString(), "Server name randomly created: " + gameName);
         }
         this.room.setGameName(gameName);
@@ -405,12 +389,12 @@ public class GameServer {
 
                 FactionType faction = this.room.modifiableLocks().remove(new GameClientInfo(connection.getID()));
                 if (faction != null) {
-                    this.server.sendToAllTCP(new NetFactionUnlocked(this.room.find(connection.getID()), faction));
+                    this.server.sendToAllTCP(new NetFactionUnlocked(info, faction));
                 }
 
                 faction = this.room.modifiableSelection().remove(new GameClientInfo(connection.getID()));
                 if (faction != null) {
-                    this.server.sendToAllTCP(new NetFactionUnselected(this.room.find(connection.getID()), faction));
+                    this.server.sendToAllTCP(new NetFactionUnselected(info, faction));
                 }
 
                 this.server.sendToAllTCP(new NetHandlePlayerDisconnection(info));
