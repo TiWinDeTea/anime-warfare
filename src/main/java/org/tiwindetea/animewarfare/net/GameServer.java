@@ -84,7 +84,6 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFaction
 import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -166,8 +165,7 @@ public class GameServer {
      */
     public GameServer(int numberOfExpectedPlayers, @Nullable String gameName, @Nullable String gamePassword) {
         if (gameName == null) {
-            gameName = new BigInteger(67, new Random()).toString(Character.MAX_RADIX).replaceAll("[0-9]", "");
-            gameName = gameName.substring(0, gameName.length() < 11 ? gameName.length() : 10);
+            gameName = generateName();
             Log.trace(GameServer.class.toString(), "Server name randomly created: " + gameName);
         }
         this.room.setGameName(gameName);
@@ -756,5 +754,25 @@ public class GameServer {
         }
 
         // todo (idem)
+    }
+
+    static final String[] names = {"Suna", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Ceres", "Pallas", "Vesta", "Hygiea", "Interamnia", "Europa", "Davida", "Sylvia", "Cybele", "Eunomia", "Juno", "Euphrosyne", "Hektor", "Thisbe", "Bamberga", "Patientia", "Herculina", "Doris", "Ursula", "Camilla", "Eugenia", "Iris", "Amphitrite"};
+
+    private static String generateName() {
+        Random random = new Random();
+        {
+            String out = new String();
+            int syllableNbr = random.nextInt(2) + 2;
+            for (int j = 0; j < syllableNbr; j++) {
+                String word = names[random.nextInt(names.length)];
+                int tmp = random.nextInt(word.length() - 2);
+                int tmp2 = random.nextInt(2) + 2 + tmp;
+                if (tmp2 > word.length()) {
+                    tmp2 = word.length();
+                }
+                out += word.substring(tmp, tmp2);
+            }
+            return out;
+        }
     }
 }
