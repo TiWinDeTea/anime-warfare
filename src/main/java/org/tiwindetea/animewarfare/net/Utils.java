@@ -56,24 +56,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -124,19 +107,25 @@ class Utils {
 	 * Register classes sent by network.
 	 */
 	static void registerClasses(EndPoint endPoint) {
+		//***************************************************************
+		//*                                                             *
+		//*                    ALPHABETICAL ORDER                       *
+		//*                                                             *
+		//***************************************************************
+
 		Kryo kryo = endPoint.getKryo();
 
 		// general
-		kryo.register(GameClientInfo.class);
-		kryo.register(Room.class);
-		kryo.register(String.class);
-		kryo.register(LinkedList.class);
 		kryo.register(ArrayList.class);
+		kryo.register(GameClientInfo.class);
+		kryo.register(HashMap.class);
+		kryo.register(LinkedList.class);
 		kryo.register(NetPlayingOrderChosen.class);
 		kryo.register(NetUnitEvent.class);
-		kryo.register(HashMap.class);
+		kryo.register(Room.class);
+		kryo.register(String.class);
 
-		// client
+		// client, alphabetical order
 		kryo.register(NetCapturedMascotSelection.class);
 		kryo.register(NetConventionRequest.class);
 		kryo.register(NetFirstPlayerSelection.class);
@@ -153,7 +142,7 @@ class Utils {
 		kryo.register(NetUnlockFactionRequest.class);
 
 
-		// server
+		// server, alphabetical order
 		kryo.register(NetBadPassword.class);
 		kryo.register(NetBattleStarted.class);
 		kryo.register(NetFactionLocked.class);
@@ -177,11 +166,17 @@ class Utils {
 		kryo.register(FactionType.class);
 	}
 
-	public static void registerAsLogicListener(GameServer.LogicListener logicListener) {
+	static void registerAsLogicListener(GameServer.LogicListener logicListener) {
+
+		//***************************************************************
+		//*                                                             *
+		//*                    ALPHABETICAL ORDER                       *
+		//*                                                             *
+		//***************************************************************
 
 		EventDispatcher ed = EventDispatcher.getInstance();
 
-		//logic.states.events
+		//logic.states.events, alphabetical order
 		ed.addListener(AskFirstPlayerEvent.class, logicListener);
 		ed.addListener(AskMascotToCaptureEvent.class, logicListener);
 		ed.addListener(BattleStartedEvent.class, logicListener);
@@ -197,11 +192,17 @@ class Utils {
 		ed.addListener(UnitEvent.class, logicListener);
 	}
 
-	public static void deregisterLogicListener(GameServer.LogicListener logicListener) {
+	static void deregisterLogicListener(GameServer.LogicListener logicListener) {
+
+		//***************************************************************
+		//*                                                             *
+		//*                    ALPHABETICAL ORDER                       *
+		//*                                                             *
+		//***************************************************************
 
 		EventDispatcher ed = EventDispatcher.getInstance();
 
-		//logic.states.events
+		//logic.states.events, alphabetical order
 		ed.removeListener(AskFirstPlayerEvent.class, logicListener);
 		ed.removeListener(AskMascotToCaptureEvent.class, logicListener);
 		ed.removeListener(BattleStartedEvent.class, logicListener);

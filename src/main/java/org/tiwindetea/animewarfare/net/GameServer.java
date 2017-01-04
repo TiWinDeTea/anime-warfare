@@ -124,6 +124,8 @@ public class GameServer {
 
     /**
      * Instanciate a server with a random name and without password
+     * @see GameServer#setGameName(String)
+     * @see GameServer#start()
      */
     public GameServer() {
         this(-1, null, null);
@@ -137,11 +139,19 @@ public class GameServer {
      * Instanciate a server without password, given its name
      *
      * @param gameName Name of the game Room
+     * @see GameServer#start()
      */
     public GameServer(@Nullable String gameName) {
         this(-1, gameName, null);
     }
 
+    /**
+     * Instanciate a server given its name and password
+     *
+     * @param gameName     Name of the game Room
+     * @param gamePassword Password of the game
+     * @see GameServer#start()
+     */
     public GameServer(@Nullable String gameName, @Nullable String gamePassword) {
         this(-1, gameName, gamePassword);
     }
@@ -149,8 +159,10 @@ public class GameServer {
     /**
      * Instanciate a server given its name and password
      *
-     * @param gameName     Name of the Room
-     * @param gamePassword Password of the Room
+     * @param numberOfExpectedPlayers Number of players required before starting the game
+     * @param gameName                Name of the Room
+     * @param gamePassword            Password of the Room
+     * @see GameServer#start()
      */
     public GameServer(int numberOfExpectedPlayers, @Nullable String gameName, @Nullable String gamePassword) {
         if (gameName == null) {
@@ -171,6 +183,8 @@ public class GameServer {
      *
      * @param gamePassword new password for the game
      * @throws IllegalStateException if the server is already running
+     * @see GameServer#setNumberOfExpectedPlayer(int)
+     * @see GameServer#setGameName(String)
      */
     public void setGamePassword(String gamePassword) {
         if (this.isRunning) {
@@ -185,6 +199,8 @@ public class GameServer {
      *
      * @param gameName new name for the game
      * @throws IllegalStateException if the server is already running
+     * @see GameServer#setNumberOfExpectedPlayer(int)
+     * @see GameServer#setGamePassword(String)
      */
     public void setGameName(String gameName) {
         if (this.isRunning) {
@@ -201,6 +217,8 @@ public class GameServer {
      * @param numberOfExpectedPlayer the number of players
      * @throws IllegalStateException    If the server is already running.
      * @throws IllegalArgumentException If the passed argument is outside of the [2-4] range
+     * @see GameServer#setGamePassword(String)
+     * @see GameServer#setGameName(String)
      */
     public void setNumberOfExpectedPlayer(int numberOfExpectedPlayer) {
         if (this.isRunning) {
@@ -219,6 +237,7 @@ public class GameServer {
      * @param TCPport Port to use for clients connection on TCP
      * @param UDPport Port to use for clients broadcasting when discovering
      * @throws IOException If the server could not be opened
+     * @see GameServer#start()
      */
 
     public void bind(int TCPport, int UDPport) throws IOException {
@@ -232,9 +251,14 @@ public class GameServer {
     }
 
     /**
-     * Starts the server if it is not started yet,
+     * Starts the server if it is not started yet, listening for clients on UDP.
      *
      * @throws IllegalStateException if the number of player was not set
+     * @throws org.tiwindetea.animewarfare.net.ServerScanner.AlreadyRunningException if this server is already started
+     * @see GameServer#stop()
+     * @see GameServer#isRunning()
+     * @see GameServer#hide()
+     * @see GameServer#startHidden()
      */
     public void start() {
         if (this.room.getNumberOfExpectedPlayers() > 1) {
@@ -242,6 +266,31 @@ public class GameServer {
                 this.isRunning = true;
                 this.server.start();
                 this.udpListener.start();
+                this.server.addListener(this.networkNetworkListener);
+                Utils.registerAsLogicListener(this.logicListener);
+                Log.debug(GameServer.class.toString(), "Running");
+            } else {
+                throw new ServerScanner.AlreadyRunningException();
+            }
+        } else {
+            throw new IllegalStateException("Number of expected players was not set");
+        }
+    }
+
+    /**
+     * Starts the server if it is not started yet, without listening on UDP.
+     *
+     * @throws IllegalStateException if the number of player was not set
+     * @see GameServer#stop()
+     * @see GameServer#isRunning()
+     * @see GameServer#show()
+     * @see GameServer#start()
+     */
+    private void startHidden() {
+        if (this.room.getNumberOfExpectedPlayers() > 1) {
+            if (!this.isRunning) {
+                this.isRunning = true;
+                this.server.start();
                 this.server.addListener(this.networkNetworkListener);
                 Utils.registerAsLogicListener(this.logicListener);
                 Log.debug(GameServer.class.toString(), "Running");
@@ -254,6 +303,9 @@ public class GameServer {
     /**
      * Closes the TCP server together with the
      * UDP server.
+     *
+     * @see GameServer#isRunning()
+     * @see GameServer#start()
      */
     public void stop() {
         if (this.isRunning) {
@@ -275,6 +327,8 @@ public class GameServer {
 
     /**
      * returns true if the server is running
+     * @see GameServer#start()
+     * @see GameServer#stop()
      */
     public boolean isRunning() {
         return this.isRunning;
@@ -282,6 +336,10 @@ public class GameServer {
 
     /**
      * @return true if the server is visible for udp broadcasters
+     *
+     * @see GameServer#hide()
+     * @see GameServer#show()
+     * @see GameServer#isRunning()
      */
     public boolean isVisible() {
         return this.udpListener.isRunning();
@@ -289,6 +347,8 @@ public class GameServer {
 
     /**
      * @return The UDPPort to which this server is binded
+     * @see GameServer#bind(int, int)
+     * @see GameServer#getTCPPort()
      */
     public int getUDPPort() {
         return this.udpListener.getPort();
@@ -296,6 +356,8 @@ public class GameServer {
 
     /**
      * @return The TCPPort to which this server is binded
+     * @see GameServer#bind(int, int)
+     * @see GameServer#getUDPPort()
      */
     public int getTCPPort() {
         return this.TCPPort;
@@ -303,22 +365,25 @@ public class GameServer {
 
     /**
      * @return The room of this server
+     * @see GameServer#setGameName(String)
+     * @see GameServer#setGamePassword(String)
      */
     public Room getRoom() {
         return this.room;
     }
 
-
-
     /**
-     * stops the udp listening
+     * Stops the udp listening. Other clients won't be able to find it via UDP.
+     *
+     * @see GameServer#isVisible()
+     * @see GameServer#show()
      */
     public void hide() {
         this.udpListener.stop();
     }
 
     /**
-     * starts the udp listening. (automatically done
+     * Starts the udp listening. (automatically done
      * when starting the server through {@link GameServer#start()}
      *
      * @throws IllegalStateException if the game server is not running
@@ -342,6 +407,7 @@ public class GameServer {
         Log.info(GameServer.class.toString(), this.room + ": game started");
     }
 
+    @SuppressWarnings("unused")
     public class NetworkListener extends Listener.ReflectionListener {
 
         private final Server server;
@@ -401,6 +467,13 @@ public class GameServer {
             }
         }
 
+
+        //***************************************************************
+        //*                                                             *
+        //*         ALPHABETICAL ORDER ON SECOND ARGUMENT TYPE          *
+        //*                                                             *
+        //***************************************************************
+
         // general
         public void received(Connection connection, GameClientInfo info) {
             if (isLegit(connection)) {
@@ -442,7 +515,7 @@ public class GameServer {
             }
         }
 
-        // NetSendable classes
+        // NetSendable classes, alphabetical order on second argument type
         public void received(Connection connection, NetCapturedMascotSelection selection) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(), selection.getUnitID()));
@@ -607,9 +680,13 @@ public class GameServer {
             this.server = server;
         }
 
+        //***************************************************************
+        //*                                                             *
+        //*            ALPHABETICAL ORDER ON ARGUMENT TYPE              *
+        //*                                                             *
+        //***************************************************************
 
-        // logic.states.events
-
+        // logic.states.events, alphabetical order on argument type
         @Override
         public void askFirstPlayerEvent(AskFirstPlayerEvent event) {
             this.server.sendToAllTCP(new NetFirstPlayerSelectionRequest(GameServer.this.room.find(event.getLastPlayer()),
@@ -647,7 +724,7 @@ public class GameServer {
         }
 
 
-        // logic.event
+        // logic.event, alphabetical order on argument type
         @Override
         public void handleGameEndConditionsReached(GameEndConditionsReachedEvent event) {
             this.server.sendToAllTCP(new NetGameEndConditionsReached(event));

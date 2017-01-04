@@ -45,16 +45,47 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
+ * Class used to look for game servers.
+ *
  * @author Lucas Lazare
  * @since 0.1.0
  */
 public class ServerScanner implements Runnable {
 
+    static class AlreadyRunningException extends RuntimeException {
+
+        AlreadyRunningException() {
+            super();
+        }
+
+        AlreadyRunningException(String message) {
+            super(message);
+        }
+
+    }
+
+    static class IllegalCallException extends RuntimeException {
+
+        IllegalCallException() {
+            super();
+        }
+
+        IllegalCallException(String message) {
+            super(message);
+        }
+
+    }
+
+    /**
+     * Number of IOException to catch before calling the "onFailure" setted Function
+     *
+     * @see ServerScanner#setOnFailure(Function)
+     */
     public static final int TOLERANCE = 100;
 
     private static final int REFRESH_RATE_MS = 1000;
-    private static final int DISCOVERY_TIMEOUT = 500;
 
+    private static final int DISCOVERY_TIMEOUT = 500;
     private static final byte[] HEADER = Utils.VERSION_HEADER.getBytes(Utils.CHARSET);
     private static final byte[] REQUEST = new byte[HEADER.length + 1];
 
@@ -81,6 +112,9 @@ public class ServerScanner implements Runnable {
      * @param UDPport UDP port on which servers are running
      * @param timeout The number of milliseconds to wait for a response
      * @return A list containing all servers found on LAN
+     *
+     * @see ServerScanner#discoverAt(int, InetSocketAddress...)
+     * @see ServerScanner#discoverAt(int, Collection)
      */
     public static List<Room> discover(int UDPport, int timeout) {
         return discoverAt(timeout, toBroadcast(UDPport));
@@ -92,6 +126,9 @@ public class ServerScanner implements Runnable {
      * @param timeout   The number of milliseconds to wait for a response
      * @param addresses Addresses of the servers
      * @return A list containing all servers found on LAN
+     *
+     * @see ServerScanner#discoverAt(int, InetSocketAddress...)
+     * @see ServerScanner#discover(int, int)
      */
     public static List<Room> discoverAt(int timeout, Collection<InetSocketAddress> addresses) {
         return discoverAt(timeout, addresses.toArray(new InetSocketAddress[addresses.size()]));
@@ -103,6 +140,9 @@ public class ServerScanner implements Runnable {
      * @param timeout   The number of milliseconds to wait for a response
      * @param addresses Addresses of the servers
      * @return A list containing all servers found on LAN
+     *
+     * @see ServerScanner#discoverAt(int, InetSocketAddress...)
+     * @see ServerScanner#discover(int, int)
      */
     public static List<Room> discoverAt(int timeout, InetSocketAddress... addresses) {
 
@@ -137,13 +177,16 @@ public class ServerScanner implements Runnable {
      * Scans for server on local network in a separated thread.
      *
      * @param UDPPort UDP port on which servers are running
-     * @throws IllegalStateException if this instance of ServerScanner is already running.
+     * @throws AlreadyRunningException if this instance of ServerScanner is already running.
      * @throws IllegalStateException if this instance of ServerScanner is shutdown
      * @throws SocketException       if a failure occured when trying to open sockets.
+     *
      * @see ServerScanner#setOnDisappear(Consumer)
      * @see ServerScanner#setOnDiscovery(Consumer)
      * @see ServerScanner#setOnFailure(Function)
      * @see ServerScanner#stop()
+     *
+     * @see ServerScanner#discoverAt(int, Collection)
      */
     public void parallelDiscovery(int UDPPort) throws SocketException {
         this.parallelDiscoveryAt(toBroadcast(UDPPort));
@@ -153,13 +196,17 @@ public class ServerScanner implements Runnable {
      * Scans for server on specified addresses in a separated thread.
      *
      * @param addresses Addresses of the servers
-     * @throws IllegalStateException if this instance of ServerScanner is already running.
+     * @throws AlreadyRunningException if this instance of ServerScanner is already running.
      * @throws IllegalStateException if this instance of ServerScanner is shutdown
      * @throws SocketException       if a failure occured when trying to open sockets.
      * @see ServerScanner#setOnDisappear(Consumer)
      * @see ServerScanner#setOnDiscovery(Consumer)
      * @see ServerScanner#setOnFailure(Function)
      * @see ServerScanner#stop()
+     *
+     * @see ServerScanner#discoverAt(int, Collection)
+     * @see ServerScanner#parallelDiscovery(int)
+     * @see ServerScanner#parallelDiscoveryAt(InetSocketAddress...)
      */
     public void parallelDiscoveryAt(Collection<InetSocketAddress> addresses) throws SocketException {
         this.parallelDiscoveryAt(addresses.toArray(new InetSocketAddress[addresses.size()]));
@@ -169,17 +216,21 @@ public class ServerScanner implements Runnable {
      * Scans for server on specified addresses in a separated thread.
      *
      * @param addresses Addresses of the servers
-     * @throws IllegalStateException if this instance of ServerScanner is already running.
+     * @throws AlreadyRunningException if this instance of ServerScanner is already running.
      * @throws IllegalStateException if this instance of ServerScanner is shutdown
      * @throws SocketException       if a failure occured when trying to open sockets.
      * @see ServerScanner#setOnDisappear(Consumer)
      * @see ServerScanner#setOnDiscovery(Consumer)
      * @see ServerScanner#setOnFailure(Function)
      * @see ServerScanner#stop()
+     *
+     * @see ServerScanner#discoverAt(int, InetSocketAddress...)
+     * @see ServerScanner#parallelDiscovery(int)
+     * @see ServerScanner#parallelDiscoveryAt(Collection)
      */
     public void parallelDiscoveryAt(InetSocketAddress... addresses) throws SocketException {
         if (this.isRunning) {
-            throw new IllegalStateException("ServerScanner already running");
+            throw new AlreadyRunningException("ServerScanner already running");
         }
 
         if (this.THREAD.isShutdown()) {
@@ -215,6 +266,8 @@ public class ServerScanner implements Runnable {
      * @see ServerScanner#shutdown()
      * @see ServerScanner#isRunning()
      * @see ServerScanner#isShutdown()
+     *
+     * @see ServerScanner#parallelDiscovery(int)
      */
     public void stop() {
         this.isRunning = false;
@@ -223,6 +276,10 @@ public class ServerScanner implements Runnable {
 
     /**
      * @param onDisappear Consumer called when a room that was present before is not detected anymore.
+     *
+     * @see ServerScanner#setOnDiscovery(Consumer)
+     * @see ServerScanner#setOnUpdate(Consumer)
+     * @see ServerScanner#setOnFailure(Function)
      */
     public void setOnDisappear(Consumer<Room> onDisappear) {
         this.onDisappear = onDisappear;
@@ -230,6 +287,10 @@ public class ServerScanner implements Runnable {
 
     /**
      * @param onDiscovery Consumer called when a new room is found
+     *
+     * @see ServerScanner#setOnDisappear(Consumer)
+     * @see ServerScanner#setOnUpdate(Consumer)
+     * @see ServerScanner#setOnFailure(Function)
      */
     public void setOnDiscovery(Consumer<Room> onDiscovery) {
         this.onDiscovery = onDiscovery;
@@ -237,6 +298,10 @@ public class ServerScanner implements Runnable {
 
     /**
      * @param onUpdate Consumer called when a room is updated (ie: change in players)
+     *
+     * @see ServerScanner#setOnDiscovery(Consumer)
+     * @see ServerScanner#setOnDisappear(Consumer)
+     * @see ServerScanner#setOnFailure(Function)
      */
     public void setOnUpdate(Consumer<Room> onUpdate) {
         this.onUpdate = onUpdate;
@@ -249,18 +314,36 @@ public class ServerScanner implements Runnable {
      *                  and/or sending through network exceeds {@link ServerScanner#TOLERANCE}.
      *                  If this function returns true, the ServerScanner will try to go for another
      *                  {@link ServerScanner#TOLERANCE}. Otherwise, it will stop.
+     *
+     * @see ServerScanner#setOnDiscovery(Consumer)
+     * @see ServerScanner#setOnUpdate(Consumer)
+     * @see ServerScanner#setOnDisappear(Consumer)
      */
     public void setOnFailure(Function<IOException, Boolean> onFailure) {
         this.onFailure = onFailure;
     }
 
+    /**
+     * If it is running, forces the ServerScanner to update, cleaning all previously
+     * found rooms (the Consumer setted using {@link ServerScanner#setOnDisappear(Consumer)}
+     * will be called)
+     */
     public synchronized void forceUpdate() {
         this.haveBeenNotified = true;
         notify();
     }
 
+    /**
+    /**
+     * @throws IllegalCallException if this method have been called
+     */
     @Override
     public void run() {
+
+        if (!this.selfStarted) {
+            throw new IllegalCallException();
+        }
+        this.selfStarted = false;
 
         this.isRunning = true;
         int errorCount = 0;
@@ -377,6 +460,9 @@ public class ServerScanner implements Runnable {
 
     /**
      * Shutdowns this {@link ServerScanner}'s. It cannot be reused afterwards
+     *
+     * @see ServerScanner#stop()
+     * @see ServerScanner#parallelDiscovery(int)
      */
     public void shutdown() {
         this.isRunning = false;
@@ -385,6 +471,8 @@ public class ServerScanner implements Runnable {
 
     /**
      * @return true if this instance of {@link ServerScanner} has been shutdown, false otherwise.
+     *
+     * @see ServerScanner#shutdown()
      */
     public boolean isShutdown() {
         return this.THREAD.isShutdown();
@@ -432,4 +520,5 @@ public class ServerScanner implements Runnable {
         Log.trace(ServerScanner.class.getName(), "Sending scan request to " + address);
         socket.send(packet);
     }
+
 }

@@ -36,7 +36,7 @@ public class GameClientInfo implements NetworkedClass {
     }
 
     /**
-     * If the id is -1, it should be consider to be a special server client.
+     * @return The id of the client. If the id is -1, it should be consider to be a special server client.
      */
     public int getId() {
         return this.id;

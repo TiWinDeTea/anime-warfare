@@ -42,8 +42,7 @@ import java.net.InetSocketAddress;
 
 /**
  * The game client class
- * This class is used to connectAt to a game
- * server that hosts a game.
+ * This class is used to connect to a game server that hosts a game.
  * No logic involved in the client.
  *
  * @author Lucas Lazare
@@ -59,17 +58,19 @@ public class GameClient {
 
     /**
      * Instanciate a new GameClient with to name
+     * @see GameClient#GameClient(String)
      */
     public GameClient() {
         this(null);
     }
 
     /**
-     * Instanciate a new GameClient
+     * Instanciate a new GameClient, given its name
      *
      * @param name client name
+     * @see GameClient#GameClient()
      */
-    public GameClient(String name) {
+    public GameClient(@Nullable String name) {
         this.me.gameClientName = name;
         Utils.registerClasses(this.client);
     }
@@ -95,6 +96,12 @@ public class GameClient {
      * @throws IOException if an I/O error occurs
      * @throws IllegalStateException if the name of the client was not set
      * @throws IllegalArgumentException if the room is locked and no password was given, or if the room is not locked and a password was given.
+     *
+     * @see ServerScanner
+     * @see GameClient#connect(GameServer)
+     * @see GameClient#connect(Room, NetPassword)
+     * @see GameClient#connectAt(InetSocketAddress)
+     * @see GameClient#connectAt(InetSocketAddress, NetPassword)
      */
     public void connect(Room room) throws IOException {
         this.connect(room, null);
@@ -108,6 +115,12 @@ public class GameClient {
      * @throws IOException if an I/O error occurs
      * @throws IllegalStateException if the name of the client was not set
      * @throws IllegalArgumentException if the room is locked and no password was given, or if the room is not locked and a password was given.
+     *
+     * @see ServerScanner
+     * @see GameClient#connect(GameServer)
+     * @see GameClient#connect(Room)
+     * @see GameClient#connectAt(InetSocketAddress)
+     * @see GameClient#connectAt(InetSocketAddress, NetPassword)
      */
     public void connect(Room room, @Nullable NetPassword password) throws IOException {
         if (room.isLocked()
@@ -125,6 +138,12 @@ public class GameClient {
      * @throws IOException              if an I/O error occurs
      * @throws IllegalStateException    if the name of the client was not set
      * @throws IllegalArgumentException if the room is locked and no password was given, or if the room is not locked and a password was given.
+     *
+     * @see ServerScanner
+     * @see GameClient#connect(Room)
+     * @see GameClient#connect(Room, NetPassword)
+     * @see GameClient#connectAt(InetSocketAddress)
+     * @see GameClient#connectAt(InetSocketAddress, NetPassword)
      */
     public void connect(GameServer server) throws IOException {
         Room room = server.getRoom();
@@ -138,6 +157,12 @@ public class GameClient {
      * @param TCPAddress Address and port of the remote server
      * @throws IOException           if an I/O error occurs
      * @throws IllegalStateException if the name of the client was not set
+     *
+     * @see ServerScanner
+     * @see GameClient#connectAt(InetSocketAddress, NetPassword)
+     * @see GameClient#connect(GameServer)
+     * @see GameClient#connect(Room, NetPassword)
+     * @see GameClient#connect(Room)
      */
     public void connectAt(InetSocketAddress TCPAddress) throws IOException {
         connectAt(TCPAddress, null);
@@ -150,6 +175,12 @@ public class GameClient {
      * @param password   Password of the server, null if there is no password
      * @throws IOException           if an I/O error occurs
      * @throws IllegalStateException if the name of the client was not set
+     *
+     * @see ServerScanner
+     * @see GameClient#connectAt(InetSocketAddress)
+     * @see GameClient#connect(GameServer)
+     * @see GameClient#connect(Room, NetPassword)
+     * @see GameClient#connect(Room)
      */
     public void connectAt(InetSocketAddress TCPAddress, @Nullable NetPassword password) throws IOException {
         if (this.me.gameClientName == null) {
@@ -182,6 +213,7 @@ public class GameClient {
 
     /**
      * Disconnects from the server
+     * @see GameClient#connect(Room)
      */
     public void disconnect() {
         if (this.isConnected) {
@@ -195,6 +227,7 @@ public class GameClient {
      * Sends a message to the server, to be send to any other room member
      *
      * @param message message to be send
+     * @see GameClient#send(NetSendable)
      */
     public void send(String message) {
         Log.trace(GameClient.class.toString(), "Sending message: " + message);
@@ -203,6 +236,7 @@ public class GameClient {
 
     /**
      * Sends something to the server
+     * @see GameClient#send(String)
      */
     public void send(NetSendable sendable) {
         Log.trace(GameClient.class.toString(), "Sending " + sendable);
@@ -222,9 +256,21 @@ public class GameClient {
     @SuppressWarnings("unused")
     public class Listener extends com.esotericsoftware.kryonet.Listener.ReflectionListener {
 
+        //***************************************************************
+        //*                                                             *
+        //*         ALPHABETICAL ORDER ON SECOND ARGUMENT TYPE          *
+        //*                                                             *
+        //***************************************************************
+
         @Override
         public void connected(Connection connection) {
             GameClient.this.isConnected = true;
+        }
+
+        @Override
+        public void disconnected(Connection connection) {
+            GameClient.this.isConnected = false;
+            EventDispatcher.send(new PlayerDisconnectionNetevent(GameClient.this.me));
         }
 
         // general
@@ -248,7 +294,7 @@ public class GameClient {
             EventDispatcher.send(new ConnectedNetevent(room));
         }
 
-        // network requests
+        // network requests, alphabetical order on second argument type
         public void received(Connection connection, NetBadPassword bpw) {
             EventDispatcher.send(new BadPasswordNetevent());
         }
@@ -350,10 +396,5 @@ public class GameClient {
             EventDispatcher.send(new UnitNetevent(unitEvent));
         }
 
-        @Override
-        public void disconnected(Connection connection) {
-            GameClient.this.isConnected = false;
-            EventDispatcher.send(new PlayerDisconnectionNetevent(GameClient.this.me));
-        }
     }
 }
