@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.gui.menu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
@@ -63,6 +64,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRe
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,24 +77,13 @@ public class GameRoomController
 		PlayerDisconnectionNeteventListener, PlayerSelectedFactionNeteventListener,
 		PlayerLockedFactionNeteventListener, FactionUnselectedNeteventListener,
 		FactionUnlockedNeteventListener, GameStartedNeteventListener {
-	private static final ColorAdjust EFFECT_MONOCHROME = new ColorAdjust();
-	private static final ColorAdjust GREENIFY;
+	private static final ColorAdjust SELECTED_EFFECT = new ColorAdjust();
+	private static final ColorAdjust LOCKED_EFFECT = new ColorAdjust();
 
 	static {
-		EFFECT_MONOCHROME.setSaturation(-1.);
+		SELECTED_EFFECT.setBrightness(0.7);
 
-		// greenify effect
-		ColorAdjust greenify = new ColorAdjust();
-		Color targetColor = Color.LIGHTGREEN;
-		double hue = map((targetColor.getHue() + 180) % 360, 0, 360, -1, 1);
-		greenify.setHue(hue);
-
-		double saturation = targetColor.getSaturation();
-		greenify.setSaturation(saturation);
-
-		double brightness = map(targetColor.getBrightness(), 0, 1, -1, 0);
-		greenify.setBrightness(brightness);
-		GREENIFY = greenify;
+		LOCKED_EFFECT.setSaturation(-1.);
 	}
 
 	@FXML
@@ -112,6 +103,18 @@ public class GameRoomController
 
 	@FXML
 	private ImageView theBlackKnightsImageView;
+
+	@FXML
+	private VBox fClassNoBakaVBox;
+
+	@FXML
+	private VBox noNameVBox;
+
+	@FXML
+	private VBox haiyoreVBox;
+
+	@FXML
+	private VBox theBlackKnightsVBox;
 
 	@FXML
 	private Button lockFactionButton;
@@ -243,17 +246,28 @@ public class GameRoomController
 
 	@Override
 	public void handleFactionChoice(PlayerSelectedFactionNetevent playerSelectedFactionEvent) {
-		getImageViewByFactionType(playerSelectedFactionEvent.getFactionType()).setEffect(GREENIFY);
-		if (playerSelectedFactionEvent.getPlayerInfo().equals(MainApp.getGameClient().getClientInfo())) {
-			this.selectedFaction = playerSelectedFactionEvent.getFactionType();
-		}
+		Platform.runLater(() -> {
+			getImageViewByFactionType(playerSelectedFactionEvent.getFactionType()).setEffect(SELECTED_EFFECT);
+			if (playerSelectedFactionEvent.getPlayerInfo().equals(MainApp.getGameClient().getClientInfo())) {
+				this.selectedFaction = playerSelectedFactionEvent.getFactionType();
+			}
+			getVBoxByFactionType(playerSelectedFactionEvent.getFactionType()).getChildren().add(
+					new Label(playerSelectedFactionEvent.getPlayerInfo().getGameClientName())
+			);
+		});
 	}
 
 	@Override
 	public void handleFactionUnselected(FactionUnselectedNetevent factionUnselectedNetevent) {
-		if (!MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnselectedNetevent.getFaction())) {
-			getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
-		}
+		Platform.runLater(() -> {
+			if (!MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnselectedNetevent.getFaction())) {
+				getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
+			}
+			List<Node> children = getVBoxByFactionType(factionUnselectedNetevent.getFaction()).getChildren();
+			children.remove(children.stream()
+					.filter(l -> ((Label) l).getText().equals(factionUnselectedNetevent.getClient().getGameClientName()))
+					.findFirst().get());
+		});
 
 		if (MainApp.getGameClient().getClientInfo().equals(factionUnselectedNetevent.getClient())) {
 			this.selectedFaction = null;
@@ -264,7 +278,7 @@ public class GameRoomController
 	public void handleFactionLock(PlayerLockedFactionNetevent playerLockedFactionNetevent) {
 		Platform.runLater(() -> {
 			GameClientInfo info = playerLockedFactionNetevent.getPlayerInfo();
-			getImageViewByFactionType(playerLockedFactionNetevent.getFaction()).setEffect(EFFECT_MONOCHROME);
+			getImageViewByFactionType(playerLockedFactionNetevent.getFaction()).setEffect(LOCKED_EFFECT);
 			GlobalChat.registerClientColor(info, getColorByFaction(playerLockedFactionNetevent.getFaction()));
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
 		});
@@ -277,7 +291,7 @@ public class GameRoomController
 			getImageViewByFactionType(factionUnlockedNetevent.getFaction())
 					.setEffect(
 							MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnlockedNetevent.getFaction())
-									? GREENIFY
+									? SELECTED_EFFECT
 									: null
 					);
 			GlobalChat.unregisterClientColor(info);
@@ -306,6 +320,22 @@ public class GameRoomController
 		}
 	}
 
+	// helper method
+	private VBox getVBoxByFactionType(FactionType factionType) {
+		switch (factionType) {
+			case NO_NAME:
+				return this.noNameVBox;
+			case THE_BLACK_KNIGHTS:
+				return this.theBlackKnightsVBox;
+			case HAIYORE:
+				return this.haiyoreVBox;
+			case F_CLASS_NO_BAKA:
+				return this.fClassNoBakaVBox;
+			default:
+				throw new IllegalStateException("There is a missing case.");
+		}
+	}
+
 	// helper
 	private Color getColorByFaction(FactionType factionType) {
 		switch (factionType) {
@@ -328,11 +358,6 @@ public class GameRoomController
 		playerName.setTextFill(GlobalChat.getClientColor(gameClientInfo));
 		this.userNamesLabels.put(gameClientInfo.getId(), playerName);
 		this.usersList.getChildren().add(playerName);
-	}
-
-	// static helper
-	private static double map(double value, double start, double stop, double targetStart, double targetStop) {
-		return targetStart + (targetStop - targetStart) * ((value - start) / (stop - start));
 	}
 }
 

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
@@ -10,6 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.tiwindetea.animewarfare.gui.PaperButton?>
+
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.menu.GameRoomController">
    <children>
       <BorderPane fx:id="borderPane" layoutX="82.0" layoutY="56.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -37,11 +45,8 @@
          <bottom>
             <HBox alignment="CENTER" spacing="5.0">
                <children>
-                  <PaperButton mnemonicParsing="false" onAction="#handleQuit" prefHeight="30.0" prefWidth="150.0"
-                               text="%button.quit"/>
-                  <PaperButton fx:id="lockFactionButton" mnemonicParsing="false" onAction="#handleLockFaction"
-                               prefHeight="30.0" prefWidth="150.0"
-                               text="%button.lockfaction"/>
+                  <PaperButton mnemonicParsing="false" onAction="#handleQuit" prefHeight="30.0" prefWidth="150.0" text="%button.quit" />
+                  <PaperButton fx:id="lockFactionButton" mnemonicParsing="false" onAction="#handleLockFaction" prefHeight="30.0" prefWidth="150.0" text="%button.lockfaction" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -51,32 +56,52 @@
          <right>
             <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <top>
-                  <ImageView fx:id="noNameImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleNoNameClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../pictures/Izayoi_tall.png" />
-                     </image>
-                  </ImageView>
+                  <StackPane pickOnBounds="false">
+                     <children>
+                        <ImageView fx:id="noNameImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleNoNameClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                           <image>
+                              <Image url="@../pictures/Izayoi_tall.png" />
+                           </image>
+                        </ImageView>
+                        <VBox fx:id="noNameVBox" alignment="CENTER" mouseTransparent="true" />
+                     </children>
+                  </StackPane>
                </top>
                <left>
-                  <ImageView fx:id="fClassNoBakaImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleFClassNoBakaClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../pictures/Himeji_tall.png" />
-                     </image>
-                  </ImageView>
+                  <StackPane pickOnBounds="false">
+                     <children>
+                        <ImageView fx:id="fClassNoBakaImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleFClassNoBakaClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                           <image>
+                              <Image url="@../pictures/Himeji_tall.png" />
+                           </image>
+                        </ImageView>
+                        <VBox fx:id="fClassNoBakaVBox" alignment="CENTER" mouseTransparent="true" />
+                     </children>
+                  </StackPane>
                </left>
                <right>
-                  <ImageView fx:id="haiyoreImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleHaiyoreClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../pictures/Nyaruko_tall.png" />
-                     </image>
-                  </ImageView>
+                  <StackPane pickOnBounds="false">
+                     <children>
+                        <ImageView fx:id="haiyoreImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleHaiyoreClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                           <image>
+                              <Image url="@../pictures/Nyaruko_tall.png" />
+                           </image>
+                        </ImageView>
+                        <VBox fx:id="haiyoreVBox" alignment="CENTER" mouseTransparent="true" />
+                     </children>
+                  </StackPane>
                </right>
                <bottom>
-                  <ImageView fx:id="theBlackKnightsImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleTheBlackKnightsClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../pictures/Lelouch_tall.png" />
-                     </image>
-                  </ImageView>
+                  <StackPane pickOnBounds="false">
+                     <children>
+                        <ImageView fx:id="theBlackKnightsImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleTheBlackKnightsClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                           <image>
+                              <Image url="@../pictures/Lelouch_tall.png" />
+                           </image>
+                        </ImageView>
+                        <VBox fx:id="theBlackKnightsVBox" alignment="CENTER" mouseTransparent="true" />
+                     </children>
+                  </StackPane>
                </bottom>
             </BorderPane>
          </right>
