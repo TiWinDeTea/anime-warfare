@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.gui.menu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -65,9 +66,11 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRe
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * The game room controller.
@@ -78,7 +81,10 @@ public class GameRoomController
 		implements ConnectedNeteventListener, PlayerConnectionNeteventListener,
 		PlayerDisconnectionNeteventListener, PlayerSelectedFactionNeteventListener,
 		PlayerLockedFactionNeteventListener, FactionUnselectedNeteventListener,
-		FactionUnlockedNeteventListener, GameStartedNeteventListener {
+		FactionUnlockedNeteventListener, GameStartedNeteventListener,
+		Initializable {
+	private ResourceBundle resourceBundle;
+
 	private static final ColorAdjust SELECTED_EFFECT = new ColorAdjust();
 	private static final ColorAdjust LOCKED_EFFECT = new ColorAdjust();
 	private static final ColorAdjust NORMAL_EFFECT = new ColorAdjust();
@@ -154,8 +160,10 @@ public class GameRoomController
 		return this.borderPane;
 	}
 
-	@FXML
-	private void initialize() {
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		this.resourceBundle = resources;
+
 		EventDispatcher.registerListener(ConnectedNetevent.class, this);
 		EventDispatcher.registerListener(PlayerConnectionNetevent.class, this);
 		EventDispatcher.registerListener(PlayerDisconnectionNetevent.class, this);
@@ -239,14 +247,14 @@ public class GameRoomController
 	private void handleLockFaction() {
 		if (this.selectedFaction != null) {
 			MainApp.getGameClient().send(new NetLockFactionRequest(this.selectedFaction));
-			this.lockFactionButton.setText("Unlock faction"); // TODO externalize
+			this.lockFactionButton.setText(this.resourceBundle.getString("button.unlockfaction"));
 			this.lockFactionButton.setOnAction(this::handleUnlockFaction);
 		}
 	}
 
 	private void handleUnlockFaction(ActionEvent actionEvent) {
 		MainApp.getGameClient().send(new NetUnlockFactionRequest());
-		this.lockFactionButton.setText("Lock faction"); // TODO externalize
+		this.lockFactionButton.setText(this.resourceBundle.getString("button.lockfaction"));
 		this.lockFactionButton.setOnAction(this::handleLockFaction);
 	}
 
@@ -258,7 +266,9 @@ public class GameRoomController
 	public void handlePlayerConnection(PlayerConnectionNetevent event) {
 		Platform.runLater(() -> {
 			addPlayer(event.getClient());
-			GlobalChat.getChatController().addMessage(event.getClient().getGameClientName() + " connected.", Color.GRAY); // TODO: externalize.
+			GlobalChat.getChatController().addMessage(event.getClient().getGameClientName()
+					+ " "
+					+ this.resourceBundle.getString("chat.connectmessage"), Color.GRAY);
 		});
 	}
 
@@ -281,7 +291,9 @@ public class GameRoomController
 			} else {
 				this.usersList.getChildren().remove(this.userNamesLabels.get(event.getPlayer().getId()));
 				this.userNamesLabels.remove(event.getPlayer().getId());
-				GlobalChat.getChatController().addMessage(event.getPlayer().getGameClientName() + " disconnected.", Color.GRAY); // TODO: externalize.
+				GlobalChat.getChatController().addMessage(event.getPlayer().getGameClientName()
+						+ " " +
+						this.resourceBundle.getString("chat.disconnectmessage"), Color.GRAY);
 			}
 		});
 	}
