@@ -772,7 +772,7 @@ public class GameServer {
                 }
                 out += word.substring(tmp, tmp2);
             }
-            return out;
+            return out.substring(0, 1).toUpperCase() + out.substring(1).toLowerCase();
         }
     }
 }
