@@ -216,14 +216,17 @@ public class GameRoomController
 		this.noNameImageView.setEffect(NORMAL_EFFECT);
 		this.theBlackKnightsImageView.setEffect(NORMAL_EFFECT);
 
-		this.handleUnlockFaction(new ActionEvent());
+		this.lockFactionButton.setText(this.resourceBundle.getString("button.lockfaction"));
+		this.lockFactionButton.setOnAction(this::handleLockFaction);
 	}
 
 	private void handleFactionClicked(FactionType faction){
-		if (faction.equals(this.selectedFaction)) {
-			MainApp.getGameClient().send(new NetUnselectFactionRequest());
-		} else {
-			MainApp.getGameClient().send(new NetSelectFactionRequest(faction));
+		if (!this.factionLocked) {
+			if (faction.equals(this.selectedFaction)) {
+				MainApp.getGameClient().send(new NetUnselectFactionRequest());
+			} else {
+				MainApp.getGameClient().send(new NetSelectFactionRequest(faction));
+			}
 		}
 	}
 
@@ -334,6 +337,8 @@ public class GameRoomController
 
 	@Override
 	public void handleFactionLock(PlayerLockedFactionNetevent playerLockedFactionNetevent) {
+		this.factionLocked = (MainApp.getGameClient().equals(playerLockedFactionNetevent.getPlayerInfo()));
+
 		Platform.runLater(() -> {
 			GameClientInfo info = playerLockedFactionNetevent.getPlayerInfo();
 			getImageViewByFactionType(playerLockedFactionNetevent.getFaction()).setEffect(LOCKED_EFFECT);
@@ -347,6 +352,8 @@ public class GameRoomController
 
 	@Override
 	public void handleFactionUnlocked(FactionUnlockedNetevent factionUnlockedNetevent) {
+		this.factionLocked = !(MainApp.getGameClient().equals(factionUnlockedNetevent.getClient()));
+
 		this.handleFactionChoice(new PlayerSelectedFactionNetevent(factionUnlockedNetevent.getClient(), factionUnlockedNetevent.getFaction()));
 		Platform.runLater(() -> {
 			GameClientInfo info = factionUnlockedNetevent.getClient();

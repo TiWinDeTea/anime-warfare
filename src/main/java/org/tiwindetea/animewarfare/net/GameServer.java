@@ -612,7 +612,7 @@ public class GameServer {
             if (isLegit(connection)
                     && !this.room.modifiableLocks().containsKey(new GameClientInfo(connection.getID()))
                     && !this.room.modifiableLocks().containsValue(faction.getFactionType())) {
-                FactionType previousFaction = this.room.modifiableSelection().get(new GameClientInfo(connection.getID()));
+                FactionType previousFaction = this.room.modifiableSelection().remove(new GameClientInfo(connection.getID()));
                 this.room.modifiableSelection().put(this.room.find(connection.getID()), faction.getFactionType());
 
                 if (previousFaction != null) {
@@ -648,13 +648,14 @@ public class GameServer {
         }
 
         public void received(Connection connection, NetUnselectFactionRequest ignored) {
-            FactionType faction;
-            if (isLegit(connection) && (faction = this.room.modifiableSelection().remove(new GameClientInfo(connection.getID()))) != null) {
-                this.server.sendToAllTCP(new NetFactionUnselected(this.room.find(connection.getID()), faction));
+            if (isLegit(connection)) {
+                FactionType faction = this.room.modifiableSelection().get(new GameClientInfo(connection.getID()));
+                if (faction != null && !faction.equals(this.room.modifiableLocks().get(faction))) {
+                    this.server.sendToAllTCP(new NetFactionUnselected(this.room.find(connection.getID()), faction));
+                }
             }
         }
 
-        // todo (when possible, which is not yet) ;
         // don't forget to check that the client is a legit client (ie : is in the player that sent the good password)
     }
 
