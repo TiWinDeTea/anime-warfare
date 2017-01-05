@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.gui.menu;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -51,6 +50,9 @@ import java.util.TreeMap;
 public class SettingsMenuController {
 	private static final ResourceBundle BUNDLE
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.menu.SettingsMenuController");
+
+	@FXML
+	private CheckBox enableFullscreenCheckBox;
 
 	@FXML
 	private TextField playerNameTextField;
@@ -125,7 +127,10 @@ public class SettingsMenuController {
 
 		Settings.setPlayerName(this.playerNameTextField.getText());
 		Settings.setEnableAnimationEffects(this.enableEffectsCheckBox.isSelected());
+		Settings.setEnableFullscreen(this.enableFullscreenCheckBox.isSelected());
 		Settings.savePreferences();
+
+		EventDispatcher.getInstance().fire(new SettingsMenuEvent(SettingsMenuEvent.Type.QUIT));
 	}
 
 	@FXML
@@ -157,12 +162,14 @@ public class SettingsMenuController {
 		return !this.playerNameTextField.getText().equals(Settings.getPlayerName())
 				|| (this.enableAutosaveCheckBox.isSelected() && !this.autosaveIntervalTextField.getText().equals(String.valueOf(Settings.getAutoSaveInterval())))
 				|| (!this.enableAutosaveCheckBox.isSelected() && Settings.getAutoSaveInterval() != 0)
-				|| this.enableEffectsCheckBox.isSelected() != Settings.areAnimationEffectsEnabled();
+				|| this.enableEffectsCheckBox.isSelected() != Settings.areAnimationEffectsEnabled()
+				|| this.enableFullscreenCheckBox.isSelected() != Settings.isFullscreenEnabled();
 	}
 
 	void resetFieldsFromSettings() {
 		this.playerNameTextField.setText(Settings.getPlayerName());
 		this.enableEffectsCheckBox.setSelected(Settings.areAnimationEffectsEnabled());
+		this.enableFullscreenCheckBox.setSelected(Settings.isFullscreenEnabled());
 
 		if (Settings.getAutoSaveInterval() > 0) {
 			this.enableAutosaveCheckBox.setSelected(true);

@@ -2,6 +2,8 @@ package org.tiwindetea.animewarfare.settings;
 
 import java.util.EventListener;
 
-public interface LanguageUpdatedEventListener extends EventListener {
+public interface SettingsUpdatedEventListener extends EventListener {
 	void onLanguageUpdated();
+
+	void onFullscreenUpdated();
 }

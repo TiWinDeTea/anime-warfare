@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -14,6 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.tiwindetea.animewarfare.gui.PaperButton?>
 <?import org.tiwindetea.animewarfare.gui.PaperGridPane?>
+
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.menu.SettingsMenuController">
    <children>
       <GridPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -55,7 +61,7 @@
                         <Insets />
                      </opaqueInsets>
                        <VBox.margin>
-                           <Insets/>
+                           <Insets />
                        </VBox.margin>
                    </PaperGridPane>
                    <PaperGridPane hgap="5.0" prefHeight="150.0" prefWidth="650.0" vgap="10.0">
@@ -69,16 +75,18 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <CheckBox fx:id="enableEffectsCheckBox" mnemonicParsing="false" selected="true" GridPane.columnIndex="1" />
-                        <Label text="%checkbox.enable.animationeffects" />
-                        <Slider fx:id="soundLevelSlider" value="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <CheckBox fx:id="enableEffectsCheckBox" mnemonicParsing="false" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="%checkbox.enable.animationeffects" GridPane.rowIndex="1" />
+                        <Slider fx:id="soundLevelSlider" value="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
                            <GridPane.margin>
                               <Insets left="5.0" right="5.0" />
                            </GridPane.margin></Slider>
-                        <Label text="%label.sound.level" GridPane.rowIndex="1" />
+                        <Label text="%label.sound.level" GridPane.rowIndex="2" />
+                        <Label text="%checkbox.enable.fullscreen" />
+                        <CheckBox fx:id="enableFullscreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" />
                      </children>
                    </PaperGridPane>
                </children>

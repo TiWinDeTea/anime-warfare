@@ -28,6 +28,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
@@ -43,12 +44,13 @@ import org.tiwindetea.animewarfare.gui.menu.ServersListState;
 import org.tiwindetea.animewarfare.gui.menu.SettingsMenuState;
 import org.tiwindetea.animewarfare.net.GameClient;
 import org.tiwindetea.animewarfare.net.GameServer;
-import org.tiwindetea.animewarfare.settings.LanguageUpdatedEvent;
-import org.tiwindetea.animewarfare.settings.LanguageUpdatedEventListener;
 import org.tiwindetea.animewarfare.settings.Settings;
+import org.tiwindetea.animewarfare.settings.SettingsUpdatedEvent;
+import org.tiwindetea.animewarfare.settings.SettingsUpdatedEventListener;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -58,7 +60,7 @@ import java.util.ResourceBundle;
  * @author Benoît CORTIER
  */
 public class MainApp extends Application implements AskMenuStateUpdateEventListener,
-		QuitApplicationEventListener, LanguageUpdatedEventListener {
+		QuitApplicationEventListener, SettingsUpdatedEventListener {
 	private static final ResourceBundle BUNDLE
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.MainApp");
 
@@ -75,8 +77,13 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	public void start(Stage stage) {
 		EventDispatcher.getInstance().addListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().addListener(QuitApplicationEvent.class, this);
-		EventDispatcher.getInstance().addListener(LanguageUpdatedEvent.class, this);
-		Settings.init();
+		EventDispatcher.getInstance().addListener(SettingsUpdatedEvent.class, this);
+
+		Font.loadFont(MainApp.class.getResource("gui/fonts/LadylikeBB.ttf").toExternalForm(), 13);
+
+		Settings.initStaticFields();
+		Locale.setDefault(Locale.forLanguageTag(Settings.getLanguageTag()));
+		stage.setFullScreen(Settings.isFullscreenEnabled());
 
 		this.primaryStage = stage;
 		this.primaryStage.setTitle(BUNDLE.getString("title"));
@@ -114,7 +121,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	private void onQuit() {
 	    EventDispatcher.getInstance().removeListener(AskMenuStateUpdateEvent.class, this);
 		EventDispatcher.getInstance().removeListener(QuitApplicationEvent.class, this);
-		EventDispatcher.getInstance().removeListener(LanguageUpdatedEvent.class, this);
+		EventDispatcher.getInstance().removeListener(SettingsUpdatedEvent.class, this);
 
 		// stop network things.
 		MainApp.getGameClient().disconnect();
@@ -152,6 +159,12 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 	@Override
 	public void onLanguageUpdated() {
-		// TODO
+		Locale.setDefault(Locale.forLanguageTag(Settings.getLanguageTag()));
+		// TODO: reload some FXML.
+	}
+
+	@Override
+	public void onFullscreenUpdated() {
+		this.primaryStage.setFullScreen(Settings.isFullscreenEnabled());
 	}
 }

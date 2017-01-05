@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.settings;
 
-import javafx.scene.text.Font;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
@@ -42,24 +41,32 @@ public class Settings {
 			= ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.settings.Settings");
 
 	private static boolean enableAnimationEffects;
+	private static boolean enableFullscreen;
 	private static int autoSaveInterval;
 	private static String playerName;
 	private static String languageTag;
 	private static boolean languageChanged;
+	private static boolean fullscreenChanged;
 
 	static {
 		Preferences prefs = Preferences.userNodeForPackage(Settings.class);
+
 		Settings.playerName =
 				prefs.get("playerName", BUNDLE.getString("default.input.playername"));
+
 		Settings.autoSaveInterval = Integer.valueOf(
 				prefs.get("autoSaveInterval", BUNDLE.getString("default.interval.autosave"))
 		).intValue();
+
 		Settings.enableAnimationEffects = Boolean.valueOf(
 				prefs.get("enableAnimationEffects", BUNDLE.getString("default.enable.animationeffects"))
 		).booleanValue();
-		Settings.languageTag =
-				prefs.get("languageTag", BUNDLE.getString("default.language.tag"));
-		Locale.setDefault(Locale.forLanguageTag(languageTag));
+
+		Settings.enableFullscreen = Boolean.valueOf(
+				prefs.get("enableFullscreen", BUNDLE.getString("default.enable.fullscreen"))
+		).booleanValue();
+
+		Settings.languageTag = prefs.get("languageTag", BUNDLE.getString("default.language.tag"));
 	}
 
 	public static void savePreferences() {
@@ -67,17 +74,26 @@ public class Settings {
 		prefs.put("playerName", Settings.playerName);
 		prefs.put("autoSaveInterval", String.valueOf(Settings.autoSaveInterval));
 		prefs.put("enableAnimationEffects", String.valueOf(Settings.enableAnimationEffects));
+		prefs.put("enableFullscreen", String.valueOf(Settings.enableFullscreen));
 		prefs.put("languageTag", Settings.languageTag);
 
-		if (languageChanged) {
-			Locale.setDefault(Locale.forLanguageTag(languageTag));
-			EventDispatcher.getInstance().fire(new LanguageUpdatedEvent());
-			languageChanged = false;
+		if (Settings.languageChanged) {
+			EventDispatcher.getInstance().fire(new SettingsUpdatedEvent(SettingsUpdatedEvent.Type.LANGUAGE));
+			Settings.languageChanged = false;
+		}
+
+		if (Settings.fullscreenChanged) {
+			EventDispatcher.getInstance().fire(new SettingsUpdatedEvent(SettingsUpdatedEvent.Type.FULLSCREEN));
+			Settings.fullscreenChanged = false;
 		}
 	}
 
 	public static boolean areAnimationEffectsEnabled() {
 		return enableAnimationEffects;
+	}
+
+	public static boolean isFullscreenEnabled() {
+		return enableFullscreen;
 	}
 
 	public static int getAutoSaveInterval() {
@@ -96,6 +112,11 @@ public class Settings {
 		Settings.enableAnimationEffects = enableAnimationEffects;
 	}
 
+	public static void setEnableFullscreen(boolean enableFullscreen) {
+		Settings.enableFullscreen = enableFullscreen;
+		Settings.fullscreenChanged = true;
+	}
+
 	public static void setAutoSaveInterval(int autoSaveInterval) {
 		if (autoSaveInterval < 0) {
 			Settings.autoSaveInterval = 0;
@@ -111,12 +132,11 @@ public class Settings {
 	public static void setLanguageTag(String languageTag) {
 		if (Locale.forLanguageTag(languageTag) != null && !Settings.languageTag.equals(languageTag)) {
 			Settings.languageTag = languageTag;
-			languageChanged = true;
+			Settings.languageChanged = true;
 		}
 	}
 
-	public static void init() {
-		// Init static variable
-		Font.loadFont(Settings.class.getResource("../gui/fonts/LadylikeBB.ttf").toExternalForm(), 13);
+	public static void initStaticFields() {
+		// Init static fields
 	}
 }
