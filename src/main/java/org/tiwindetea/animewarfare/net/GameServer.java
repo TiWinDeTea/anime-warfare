@@ -32,6 +32,8 @@ import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEventListener;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
@@ -47,8 +49,6 @@ import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEventListener;
-import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
-import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
@@ -81,7 +81,24 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -662,7 +679,7 @@ public class GameServer {
     public class LogicListener implements
             AskFirstPlayerEventListener,
             AskUnitToCaptureEventListener,
-            BattleStartedEventListener,
+            BattleEventListener,
             FirstPlayerSelectedEventListener,
             GameEndedEventListener,
             PhaseChangedEventListener,
@@ -698,12 +715,22 @@ public class GameServer {
         }
 
         @Override
-        public void handleBattleStartedEvent(BattleStartedEvent event) {
+        public void handlePreBattle(BattleEvent event) {
+            // TODO: net event, handlePreBattle
+        }
+
+        @Override
+        public void handleBattleStarted(BattleEvent event) {
             this.server.sendToAllTCP(new NetBattleStarted(
                     event,
-                    GameServer.this.room.find(event.getAttacker().getID()),
-                    GameServer.this.room.find(event.getDefensor().getID())
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
             ));
+        }
+
+        @Override
+        public void handlePostBattle(BattleEvent event) {
+            // TODO: net event, handlePostBattle
         }
 
         @Override

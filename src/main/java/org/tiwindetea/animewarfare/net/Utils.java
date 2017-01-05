@@ -29,6 +29,7 @@ import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
@@ -36,7 +37,6 @@ import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 import org.tiwindetea.animewarfare.logic.event.UnitEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
-import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
@@ -56,7 +56,24 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -179,7 +196,7 @@ class Utils {
 		//logic.states.events, alphabetical order
 		ed.addListener(AskFirstPlayerEvent.class, logicListener);
 		ed.addListener(AskMascotToCaptureEvent.class, logicListener);
-		ed.addListener(BattleStartedEvent.class, logicListener);
+		ed.addListener(BattleEvent.class, logicListener);
 		ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.addListener(GameEndedEvent.class, logicListener);
 		ed.addListener(PhaseChangedEvent.class, logicListener);
@@ -205,7 +222,7 @@ class Utils {
 		//logic.states.events, alphabetical order
 		ed.removeListener(AskFirstPlayerEvent.class, logicListener);
 		ed.removeListener(AskMascotToCaptureEvent.class, logicListener);
-		ed.removeListener(BattleStartedEvent.class, logicListener);
+		ed.removeListener(BattleEvent.class, logicListener);
 		ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.removeListener(GameEndedEvent.class, logicListener);
 		ed.removeListener(PhaseChangedEvent.class, logicListener);

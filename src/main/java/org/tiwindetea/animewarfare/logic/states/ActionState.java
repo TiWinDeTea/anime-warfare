@@ -26,13 +26,16 @@ package org.tiwindetea.animewarfare.logic.states;
 
 import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.lomadriel.lfc.statemachine.State;
+import org.lomadriel.lfc.statemachine.StateMachine;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.battle.BattleContext;
+import org.tiwindetea.animewarfare.logic.battle.PreBattleState;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
-import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
@@ -75,8 +78,8 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
 	private static final int BATTLE_COST = 1; // TODO: Externalize
 
-	private final List<Integer> zonesWithBattle = new ArrayList<>();
-	private final List<Integer> movedUnit = new ArrayList<>();
+	private final List<Integer> zonesThatHadABattle = new ArrayList<>();
+	private final List<Integer> alreadyMovedUnit = new ArrayList<>();
 
 	private List<Player> players;
 	private boolean gameEnded;
@@ -87,6 +90,8 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 	private Player huntedPlayer;
 	private Zone huntingZone;
+
+	private StateMachine currentBattleStateMachine = null;
 
 	ActionState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -112,8 +117,8 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 	@Override
 	public void update() {
-		this.zonesWithBattle.clear();
-		this.movedUnit.clear();
+		this.zonesThatHadABattle.clear();
+		this.alreadyMovedUnit.clear();
 
 		setNextPlayer();
 	}
@@ -172,7 +177,6 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-
 		List<Pair<Unit, MoveUnitEvent.Movement>> validMovements = new LinkedList<>();
 
 		for (MoveUnitEvent.Movement movement : event.getMovements()) {
@@ -185,7 +189,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 				if (unitToMove != null
 						&& unitToMove.hasFaction(this.currentPlayer.getFaction())
-						&& !this.movedUnit.contains(Integer.valueOf(unitToMove.getID()))) { // A Unit can only be moved once per Action.
+						&& !this.alreadyMovedUnit.contains(Integer.valueOf(unitToMove.getID()))) { // A Unit can only be moved once per Action.
 
 					if (GameMap.getDistanceBetween(movement.getSourceZone(),
 							movement.getDestinationZone()) < 1) { // FIXME: replace the 1 by the unit movement capacity.
@@ -201,7 +205,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 
 				for (Pair<Unit, MoveUnitEvent.Movement> movement : validMovements) {
 					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
-					this.movedUnit.add(Integer.valueOf(movement.getKey().getID()));
+					this.alreadyMovedUnit.add(Integer.valueOf(movement.getKey().getID()));
 				}
 			}
 		}
@@ -282,7 +286,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-		if (this.zonesWithBattle.contains(Integer.valueOf(event.getZone()))) {
+		if (this.zonesThatHadABattle.contains(Integer.valueOf(event.getZone()))) {
 			return;
 		}
 
@@ -290,12 +294,11 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-		// TODO: Setup battle.
+		BattleContext battleContext = new BattleContext(this.gameBoard.getPlayer(event.getAttackerID()),
+				this.gameBoard.getPlayer(event.getDefenderID()),
+				this.gameBoard.getMap().getZone(event.getZone()));
 
-		EventDispatcher.getInstance()
-		               .fire(new BattleStartedEvent(this.gameBoard.getPlayer(event.getAttackerID()),
-				               this.gameBoard.getPlayer(event.getDefenderID()),
-				               this.gameBoard.getMap().getZone(event.getZone())));
+		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext));
 	}
 
 	@Override

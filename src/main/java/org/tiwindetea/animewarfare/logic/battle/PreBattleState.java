@@ -22,44 +22,26 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.server;
+package org.tiwindetea.animewarfare.logic.battle;
 
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
-import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
- * @author Lucas Lazare
- * @since 0.1.0
+ * @author Benoît CORTIER
  */
-public class NetBattleStarted implements NetReceivable {
+public class PreBattleState extends BattleState {
+	public PreBattleState(BattleContext battleContext) {
+		super(battleContext);
+	}
 
-    private final GameClientInfo attacker;
-    private final GameClientInfo defender;
-    private final int zone;
+	@Override
+	protected void onEnter() {
+		EventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.PRE_BATTLE, this.battleContext));
+	}
 
-    /**
-     * Default constructor, required by Kryo.net
-     */
-    public NetBattleStarted() {
-        this.attacker = this.defender = null;
-        this.zone = 0;
-    }
+	@Override
+	protected void onExit() {
 
-    public NetBattleStarted(BattleEvent event, GameClientInfo attacker, GameClientInfo defender) {
-        this.attacker = attacker;
-        this.defender = defender;
-        this.zone = event.getBattleContext().getZone().getID();
-    }
-
-    public GameClientInfo getAttacker() {
-        return this.attacker;
-    }
-
-    public GameClientInfo getDefender() {
-        return this.defender;
-    }
-
-    public int getZone() {
-        return this.zone;
-    }
+	}
 }

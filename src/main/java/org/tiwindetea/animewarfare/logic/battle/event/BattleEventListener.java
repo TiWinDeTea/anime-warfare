@@ -22,44 +22,14 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.server;
+package org.tiwindetea.animewarfare.logic.battle.event;
 
-import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
-import org.tiwindetea.animewarfare.net.GameClientInfo;
+import java.util.EventListener;
 
-/**
- * @author Lucas Lazare
- * @since 0.1.0
- */
-public class NetBattleStarted implements NetReceivable {
+public interface BattleEventListener extends EventListener {
+	void handlePreBattle(BattleEvent event);
 
-    private final GameClientInfo attacker;
-    private final GameClientInfo defender;
-    private final int zone;
+	void handleBattleStarted(BattleEvent event);
 
-    /**
-     * Default constructor, required by Kryo.net
-     */
-    public NetBattleStarted() {
-        this.attacker = this.defender = null;
-        this.zone = 0;
-    }
-
-    public NetBattleStarted(BattleEvent event, GameClientInfo attacker, GameClientInfo defender) {
-        this.attacker = attacker;
-        this.defender = defender;
-        this.zone = event.getBattleContext().getZone().getID();
-    }
-
-    public GameClientInfo getAttacker() {
-        return this.attacker;
-    }
-
-    public GameClientInfo getDefender() {
-        return this.defender;
-    }
-
-    public int getZone() {
-        return this.zone;
-    }
+	void handlePostBattle(BattleEvent event);
 }

@@ -26,46 +26,56 @@ package org.tiwindetea.animewarfare.logic.buffs;
 
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEvent;
-import org.tiwindetea.animewarfare.logic.states.events.BattleStartedEventListener;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitBasicCharacteristics;
 
-abstract class Sexism extends Buff implements BattleStartedEventListener {
+abstract class Sexism extends Buff implements BattleEventListener {
 	private final UnitBasicCharacteristics.Gender gender;
 
 	protected int nbrOfGenderAttacker;
 	protected Player attacker;
 	protected int nbrOfGenderDefensor;
-	protected Player defensor;
+	protected Player defender;
 
 	protected Sexism(UnitBasicCharacteristics.Gender gender) {
 		super(2);
 
 		this.gender = gender;
-		EventDispatcher.registerListener(BattleStartedEvent.class, this);
+		EventDispatcher.registerListener(BattleEvent.class, this);
 	}
 
 	@Override
-	public void handleBattleStartedEvent(BattleStartedEvent event) {
-		this.attacker = event.getAttacker();
-		this.defensor = event.getDefensor();
+	public void handleBattleStarted(BattleEvent event) {
+		this.attacker = event.getBattleContext().getAttacker();
+		this.defender = event.getBattleContext().getDefender();
 		updateGender(event);
 
 		applyEffect();
 	}
 
+	@Override
+	public void handlePreBattle(BattleEvent event) {
+		// nothing to do.
+	}
+
+	@Override
+	public void handlePostBattle(BattleEvent event) {
+		// nothing to do.
+	}
+
 	protected abstract void applyEffect();
 
-	private void updateGender(BattleStartedEvent event) {
-		for (Unit unit : event.getZone().getUnits()) {
-			if (unit.hasFaction(event.getAttacker().getFaction()) && unit.getType()
-			                                                             .getUnitBasicCharacteristics()
-			                                                             .getGender() == this.gender) {
+	private void updateGender(BattleEvent event) {
+		for (Unit unit : event.getBattleContext().getZone().getUnits()) {
+			if (unit.hasFaction(event.getBattleContext().getAttacker().getFaction()) && unit.getType()
+					.getUnitBasicCharacteristics()
+					.getGender() == this.gender) {
 				++this.nbrOfGenderAttacker;
-			} else if (unit.hasFaction(event.getDefensor().getFaction()) && unit.getType()
-			                                                                    .getUnitBasicCharacteristics()
-			                                                                    .getGender() == this.gender) {
+			} else if (unit.hasFaction(event.getBattleContext().getDefender().getFaction()) && unit.getType()
+					.getUnitBasicCharacteristics()
+					.getGender() == this.gender) {
 				++this.nbrOfGenderDefensor;
 			}
 		}
@@ -78,6 +88,6 @@ abstract class Sexism extends Buff implements BattleStartedEventListener {
 
 	@Override
 	void destroy() {
-		EventDispatcher.unregisterListener(BattleStartedEvent.class, this);
+		EventDispatcher.unregisterListener(BattleEvent.class, this);
 	}
 }

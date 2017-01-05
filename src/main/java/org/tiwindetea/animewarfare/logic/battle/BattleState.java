@@ -22,10 +22,30 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.battle;
 
-import java.util.EventListener;
+import org.lomadriel.lfc.statemachine.State;
 
-public interface BattleStartedEventListener extends EventListener {
-	void handleBattleStartedEvent(BattleStartedEvent event);
+/**
+ * Abstract battle state.
+ *
+ * @author Benoît CORTIER
+ */
+public abstract class BattleState extends State {
+	protected BattleContext battleContext;
+
+	protected State nextState = this;
+
+	public BattleState(BattleContext battleContext) {
+		this.battleContext = battleContext;
+	}
+
+	@Override
+	public void update() {
+	}
+
+	@Override
+	public State next() {
+		return this.nextState;
+	}
 }

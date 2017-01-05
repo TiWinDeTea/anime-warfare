@@ -22,37 +22,26 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.logic.battle;
 
-import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
+import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 
-public class BattleStartedEvent implements Event<BattleStartedEventListener> {
-	private final Player attacker;
-	private final Player defensor;
-	private final Zone zone;
-
-	public BattleStartedEvent(Player attacker, Player defensor, Zone zone) {
-		this.attacker = attacker;
-		this.defensor = defensor;
-		this.zone = zone;
+/**
+ * @author Benoît CORTIER
+ */
+public class DuringBattleState extends BattleState {
+	public DuringBattleState(BattleContext battleContext) {
+		super(battleContext);
 	}
 
 	@Override
-	public void notify(BattleStartedEventListener listener) {
-		listener.handleBattleStartedEvent(this);
+	protected void onEnter() {
+		EventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE, this.battleContext));
 	}
 
-	public Player getAttacker() {
-		return this.attacker;
-	}
+	@Override
+	protected void onExit() {
 
-	public Player getDefensor() {
-		return this.defensor;
-	}
-
-	public Zone getZone() {
-		return this.zone;
 	}
 }

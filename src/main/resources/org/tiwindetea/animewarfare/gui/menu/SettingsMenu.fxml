@@ -93,7 +93,7 @@
             </VBox>
             <HBox alignment="TOP_RIGHT" spacing="5.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                <children>
-                   <PaperButton mnemonicParsing="false" onAction="#handleSave" prefHeight="30.0" prefWidth="150.0" text="%button.save" />
+                   <PaperButton mnemonicParsing="false" onAction="#handleSave" prefHeight="30.0" prefWidth="200.0" text="%button.save" />
                    <PaperButton cancelButton="true" mnemonicParsing="false" onAction="#handleQuit" prefHeight="30.0" prefWidth="150.0" text="%button.quit" />
                </children>
                <opaqueInsets>
