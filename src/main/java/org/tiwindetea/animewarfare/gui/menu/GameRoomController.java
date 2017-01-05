@@ -173,6 +173,10 @@ public class GameRoomController
 		EventDispatcher.registerListener(FactionUnlockedNetevent.class, this);
 		EventDispatcher.registerListener(GameStartedNetevent.class, this);
 
+		for (FactionType factionType : FactionType.values()) {
+			getLabelByFactionType(factionType).setTextFill(getColorByFaction(factionType));
+		}
+
 		reInitialize();
 	}
 
@@ -337,9 +341,7 @@ public class GameRoomController
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
 
 			getVBoxByFactionType(playerLockedFactionNetevent.getFaction()).getChildren().clear();
-			Label label = this.getLabelByFactionType(playerLockedFactionNetevent.getFaction());
-			label.setTextFill(GlobalChat.getClientColor(info));
-			label.setText(info.getGameClientName());
+			getLabelByFactionType(playerLockedFactionNetevent.getFaction()).setText(info.getGameClientName());
 		});
 	}
 
@@ -356,7 +358,7 @@ public class GameRoomController
 					);
 			GlobalChat.unregisterClientColor(info);
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
-			this.getLabelByFactionType(factionUnlockedNetevent.getFaction()).setText("");
+			getLabelByFactionType(factionUnlockedNetevent.getFaction()).setText("");
 		});
 	}
 
