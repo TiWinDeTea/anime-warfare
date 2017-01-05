@@ -58,48 +58,68 @@
                <top>
                   <StackPane pickOnBounds="false">
                      <children>
-                        <ImageView fx:id="noNameImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleNoNameClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                           <image>
-                              <Image url="@../pictures/Izayoi_tall.png" />
-                           </image>
-                        </ImageView>
-                        <VBox fx:id="noNameVBox" alignment="CENTER" mouseTransparent="true" />
+                        <VBox alignment="CENTER" pickOnBounds="false">
+                           <children>
+                              <ImageView fx:id="noNameImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleNoNameClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                 <image>
+                                    <Image url="@../pictures/Izayoi_tall.png" />
+                                 </image>
+                              </ImageView>
+                              <Label id="noNameLabel" fx:id="noNameLabel" mouseTransparent="true" />
+                           </children>
+                        </VBox>
+                        <VBox id="noNameVBox" fx:id="noNameVBox" alignment="CENTER" mouseTransparent="true" />
                      </children>
                   </StackPane>
                </top>
                <left>
                   <StackPane pickOnBounds="false">
                      <children>
-                        <ImageView fx:id="fClassNoBakaImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleFClassNoBakaClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                           <image>
-                              <Image url="@../pictures/Himeji_tall.png" />
-                           </image>
-                        </ImageView>
-                        <VBox fx:id="fClassNoBakaVBox" alignment="CENTER" mouseTransparent="true" />
+                        <VBox alignment="CENTER" pickOnBounds="false">
+                           <children>
+                              <ImageView fx:id="fClassNoBakaImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleFClassNoBakaClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                 <image>
+                                    <Image url="@../pictures/Himeji_tall.png" />
+                                 </image>
+                              </ImageView>
+                              <Label id="fClassNoBakaLabel" fx:id="fClassNoBakaLabel" mouseTransparent="true" />
+                           </children>
+                        </VBox>
+                        <VBox id="fClassNoBakaVBox" fx:id="fClassNoBakaVBox" alignment="CENTER" mouseTransparent="true" />
                      </children>
                   </StackPane>
                </left>
                <right>
                   <StackPane pickOnBounds="false">
                      <children>
-                        <ImageView fx:id="haiyoreImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleHaiyoreClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                           <image>
-                              <Image url="@../pictures/Nyaruko_tall.png" />
-                           </image>
-                        </ImageView>
-                        <VBox fx:id="haiyoreVBox" alignment="CENTER" mouseTransparent="true" />
+                        <VBox alignment="CENTER" pickOnBounds="false">
+                           <children>
+                              <ImageView fx:id="haiyoreImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleHaiyoreClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                 <image>
+                                    <Image url="@../pictures/Nyaruko_tall.png" />
+                                 </image>
+                              </ImageView>
+                              <Label id="haiyoreLabel" fx:id="haiyoreLabel" mouseTransparent="true" />
+                           </children>
+                        </VBox>
+                        <VBox id="haiyoreVBox" fx:id="haiyoreVBox" alignment="CENTER" mouseTransparent="true" />
                      </children>
                   </StackPane>
                </right>
                <bottom>
                   <StackPane pickOnBounds="false">
                      <children>
-                        <ImageView fx:id="theBlackKnightsImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleTheBlackKnightsClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                           <image>
-                              <Image url="@../pictures/Lelouch_tall.png" />
-                           </image>
-                        </ImageView>
-                        <VBox fx:id="theBlackKnightsVBox" alignment="CENTER" mouseTransparent="true" />
+                        <VBox alignment="CENTER" pickOnBounds="false">
+                           <children>
+                              <ImageView fx:id="theBlackKnightsImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleTheBlackKnightsClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                 <image>
+                                    <Image url="@../pictures/Lelouch_tall.png" />
+                                 </image>
+                              </ImageView>
+                              <Label id="theBlackKnightsLabel" fx:id="theBlackKnightsLabel" mouseTransparent="true" />
+                           </children>
+                        </VBox>
+                        <VBox id="theBlackKnightsVBox" fx:id="theBlackKnightsVBox" alignment="CENTER" mouseTransparent="true" />
                      </children>
                   </StackPane>
                </bottom>

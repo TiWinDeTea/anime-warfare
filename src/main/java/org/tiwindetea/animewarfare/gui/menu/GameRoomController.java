@@ -31,6 +31,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -42,22 +44,7 @@ import org.tiwindetea.animewarfare.gui.menu.event.GameRoomEvent;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.Room;
-import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.ConnectedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.GameStartedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.*;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
@@ -79,11 +66,22 @@ public class GameRoomController
 		FactionUnlockedNeteventListener, GameStartedNeteventListener {
 	private static final ColorAdjust SELECTED_EFFECT = new ColorAdjust();
 	private static final ColorAdjust LOCKED_EFFECT = new ColorAdjust();
+	private static final ColorAdjust NORMAL_EFFECT = new ColorAdjust();
 
 	static {
+		/*original
+		SELECTED_EFFECT.setBrightness(.7);
+		LOCKED_EFFECT.setSaturation(-1);
+		*/
+
 		SELECTED_EFFECT.setBrightness(0.7);
 
-		LOCKED_EFFECT.setSaturation(-1.);
+		NORMAL_EFFECT.setInput(new SepiaTone(.5));
+		NORMAL_EFFECT.setBrightness(-0.2);
+
+		LOCKED_EFFECT.setBrightness(-.25);
+		LOCKED_EFFECT.setContrast(.3);
+		LOCKED_EFFECT.setInput(new Glow(.5));
 	}
 
 	@FXML
@@ -117,6 +115,18 @@ public class GameRoomController
 	private VBox theBlackKnightsVBox;
 
 	@FXML
+	private Label fClassNoBakaLabel;
+
+	@FXML
+	private Label noNameLabel;
+
+	@FXML
+	private Label haiyoreLabel;
+
+	@FXML
+	private Label theBlackKnightsLabel;
+
+	@FXML
 	private Button lockFactionButton;
 
 	private Map<Integer, Label> userNamesLabels = new HashMap<>();
@@ -139,6 +149,10 @@ public class GameRoomController
 		EventDispatcher.registerListener(FactionUnselectedNetevent.class, this);
 		EventDispatcher.registerListener(FactionUnlockedNetevent.class, this);
 		EventDispatcher.registerListener(GameStartedNetevent.class, this);
+		this.fClassNoBakaImageView.setEffect(NORMAL_EFFECT);
+		this.noNameImageView.setEffect(NORMAL_EFFECT);
+		this.haiyoreImageView.setEffect(NORMAL_EFFECT);
+		this.theBlackKnightsImageView.setEffect(NORMAL_EFFECT);
 	}
 
 	@FXML
@@ -261,12 +275,12 @@ public class GameRoomController
 	public void handleFactionUnselected(FactionUnselectedNetevent factionUnselectedNetevent) {
 		Platform.runLater(() -> {
 			if (!MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnselectedNetevent.getFaction())) {
-				getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(null);
+				getImageViewByFactionType(factionUnselectedNetevent.getFaction()).setEffect(NORMAL_EFFECT);
 			}
 			List<Node> children = getVBoxByFactionType(factionUnselectedNetevent.getFaction()).getChildren();
-			children.remove(children.stream()
+			children.stream()
 					.filter(l -> ((Label) l).getText().equals(factionUnselectedNetevent.getClient().getGameClientName()))
-					.findFirst().get());
+					.findFirst().ifPresent(l -> children.remove(l));
 		});
 
 		if (MainApp.getGameClient().getClientInfo().equals(factionUnselectedNetevent.getClient())) {
@@ -281,21 +295,28 @@ public class GameRoomController
 			getImageViewByFactionType(playerLockedFactionNetevent.getFaction()).setEffect(LOCKED_EFFECT);
 			GlobalChat.registerClientColor(info, getColorByFaction(playerLockedFactionNetevent.getFaction()));
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
+
+			getVBoxByFactionType(playerLockedFactionNetevent.getFaction()).getChildren().clear();
+			Label label = this.getLabelByFactionType(playerLockedFactionNetevent.getFaction());
+			label.setTextFill(GlobalChat.getClientColor(info));
+			label.setText(info.getGameClientName());
 		});
 	}
 
 	@Override
 	public void handleFactionUnlocked(FactionUnlockedNetevent factionUnlockedNetevent) {
+		this.handleFactionChoice(new PlayerSelectedFactionNetevent(factionUnlockedNetevent.getClient(), factionUnlockedNetevent.getFaction()));
 		Platform.runLater(() -> {
 			GameClientInfo info = factionUnlockedNetevent.getClient();
 			getImageViewByFactionType(factionUnlockedNetevent.getFaction())
 					.setEffect(
 							MainApp.getGameClient().getRoom().getSelections().containsValue(factionUnlockedNetevent.getFaction())
 									? SELECTED_EFFECT
-									: null
+									: NORMAL_EFFECT
 					);
 			GlobalChat.unregisterClientColor(info);
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
+			this.getLabelByFactionType(factionUnlockedNetevent.getFaction()).setText("");
 		});
 	}
 
@@ -331,6 +352,22 @@ public class GameRoomController
 				return this.haiyoreVBox;
 			case F_CLASS_NO_BAKA:
 				return this.fClassNoBakaVBox;
+			default:
+				throw new IllegalStateException("There is a missing case.");
+		}
+	}
+
+	// helper method
+	private Label getLabelByFactionType(FactionType factionType) {
+		switch (factionType) {
+			case NO_NAME:
+				return this.noNameLabel;
+			case THE_BLACK_KNIGHTS:
+				return this.theBlackKnightsLabel;
+			case HAIYORE:
+				return this.haiyoreLabel;
+			case F_CLASS_NO_BAKA:
+				return this.fClassNoBakaLabel;
 			default:
 				throw new IllegalStateException("There is a missing case.");
 		}
