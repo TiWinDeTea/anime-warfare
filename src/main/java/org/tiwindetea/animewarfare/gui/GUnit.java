@@ -14,7 +14,7 @@ public class GUnit extends Parent {
         //todo
         this.ID = 0;
         Random r = new Random();
-        getChildren().add(new Circle(10, Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256))));
+        getChildren().add(new Circle(18, Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256))));
     }
 
     public int getID() {

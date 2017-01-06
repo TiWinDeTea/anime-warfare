@@ -77,15 +77,16 @@ public class ZonedMap extends Pane {
                 173.0, 164.0,
                 225.0, 180.0,
                 253.0, 216.0,
-                266.0, 242.0,
+                266.0, 240.0,
+                265, 250,
                 268.0, 344.0,
-                280.0, 519.0,
+                280.0, 525.0,
                 0, 562.0,
                 0, 214.0
         ));
         polygons.add(new Polygon(               // 3
                 5.0, 562.0,
-                278.0, 522.0,
+                283.0, 522.0,
                 283.0, 551.0,
                 303.0, 576.0,
                 413.0, 589.0,
@@ -97,8 +98,6 @@ public class ZonedMap extends Pane {
                 445.0, 768.0,
                 0, 768.0,
                 0, 562.0
-
-
         ));
         polygons.add(new Polygon(               // 4
                 266.0, 246.0,
@@ -114,8 +113,8 @@ public class ZonedMap extends Pane {
                 575.0, 395.0,
                 508.0, 372.0,
                 386.0, 353.0,
-                273.0, 350.0,
-                267.0, 240.0
+                269.0, 350.0,
+                266.0, 240.0
         ));
         polygons.add(new Polygon(               //  5
                 414.0, 588.0,
@@ -136,8 +135,8 @@ public class ZonedMap extends Pane {
         polygons.add(new Polygon(               // 6
                 812.0, 357.0,
                 880.0, 387.0,
-                953.0, 399.0,
-                1011.0, 371.0,
+                950.0, 397.0,
+                1011.0, 363.0,
                 1040.0, 395.0,
                 1106.0, 471.0,
                 1119.0, 518.0,
@@ -166,7 +165,7 @@ public class ZonedMap extends Pane {
                 1300.0, 193.0,
                 1366.0, 219.0,
                 1366.0, 515.0,
-                1197.0, 515.0,
+                1200.0, 519.0,
                 1208.0, 163.0
 
         ));
@@ -184,9 +183,7 @@ public class ZonedMap extends Pane {
                 608.0, 572.0,
                 416.0, 588.0,
                 305.0, 579.0,
-                283.0, 553.0,
-                272.0, 346.0
-
+                283.0, 553.0
         ));
         polygons.add(new Polygon(               // 10
                 555.0, 179.0,
@@ -210,24 +207,23 @@ public class ZonedMap extends Pane {
                 538.0, 222.0
         ));
         polygons.add(new Polygon(               // 11
-                710.0, 630.0,
+                706.0, 629.0,
                 877.0, 641.0,
                 920.0, 669.0,
-                944.0, 704.0,
+                944.0, 696.0,
                 967.0, 744.0,
                 964.0, 768.0,
-                642.0, 768.0,
-                710.0, 630.0
+                642.0, 768.0
         ));
         polygons.add(new Polygon(               // 12
                 912.0, 658.0,
                 930.0, 640.0,
-                1102.0, 559.0,
+                1098, 558.0,
                 1118.0, 521.0,
-                1199.0, 516.0,
-                1182.0, 576.0,
+                1202.0, 519.0,
+                1183.0, 581.0,
                 1185.0, 660.0,
-                1167.0, 768.0,
+                1173.0, 768.0,
                 963.0, 768.0,
                 967.0, 748.0,
                 944.0, 696.0,
@@ -242,12 +238,12 @@ public class ZonedMap extends Pane {
                 1117.0, 520.0,
                 1104.0, 473.0,
                 1041.0, 395.0,
-                1006.0, 372.0,
+                1011.0, 363.0,
                 1032.0, 285.0,
                 1012.0, 243.0
         ));
         polygons.add(new Polygon(               // 14
-                774.0, 161.0,
+                770.0, 161.0,
                 949.0, 80.0,
                 988.0, 26.0,
                 1146.0, 64.0,
@@ -260,7 +256,7 @@ public class ZonedMap extends Pane {
                 955.0, 207.0,
                 916.0, 201.0,
                 829.0, 210.0,
-                781.0, 190.0
+                775.0, 188.0
         ));
         polygons.add(new Polygon(               // 15
                 559.0, 174.0,
@@ -280,10 +276,9 @@ public class ZonedMap extends Pane {
                 950.0, 397.0,
                 879.0, 387.0,
                 812.0, 356.0,
-                790.0, 300.0,
+                785.0, 301.0,
                 625.0, 194.0,
                 557.0, 177.0
-
         ));
         polygons.add(new Polygon(               // 16
                 608.0, 0,
@@ -347,15 +342,15 @@ public class ZonedMap extends Pane {
     private static final class UnitRectangle extends Parent {
 
         final double x, y;
-        static final int WIDTH = 32;
-        static final int HEIGHT = 32;
+        static final int WIDTH = 42;
+        static final int HEIGHT = 42;
 
         private GUnit unit;
 
         public UnitRectangle(double x, double y) {
             this.x = x;
             this.y = y;/*
-            Polygon p = new Polygon(x, y, x, y + 32, x + 32, y + 32, x + 32, y);
+            Polygon p = new Polygon(x, y, x, y + WIDTH, x + WIDTH, y + WIDTH, x + WIDTH, y);
             p.setFill(Color.TRANSPARENT);
             p.setStroke(Color.RED);
             p.setMouseTransparent(true);
@@ -421,12 +416,12 @@ public class ZonedMap extends Pane {
             for (Polygon polygon : polygons) {
                 List<UnitRectangle> rectList = new ArrayList<>(20);
                 Bounds bounds = polygon.getLayoutBounds();
-                for (double y = bounds.getMinY(); y < bounds.getMaxY(); y += UnitRectangle.HEIGHT) {
-                    for (double x = bounds.getMinX(); x < bounds.getMaxX(); x += UnitRectangle.WIDTH) {
-                        if (polygon.contains(x - 4, y - 4)
-                                && polygon.contains(x + UnitRectangle.WIDTH + 4, y - 4)
-                                && polygon.contains(x - 4, y + UnitRectangle.HEIGHT + 4)
-                                && polygon.contains(x + UnitRectangle.WIDTH + 4, y + UnitRectangle.HEIGHT + 4)
+                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += UnitRectangle.HEIGHT) {
+                    for (double x = bounds.getMinX() + 3; x < bounds.getMaxX(); x += UnitRectangle.WIDTH) {
+                        if (polygon.contains(x - 2, y - 2)
+                                && polygon.contains(x + UnitRectangle.WIDTH + 2, y - 2)
+                                && polygon.contains(x - 2, y + UnitRectangle.HEIGHT + 2)
+                                && polygon.contains(x + UnitRectangle.WIDTH + 2, y + UnitRectangle.HEIGHT + 2)
                                 ) {
 
                             rectList.add(new UnitRectangle(x, y));
@@ -441,9 +436,9 @@ public class ZonedMap extends Pane {
         }
 
         public void put(int zoneID, GUnit unit) {
-            UnitRectangle unitRectangle = this.map.get(new Integer(zoneID)).stream()
+            UnitRectangle unitRectangle = this.map.get(new Integer(zoneID)).parallelStream()
                     .filter(ur -> ur.unit == null)
-                    .findFirst().orElse(null);
+                    .findAny().orElse(null);
             if (unitRectangle != null) {
                 unitRectangle.setUnit(unit);
             } else {
