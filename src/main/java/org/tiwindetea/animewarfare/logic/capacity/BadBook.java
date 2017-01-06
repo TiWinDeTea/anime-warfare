@@ -2,10 +2,10 @@ package org.tiwindetea.animewarfare.logic.capacity;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.capacity.events.BadBookCapacityChoseEvent;
-import org.tiwindetea.animewarfare.logic.capacity.events.BadBookCapacityChoseEventListener;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.BadBookCapacityChoseEvent;
+import org.tiwindetea.animewarfare.net.logicevent.BadBookCapacityChoseEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
