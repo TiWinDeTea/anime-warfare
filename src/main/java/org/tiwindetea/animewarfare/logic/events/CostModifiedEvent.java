@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.units.UnitType;

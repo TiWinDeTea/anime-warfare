@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
+import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
 
 /**
  * @author Lucas Lazare

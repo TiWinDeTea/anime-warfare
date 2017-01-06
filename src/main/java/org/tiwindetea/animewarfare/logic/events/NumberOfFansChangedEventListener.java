@@ -22,10 +22,13 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
 import java.util.EventListener;
 
-public interface StaffPointUpdatedEventListener extends EventListener {
-	void onStaffPointChange(StaffPointUpdatedEvent event);
+/*
+ * @author Benoît CORTIER
+ */
+public interface NumberOfFansChangedEventListener extends EventListener {
+	void handleNumberOfFansChanged(NumberOfFansChangedEvent event);
 }

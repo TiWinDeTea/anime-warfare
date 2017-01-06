@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 
 /*
  * @author Benoît CORTIER

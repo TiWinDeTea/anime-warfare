@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.tiwindetea.animewarfare.logic.event.CostModifiedEvent;
+import org.tiwindetea.animewarfare.logic.events.CostModifiedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 import java.util.ArrayList;

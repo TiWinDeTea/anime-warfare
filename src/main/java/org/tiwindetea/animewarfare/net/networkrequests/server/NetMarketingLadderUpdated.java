@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 
 /**
  * @author Lucas Lazare

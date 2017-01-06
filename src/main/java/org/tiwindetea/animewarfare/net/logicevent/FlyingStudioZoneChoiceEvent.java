@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.logic.capacity.events;
+package org.tiwindetea.animewarfare.net.logicevent;
 
 import org.lomadriel.lfc.event.Event;
 

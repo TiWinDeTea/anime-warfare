@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 

@@ -22,33 +22,13 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
-import org.lomadriel.lfc.event.Event;
+import java.util.EventListener;
 
 /*
  * @author Benoît CORTIER
  */
-public class MarketingLadderUpdatedEvent implements Event<MarketingLadderUpdatedEventListener> {
-	private final int newPosition;
-
-	private final int endPosition;
-
-	public MarketingLadderUpdatedEvent(int newPosition, int endPosition) {
-		this.newPosition = newPosition;
-		this.endPosition = endPosition;
-	}
-
-	@Override
-	public void notify(MarketingLadderUpdatedEventListener listener) {
-		listener.handleMarketingLadderUpdated(this);
-	}
-
-	public int getNewPosition() {
-		return this.newPosition;
-	}
-
-	public int getEndPosition() {
-		return this.endPosition;
-	}
+public interface MarketingLadderUpdatedEventListener extends EventListener {
+	void handleMarketingLadderUpdated(MarketingLadderUpdatedEvent event);
 }

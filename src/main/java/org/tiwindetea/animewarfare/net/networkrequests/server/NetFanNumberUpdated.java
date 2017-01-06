@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
 

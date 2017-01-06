@@ -2,8 +2,8 @@ package org.tiwindetea.animewarfare.logic.capacity;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
-import org.tiwindetea.animewarfare.logic.event.UnitCounterEventListener;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 public class Clemency extends PlayerCapacity {

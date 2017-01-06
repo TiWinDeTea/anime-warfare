@@ -22,19 +22,39 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
 import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.logic.Player;
 
 /*
  * @author Benoît CORTIER
  */
-public class GameEndConditionsReachedEvent implements Event<GameEndConditionsReachedEventListener> {
-	public GameEndConditionsReachedEvent() {
+public class NumberOfFansChangedEvent implements Event<NumberOfFansChangedEventListener> {
+	private final Player player;
+	private final int diff;
+	private final int newVal;
+
+	public NumberOfFansChangedEvent(Player player, int diff, int newVal) {
+		this.player = player;
+		this.diff = diff;
+		this.newVal = newVal;
 	}
 
 	@Override
-	public void notify(GameEndConditionsReachedEventListener listener) {
-		listener.handleGameEndConditionsReached(this);
+	public void notify(NumberOfFansChangedEventListener listener) {
+		listener.handleNumberOfFansChanged(this);
+	}
+
+	public Player getPlayer() {
+		return this.player;
+	}
+
+	public int getDiff() {
+		return this.diff;
+	}
+
+	public int getNewVal() {
+		return this.newVal;
 	}
 }

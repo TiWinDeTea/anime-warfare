@@ -2,8 +2,8 @@ package org.tiwindetea.animewarfare.logic.capacity;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.event.StaffPointUpdatedEvent;
-import org.tiwindetea.animewarfare.logic.event.StaffPointUpdatedEventListener;
+import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEventListener;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEventListener;
 

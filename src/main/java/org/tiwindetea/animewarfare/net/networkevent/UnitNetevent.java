@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 
 /**

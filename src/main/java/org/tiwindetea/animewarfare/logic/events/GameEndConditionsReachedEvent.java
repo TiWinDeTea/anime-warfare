@@ -22,13 +22,19 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
-import java.util.EventListener;
+import org.lomadriel.lfc.event.Event;
 
 /*
  * @author Benoît CORTIER
  */
-public interface MarketingLadderUpdatedEventListener extends EventListener {
-	void handleMarketingLadderUpdated(MarketingLadderUpdatedEvent event);
+public class GameEndConditionsReachedEvent implements Event<GameEndConditionsReachedEventListener> {
+	public GameEndConditionsReachedEvent() {
+	}
+
+	@Override
+	public void notify(GameEndConditionsReachedEventListener listener) {
+		listener.handleGameEndConditionsReached(this);
+	}
 }

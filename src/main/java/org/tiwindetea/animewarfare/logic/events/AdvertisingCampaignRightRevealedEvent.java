@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
 public class AdvertisingCampaignRightRevealedEvent extends AdvertisingCampaignRightEvent<AdvertisingCampaignRightRevealedEventListener> {
 	public AdvertisingCampaignRightRevealedEvent(int id, int weight) {

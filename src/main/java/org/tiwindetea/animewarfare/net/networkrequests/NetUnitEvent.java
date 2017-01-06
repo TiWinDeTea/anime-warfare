@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkrequests;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 /**

@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.tiwindetea.animewarfare.logic.event.StudioEvent;
+import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;

@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.logic.event;
+package org.tiwindetea.animewarfare.logic.events;
 
 public class AdvertisingCampaignRightAddedEvent extends AdvertisingCampaignRightEvent<AdvertisingCampaignRightAddedEventListener> {
 	public AdvertisingCampaignRightAddedEvent(int playerID, int advertisingCampaignRight) {

@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.tiwindetea.animewarfare.logic.event.StudioEvent;
+import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 
 /**
  * @author Lucas Lazare

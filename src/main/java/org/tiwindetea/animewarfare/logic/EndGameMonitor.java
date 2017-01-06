@@ -24,11 +24,11 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
-import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
-import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEventListener;
-import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
-import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEventListener;
+import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
+import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEventListener;
+import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEventListener;
 
 /*
  * @author Benoît CORTIER

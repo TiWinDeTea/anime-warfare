@@ -5,10 +5,10 @@ import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
-import org.tiwindetea.animewarfare.logic.capacity.events.ActivateFlyingStudioEvent;
-import org.tiwindetea.animewarfare.logic.capacity.events.ActivateFlyingStudioEventListener;
-import org.tiwindetea.animewarfare.logic.capacity.events.FlyingStudioZoneChoiceEvent;
-import org.tiwindetea.animewarfare.logic.capacity.events.FlyingStudioZoneChoiceEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.ActivateFlyingStudioEvent;
+import org.tiwindetea.animewarfare.net.logicevent.ActivateFlyingStudioEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.FlyingStudioZoneChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FlyingStudioZoneChoiceEventListener;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 
 import java.lang.ref.WeakReference;
