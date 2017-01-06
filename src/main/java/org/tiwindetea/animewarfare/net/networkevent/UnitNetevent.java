@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 
 /**
@@ -33,14 +33,9 @@ import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
  * @since 0.1.0
  */
 public class UnitNetevent implements Event<UnitNeteventListener> {
-
-    private final int zoneID;
-    private final int unitID;
-    private final UnitEvent.Type type;
+    private final UnitCounterEvent.Type type;
 
     public UnitNetevent(NetUnitEvent unitEvent) {
-        this.zoneID = unitEvent.getZoneID();
-        this.unitID = unitEvent.getUnitID();
         this.type = unitEvent.getType();
     }
 
@@ -49,15 +44,7 @@ public class UnitNetevent implements Event<UnitNeteventListener> {
         listener.handleUnitNetevent(this);
     }
 
-    public int getZoneID() {
-        return this.zoneID;
-    }
-
-    public int getUnitID() {
-        return this.unitID;
-    }
-
-    public UnitEvent.Type getType() {
+    public UnitCounterEvent.Type getType() {
         return this.type;
     }
 }

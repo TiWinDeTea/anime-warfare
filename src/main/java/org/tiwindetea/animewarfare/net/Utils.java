@@ -35,7 +35,7 @@ import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.event.StudioEvent;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
@@ -207,7 +207,7 @@ class Utils {
 		ed.addListener(MarketingLadderUpdatedEvent.class, logicListener);
 		ed.addListener(NumberOfFansChangedEvent.class, logicListener);
 		ed.addListener(StudioEvent.class, logicListener);
-		ed.addListener(UnitEvent.class, logicListener);
+		ed.addListener(UnitCounterEvent.class, logicListener);
 	}
 
 	static void deregisterLogicListener(GameServer.LogicListener logicListener) {
@@ -233,6 +233,6 @@ class Utils {
 		ed.removeListener(MarketingLadderUpdatedEvent.class, logicListener);
 		ed.removeListener(NumberOfFansChangedEvent.class, logicListener);
 		ed.removeListener(StudioEvent.class, logicListener);
-		ed.removeListener(UnitEvent.class, logicListener);
+		ed.removeListener(UnitCounterEvent.class, logicListener);
 	}
 }

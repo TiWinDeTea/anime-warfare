@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkrequests;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 /**
@@ -34,55 +34,44 @@ import org.tiwindetea.animewarfare.logic.units.UnitType;
  */
 public class NetUnitEvent {
 
-    private final UnitEvent.Type type;
-    private final int unitID;
-    private final int zoneID;
-    private final FactionType factionType;
-    private final UnitType unitType;
+	private final UnitCounterEvent.Type type;
+	private final FactionType factionType;
+	private final UnitType unitType;
 
-    /**
-     * Default constructor, required by Kryo.net
-     */
-    public NetUnitEvent() {
-        this.type = null;
-        this.unitID = this.zoneID = 0;
-        this.factionType = null;
-        this.unitType = null;
-    }
+	/**
+	 * Default constructor, required by Kryo.net
+	 */
+	public NetUnitEvent() {
+		this.type = null;
+		this.factionType = null;
+		this.unitType = null;
+	}
 
-    public NetUnitEvent(UnitEvent event) {
-        this.type = event.getType();
-        this.unitID = event.getUnitID();
-        this.zoneID = event.getZoneID();
-        this.factionType = event.getFaction();
-        this.unitType = event.getUnitType();
-    }
+	public NetUnitEvent(UnitCounterEvent event) {
+		this.type = event.getType();
+		this.factionType = event.getFaction();
+		this.unitType = event.getUnitType();
+	}
 
-    public NetUnitEvent(UnitEvent.Type type, int unitID, int zoneID, FactionType factionType, UnitType unitType) {
-        this.type = type;
-        this.unitID = unitID;
-        this.zoneID = zoneID;
-        this.factionType = factionType;
-        this.unitType = unitType;
-    }
+	public NetUnitEvent(UnitCounterEvent.Type type,
+	                    int unitID,
+	                    int zoneID,
+	                    FactionType factionType,
+	                    UnitType unitType) {
+		this.type = type;
+		this.factionType = factionType;
+		this.unitType = unitType;
+	}
 
-    public UnitEvent.Type getType() {
-        return this.type;
-    }
+	public UnitCounterEvent.Type getType() {
+		return this.type;
+	}
 
-    public int getUnitID() {
-        return this.unitID;
-    }
+	public FactionType getFactionType() {
+		return this.factionType;
+	}
 
-    public int getZoneID() {
-        return this.zoneID;
-    }
-
-    public FactionType getFactionType() {
-        return this.factionType;
-    }
-
-    public UnitType getUnitType() {
-        return this.unitType;
-    }
+	public UnitType getUnitType() {
+		return this.unitType;
+	}
 }

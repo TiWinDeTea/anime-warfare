@@ -2,26 +2,26 @@ package org.tiwindetea.animewarfare.logic.capacity;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
-import org.tiwindetea.animewarfare.logic.event.UnitEventListener;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 public class Clemency extends PlayerCapacity {
-	public static class ClemencyActivable extends PlayerActivable implements UnitEventListener {
+	public static class ClemencyActivable extends PlayerActivable implements UnitCounterEventListener {
 		public ClemencyActivable(Player player) {
 			super(player);
 
-			LogicEventDispatcher.registerListener(UnitEvent.class, this);
+			LogicEventDispatcher.registerListener(UnitCounterEvent.class, this);
 		}
 
 		@Override
 		public void destroy() {
-			LogicEventDispatcher.unregisterListener(UnitEvent.class, this);
+			LogicEventDispatcher.unregisterListener(UnitCounterEvent.class, this);
 		}
 
 		@Override
-		public void handleUnitEvent(UnitEvent event) {
-			if (event.getType() == UnitEvent.Type.ADDED && event.getUnitType() == UnitType.SAKAMAKI_IZAYOI) {
+		public void handleUnitEvent(UnitCounterEvent event) {
+			if (event.getType() == UnitCounterEvent.Type.ADDED && event.getUnitType() == UnitType.SAKAMAKI_IZAYOI) {
 				activateAndDestroy(new Clemency(getPlayer()));
 			}
 		}

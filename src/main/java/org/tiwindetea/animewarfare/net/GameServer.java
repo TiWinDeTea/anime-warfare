@@ -43,8 +43,8 @@ import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEventListener;
 import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 import org.tiwindetea.animewarfare.logic.event.StudioEventListener;
-import org.tiwindetea.animewarfare.logic.event.UnitEvent;
-import org.tiwindetea.animewarfare.logic.event.UnitEventListener;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.event.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
@@ -522,10 +522,8 @@ public class GameServer {
         public void received(Connection connection, NetUnitEvent unitEvent) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(
-                        new UnitEvent(
+                        new UnitCounterEvent(
                                 unitEvent.getType(),
-                                unitEvent.getUnitID(),
-                                unitEvent.getZoneID(),
                                 unitEvent.getFactionType(),
                                 unitEvent.getUnitType()
                         ));
@@ -690,7 +688,7 @@ public class GameServer {
             MarketingLadderUpdatedEventListener,
             NumberOfFansChangedEventListener,
             StudioEventListener,
-            UnitEventListener {
+            UnitCounterEventListener {
 
         private final Server server;
 
@@ -800,7 +798,7 @@ public class GameServer {
         }
 
         @Override
-        public void handleUnitEvent(UnitEvent event) {
+        public void handleUnitEvent(UnitCounterEvent event) {
             this.server.sendToAllTCP(new NetUnitEvent(event));
         }
 
