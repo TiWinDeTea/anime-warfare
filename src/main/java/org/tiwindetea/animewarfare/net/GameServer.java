@@ -98,9 +98,9 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -789,12 +789,12 @@ public class GameServer {
 
         @Override
         public void handleStudioAddedEvent(StudioEvent event) {
-            this.server.sendToAllTCP(new NetNewStudio(event));
+            this.server.sendToAllTCP(new NetStudio(event));
         }
 
         @Override
         public void handleStudioRemovedEvent(StudioEvent event) {
-            // TODO
+            this.server.sendToAllTCP(new NetStudio(event));
         }
 
         @Override

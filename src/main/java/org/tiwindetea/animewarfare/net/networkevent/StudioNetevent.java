@@ -22,31 +22,53 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.server;
+package org.tiwindetea.animewarfare.net.networkevent;
 
+import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.event.StudioEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class NetNewStudio implements NetReceivable {
-
+public class StudioNetevent implements Event<StudioNeteventListener> {
+    private final int playerID;
     private final int studioID;
+    private final StudioEvent.Type type;
 
-
-    /**
-     * Default constructor, required by Kryo.net
-     */
-    public NetNewStudio() {
-        this.studioID = 0;
+    public StudioNetevent(NetStudio newStudio) {
+        this.studioID = newStudio.getStudioID();
+        this.playerID = newStudio.getPlayerID();
+        this.type = newStudio.getType();
     }
 
-    public NetNewStudio(StudioEvent event) {
-        this.studioID = event.getStudioID();
+    @Override
+    public void notify(StudioNeteventListener listener) {
+        if (this.type == StudioEvent.Type.ADDED || this.type == StudioEvent.Type.ADDED_PLAYER) {
+            listener.handleStudioCreation(this);
+        } else {
+            listener.handleStudioRemoved(this);
+        }
     }
 
     public int getStudioID() {
+        if (this.studioID == -1) {
+            throw new IllegalStateException();
+        }
+
         return this.studioID;
+    }
+
+    public int getPlayerID() {
+        if (this.playerID == -1) {
+            throw new IllegalStateException();
+        }
+
+        return this.playerID;
+    }
+
+    public StudioEvent.Type getType() {
+        return this.type;
     }
 }

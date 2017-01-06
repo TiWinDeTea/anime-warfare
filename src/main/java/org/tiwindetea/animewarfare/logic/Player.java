@@ -31,6 +31,8 @@ import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightAddedEven
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightRevealedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.event.StaffPointUpdatedEvent;
+import org.tiwindetea.animewarfare.logic.event.StudioEvent;
+import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
@@ -62,6 +64,8 @@ public class Player {
 	private final Map<CapacityName, Capacity> capacities = new HashMap<>();
 	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
+
+	private Studio studio;
 
 	public Player(int id, FactionType faction) {
 		this.ID = id;
@@ -223,5 +227,19 @@ public class Player {
 	@Override
 	public int hashCode() {
 		return Objects.hash(Integer.valueOf(this.ID));
+	}
+
+	public Studio getStudio() {
+		return this.studio;
+	}
+
+	public void setStudio(Studio studio) {
+		this.studio = studio;
+
+		if (this.studio != null) {
+			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.ADDED_PLAYER, this.ID));
+		} else {
+			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED_PLAYER, this.ID));
+		}
 	}
 }

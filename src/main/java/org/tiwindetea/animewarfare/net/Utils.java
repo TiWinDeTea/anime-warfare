@@ -72,9 +72,9 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -176,7 +176,7 @@ class Utils {
 		kryo.register(NetHandlePlayerDisconnection.class);
 		kryo.register(NetMarketingLadderUpdated.class);
 		kryo.register(NetMessage.class);
-		kryo.register(NetNewStudio.class);
+		kryo.register(NetStudio.class);
 		kryo.register(NetPhaseChange.class);
 		kryo.register(NetSelectMascotToCapture.class);
 

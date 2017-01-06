@@ -22,29 +22,50 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkevent;
+package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class StudioCreatedNetevent implements Event<StudioCreatedNeteventListener> {
-
+public class NetStudio implements NetReceivable {
+    private final int playerID;
     private final int studioID;
+    private final StudioEvent.Type type;
 
-    public StudioCreatedNetevent(NetNewStudio newStudio) {
-        this.studioID = newStudio.getStudioID();
+
+    /**
+     * Default constructor, required by Kryo.net
+     */
+    public NetStudio() {
+        this.studioID = 0;
+        this.playerID = 0;
+        this.type = null;
     }
 
-    @Override
-    public void notify(StudioCreatedNeteventListener listener) {
-        listener.handleStudioCreation(this);
+    public NetStudio(StudioEvent event) {
+        if (event.getType() == StudioEvent.Type.ADDED || event.getType() == StudioEvent.Type.REMOVED) {
+            this.studioID = event.getZoneID();
+            this.playerID = -1;
+        } else {
+            this.playerID = event.getPlayerID();
+            this.studioID = -1;
+        }
+
+        this.type = event.getType();
     }
 
     public int getStudioID() {
         return this.studioID;
+    }
+
+    public int getPlayerID() {
+        return this.playerID;
+    }
+
+    public StudioEvent.Type getType() {
+        return this.type;
     }
 }

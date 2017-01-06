@@ -49,7 +49,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.SelectMascotToCaptureRequestNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.StudioCreatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
@@ -70,9 +70,9 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -409,9 +409,9 @@ public class GameClient {
             EventDispatcher.send(new MessageReceivedNetevent(message));
         }
 
-        public void received(Connection connection, NetNewStudio newStudio) {
+        public void received(Connection connection, NetStudio newStudio) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + newStudio);
-            EventDispatcher.send(new StudioCreatedNetevent(newStudio));
+            EventDispatcher.send(new StudioNetevent(newStudio));
         }
 
         public void received(Connection connection, NetPhaseChange phaseChange) {

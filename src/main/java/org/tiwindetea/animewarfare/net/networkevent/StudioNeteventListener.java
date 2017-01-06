@@ -30,7 +30,9 @@ import java.util.EventListener;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface StudioCreatedNeteventListener extends EventListener {
+public interface StudioNeteventListener extends EventListener {
 
-    void handleStudioCreation(StudioCreatedNetevent event);
+    void handleStudioCreation(StudioNetevent event);
+
+    void handleStudioRemoved(StudioNetevent eventstudioNetevent);
 }
