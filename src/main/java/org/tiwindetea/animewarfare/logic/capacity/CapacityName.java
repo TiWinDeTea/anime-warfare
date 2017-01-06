@@ -53,7 +53,7 @@ public enum CapacityName {
 	DILEMMA(FactionType.HAIYORE, CapacityType.PRE_BATTLE),
 	BAD_LUCK(FactionType.HAIYORE, CapacityType.POST_BATTLE),
 	MAGIC_MOVEMENT(FactionType.HAIYORE, CapacityType.ACTION),
-	ARTISTE_CLOWN(FactionType.HAIYORE, CapacityType.PRE_BATTLE),
+	CLOWN_ARTIST(FactionType.HAIYORE, CapacityType.PRE_BATTLE),
 	MORE_FANS(FactionType.HAIYORE, CapacityType.ACTION),
 	HIDING_BUSH(FactionType.HAIYORE, CapacityType.ACTION),
 
