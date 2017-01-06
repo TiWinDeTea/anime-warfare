@@ -32,6 +32,7 @@ import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightRevealedE
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.event.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.units.Unit;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,17 +48,17 @@ import java.util.Set;
  * @author Benoît CORTIER
  */
 public class Player {
+	private static final int BATTLE_COST = 1; // TODO: Externalize
+
 	private final int ID;
 
 	private int fanNumber;
 	private int staffAvailable;
-	private int battleCostModifier;
-	private int uniqueActionModifier;
 
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
-	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
+	private final CostModifier costModifier = new CostModifier();
 	private final Map<CapacityName, Capacity> capacities = new HashMap<>();
 	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
@@ -133,8 +134,8 @@ public class Player {
 		return this.unitCounter;
 	}
 
-	public UnitCostModifier getUnitCostModifier() {
-		return this.unitCostModifier;
+	public CostModifier getCostModifier() {
+		return this.costModifier;
 	}
 
 	public boolean addUnitCaptured(Unit unit) {
@@ -154,7 +155,8 @@ public class Player {
 	public void addAdvertisingCampaignRights(AdvertisingCampaignRight advertisingCampaignRight) {
 		this.advertisingCampaignRights.add(advertisingCampaignRight);
 
-		LogicEventDispatcher.send(new AdvertisingCampaignRightAddedEvent(this.ID, advertisingCampaignRight.getWeight()));
+		LogicEventDispatcher.send(new AdvertisingCampaignRightAddedEvent(this.ID,
+				advertisingCampaignRight.getWeight()));
 	}
 
 	public boolean revealAdvertisingCampainRights(int weight) { // FIXME: Don't forget this
@@ -176,26 +178,6 @@ public class Player {
 		this.advertisingCampaignRights.clear();
 	}
 
-	public int getBattleCostModifier() {
-		return this.battleCostModifier;
-	}
-
-	public void modifyBattleCost(int battleCostModifier) {
-		this.battleCostModifier += battleCostModifier;
-
-		// TODO: Event
-	}
-
-	public int getUniqueActionModifier() { // FIXME: Don't forget to use this.
-		return this.uniqueActionModifier;
-	}
-
-	public void modifyUniqueActionCost(int uniqueActionModifier) {
-		this.uniqueActionModifier += uniqueActionModifier;
-
-		// TODO: Event
-	}
-
 	public void activateCapacity(Capacity capacity) {
 		this.capacities.put(capacity.getType(), capacity);
 	}
@@ -204,8 +186,24 @@ public class Player {
 		return this.capacities.containsKey(type);
 	}
 
-	public void desactivateCapactiy(Capacity capacity) {
+	public void desactivateCapactiy(CapacityName capacity) {
 		this.capacities.remove(capacity);
+	}
+
+	public Set<CapacityName> getActivatedCapacities() {
+		return this.capacities.keySet();
+	}
+
+	public int getBattleCost() {
+		int cost = BATTLE_COST + this.costModifier.getBattleCostModifier();
+
+		return cost < 0 ? 0 : cost;
+	}
+
+	public int getUnitCost(UnitType type) {
+		int cost = this.costModifier.getUnitCostModifier(type) + type.getDefaultCost();
+
+		return cost < 0 ? 0 : cost;
 	}
 
 	@Override

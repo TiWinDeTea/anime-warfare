@@ -44,7 +44,21 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
-import org.tiwindetea.animewarfare.net.logicevent.*;
+import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
+import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
+import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
+import org.tiwindetea.animewarfare.net.logicevent.StartBattleEventListener;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -62,7 +76,6 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
-	private static final int BATTLE_COST = 1; // TODO: Externalize
 
 	private final List<Integer> zonesThatHadABattle = new ArrayList<>();
 	private final List<Integer> alreadyMovedUnit = new ArrayList<>();
@@ -235,8 +248,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-		if (this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getUnitCostModifier()
-		                                                                .getCost(event.getUnitType()))) {
+		if (this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getUnitCost(event.getUnitType()))) {
 			if (this.currentPlayer.getUnitCounter().getNumberOfUnits(event.getUnitType()) <= event.getUnitType()
 			                                                                                      .getMaxNumber()) {
 				Zone invocationZone = this.gameBoard.getMap().getZone(event.getZone());
@@ -276,7 +288,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-		if (!this.currentPlayer.hasRequiredStaffPoints(BATTLE_COST + this.currentPlayer.getBattleCostModifier())) {
+		if (!this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getBattleCost())) {
 			return;
 		}
 

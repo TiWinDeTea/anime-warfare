@@ -24,24 +24,23 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
+import org.tiwindetea.animewarfare.logic.CostModifier;
 import org.tiwindetea.animewarfare.logic.Player;
 
 import java.util.List;
 
 public class AntiLibelTradeAgreement extends Buff {
 	private final List<Player> players;
+	private final CostModifier.CostMask costMask;
 
 	public AntiLibelTradeAgreement(List<Player> players) {
 		super(1);
 
 		this.players = players;
 
-		modifyCost(1);
-	}
-
-	private void modifyCost(int modifier) {
+		this.costMask = new CostModifier.CostMask(1);
 		for (Player player : this.players) {
-			player.modifyBattleCost(modifier);
+			player.getCostModifier().addBattleCost(this.costMask);
 		}
 	}
 
@@ -52,6 +51,8 @@ public class AntiLibelTradeAgreement extends Buff {
 
 	@Override
 	void destroy() {
-		modifyCost(-1);
+		for (Player player : this.players) {
+			player.getCostModifier().removeBattleCost(this.costMask);
+		}
 	}
 }

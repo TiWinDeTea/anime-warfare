@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
+import org.tiwindetea.animewarfare.logic.CostModifier;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
@@ -31,21 +32,17 @@ import java.util.List;
 
 abstract class UnitCostModifierBuff extends Buff {
 	private final List<Player> players;
-	private final int modifier;
+	private final CostModifier.CostMask costMask;
 
 	protected UnitCostModifierBuff(List<Player> players, int modifier) {
 		super(1);
 
 		this.players = players;
-		this.modifier = modifier;
+		this.costMask = new CostModifier.CostMask(modifier);
 
-		modifyCost(this.modifier);
-	}
-
-	private void modifyCost(int modifier) {
 		for (Player player : this.players) {
 			for (UnitType unitType : UnitType.values()) {
-				player.getUnitCostModifier().modifyCost(unitType, modifier);
+				player.getCostModifier().addUnitCost(unitType, this.costMask);
 			}
 
 		}
@@ -58,6 +55,11 @@ abstract class UnitCostModifierBuff extends Buff {
 
 	@Override
 	void destroy() {
-		modifyCost(-this.modifier);
+		for (Player player : this.players) {
+			for (UnitType unitType : UnitType.values()) {
+				player.getCostModifier().removeUnitCost(unitType, this.costMask);
+			}
+
+		}
 	}
 }

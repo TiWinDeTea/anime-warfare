@@ -24,18 +24,24 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
+import org.tiwindetea.animewarfare.logic.CostModifier;
 import org.tiwindetea.animewarfare.logic.Player;
 
 import java.util.List;
 
 public class LackOfInspiration extends Buff {
 	private final List<Player> players;
+	private final CostModifier.CostMask costMask;
 
 	public LackOfInspiration(List<Player> players) {
 		super(1);
 
 		this.players = players;
-		modifyCost(1);
+
+		this.costMask = new CostModifier.CostMask(1);
+		for (Player player : this.players) {
+			player.getCostModifier().addUniqueActionCostMask(this.costMask);
+		}
 	}
 
 	@Override
@@ -45,12 +51,8 @@ public class LackOfInspiration extends Buff {
 
 	@Override
 	void destroy() {
-		modifyCost(-1);
-	}
-
-	private void modifyCost(int modifier) {
 		for (Player player : this.players) {
-			player.modifyUniqueActionCost(modifier);
+			player.getCostModifier().removeUniqueActionCostMask(this.costMask);
 		}
 	}
 }

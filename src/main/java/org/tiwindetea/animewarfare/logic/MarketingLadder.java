@@ -30,7 +30,7 @@ import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
  * @author Benoît CORTIER
  */
 public class MarketingLadder {
-	private int[] costs;
+	private final int[] costs;
 
 	private int currentPosition;
 
@@ -44,7 +44,7 @@ public class MarketingLadder {
 
 	public int getCurrentCost() {
 		if (isAtMax()) {
-			throw new RuntimeException("Cannot return the cost, ladder already at max.");
+			throw new IllegalStateException("Cannot return the cost, ladder already at max.");
 		}
 
 		return this.costs[this.currentPosition];
