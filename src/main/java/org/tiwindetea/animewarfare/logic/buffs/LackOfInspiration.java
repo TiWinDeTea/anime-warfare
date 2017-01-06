@@ -24,21 +24,21 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.tiwindetea.animewarfare.logic.CostModifier;
+import org.tiwindetea.animewarfare.logic.Mask;
 import org.tiwindetea.animewarfare.logic.Player;
 
 import java.util.List;
 
 public class LackOfInspiration extends Buff {
 	private final List<Player> players;
-	private final CostModifier.Mask costMask;
+	private final Mask costMask;
 
 	public LackOfInspiration(List<Player> players) {
 		super(1);
 
 		this.players = players;
 
-		this.costMask = new CostModifier.Mask(1);
+		this.costMask = new Mask(1);
 		for (Player player : this.players) {
 			player.getCostModifier().addUniqueActionCostMask(this.costMask);
 		}
