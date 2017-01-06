@@ -27,8 +27,7 @@ package org.tiwindetea.animewarfare.logic;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 import org.tiwindetea.animewarfare.logic.capacity.Capacity;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
-import org.tiwindetea.animewarfare.logic.events.AdvertisingCampaignRightAddedEvent;
-import org.tiwindetea.animewarfare.logic.events.AdvertisingCampaignRightRevealedEvent;
+import org.tiwindetea.animewarfare.logic.events.AdvertisingCampaignRightEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
@@ -157,25 +156,42 @@ public class Player {
 	}
 
 	public void addAdvertisingCampaignRights(AdvertisingCampaignRight advertisingCampaignRight) {
-		this.advertisingCampaignRights.add(advertisingCampaignRight);
+		if (this.advertisingCampaignRights.add(advertisingCampaignRight)) {
+			LogicEventDispatcher.send(new AdvertisingCampaignRightEvent(AdvertisingCampaignRightEvent.Type.ADDED,
+					this.ID,
+					advertisingCampaignRight.getWeight()));
+		}
+	}
 
-		LogicEventDispatcher.send(new AdvertisingCampaignRightAddedEvent(this.ID,
-				advertisingCampaignRight.getWeight()));
+	public AdvertisingCampaignRight removeAdvertisingCampainRights(int weight) {
+		AdvertisingCampaignRight right = getAdvertisingCampaignRight(weight);
+
+		if (this.advertisingCampaignRights.remove(right)) {
+			LogicEventDispatcher.send(new AdvertisingCampaignRightEvent(AdvertisingCampaignRightEvent.Type.REMOVED,
+					this.ID, right.getWeight()));
+		}
+
+		return right;
 	}
 
 	public boolean revealAdvertisingCampainRights(int weight) { // FIXME: Don't forget this
-		AdvertisingCampaignRight campaignRight = this.advertisingCampaignRights.stream()
-		                                                                       .filter(a -> a.getWeight() == weight)
-		                                                                       .findFirst()
-		                                                                       .orElse(null);
+		AdvertisingCampaignRight campaignRight = getAdvertisingCampaignRight(weight);
 
 		if (campaignRight != null) {
 			this.advertisingCampaignRights.remove(campaignRight);
-			LogicEventDispatcher.send(new AdvertisingCampaignRightRevealedEvent(this.ID, campaignRight.getWeight()));
+			LogicEventDispatcher.send(new AdvertisingCampaignRightEvent(AdvertisingCampaignRightEvent.Type.REVEALED,
+					this.ID, campaignRight.getWeight()));
 			return true;
 		}
 
 		return false;
+	}
+
+	private AdvertisingCampaignRight getAdvertisingCampaignRight(int weight) {
+		return this.advertisingCampaignRights.stream()
+		                                     .filter(a -> a.getWeight() == weight)
+		                                     .findFirst()
+		                                     .orElse(null);
 	}
 
 	public void clearAdvertisingCampaignRights() { // TODO: Is this realy needed ?

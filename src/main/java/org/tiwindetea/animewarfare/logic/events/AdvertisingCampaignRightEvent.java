@@ -2,15 +2,21 @@ package org.tiwindetea.animewarfare.logic.events;
 
 import org.lomadriel.lfc.event.Event;
 
-import java.util.EventListener;
+public class AdvertisingCampaignRightEvent implements Event<AdvertisingCampaignRightEventListener> {
+	public enum Type {
+		ADDED,
+		REMOVED,
+		REVEALED
+	}
 
-abstract class AdvertisingCampaignRightEvent<T extends EventListener> implements Event<T> {
 	private final int playerID;
 	private final int weight;
+	private final Type type;
 
-	public AdvertisingCampaignRightEvent(int playerID, int weight) {
+	public AdvertisingCampaignRightEvent(Type type, int playerID, int weight) {
 		this.playerID = playerID;
 		this.weight = weight;
+		this.type = type;
 	}
 
 	public int getPlayerID() {
@@ -19,5 +25,16 @@ abstract class AdvertisingCampaignRightEvent<T extends EventListener> implements
 
 	public int getAdvertisingCampaignRightWeight() {
 		return this.weight;
+	}
+
+	@Override
+	public void notify(AdvertisingCampaignRightEventListener listener) {
+		if (this.type == Type.ADDED) {
+			listener.onAdvertisingCampaignRightAdded(this);
+		} else if (this.type == Type.REMOVED) {
+			listener.onAdvertisingCampaignRightRemoved(this);
+		} else {
+			listener.onAdvertisingCampaignRightRevealead(this);
+		}
 	}
 }

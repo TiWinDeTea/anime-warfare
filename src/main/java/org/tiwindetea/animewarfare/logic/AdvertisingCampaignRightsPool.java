@@ -24,11 +24,10 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class AdvertisingCampaignRightsPool {
 		NUMBER_OF_RIGHTS_BY_WEIGHTS.put(3, 6);
 	}
 
-	private final Deque<AdvertisingCampaignRight> pool = new ArrayDeque<>();
+	private final List<AdvertisingCampaignRight> pool = new LinkedList<>();
 
 	public AdvertisingCampaignRightsPool() {
 		// create the advertising campaign rights.
@@ -63,7 +62,13 @@ public class AdvertisingCampaignRightsPool {
 
 	public AdvertisingCampaignRight getAdvertisingCampaignRight() {
 		// TODO: fire an event when it become empty?
-		return this.pool.pop();
+		AdvertisingCampaignRight right = this.pool.get(0);
+		return right;
+	}
+
+	public void returnAdvertisingCampaignRight(AdvertisingCampaignRight right) {
+		this.pool.add(right);
+		Collections.shuffle(this.pool);
 	}
 
 	public boolean isEmpty() {
