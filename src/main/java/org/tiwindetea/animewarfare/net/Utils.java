@@ -58,7 +58,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequ
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
@@ -162,7 +162,7 @@ class Utils {
 
 		// server, alphabetical order
 		kryo.register(NetBadPassword.class);
-		kryo.register(NetBattleStarted.class);
+		kryo.register(NetBattle.class);
 		kryo.register(NetFactionLocked.class);
 		kryo.register(NetFactionSelected.class);
 		kryo.register(NetFactionUnlocked.class);

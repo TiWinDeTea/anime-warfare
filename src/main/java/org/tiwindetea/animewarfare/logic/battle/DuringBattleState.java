@@ -37,11 +37,10 @@ public class DuringBattleState extends BattleState {
 
 	@Override
 	protected void onEnter() {
-		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE, this.battleContext));
+		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.DURING_BATTLE, this.battleContext));
 	}
 
 	@Override
 	protected void onExit() {
-
 	}
 }

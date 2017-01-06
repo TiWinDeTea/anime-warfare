@@ -29,7 +29,9 @@ import java.util.EventListener;
 public interface BattleEventListener extends EventListener {
 	void handlePreBattle(BattleEvent event);
 
-	void handleBattleStarted(BattleEvent event);
+	void handleDuringBattle(BattleEvent event);
 
 	void handlePostBattle(BattleEvent event);
+
+	void handleBattleFinished(BattleEvent event);
 }

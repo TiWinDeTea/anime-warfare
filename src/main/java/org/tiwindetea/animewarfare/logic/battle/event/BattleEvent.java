@@ -35,16 +35,22 @@ public class BattleEvent implements Event<BattleEventListener> {
 				battleEventListener.handlePreBattle(event);
 			}
 		},
-		BATTLE {
+		DURING_BATTLE {
 			@Override
 			void handle(BattleEvent event, BattleEventListener battleEventListener) {
-				battleEventListener.handleBattleStarted(event);
+				battleEventListener.handleDuringBattle(event);
 			}
 		},
 		POST_BATTLE {
 			@Override
 			void handle(BattleEvent event, BattleEventListener battleEventListener) {
-				battleEventListener.handleBattleStarted(event);
+				battleEventListener.handlePostBattle(event);
+			}
+		},
+		BATTLE_FINISHED {
+			@Override
+			void handle(BattleEvent event, BattleEventListener battleEventListener) {
+				battleEventListener.handleBattleFinished(event);
 			}
 		};
 

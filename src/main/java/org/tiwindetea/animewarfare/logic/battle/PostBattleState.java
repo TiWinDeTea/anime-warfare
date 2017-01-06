@@ -42,6 +42,6 @@ public class PostBattleState extends BattleState {
 
 	@Override
 	protected void onExit() {
-
+		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE_FINISHED, this.battleContext));
 	}
 }

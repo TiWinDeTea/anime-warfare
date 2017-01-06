@@ -26,27 +26,58 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 
 /**
  * @author Lucas Lazare
+ * @author Benoît CORTIER
  * @since 0.1.0
  */
-public class BattleStartedNetevent implements Event<BattleStartedNeteventListener> {
+public class BattleNetevent implements Event<BattleNeteventListener> {
+    public enum Type {
+        PRE_BATTLE {
+            @Override
+            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+                battleEventListener.handlePreBattle(event);
+            }
+        },
+        DURING_BATTLE {
+            @Override
+            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+                battleEventListener.handleDuringBattle(event);
+            }
+        },
+        POST_BATTLE {
+            @Override
+            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+                battleEventListener.handlePostBattle(event);
+            }
+        },
+        BATTLE_FINISHED {
+            @Override
+            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+                battleEventListener.handleBattleFinished(event);
+            }
+        };
+
+        abstract void handle(BattleNetevent event, BattleNeteventListener battleEventListener);
+    }
 
     private final GameClientInfo attacker;
     private final GameClientInfo defender;
     private final int zone;
+    private final Type type;
 
-    public BattleStartedNetevent(NetBattleStarted battleStarted) {
-        this.attacker = battleStarted.getAttacker();
-        this.defender = battleStarted.getDefender();
-        this.zone = battleStarted.getZone();
+    public BattleNetevent(NetBattle netBattle) {
+        this.attacker = netBattle.getAttacker();
+        this.defender = netBattle.getDefender();
+        this.zone = netBattle.getZone();
+        this.type = netBattle.getType();
     }
 
     @Override
-    public void notify(BattleStartedNeteventListener listener) {
-        listener.handleBattleStart(this);
+    public void notify(BattleNeteventListener listener) {
+        this.type.handle(this, listener);
     }
 
     public GameClientInfo getAttacker() {

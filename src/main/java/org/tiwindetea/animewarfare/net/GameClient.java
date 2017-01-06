@@ -29,12 +29,50 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.net.networkevent.*;
+import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FanNumberUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectionRequestNetvent;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndConditionsReachedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MarketingLadderUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayOrderChosenNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.SelectMascotToCaptureRequestNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioCreatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNewStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -299,9 +337,9 @@ public class GameClient {
             EventDispatcher.send(new BadPasswordNetevent());
         }
 
-        public void received(Connection connection, NetBattleStarted battleStarted) {
+        public void received(Connection connection, NetBattle battleStarted) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + battleStarted);
-            EventDispatcher.send(new BattleStartedNetevent(battleStarted));
+            EventDispatcher.send(new BattleNetevent(battleStarted));
         }
 
         public void received(Connection connection, NetFactionLocked faction) {

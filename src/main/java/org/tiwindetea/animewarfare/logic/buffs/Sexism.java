@@ -47,7 +47,12 @@ abstract class Sexism extends Buff implements BattleEventListener {
 	}
 
 	@Override
-	public void handleBattleStarted(BattleEvent event) {
+	public void handlePreBattle(BattleEvent event) {
+		// nothing to do.
+	}
+
+	@Override
+	public void handleDuringBattle(BattleEvent event) {
 		this.attacker = event.getBattleContext().getAttacker();
 		this.defender = event.getBattleContext().getDefender();
 		updateGender(event);
@@ -56,7 +61,7 @@ abstract class Sexism extends Buff implements BattleEventListener {
 	}
 
 	@Override
-	public void handlePreBattle(BattleEvent event) {
+	public void handleBattleFinished(BattleEvent event) {
 		// nothing to do.
 	}
 

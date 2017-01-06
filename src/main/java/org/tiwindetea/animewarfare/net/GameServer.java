@@ -66,6 +66,7 @@ import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
@@ -83,7 +84,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequ
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattleStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
@@ -717,13 +718,29 @@ public class GameServer {
 
         @Override
         public void handlePreBattle(BattleEvent event) {
-            // TODO: net event, handlePreBattle
+            this.server.sendToAllTCP(new NetBattle(
+                    event,
+                    BattleNetevent.Type.PRE_BATTLE,
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+            ));
         }
 
         @Override
-        public void handleBattleStarted(BattleEvent event) {
-            this.server.sendToAllTCP(new NetBattleStarted(
+        public void handleDuringBattle(BattleEvent event) {
+            this.server.sendToAllTCP(new NetBattle(
                     event,
+                    BattleNetevent.Type.DURING_BATTLE,
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+            ));
+        }
+
+        @Override
+        public void handleBattleFinished(BattleEvent event) {
+            this.server.sendToAllTCP(new NetBattle(
+                    event,
+                    BattleNetevent.Type.BATTLE_FINISHED,
                     GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
                     GameServer.this.room.find(event.getBattleContext().getDefender().getID())
             ));
@@ -731,7 +748,12 @@ public class GameServer {
 
         @Override
         public void handlePostBattle(BattleEvent event) {
-            // TODO: net event, handlePostBattle
+            this.server.sendToAllTCP(new NetBattle(
+                    event,
+                    BattleNetevent.Type.POST_BATTLE,
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+            ));
         }
 
         @Override
