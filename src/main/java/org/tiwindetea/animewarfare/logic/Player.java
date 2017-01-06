@@ -183,7 +183,7 @@ public class Player {
 	}
 
 	public void activateCapacity(Capacity capacity) {
-		this.capacities.put(capacity.getType(), capacity);
+		this.capacities.put(capacity.getName(), capacity);
 	}
 
 	public boolean hasCapacity(CapacityName type) {

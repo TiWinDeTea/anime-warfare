@@ -37,7 +37,7 @@ public class Clemency extends PlayerCapacity {
 	}
 
 	@Override
-	public CapacityName getType() {
+	public CapacityName getName() {
 		return CapacityName.CLEMENCY;
 	}
 }
