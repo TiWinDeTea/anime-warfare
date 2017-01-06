@@ -32,13 +32,13 @@ import java.util.List;
 
 abstract class UnitCostModifierBuff extends Buff {
 	private final List<Player> players;
-	private final CostModifier.CostMask costMask;
+	private final CostModifier.Mask costMask;
 
 	protected UnitCostModifierBuff(List<Player> players, int modifier) {
 		super(1);
 
 		this.players = players;
-		this.costMask = new CostModifier.CostMask(modifier);
+		this.costMask = new CostModifier.Mask(modifier);
 
 		for (Player player : this.players) {
 			for (UnitType unitType : UnitType.values()) {

@@ -31,14 +31,14 @@ import java.util.List;
 
 public class AntiLibelTradeAgreement extends Buff {
 	private final List<Player> players;
-	private final CostModifier.CostMask costMask;
+	private final CostModifier.Mask costMask;
 
 	public AntiLibelTradeAgreement(List<Player> players) {
 		super(1);
 
 		this.players = players;
 
-		this.costMask = new CostModifier.CostMask(1);
+		this.costMask = new CostModifier.Mask(1);
 		for (Player player : this.players) {
 			player.getCostModifier().addBattleCost(this.costMask);
 		}
