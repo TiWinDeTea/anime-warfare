@@ -24,39 +24,28 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
-import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
+import org.lomadriel.lfc.statemachine.State;
 
 /**
- * Class holding battle context informations.
+ * Does nothing.
  *
  * @author Benoît CORTIER
  */
-public class BattleContext {
-	private final BattleSide attacker;
-	private final BattleSide defender;
-
-	private final Zone zone;
-
-	public BattleContext(Player attacker, Player defender, Zone zone) {
-		this.attacker = new BattleSide(attacker);
-		this.defender = new BattleSide(defender);
-		this.zone = zone;
+public class BattleEndedState extends State {
+	@Override
+	protected void onEnter() {
 	}
 
-	public BattleSide[] getBattleSides() {
-		return new BattleSide[]{this.attacker, this.defender};
+	@Override
+	protected void update() {
 	}
 
-	public BattleSide getAttacker() {
-		return this.attacker;
+	@Override
+	protected void onExit() {
 	}
 
-	public BattleSide getDefender() {
-		return this.defender;
-	}
-
-	public Zone getZone() {
-		return this.zone;
+	@Override
+	protected State next() {
+		return this;
 	}
 }

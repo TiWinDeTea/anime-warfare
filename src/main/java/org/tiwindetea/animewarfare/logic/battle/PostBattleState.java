@@ -26,11 +26,19 @@ package org.tiwindetea.animewarfare.logic.battle;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.capacity.Capacity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Benoît CORTIER
  */
 public class PostBattleState extends BattleState {
+	private final List<Capacity> attackerCapacities = new ArrayList<>();
+	private final List<Capacity> defenderCapacities = new ArrayList<>();
+	private final List<Capacity> thirdPartiesCapacities = new ArrayList<>();
+
 	public PostBattleState(BattleContext battleContext) {
 		super(battleContext);
 	}
@@ -38,10 +46,32 @@ public class PostBattleState extends BattleState {
 	@Override
 	protected void onEnter() {
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.POST_BATTLE, this.battleContext));
+
+		// register events.
 	}
 
 	@Override
 	protected void onExit() {
+		this.attackerCapacities.forEach(Capacity::use);
+		this.defenderCapacities.forEach(Capacity::use);
+		this.thirdPartiesCapacities.forEach(Capacity::use);
+
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE_FINISHED, this.battleContext));
+
+		// unregister events.
 	}
+
+	// TODO: listen for woundeds selection and move.
+	// attacker first.
+	// defender second.
+	// kill units that cannot escape (except if invincible).
+
+	// then
+	// TODO: listen for post battles uses from server.
+
+	// TODO: update when receiving battlePhaseReady event.
+	/*
+		this.nextState = new BattleEndedState()
+		update();
+	 */
 }

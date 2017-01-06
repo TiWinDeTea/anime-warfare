@@ -26,22 +26,50 @@ package org.tiwindetea.animewarfare.logic.battle;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.capacity.Capacity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Benoît CORTIER
  */
 public class PreBattleState extends BattleState {
+	private final List<Capacity> attackerCapacities = new ArrayList<>();
+	private final List<Capacity> defenderCapacities = new ArrayList<>();
+	private final List<Capacity> thirdPartiesCapacities = new ArrayList<>();
+
 	public PreBattleState(BattleContext battleContext) {
 		super(battleContext);
 	}
 
 	@Override
 	protected void onEnter() {
+		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
+			this.battleContext.getZone().getUnits().stream()
+					.filter(unit -> unit.getFaction().equals(battleSide.getPlayer().getFaction()))
+					.forEach(battleSide::addUnit);
+		}
+
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.PRE_BATTLE, this.battleContext));
+
+		// register events.
 	}
 
 	@Override
 	protected void onExit() {
+		this.attackerCapacities.forEach(Capacity::use);
+		this.defenderCapacities.forEach(Capacity::use);
+		this.thirdPartiesCapacities.forEach(Capacity::use);
 
+		// unregister events.
 	}
+
+	// TODO: listen for prebattles uses from server.
+
+	// TODO: update when receiving battlePhaseReady event.
+	/*
+		this.nextState = new DuringBattleState(this.battleContext);
+		update();
+	 */
 }
