@@ -53,8 +53,8 @@ abstract class Sexism extends Buff implements BattleEventListener {
 
 	@Override
 	public void handleDuringBattle(BattleEvent event) {
-		this.attacker = event.getBattleContext().getAttacker();
-		this.defender = event.getBattleContext().getDefender();
+		this.attacker = event.getBattleContext().getAttacker().getPlayer();
+		this.defender = event.getBattleContext().getDefender().getPlayer();
 		updateGender(event);
 
 		applyEffect();
@@ -74,13 +74,16 @@ abstract class Sexism extends Buff implements BattleEventListener {
 
 	private void updateGender(BattleEvent event) {
 		for (Unit unit : event.getBattleContext().getZone().getUnits()) {
-			if (unit.hasFaction(event.getBattleContext().getAttacker().getFaction()) && unit.getType()
-					.getUnitBasicCharacteristics()
-					.getGender() == this.gender) {
+			if (unit.hasFaction(event.getBattleContext().getAttacker().getPlayer().getFaction()) && unit.getType()
+			                                                                                            .getUnitBasicCharacteristics()
+			                                                                                            .getGender() == this.gender) {
 				++this.nbrOfGenderAttacker;
-			} else if (unit.hasFaction(event.getBattleContext().getDefender().getFaction()) && unit.getType()
-					.getUnitBasicCharacteristics()
-					.getGender() == this.gender) {
+			} else if (unit.hasFaction(event.getBattleContext()
+			                                .getDefender()
+			                                .getPlayer()
+			                                .getFaction()) && unit.getType()
+			                                                      .getUnitBasicCharacteristics()
+			                                                      .getGender() == this.gender) {
 				++this.nbrOfGenderDefensor;
 			}
 		}
