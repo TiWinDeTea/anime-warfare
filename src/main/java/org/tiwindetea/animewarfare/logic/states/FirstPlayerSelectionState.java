@@ -24,9 +24,9 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
@@ -60,7 +60,7 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 	public void onEnter() {
 		registerEventListeners();
 
-		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
+		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
 
 		selectionFirstPlayer();
 	}
@@ -88,7 +88,7 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 	public void handleFirstPlayer(FirstPlayerChoiceEvent event) {
 		this.firstPlayer = this.gameBoard.getPlayer(event.getFirstPlayer());
 
-		EventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
+		LogicEventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
 	}
 
 	@Override
@@ -100,21 +100,21 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 	}
 
 	protected void registerEventListeners() {
-		EventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
-		EventDispatcher.getInstance().addListener(FirstPlayerChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(PlayingOrderChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(FirstPlayerChoiceEvent.class, this);
 	}
 
 	private void unregisterEventListeners() {
-		EventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
-		EventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(PlayingOrderChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(FirstPlayerChoiceEvent.class, this);
 	}
 
 	private void selectionFirstPlayer() {
 		if (this.drawPlayers.size() == 1) { // No draw
 			this.firstPlayer = this.drawPlayers.get(0);
-			EventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
+			LogicEventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
 		} else {
-			EventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerID(),
+			LogicEventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerID(),
 					GameBoard.getPlayersIndex(this.drawPlayers)));
 		}
 	}

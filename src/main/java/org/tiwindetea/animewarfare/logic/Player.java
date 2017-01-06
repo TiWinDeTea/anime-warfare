@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 import org.tiwindetea.animewarfare.logic.capacity.Capacity;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
@@ -75,7 +74,7 @@ public class Player {
 	public void setStaffAvailable(int staffAvailable) {
 		this.staffAvailable = staffAvailable;
 
-		EventDispatcher.send(new StaffPointUpdatedEvent(this.ID, this.staffAvailable));
+		LogicEventDispatcher.send(new StaffPointUpdatedEvent(this.ID, this.staffAvailable));
 	}
 
 	public boolean hasRequiredStaffPoints(int actionCost, int numberOfActions) {
@@ -110,7 +109,7 @@ public class Player {
 		}
 
 		this.fanNumber += numberOfFans;
-		EventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, numberOfFans, this.fanNumber));
+		LogicEventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, numberOfFans, this.fanNumber));
 	}
 
 	public void decrementFans(int numberOfFans) {
@@ -119,7 +118,7 @@ public class Player {
 		}
 
 		this.fanNumber -= numberOfFans;
-		EventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, -numberOfFans, this.fanNumber));
+		LogicEventDispatcher.getInstance().fire(new NumberOfFansChangedEvent(this, -numberOfFans, this.fanNumber));
 	}
 
 	public FactionType getFaction() {
@@ -155,7 +154,7 @@ public class Player {
 	public void addAdvertisingCampaignRights(AdvertisingCampaignRight advertisingCampaignRight) {
 		this.advertisingCampaignRights.add(advertisingCampaignRight);
 
-		EventDispatcher.send(new AdvertisingCampaignRightAddedEvent(this.ID, advertisingCampaignRight.getWeight()));
+		LogicEventDispatcher.send(new AdvertisingCampaignRightAddedEvent(this.ID, advertisingCampaignRight.getWeight()));
 	}
 
 	public boolean revealAdvertisingCampainRights(int weight) { // FIXME: Don't forget this
@@ -166,7 +165,7 @@ public class Player {
 
 		if (campaignRight != null) {
 			this.advertisingCampaignRights.remove(campaignRight);
-			EventDispatcher.send(new AdvertisingCampaignRightRevealedEvent(this.ID, campaignRight.getWeight()));
+			LogicEventDispatcher.send(new AdvertisingCampaignRightRevealedEvent(this.ID, campaignRight.getWeight()));
 			return true;
 		}
 

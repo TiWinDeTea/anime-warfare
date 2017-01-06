@@ -39,7 +39,7 @@ public class GameBoardTest {
 	@Test
 	public void getPlayersInOrderClockwise() throws Exception {
 		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
-			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), true);
+//			this.gameBoard.initializeTurn(this.gameBoard.getPlayers(), true);
 
 			List<FactionType> factionsCopy = new ArrayList<>(FACTIONS.values());
 			Collections.rotate(factionsCopy, -i);
@@ -55,7 +55,7 @@ public class GameBoardTest {
 	@Test
 	public void getPlayersInOrderAntiClockwise() throws Exception {
 		for (int i = 0; i < this.gameBoard.getPlayers().size(); i++) {
-			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), false);
+//			this.gameBoard.initializeTurn(this.gameBoard.getPlayers().get(i), false);
 
 			List<FactionType> factionsCopy = new ArrayList<>(FACTIONS.values());
 			Collections.rotate(factionsCopy, -(i + 1));

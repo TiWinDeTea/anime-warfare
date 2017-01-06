@@ -24,9 +24,9 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class GameEndedState extends GameState {
 
 	@Override
 	public void onEnter() {
-		EventDispatcher.getInstance().fire(new GameEndedEvent(this.winners));
+		LogicEventDispatcher.getInstance().fire(new GameEndedEvent(this.winners));
 		this.gameBoard.destroy();
 	}
 

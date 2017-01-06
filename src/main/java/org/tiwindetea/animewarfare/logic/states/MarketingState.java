@@ -24,10 +24,10 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.AdvertisingCampaignRightsPool;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.MarketingLadder;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.ConventionOrganizedEvent;
@@ -59,7 +59,7 @@ class MarketingState extends GameState
 
 	@Override
 	public void onEnter() {
-		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.MARKETING));
+		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.MARKETING));
 
 		// TODO: differ in long games.
 		for (Player player : this.gameBoard.getPlayers()) {
@@ -96,15 +96,15 @@ class MarketingState extends GameState
 	}
 
 	private void registerEventListeners() {
-		EventDispatcher.getInstance().addListener(OrganizeConventionRequestEvent.class, this);
-		EventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
-		EventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(OrganizeConventionRequestEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 	}
 
 	private void unregisterEventListeners() {
-		EventDispatcher.getInstance().removeListener(OrganizeConventionRequestEvent.class, this);
-		EventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
-		EventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(OrganizeConventionRequestEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ class MarketingState extends GameState
 					this.currentPlayer.incrementFans(2);
 				}
 
-				EventDispatcher.getInstance().fire(new ConventionOrganizedEvent(this.currentPlayer));
+				LogicEventDispatcher.getInstance().fire(new ConventionOrganizedEvent(this.currentPlayer));
 
 				this.machine.get().update();
 			}

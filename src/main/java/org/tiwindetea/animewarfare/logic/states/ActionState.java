@@ -25,12 +25,12 @@
 package org.tiwindetea.animewarfare.logic.states;
 
 import javafx.util.Pair;
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.lomadriel.lfc.statemachine.State;
 import org.lomadriel.lfc.statemachine.StateMachine;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.GameMap;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.battle.BattleContext;
@@ -44,21 +44,7 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
-import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
-import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
-import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
-import org.tiwindetea.animewarfare.net.logicevent.StartBattleEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -100,19 +86,19 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	@Override
 	public void onEnter() {
 		registerEventListeners();
-		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.ACTION));
+		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.ACTION));
 		this.players = this.gameBoard.getPlayersInOrder();
 	}
 
 	private void registerEventListeners() {
-		EventDispatcher.getInstance().addListener(MoveUnitEvent.class, this);
-		EventDispatcher.getInstance().addListener(OpenStudioEvent.class, this);
-		EventDispatcher.getInstance().addListener(InvokeUnitEvent.class, this);
-		EventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
-		EventDispatcher.getInstance().addListener(StartBattleEvent.class, this);
-		EventDispatcher.getInstance().addListener(CaptureMascotEvent.class, this);
-		EventDispatcher.getInstance().addListener(MascotToCaptureChoiceEvent.class, this);
-		EventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(MoveUnitEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(OpenStudioEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(InvokeUnitEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(StartBattleEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(CaptureMascotEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(MascotToCaptureChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 	}
 
 	@Override
@@ -136,7 +122,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			// End the phase.
 			this.phaseEnded = true;
 		} else {
-			EventDispatcher.send(new NextPlayerEvent(this.currentPlayer.getID()));
+			LogicEventDispatcher.send(new NextPlayerEvent(this.currentPlayer.getID()));
 		}
 	}
 
@@ -146,14 +132,14 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	private void unregisterEventListeners() {
-		EventDispatcher.getInstance().removeListener(MoveUnitEvent.class, this);
-		EventDispatcher.getInstance().removeListener(OpenStudioEvent.class, this);
-		EventDispatcher.getInstance().removeListener(InvokeUnitEvent.class, this);
-		EventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
-		EventDispatcher.getInstance().removeListener(StartBattleEvent.class, this);
-		EventDispatcher.getInstance().removeListener(CaptureMascotEvent.class, this);
-		EventDispatcher.getInstance().removeListener(MascotToCaptureChoiceEvent.class, this);
-		EventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(MoveUnitEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(OpenStudioEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(InvokeUnitEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(StartBattleEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(CaptureMascotEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(MascotToCaptureChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 	}
 
 	@Override
@@ -277,7 +263,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		}
 
 		this.currentPlayer.setStaffAvailable(0);
-		EventDispatcher.getInstance().fire(new SkipTurnEvent(this.currentPlayer.getID()));
+		LogicEventDispatcher.getInstance().fire(new SkipTurnEvent(this.currentPlayer.getID()));
 	}
 
 	@Override
@@ -351,7 +337,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			handleMascotToCaptureChoiceEvent(new MascotToCaptureChoiceEvent(event.getHuntedPlayerID(),
 					huntedUnits.get(0).getID()));
 		} else {
-			EventDispatcher.getInstance().fire(new AskMascotToCaptureEvent(event.getHuntedPlayerID(), event.getZone()));
+			LogicEventDispatcher.getInstance().fire(new AskMascotToCaptureEvent(event.getHuntedPlayerID(), event.getZone()));
 		}
 	}
 

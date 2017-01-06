@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEventListener;
@@ -39,26 +38,26 @@ public class EndGameMonitor implements NumberOfFansChangedEventListener, Marketi
 	private final int fansEnd = 30;
 
 	public EndGameMonitor() {
-		EventDispatcher.getInstance().addListener(NumberOfFansChangedEvent.class, this);
-		EventDispatcher.getInstance().addListener(MarketingLadderUpdatedEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(NumberOfFansChangedEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(MarketingLadderUpdatedEvent.class, this);
 	}
 
 	public void destroy() {
-		EventDispatcher.getInstance().removeListener(NumberOfFansChangedEvent.class, this);
-		EventDispatcher.getInstance().removeListener(MarketingLadderUpdatedEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(NumberOfFansChangedEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(MarketingLadderUpdatedEvent.class, this);
 	}
 
 	@Override
 	public void handleNumberOfFansChanged(NumberOfFansChangedEvent event) {
 		if (event.getPlayer().getFanNumber() >= this.fansEnd) {
-			EventDispatcher.getInstance().fire(new GameEndConditionsReachedEvent());
+			LogicEventDispatcher.getInstance().fire(new GameEndConditionsReachedEvent());
 		}
 	}
 
 	@Override
 	public void handleMarketingLadderUpdated(MarketingLadderUpdatedEvent event) {
 		if (event.getNewPosition() >= event.getEndPosition()) {
-			EventDispatcher.getInstance().fire(new GameEndConditionsReachedEvent());
+			LogicEventDispatcher.getInstance().fire(new GameEndConditionsReachedEvent());
 		}
 	}
 }

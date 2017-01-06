@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
-import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 
 /**
@@ -37,7 +37,7 @@ public class PreBattleState extends BattleState {
 
 	@Override
 	protected void onEnter() {
-		EventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.PRE_BATTLE, this.battleContext));
+		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.PRE_BATTLE, this.battleContext));
 	}
 
 	@Override

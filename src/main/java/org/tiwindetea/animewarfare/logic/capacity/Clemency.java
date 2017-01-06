@@ -1,6 +1,6 @@
 package org.tiwindetea.animewarfare.logic.capacity;
 
-import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.event.UnitEvent;
 import org.tiwindetea.animewarfare.logic.event.UnitEventListener;
@@ -11,12 +11,12 @@ public class Clemency extends PlayerCapacity {
 		public ClemencyActivable(Player player) {
 			super(player);
 
-			EventDispatcher.registerListener(UnitEvent.class, this);
+			LogicEventDispatcher.registerListener(UnitEvent.class, this);
 		}
 
 		@Override
 		public void destroy() {
-			EventDispatcher.unregisterListener(UnitEvent.class, this);
+			LogicEventDispatcher.unregisterListener(UnitEvent.class, this);
 		}
 
 		@Override

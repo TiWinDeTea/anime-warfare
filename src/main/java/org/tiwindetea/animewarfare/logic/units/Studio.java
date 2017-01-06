@@ -24,8 +24,8 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 
 public class Studio {
@@ -55,13 +55,13 @@ public class Studio {
 		if (this.controller != null) {
 			setCurrentFaction(controller.getFaction());
 
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID,
+			LogicEventDispatcher.send(new StudioControllerChangedEvent(this.zoneID,
 					controller.getFaction(),
 					controller.getID()));
 		} else {
 			setCurrentFaction(null);
 
-			EventDispatcher.send(new StudioControllerChangedEvent(this.zoneID, null, -1));
+			LogicEventDispatcher.send(new StudioControllerChangedEvent(this.zoneID, null, -1));
 		}
 	}
 }

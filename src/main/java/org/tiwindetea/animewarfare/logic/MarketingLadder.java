@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
 
 /*
@@ -57,7 +56,7 @@ public class MarketingLadder {
 
 	public void incrementPosition() {
 		this.currentPosition++;
-		EventDispatcher.getInstance().fire(new MarketingLadderUpdatedEvent(this.currentPosition, this.costs.length));
+		LogicEventDispatcher.getInstance().fire(new MarketingLadderUpdatedEvent(this.currentPosition, this.costs.length));
 	}
 
 	public boolean isAtMax() {

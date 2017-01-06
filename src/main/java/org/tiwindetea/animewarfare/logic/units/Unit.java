@@ -24,8 +24,8 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.buffs.UnitBuffedCharacteristics;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
@@ -63,7 +63,7 @@ public class Unit {
 		this.zone = zone;
 		this.zone.addUnit(this);
 
-		EventDispatcher.getInstance().fire(new UnitMovedEvent(this, previousZone, this.zone));
+		LogicEventDispatcher.getInstance().fire(new UnitMovedEvent(this, previousZone, this.zone));
 
 		return previousZone;
 	}

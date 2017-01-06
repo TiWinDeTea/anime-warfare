@@ -29,6 +29,7 @@ import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.event.MarketingLadderUpdatedEvent;
@@ -191,7 +192,7 @@ class Utils {
 		//*                                                             *
 		//***************************************************************
 
-		EventDispatcher ed = EventDispatcher.getInstance();
+		EventDispatcher ed = LogicEventDispatcher.getInstance();
 
 		//logic.states.events, alphabetical order
 		ed.addListener(AskFirstPlayerEvent.class, logicListener);
@@ -217,7 +218,7 @@ class Utils {
 		//*                                                             *
 		//***************************************************************
 
-		EventDispatcher ed = EventDispatcher.getInstance();
+		EventDispatcher ed = LogicEventDispatcher.getInstance();
 
 		//logic.states.events, alphabetical order
 		ed.removeListener(AskFirstPlayerEvent.class, logicListener);

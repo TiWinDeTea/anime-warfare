@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
@@ -55,7 +55,7 @@ public class CeaseFireBuff extends Buff implements UnitMovedEventListener {
 			unit.getUnitBuffedCharacteristics().addBuffMask(CeaseFireBuff.BUFF_MASK);
 		}
 
-		EventDispatcher.getInstance().addListener(UnitMovedEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(UnitMovedEvent.class, this);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class CeaseFireBuff extends Buff implements UnitMovedEventListener {
 			unit.getUnitBuffedCharacteristics().removeBuffMask(CeaseFireBuff.BUFF_MASK);
 		}
 
-		EventDispatcher.getInstance().removeListener(UnitMovedEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(UnitMovedEvent.class, this);
 	}
 
 	@Override

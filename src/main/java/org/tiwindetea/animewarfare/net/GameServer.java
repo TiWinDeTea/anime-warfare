@@ -32,6 +32,7 @@ import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.event.GameEndConditionsReachedEvent;
@@ -127,7 +128,7 @@ public class GameServer {
     private DefaultStateMachine stateMachine;
     private final Server server = new Server();
 
-    private final EventDispatcher eventDispatcher = EventDispatcher.getInstance();
+    private final EventDispatcher eventDispatcher = LogicEventDispatcher.getInstance();
 
     private final Room room = new Room();
     private final NetworkListener networkNetworkListener = new NetworkListener(this.server, this.room);

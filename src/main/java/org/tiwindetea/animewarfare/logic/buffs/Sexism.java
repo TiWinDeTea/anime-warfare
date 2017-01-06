@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.buffs;
 
-import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
@@ -43,7 +43,7 @@ abstract class Sexism extends Buff implements BattleEventListener {
 		super(2);
 
 		this.gender = gender;
-		EventDispatcher.registerListener(BattleEvent.class, this);
+		LogicEventDispatcher.registerListener(BattleEvent.class, this);
 	}
 
 	@Override
@@ -88,6 +88,6 @@ abstract class Sexism extends Buff implements BattleEventListener {
 
 	@Override
 	void destroy() {
-		EventDispatcher.unregisterListener(BattleEvent.class, this);
+		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
 	}
 }

@@ -24,7 +24,6 @@
 
 package org.tiwindetea.animewarfare.logic;
 
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.event.StudioEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
@@ -99,9 +98,9 @@ public class Zone {
 		this.studio = studio;
 
 		if (studio != null) {
-			EventDispatcher.send(new StudioEvent(StudioEvent.Type.ADDED, this.ID));
+			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.ADDED, this.ID));
 		} else {
-			EventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED, this.ID));
+			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED, this.ID));
 		}
 	}
 

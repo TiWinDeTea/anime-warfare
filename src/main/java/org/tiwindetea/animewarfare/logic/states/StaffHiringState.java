@@ -25,9 +25,9 @@
 package org.tiwindetea.animewarfare.logic.states;
 
 import javafx.util.Pair;
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
@@ -49,7 +49,7 @@ class StaffHiringState extends GameState {
 	public void onEnter() {
 		computeStaffAvailable();
 
-		EventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.STAFF_HIRING));
+		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.STAFF_HIRING));
 	}
 
 	@Override
