@@ -719,8 +719,8 @@ public class GameServer {
             this.server.sendToAllTCP(new NetBattle(
                     event,
                     BattleNetevent.Type.PRE_BATTLE,
-                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
-                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getPlayer().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getPlayer().getID())
             ));
         }
 
@@ -729,8 +729,8 @@ public class GameServer {
             this.server.sendToAllTCP(new NetBattle(
                     event,
                     BattleNetevent.Type.DURING_BATTLE,
-                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
-                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getPlayer().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getPlayer().getID())
             ));
         }
 
@@ -739,8 +739,8 @@ public class GameServer {
             this.server.sendToAllTCP(new NetBattle(
                     event,
                     BattleNetevent.Type.BATTLE_FINISHED,
-                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
-                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getPlayer().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getPlayer().getID())
             ));
         }
 
@@ -749,8 +749,8 @@ public class GameServer {
             this.server.sendToAllTCP(new NetBattle(
                     event,
                     BattleNetevent.Type.POST_BATTLE,
-                    GameServer.this.room.find(event.getBattleContext().getAttacker().getID()),
-                    GameServer.this.room.find(event.getBattleContext().getDefender().getID())
+                    GameServer.this.room.find(event.getBattleContext().getAttacker().getPlayer().getID()),
+                    GameServer.this.room.find(event.getBattleContext().getDefender().getPlayer().getID())
             ));
         }
 
