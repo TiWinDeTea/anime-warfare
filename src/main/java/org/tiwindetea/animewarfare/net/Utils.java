@@ -31,6 +31,8 @@ import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
 import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
@@ -57,6 +59,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
@@ -158,6 +161,7 @@ class Utils {
 		kryo.register(NetStartBattleRequest.class);
 		kryo.register(NetUnselectFactionRequest.class);
 		kryo.register(NetUnlockFactionRequest.class);
+		kryo.register(NetUseCapacityRequest.class);
 
 
 		// server, alphabetical order
@@ -181,6 +185,8 @@ class Utils {
 		kryo.register(NetSelectMascotToCapture.class);
 
 		// inner
+		kryo.register(CapacityName.class);
+		kryo.register(CapacityType.class);
 		kryo.register(FactionType.class);
 	}
 

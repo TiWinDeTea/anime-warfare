@@ -24,13 +24,13 @@
 
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 
-public class UseCapacityEvent implements Event<UseCapacityEventListener> {
+public class UseCapacityEvent extends ActionEvent<UseCapacityEventListener> {
 	private final CapacityName name;
 
-	public UseCapacityEvent(CapacityName name) {
+	public UseCapacityEvent(int playerID, CapacityName name) {
+		super(playerID);
 		this.name = name;
 	}
 

@@ -66,6 +66,7 @@ import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
@@ -83,6 +84,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
@@ -670,6 +672,13 @@ public class GameServer {
                 if (faction != null && !faction.equals(this.room.modifiableLocks().get(faction))) {
                     this.server.sendToAllTCP(new NetFactionUnselected(this.room.find(connection.getID()), faction));
                 }
+            }
+        }
+
+        public void received(Connection connection, NetUseCapacityRequest useCapacityRequest) {
+            if (isLegit(connection)) {
+                GameServer.this.eventDispatcher.fire(new UseCapacityEvent(connection.getID(),
+                        useCapacityRequest.getName()));
             }
         }
 
