@@ -42,6 +42,8 @@ public class BattleSide {
 	private int attack = 0;
 	private int woundeds = 0;
 	private int deads = 0;
+	private int numberOfDices;
+	// TODO: Add dead unit : See ColdBlood#handleBattleFinished
 
 	public BattleSide(Player player) {
 		this.player = player;
@@ -97,5 +99,13 @@ public class BattleSide {
 
 	public void decrementDeads(int value) {
 		this.deads -= value;
+	}
+
+	public int getNumberOfDices() {
+		return this.numberOfDices;
+	}
+
+	public void setNumberOfDices(int numberOfDices) {
+		this.numberOfDices = numberOfDices;
 	}
 }
