@@ -53,7 +53,7 @@ public class Loan extends PlayerCapacity {
 	}
 
 	@Override
-	public CapacityType getType() {
-		return CapacityType.LOAN;
+	public CapacityName getType() {
+		return CapacityName.LOAN;
 	}
 }

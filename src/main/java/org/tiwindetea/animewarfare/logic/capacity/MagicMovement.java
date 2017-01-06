@@ -28,7 +28,7 @@ public class MagicMovement implements Capacity {
 	}
 
 	@Override
-	public CapacityType getType() {
-		return CapacityType.MAGIC_MOVEMENT;
+	public CapacityName getType() {
+		return CapacityName.MAGIC_MOVEMENT;
 	}
 }

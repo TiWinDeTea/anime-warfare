@@ -24,7 +24,7 @@ public class GeniusKidnapper extends PlayerCapacity {
 	}
 
 	@Override
-	public CapacityType getType() {
-		return CapacityType.GENIUS_KIDNAPPER;
+	public CapacityName getType() {
+		return CapacityName.GENIUS_KIDNAPPER;
 	}
 }

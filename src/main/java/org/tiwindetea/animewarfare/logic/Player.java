@@ -26,7 +26,7 @@ package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 import org.tiwindetea.animewarfare.logic.capacity.Capacity;
-import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightAddedEvent;
 import org.tiwindetea.animewarfare.logic.event.AdvertisingCampaignRightRevealedEvent;
 import org.tiwindetea.animewarfare.logic.event.NumberOfFansChangedEvent;
@@ -58,7 +58,7 @@ public class Player {
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
 	private final UnitCostModifier unitCostModifier = new UnitCostModifier();
-	private final Map<CapacityType, Capacity> capacities = new HashMap<>();
+	private final Map<CapacityName, Capacity> capacities = new HashMap<>();
 	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
 
@@ -200,7 +200,7 @@ public class Player {
 		this.capacities.put(capacity.getType(), capacity);
 	}
 
-	public boolean hasCapacity(CapacityType type) {
+	public boolean hasCapacity(CapacityName type) {
 		return this.capacities.containsKey(type);
 	}
 

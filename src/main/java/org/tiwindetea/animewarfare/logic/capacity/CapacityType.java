@@ -1,61 +1,37 @@
+////////////////////////////////////////////////////////////
+//
+// Anime Warfare
+// Copyright (C) 2016 TiWinDeTea - contact@tiwindetea.org
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+////////////////////////////////////////////////////////////
+
 package org.tiwindetea.animewarfare.logic.capacity;
 
-import org.tiwindetea.animewarfare.logic.FactionType;
-
+/*
+ * @author Benoît CORTIER
+ */
 public enum CapacityType {
-	// No Name
-	CLEMENCY(FactionType.NO_NAME),
-	LOAN(FactionType.NO_NAME),
-	RESTRUCTURATION(FactionType.NO_NAME),
-	GENIUS_KIDNAPPER(FactionType.NO_NAME),
-	FURY(FactionType.NO_NAME),
-	COLD_BLOOD(FactionType.NO_NAME),
-
-	// Kurousagi
-	FOR_YOU_I_WILL_INSULT(null),
-
-	// F-Class no Baka
-	BAD_BOOK(FactionType.F_CLASS_NO_BAKA),
-	FORCED_RETREAT(FactionType.F_CLASS_NO_BAKA),
-	BACK_STAB(FactionType.F_CLASS_NO_BAKA),
-	FLYING_STUDIO(FactionType.F_CLASS_NO_BAKA),
-	DEAF_EAR(FactionType.F_CLASS_NO_BAKA),
-	SHONEN_JUMP_APPEARANCE(FactionType.F_CLASS_NO_BAKA),
-
-	// Himeji
-	DIPLOMAT(null),
-
-	// Haiyore
-	DILEMMA(FactionType.HAIYORE),
-	BAD_LUCK(FactionType.HAIYORE),
-	MAGIC_MOVEMENT(FactionType.HAIYORE),
-	ARTISTE_CLOWN(FactionType.HAIYORE),
-	MORE_FANS(FactionType.HAIYORE),
-	HIDING_BUSH(FactionType.HAIYORE),
-
-	// Nyaruko
-	SHARP_TONGUE(null),
-	// Ctuko
-	WITH_MY_BELOVED(null),
-
-	// The Black Knights
-	STONE_HEART(FactionType.THE_BLACK_KNIGHTS),
-	NEGOTIATOR(FactionType.THE_BLACK_KNIGHTS),
-	MARKET_FLOODING(FactionType.THE_BLACK_KNIGHTS),
-	GENERAL_ALARM(FactionType.THE_BLACK_KNIGHTS),
-	UNDERCOVER_AGENT(FactionType.THE_BLACK_KNIGHTS),
-	HOLOCAUST(FactionType.THE_BLACK_KNIGHTS),
-
-	// Lelouch
-	BACK_TO_SKETCH(null);
-
-	private final FactionType faction;
-
-	CapacityType(FactionType faction) {
-		this.faction = faction;
-	}
-
-	public FactionType getFaction() {
-		return this.faction;
-	}
+	ACTION,
+	MARKETING_ACTION,
+	PRE_BATTLE,
+	DURING_BATTLE,
+	POST_BATTLE,
+	PERMANENT
 }
