@@ -24,15 +24,23 @@
 
 package org.tiwindetea.animewarfare.logic.capacity;
 
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.Zone;
+import org.tiwindetea.animewarfare.logic.battle.BattleSide;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEventListener;
 
-public class BackStab extends PlayerCapacity {
+public class BackStab extends PlayerCapacity implements BattleEventListener {
 	public static class BackStabActivable extends PlayerActivable implements FirstPlayerSelectedEventListener {
-		public BackStabActivable(Player player) {
+		private final GameMap map;
+
+		public BackStabActivable(Player player, GameMap map) {
 			super(player);
+			this.map = map;
 
 			LogicEventDispatcher.registerListener(FirstPlayerSelectedEvent.class, this);
 		}
@@ -45,18 +53,62 @@ public class BackStab extends PlayerCapacity {
 		@Override
 		public void firstPlayerSelected(FirstPlayerSelectedEvent event) {
 			if (getPlayer().getID() == event.getFirstPlayer()) {
-				activateAndDestroy(new BackStab(getPlayer()));
+				activateAndDestroy(new BackStab(getPlayer(), this.map));
 			}
 		}
 	}
 
-	BackStab(Player player) {
+	private static final int COST = -1; // FIXME
+
+	private final GameMap map;
+	private Zone battleZone;
+	private BattleSide me;
+	private BattleSide enemy;
+
+	BackStab(Player player, GameMap map) {
 		super(player);
+		this.map = map;
+
+		LogicEventDispatcher.registerListener(BattleEvent.class, this);
+	}
+
+	// Vos personnages niveau LV0 adjacents à la zone d'affrontement peuvent humilier les ennemis à coup sûr.
+	@Override
+	public void use() {
+		if (!getPlayer().hasRequiredStaffPoints(COST) || this.battleZone == null) {
+			return;
+		}
+
+		getPlayer().decrementStaffPoints(COST);
 	}
 
 	@Override
-	public void use() {
-		// TODO
+	public void handlePreBattle(BattleEvent event) {
+	}
+
+	@Override
+	public void handleDuringBattle(BattleEvent event) {
+
+	}
+
+	@Override
+	public void handlePostBattle(BattleEvent event) {
+		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
+
+		if (event.getBattleContext().getAttacker().getPlayer().equals(getPlayer())) {
+			this.me = event.getBattleContext().getAttacker();
+			this.enemy = event.getBattleContext().getDefender();
+			this.battleZone = event.getBattleContext().getZone();
+		} else if (event.getBattleContext().getDefender().getPlayer().equals(getPlayer())) {
+			this.me = event.getBattleContext().getDefender();
+			this.enemy = event.getBattleContext().getAttacker();
+			this.battleZone = event.getBattleContext().getZone();
+		}
+	}
+
+	@Override
+	public void handleBattleFinished(BattleEvent event) {
+
 	}
 
 	@Override
