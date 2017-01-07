@@ -113,6 +113,13 @@ public class Zone {
 		                 .anyMatch(unit -> unit.hasFaction(faction));
 	}
 
+	public boolean hasUnitOfWithLevelEqualOrGreater(UnitLevel level) {
+		return this.units.stream()
+		                 .filter(u -> u.getType().getUnitLevel().ordinal() >= level.ordinal())
+		                 .findFirst()
+		                 .isPresent();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
