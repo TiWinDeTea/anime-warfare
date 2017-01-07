@@ -56,6 +56,7 @@ import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
@@ -70,6 +71,7 @@ import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
@@ -533,6 +535,12 @@ public class GameServer {
         }
 
         // NetSendable classes, alphabetical order on second argument type
+        public void received(Connection connection, NetBattlePhaseReadyRequest ignored) {
+            if (isLegit(connection)) {
+                GameServer.this.eventDispatcher.fire(new BattlePhaseReadyEvent(connection.getID()));
+            }
+        }
+
         public void received(Connection connection, NetCapturedMascotSelection selection) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(), selection.getUnitID()));

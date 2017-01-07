@@ -45,6 +45,7 @@ import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
@@ -147,6 +148,7 @@ class Utils {
 		kryo.register(String.class);
 
 		// client, alphabetical order
+		kryo.register(NetBattlePhaseReadyRequest.class);
 		kryo.register(NetCapturedMascotSelection.class);
 		kryo.register(NetConventionRequest.class);
 		kryo.register(NetFirstPlayerSelection.class);
@@ -162,7 +164,6 @@ class Utils {
 		kryo.register(NetUnselectFactionRequest.class);
 		kryo.register(NetUnlockFactionRequest.class);
 		kryo.register(NetUseCapacityRequest.class);
-
 
 		// server, alphabetical order
 		kryo.register(NetBadPassword.class);
