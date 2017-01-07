@@ -35,6 +35,7 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.battle.BattleContext;
 import org.tiwindetea.animewarfare.logic.battle.PreBattleState;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
@@ -253,8 +254,9 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			                                                                                      .getMaxNumber()) {
 				Zone invocationZone = this.gameBoard.getMap().getZone(event.getZone());
 
-				if (invocationZone.hasStudio() && this.currentPlayer.hasFaction(invocationZone.getStudio()
-				                                                                              .getCurrentFaction())
+				if (invocationZone.hasStudio()
+						&& (this.currentPlayer.hasFaction(invocationZone.getStudio().getCurrentFaction())
+						|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
 						|| !this.currentPlayer.getUnitCounter().hasUnits() && event.getUnitType()
 						                                                           .isLevel(UnitLevel.MASCOT)) {
 					invokeUnit(invocationZone, event.getUnitType());
