@@ -25,6 +25,12 @@
 package org.tiwindetea.animewarfare.logic.battle;
 
 import org.lomadriel.lfc.statemachine.State;
+import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract battle state.
@@ -47,5 +53,25 @@ public abstract class BattleState extends State {
 	@Override
 	public State next() {
 		return this.nextState;
+	}
+
+	// helper
+	protected void takeCapacityIntoConsideration(UseCapacityEvent event,
+												 List<CapacityName> attackerCapacities,
+												 List<CapacityName> defenderCapacities,
+												 Map<Player, CapacityName> thirdPartiesCapacities) {
+		if (event.getPlayerID() == this.battleContext.getAttacker().getPlayer().getID()) {
+			if (this.battleContext.getAttacker().getPlayer().hasCapacity(event.getName())) {
+				attackerCapacities.add(event.getName());
+			}
+		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
+			if (this.battleContext.getDefender().getPlayer().hasCapacity(event.getName())) {
+				defenderCapacities.add(event.getName());
+			}
+		} else {
+			this.battleContext.getThirdPartPlayers().stream()
+					.filter(player -> player.getID() == event.getPlayerID())
+					.forEach(player -> thirdPartiesCapacities.put(player, event.getName()));
+		}
 	}
 }

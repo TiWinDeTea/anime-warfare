@@ -27,21 +27,27 @@ package org.tiwindetea.animewarfare.logic.battle;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Class holding battle context informations.
  *
  * @author Benoît CORTIER
  */
 public class BattleContext {
+	private final List<Player> thirdPartPlayers;
+
 	private final BattleSide attacker;
 	private final BattleSide defender;
 
 	private final Zone zone;
 
-	public BattleContext(Player attacker, Player defender, Zone zone) {
+	public BattleContext(Player attacker, Player defender, Zone zone, List<Player> thirdPartPlayers) {
 		this.attacker = new BattleSide(attacker);
 		this.defender = new BattleSide(defender);
 		this.zone = zone;
+		this.thirdPartPlayers = thirdPartPlayers;
 	}
 
 	public BattleSide[] getBattleSides() {
@@ -58,5 +64,9 @@ public class BattleContext {
 
 	public Zone getZone() {
 		return this.zone;
+	}
+
+	public List<Player> getThirdPartPlayers() {
+		return Collections.unmodifiableList(this.thirdPartPlayers);
 	}
 }

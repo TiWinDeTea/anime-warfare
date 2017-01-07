@@ -292,9 +292,14 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
+		List<Player> thirdPartPlayers = this.gameBoard.getPlayers().stream()
+				.filter(player -> player.getID() != event.getAttackerID() && player.getID() != event.getDefenderID())
+				.collect(Collectors.toList());
+
 		BattleContext battleContext = new BattleContext(this.gameBoard.getPlayer(event.getAttackerID()),
 				this.gameBoard.getPlayer(event.getDefenderID()),
-				this.gameBoard.getMap().getZone(event.getZone()));
+				this.gameBoard.getMap().getZone(event.getZone()),
+				thirdPartPlayers);
 
 		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext));
 	}

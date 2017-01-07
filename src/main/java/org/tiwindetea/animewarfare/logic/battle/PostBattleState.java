@@ -25,19 +25,27 @@
 package org.tiwindetea.animewarfare.logic.battle;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
-import org.tiwindetea.animewarfare.logic.capacity.Capacity;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Benoît CORTIER
  */
-public class PostBattleState extends BattleState {
-	private final List<Capacity> attackerCapacities = new ArrayList<>();
-	private final List<Capacity> defenderCapacities = new ArrayList<>();
-	private final List<Capacity> thirdPartiesCapacities = new ArrayList<>();
+public class PostBattleState extends BattleState implements UseCapacityEventListener {
+	private final List<CapacityName> attackerCapacities = new ArrayList<>();
+	private final List<CapacityName> defenderCapacities = new ArrayList<>();
+	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
+
+	private boolean woundedsSelected = false;
 
 	public PostBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -48,17 +56,21 @@ public class PostBattleState extends BattleState {
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.POST_BATTLE, this.battleContext));
 
 		// register events.
+		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
 	}
 
 	@Override
 	protected void onExit() {
-		this.attackerCapacities.forEach(Capacity::use);
-		this.defenderCapacities.forEach(Capacity::use);
-		this.thirdPartiesCapacities.forEach(Capacity::use);
+		this.attackerCapacities.stream().forEach(c -> this.battleContext.getAttacker().getPlayer().useCapacity(c));
+		this.defenderCapacities.stream().forEach(c -> this.battleContext.getDefender().getPlayer().useCapacity(c));
+		for (Map.Entry<Player, CapacityName> playerCapacityNameEntry : this.thirdPartiesCapacities.entrySet()) {
+			playerCapacityNameEntry.getKey().useCapacity(playerCapacityNameEntry.getValue());
+		}
 
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE_FINISHED, this.battleContext));
 
 		// unregister events.
+		LogicEventDispatcher.unregisterListener(UseCapacityEvent.class, this);
 	}
 
 	// TODO: listen for woundeds selection and move.
@@ -66,8 +78,15 @@ public class PostBattleState extends BattleState {
 	// defender second.
 	// kill units that cannot escape (except if invincible).
 
-	// then
-	// TODO: listen for post battles uses from server.
+	@Override
+	public void handlePlayerUseCapacity(UseCapacityEvent event) {
+		if (event.getName().getType().equals(CapacityType.POST_BATTLE) && this.woundedsSelected) {
+			takeCapacityIntoConsideration(event,
+					this.attackerCapacities,
+					this.defenderCapacities,
+					this.thirdPartiesCapacities);
+		}
+	}
 
 	// TODO: update when receiving battlePhaseReady event.
 	/*

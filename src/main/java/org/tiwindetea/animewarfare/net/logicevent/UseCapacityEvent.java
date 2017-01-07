@@ -36,7 +36,7 @@ public class UseCapacityEvent extends ActionEvent<UseCapacityEventListener> {
 
 	@Override
 	public void notify(UseCapacityEventListener listener) {
-		listener.useCapacity(this);
+		listener.handlePlayerUseCapacity(this);
 	}
 
 	public CapacityName getName() {

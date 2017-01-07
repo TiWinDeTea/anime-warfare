@@ -27,5 +27,5 @@ package org.tiwindetea.animewarfare.net.logicevent;
 import java.util.EventListener;
 
 public interface UseCapacityEventListener extends EventListener {
-	void useCapacity(UseCapacityEvent event);
+	void handlePlayerUseCapacity(UseCapacityEvent event);
 }

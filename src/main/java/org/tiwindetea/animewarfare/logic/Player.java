@@ -202,6 +202,11 @@ public class Player {
 		this.capacities.put(capacity.getName(), capacity);
 	}
 
+	public void useCapacity(CapacityName capacityName) {
+		this.capacities.get(capacityName).use();
+		// TODO: fire event capacityUsed.
+	}
+
 	public boolean hasCapacity(CapacityName type) {
 		return this.capacities.containsKey(type);
 	}

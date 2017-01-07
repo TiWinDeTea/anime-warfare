@@ -25,19 +25,25 @@
 package org.tiwindetea.animewarfare.logic.battle;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
-import org.tiwindetea.animewarfare.logic.capacity.Capacity;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Benoît CORTIER
  */
-public class PreBattleState extends BattleState {
-	private final List<Capacity> attackerCapacities = new ArrayList<>();
-	private final List<Capacity> defenderCapacities = new ArrayList<>();
-	private final List<Capacity> thirdPartiesCapacities = new ArrayList<>();
+public class PreBattleState extends BattleState implements UseCapacityEventListener {
+	private final List<CapacityName> attackerCapacities = new ArrayList<>();
+	private final List<CapacityName> defenderCapacities = new ArrayList<>();
+	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
 
 	public PreBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -54,18 +60,30 @@ public class PreBattleState extends BattleState {
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.PRE_BATTLE, this.battleContext));
 
 		// register events.
+		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
 	}
 
 	@Override
 	protected void onExit() {
-		this.attackerCapacities.forEach(Capacity::use);
-		this.defenderCapacities.forEach(Capacity::use);
-		this.thirdPartiesCapacities.forEach(Capacity::use);
+		this.attackerCapacities.stream().forEach(c -> this.battleContext.getAttacker().getPlayer().useCapacity(c));
+		this.defenderCapacities.stream().forEach(c -> this.battleContext.getDefender().getPlayer().useCapacity(c));
+		for (Map.Entry<Player, CapacityName> playerCapacityNameEntry : this.thirdPartiesCapacities.entrySet()) {
+			playerCapacityNameEntry.getKey().useCapacity(playerCapacityNameEntry.getValue());
+		}
 
 		// unregister events.
+		LogicEventDispatcher.unregisterListener(UseCapacityEvent.class, this);
 	}
 
-	// TODO: listen for prebattles uses from server.
+	@Override
+	public void handlePlayerUseCapacity(UseCapacityEvent event) {
+		if (event.getName().getType().equals(CapacityType.PRE_BATTLE)) {
+			takeCapacityIntoConsideration(event,
+					this.attackerCapacities,
+					this.defenderCapacities,
+					this.thirdPartiesCapacities);
+		}
+	}
 
 	// TODO: update when receiving battlePhaseReady event.
 	/*
