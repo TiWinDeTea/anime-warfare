@@ -18,14 +18,26 @@ public class ZoneMapTest extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         ZonedMap zones = new ZonedMap();
-        primaryStage.setScene(new Scene(zones));
+        Scene scene = new Scene(zones);
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         EventDispatcher.registerListener(ZoneClickedEvent.class, event -> {
             if (event.getMouseEvent().getButton().equals(MouseButton.PRIMARY)) {
                 zones.addUnit(new GUnit(), event.getZoneID());
-            } else {
+                System.out.println(event.getMouseEvent().getX() + ", " + event.getMouseEvent().getY());
+            } else if (event.getMouseEvent().getButton().equals(MouseButton.SECONDARY)){
                 zones.removeUnit(new GUnit(), event.getZoneID());
+            } else {
+                zones.highlightNeighbour(event.getZoneID(), 1);
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    zones.unHighlightNeigbour(event.getZoneID(), 1);
+                }).start();
             }
         });
 

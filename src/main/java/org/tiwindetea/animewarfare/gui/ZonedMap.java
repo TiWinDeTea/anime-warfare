@@ -11,6 +11,7 @@ import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
+import org.tiwindetea.animewarfare.logic.GameMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,9 +55,8 @@ public class ZonedMap extends Pane {
         polygons.add(new Polygon(               // 1
                 0, 0,
                 608.0, 0,
-                633.0, 93.0,
-                558.0, 177.0,
-                528.0, 166.0,
+                411.0, 126.0,
+                422.0, 146.0,
                 401.0, 142.0,
                 330.0, 142.0,
                 286.0, 171.0,
@@ -65,13 +65,13 @@ public class ZonedMap extends Pane {
                 225.0, 177.0,
                 172.0, 166.0,
                 99.0, 169.0,
-                33.0, 189.0,
+                35.0, 181.0,
                 0, 218.0,
                 0, 0
         ));
 
         polygons.add(new Polygon(               // 2
-                4.0, 219.0,
+                0.0, 218.0,
                 35.0, 181.0,
                 100.0, 166.0,
                 173.0, 164.0,
@@ -196,8 +196,10 @@ public class ZonedMap extends Pane {
                 881.0, 515.0,
                 894.0, 529.0,
                 893.0, 605.0,
-                876.0, 639.0,
-                708.0, 632.0,
+                893.0, 603.0,
+                847.0, 554.0,
+                762.0, 575.0,
+                706.0, 629.0,
                 681.0, 625.0,
                 638.0, 584.0,
                 706.0, 506.0,
@@ -208,6 +210,10 @@ public class ZonedMap extends Pane {
         ));
         polygons.add(new Polygon(               // 11
                 706.0, 629.0,
+                762.0, 575.0,
+                847.0, 554.0,
+                893.0, 603.0,
+                875.0, 637.0,
                 877.0, 641.0,
                 920.0, 669.0,
                 944.0, 696.0,
@@ -289,8 +295,11 @@ public class ZonedMap extends Pane {
                 768.0, 152.0,
                 744.0, 125.0,
                 682.0, 119.0,
-                635.0, 95.0,
-                613.0, 8.0
+                635.0, 93.0,
+                555.0, 176.0,
+                422.0, 146.0,
+                411.0, 126.0,
+                606.0, 0.0
         ));
 
 
@@ -328,11 +337,19 @@ public class ZonedMap extends Pane {
     }
 
     public void highlightNeighbour(int zoneID, int distance) {
-
+        for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
+            Polygon p = ZONES.get(integer.intValue()).getKey();
+            p.setOpacity(.3);
+            p.setFill(Color.ORANGE);
+        }
     }
 
     public void unHighlightNeigbour(int zoneID, int distance) {
-
+        for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
+            Polygon p = ZONES.get(integer.intValue()).getKey();
+            p.setOpacity(0);
+            p.setFill(Color.WHITE);
+        }
     }
 
     private String getDescription(int zoneID) {
@@ -416,17 +433,29 @@ public class ZonedMap extends Pane {
             for (Polygon polygon : polygons) {
                 List<UnitRectangle> rectList = new ArrayList<>(20);
                 Bounds bounds = polygon.getLayoutBounds();
-                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += UnitRectangle.HEIGHT) {
-                    for (double x = bounds.getMinX() + 3; x < bounds.getMaxX(); x += UnitRectangle.WIDTH) {
-                        if (polygon.contains(x - 2, y - 2)
-                                && polygon.contains(x + UnitRectangle.WIDTH + 2, y - 2)
-                                && polygon.contains(x - 2, y + UnitRectangle.HEIGHT + 2)
-                                && polygon.contains(x + UnitRectangle.WIDTH + 2, y + UnitRectangle.HEIGHT + 2)
-                                ) {
 
-                            rectList.add(new UnitRectangle(x, y));
-                        }
+                int xdirection = 1;
+                boolean pouredOne = false;
+
+                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += UnitRectangle.HEIGHT) {
+                    double x = xdirection > 0 ? bounds.getMinX() + 3 : bounds.getMaxX() - 3;
+                    while (x > bounds.getMinX() && x < bounds.getMaxX()) {
+
+                        do {
+                            if (polygon.contains(x - 2, y - 2)
+                                    && polygon.contains(x + UnitRectangle.WIDTH + 2, y - 2)
+                                    && polygon.contains(x - 2, y + UnitRectangle.HEIGHT + 2)
+                                    && polygon.contains(x + UnitRectangle.WIDTH + 2, y + UnitRectangle.HEIGHT + 2)
+                                    ) {
+                                rectList.add(new UnitRectangle(x, y));
+                                pouredOne = true;
+                            }
+                            x += xdirection;
+                        }while(!pouredOne && x < bounds.getMaxX() && x > bounds.getMinX());
+                        x += (UnitRectangle.WIDTH - 1) * xdirection;
                     }
+                    pouredOne = false;
+                    xdirection = -xdirection;
                 }
                 getChildren().addAll(rectList);
 

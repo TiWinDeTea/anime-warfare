@@ -52,7 +52,7 @@ public class GameMap {
 			{0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 2, 1, 2, 2, 3, 2}, // 7
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 2, 1, 1, 2, 2}, // 8
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 3, 3, 3, 3, 3}, // 9
-			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2}, // 10
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 1, 2}, // 10
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 1}, // 11
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2}, // 12
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2}, // 13
@@ -90,6 +90,23 @@ public class GameMap {
 
 	public static boolean areAdjacent(int source, int destination) {
 		return DISTANCES[source][destination] == 1;
+	}
+
+	/**
+	 *
+	 * @return All zones at at most {@code distance} distance from the source zone,
+	 * except the zone itself
+	 */
+	public static List<Integer> getZonesAtAtMostExcept(int source, int distance){
+		List<Integer> ans = new ArrayList<>(17);
+		int[] dist = DISTANCES[source];
+		for (int i = 0; i < dist.length; i++) {
+			int j = dist[i];
+			if (j <= distance && j != 0) {
+				ans.add(new Integer(i));
+			}
+		}
+		return ans;
 	}
 
 	public Zone getZone(int id) {
