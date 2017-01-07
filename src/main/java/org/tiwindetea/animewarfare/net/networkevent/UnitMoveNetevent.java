@@ -22,56 +22,56 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests;
+package org.tiwindetea.animewarfare.net.networkevent;
 
+import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class NetUnitEvent {
+public class UnitMoveNetevent implements Event<UnitNeteventListener> {
 
-	private final UnitCounterEvent.Type type;
-	private final FactionType factionType;
-	private final UnitType unitType;
+    private final int destination;
+    private final int source;
+    private final int ID;
+    private final FactionType factionType;
+    private final UnitType unitType;
 
-	/**
-	 * Default constructor, required by Kryo.net
-	 */
-	public NetUnitEvent() {
-		this.type = null;
-		this.factionType = null;
-		this.unitType = null;
-	}
+    public UnitMoveNetevent(NetUnitMoveEvent unitEvent) {
+        this.destination = unitEvent.getDestination();
+        this.source = unitEvent.getSource();
+        this.ID = unitEvent.getID();
+        this.factionType = unitEvent.getFactionType();
+        this.unitType = unitEvent.getUnitType();
+    }
 
-	public NetUnitEvent(UnitCounterEvent event) {
-		this.type = event.getType();
-		this.factionType = event.getFaction();
-		this.unitType = event.getUnitType();
-	}
+    @Override
+    public void notify(UnitNeteventListener listener) {
+        listener.handleUnitMovedNetevent(this);
+    }
 
-	public NetUnitEvent(UnitCounterEvent.Type type,
-	                    int unitID,
-	                    int zoneID,
-	                    FactionType factionType,
-	                    UnitType unitType) {
-		this.type = type;
-		this.factionType = factionType;
-		this.unitType = unitType;
-	}
+    public int getDestination() {
+        return this.destination;
+    }
 
-	public UnitCounterEvent.Type getType() {
-		return this.type;
-	}
+    public int getSource() {
+        return this.source;
+    }
 
-	public FactionType getFactionType() {
-		return this.factionType;
-	}
+    public int getUnitID() {
+        return this.ID;
+    }
 
-	public UnitType getUnitType() {
-		return this.unitType;
-	}
+    public FactionType getFactionType() {
+        return this.factionType;
+    }
+
+    public UnitType getUnitType() {
+        return this.unitType;
+    }
+
 }

@@ -32,5 +32,5 @@ import java.util.EventListener;
  */
 public interface UnitNeteventListener extends EventListener {
 
-    void handleUnitNetevent(UnitNetevent event);
+    void handleUnitMovedNetevent(UnitMoveNetevent event);
 }

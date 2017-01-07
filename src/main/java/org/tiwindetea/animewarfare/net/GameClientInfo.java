@@ -18,7 +18,7 @@ public class GameClientInfo implements NetworkedClass {
 
     }
 
-    GameClientInfo(int id) {
+    public GameClientInfo(int id) {
         this.id = id;
     }
 

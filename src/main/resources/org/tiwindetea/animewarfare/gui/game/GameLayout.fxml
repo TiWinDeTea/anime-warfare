@@ -20,7 +20,11 @@
             <right>
             </right>
             <center>
-                <HBox fx:id="hBox" alignment="CENTER" />
+            <VBox alignment="CENTER">
+               <children>
+                      <HBox fx:id="hBox" alignment="CENTER" />
+               </children>
+            </VBox>
             </center>
         </BorderPane>
     </children>

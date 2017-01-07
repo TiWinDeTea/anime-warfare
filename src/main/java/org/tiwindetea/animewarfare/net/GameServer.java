@@ -43,8 +43,6 @@ import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEventListener;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEventListener;
-import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
-import org.tiwindetea.animewarfare.logic.events.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
@@ -56,6 +54,8 @@ import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEventListener;
+import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
+import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
@@ -72,43 +72,8 @@ import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
-import org.tiwindetea.animewarfare.net.networkrequests.NetUnitEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitsRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectUnitsRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectWoundedUnitsRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.client.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -527,17 +492,6 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetUnitEvent unitEvent) {
-            if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(
-                        new UnitCounterEvent(
-                                unitEvent.getType(),
-                                unitEvent.getFactionType(),
-                                unitEvent.getUnitType()
-                        ));
-            }
-        }
-
         // NetSendable classes, alphabetical order on second argument type
         public void received(Connection connection, NetBattlePhaseReadyRequest ignored) {
             if (isLegit(connection)) {
@@ -723,7 +677,7 @@ public class GameServer {
             MarketingLadderUpdatedEventListener,
             NumberOfFansChangedEventListener,
             StudioEventListener,
-            UnitCounterEventListener {
+            UnitMovedEventListener {
 
         private final Server server;
 
@@ -833,8 +787,8 @@ public class GameServer {
         }
 
         @Override
-        public void handleUnitEvent(UnitCounterEvent event) {
-            this.server.sendToAllTCP(new NetUnitEvent(event));
+        public void handleUnitMoved(UnitMovedEvent event) {
+            this.server.sendToAllTCP(new NetUnitMoveEvent(event));
         }
 
         // todo (idem)

@@ -34,30 +34,39 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
  */
 public class StudioNetevent implements Event<StudioNeteventListener> {
     private final int playerID;
-    private final int studioID;
+    private final int zoneID;
     private final StudioEvent.Type type;
 
     public StudioNetevent(NetStudio newStudio) {
-        this.studioID = newStudio.getStudioID();
+        this.zoneID = newStudio.getZoneID();
         this.playerID = newStudio.getPlayerID();
         this.type = newStudio.getType();
     }
 
     @Override
     public void notify(StudioNeteventListener listener) {
-        if (this.type == StudioEvent.Type.ADDED || this.type == StudioEvent.Type.ADDED_PLAYER) {
-            listener.handleStudioCreation(this);
-        } else {
-            listener.handleStudioRemoved(this);
+        switch (this.type) {
+            case ADDED:
+                listener.handleStudioCreation(this);
+                break;
+            case ADDED_PLAYER:
+                listener.handleStudioCaptured(this);
+                break;
+            case REMOVED:
+                listener.handleStudioRemoved(this);
+                break;
+            case REMOVED_PLAYER:
+                listener.handleStudioDeserted(this);
+                break;
         }
     }
 
-    public int getStudioID() {
-        if (this.studioID == -1) {
+    public int getZoneID() {
+        if (this.zoneID == -1) {
             throw new IllegalStateException();
         }
 
-        return this.studioID;
+        return this.zoneID;
     }
 
     public int getPlayerID() {

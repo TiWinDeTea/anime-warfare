@@ -22,47 +22,22 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui;
+package org.tiwindetea.animewarfare.gui.game;
 
-import javafx.scene.Parent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-
-import java.util.Random;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GUnit extends Parent {
+public abstract class GComponent extends StackPane {
 
-    private final int ID;
-
-    public GUnit() {
-        //todo
-        this.ID = 0;
-        Random r = new Random();
-        getChildren().add(new Circle(15, Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256))));
+    protected GComponent() {
     }
 
-    public int getID() {
-        return this.ID;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.ID;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof GUnit && this.equals((GUnit) o);
-    }
-
-    public boolean equals(GUnit u) {
-        if (u != null) {
-            return this.ID == u.ID;
-        }
-        return false;
+    public GComponent(Image image) {
+        getChildren().add(new ImageView(image));
     }
 }

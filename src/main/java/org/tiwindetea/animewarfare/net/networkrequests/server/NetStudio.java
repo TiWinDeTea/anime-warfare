@@ -57,7 +57,7 @@ public class NetStudio implements NetReceivable {
         this.type = event.getType();
     }
 
-    public int getStudioID() {
+    public int getZoneID() {
         return this.studioID;
     }
 

@@ -34,5 +34,9 @@ public interface StudioNeteventListener extends EventListener {
 
     void handleStudioCreation(StudioNetevent event);
 
-    void handleStudioRemoved(StudioNetevent eventstudioNetevent);
+    void handleStudioRemoved(StudioNetevent event);
+
+    void handleStudioDeserted(StudioNetevent event);
+
+    void handleStudioCaptured(StudioNetevent event);
 }

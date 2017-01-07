@@ -1,19 +1,16 @@
 package org.tiwindetea.animewarfare.gui.game;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.gui.GMap;
-import org.tiwindetea.animewarfare.gui.GUnit;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
@@ -32,11 +29,6 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	@FXML
 	private HBox hBox;
-
-	private Timeline scrollLeft;
-	private Timeline scrollRight;
-	private Timeline scrollUp;
-	private Timeline scrollDown;
 
 	private GMap map;
 
@@ -66,7 +58,13 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private void testing() {
 		EventDispatcher.registerListener(ZoneClickedEvent.class, event -> {
 			if (event.getMouseEvent().getButton().equals(MouseButton.PRIMARY)) {
-				this.map.addUnit(new GUnit(), event.getZoneID());
+				if (event.getMouseEvent().isControlDown()) {
+					this.map.switchZonesGridsDisplay();
+				} else if (event.getMouseEvent().isShiftDown()) {
+					this.map.switchUnitsGridsDisplay();
+				} else {
+					this.map.addUnit(new GUnit(), event.getZoneID());
+				}
 			} else if (event.getMouseEvent().getButton().equals(MouseButton.SECONDARY)) {
 				this.map.removeUnit(new GUnit(), event.getZoneID());
 			} else {
@@ -85,59 +83,21 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	private void initScroll() {
 
-		final Duration SCROLL_RATE = Duration.millis(20);
-		final double SCROLL_SPEED = 0.01;
-		final double SCROLL_SENSITIVITY = 50.0;
+		ScrollPane scrollPane = new ScrollPane();
 
-
-		ScrollPane scrollPane = new ScrollPane(this.map);
+		scrollPane.setContent(new Group(this.map));
+		scrollPane.setStyle("-fx-background-color:transparent;"); // TODO externalize
 		this.hBox.getChildren().add(scrollPane);
 
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		this.scrollLeft = new Timeline(new KeyFrame(SCROLL_RATE, event -> scrollPane.setHvalue(scrollPane.getHvalue() - SCROLL_SPEED)));
-		this.scrollRight = new Timeline(new KeyFrame(SCROLL_RATE, event -> scrollPane.setHvalue(scrollPane.getHvalue() + SCROLL_SPEED)));
-		this.scrollUp = new Timeline(new KeyFrame(SCROLL_RATE, event -> scrollPane.setVvalue(scrollPane.getVvalue() - SCROLL_SPEED)));
-		this.scrollDown = new Timeline(new KeyFrame(SCROLL_RATE, event -> scrollPane.setVvalue(scrollPane.getVvalue() + SCROLL_SPEED)));
-		this.scrollLeft.setCycleCount(Timeline.INDEFINITE);
-		this.scrollRight.setCycleCount(Timeline.INDEFINITE);
-		this.scrollUp.setCycleCount(Timeline.INDEFINITE);
-		this.scrollDown.setCycleCount(Timeline.INDEFINITE);
 
-		scrollPane.setOnMouseMoved(e -> {
-			if (e.getX() < SCROLL_SENSITIVITY) {
-				this.scrollLeft.play();
-			} else if (e.getX() - scrollPane.getWidth() > -SCROLL_SENSITIVITY) {
-				this.scrollRight.play();
-			} else {
-				this.scrollLeft.stop();
-				this.scrollRight.stop();
-			}
-
-			if (e.getY() < SCROLL_SENSITIVITY) {
-				this.scrollUp.play();
-			} else if (e.getY() - scrollPane.getHeight() > -SCROLL_SENSITIVITY) {
-				this.scrollDown.play();
-			} else {
-				this.scrollUp.stop();
-				this.scrollDown.stop();
-			}
-		});
-
-		scrollPane.setOnMouseExited(e -> {
-			this.scrollLeft.stop();
-			this.scrollRight.stop();
-			this.scrollUp.stop();
-			this.scrollDown.stop();
-		});
+		scrollPane.setPannable(true);
+		scrollPane.addEventFilter(ScrollEvent.ANY, e -> this.map.scrollEvent(e));
 	}
 
 	@Override
 	public void handleQuitApplication() {
-		this.scrollLeft.stop();
-		this.scrollRight.stop();
-		this.scrollUp.stop();
-		this.scrollDown.stop();
 		EventDispatcher.unregisterListener(QuitApplicationEvent.class, this);
 	}
 }

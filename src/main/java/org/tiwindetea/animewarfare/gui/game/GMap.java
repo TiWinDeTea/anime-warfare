@@ -22,20 +22,30 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui;
+package org.tiwindetea.animewarfare.gui.game;
 
+import com.esotericsoftware.minlog.Log;
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.logic.GameMap;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.UnitMoveNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitNeteventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +56,7 @@ import java.util.List;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GMap extends Group {
+public class GMap extends Pane implements UnitNeteventListener, StudioNeteventListener, BattleNeteventListener, UnitCrea {
 
     // TODO: rework this class
 
@@ -54,18 +64,42 @@ public class GMap extends Group {
     private final Group POLYGONES = new Group();
     private final ZoneUnitMap MAP = new ZoneUnitMap();
     private final List<Pair<Polygon, Tooltip>> ZONES = new ArrayList<>(17);
+    private boolean isDisplayingZonesGrids = false;
+    private boolean isDisplayinGComponentsGrids = false;
 
     public GMap() {
         super();
-        this.MAP_PICT = new ImageView(new Image(this.getClass().getClassLoader().getResource("org/tiwindetea/animewarfare/gui/game/pictures/map.png").toString()));
+        Image pic = new Image(this.getClass().getClassLoader().getResource("org/tiwindetea/animewarfare/gui/game/pictures/map.png").toString());
+        this.MAP_PICT = new ImageView(pic);
         initZones();
         getChildren().addAll(this.MAP_PICT, this.POLYGONES, this.MAP);
         this.MAP_PICT.autosize();
         this.POLYGONES.autosize();
         this.MAP.autosize();
+
+        this.setOnScroll(e -> {
+            setScaleX(getScaleX() + getScaleX() * e.getDeltaY() / 1000.0); // TODO externalize & settings
+            setScaleY(getScaleY() + getScaleY() * e.getDeltaY() / 1000.0); // TODO externalize & settings
+        });
     }
 
     private void initZones() {
+
+        List<Polygon> polygons = createPolyZone();
+        for (int i = 0; i < polygons.size(); i++) {
+            int magic_i = i;
+            Polygon polygon = polygons.get(i);
+            setDefaultBehavior(polygon);
+            polygon.setOnMouseClicked(e -> EventDispatcher.send(new ZoneClickedEvent(magic_i, e)));
+            Tooltip tooltip = new Tooltip(getDescription(i));
+            Tooltip.install(polygon, tooltip);
+            this.ZONES.add(new Pair(polygon, tooltip));
+        }
+        this.POLYGONES.getChildren().addAll(polygons);
+        this.MAP.setZones(polygons);
+    }
+
+    private static List<Polygon> createPolyZone() {
 
         List<Polygon> polygons = new ArrayList<>(17);
 
@@ -330,39 +364,54 @@ public class GMap extends Group {
                 411.0, 126.0,
                 606.0, 0.0
         ));
-
-
-        for (int i = 0; i < polygons.size(); i++) {
-            int magic_i = i;
-            Polygon polygon = polygons.get(i);
-            polygon.setFill(Color.WHITE);
-            polygon.setStroke(Color.BLACK);
-            polygon.setStrokeWidth(3);
-            polygon.setOpacity(0);
-            polygon.setPickOnBounds(false);
-            polygon.setOnMouseEntered(e -> polygon.setOpacity(0.3));
-            polygon.setOnMouseExited(e -> polygon.setOpacity(0));
-            polygon.setOnMouseClicked(e -> EventDispatcher.send(new ZoneClickedEvent(magic_i, e)));
-            Tooltip tooltip = new Tooltip(getDescription(i));
-            Tooltip.install(polygon, tooltip);
-            this.ZONES.add(new Pair(polygon, tooltip));
-        }
-        this.POLYGONES.getChildren().addAll(polygons);
-        this.MAP.setZones(polygons);
+        return polygons;
     }
 
-    public void addUnit(GUnit unit, int zoneID) {
-        this.MAP.put(zoneID, unit);
+    public void addGComponentFxThread(GComponent unit, int zoneID) {
+        Platform.runLater(() -> addGComponent(unit, zoneID));
+    }
+
+    public void addGComponent(GComponent unit, int zoneID) {
+        this.MAP.put(unit, zoneID);
         this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
     }
 
-    public void removeUnit(GUnit unit, int zoneID) {
+    public void removeGComponentFxThread(GComponent unit, int zoneID) {
+        Platform.runLater(() -> removeGComponent(unit, zoneID));
+    }
+
+    public void removeGComponent(GComponent unit, int zoneID) {
         this.MAP.remove(unit, zoneID);
         this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
     }
 
+    public void moveGComponentFxThread(GComponent unit, int source, int destination) {
+        Platform.runLater(() -> moveGComponent(unit, source, destination));
+    }
+
+    public void moveGComponent(GComponent unit, int source, int destination) {
+        this.MAP.move(unit, source, destination);
+    }
+
+    public void unHighlightFxThread(int zoneID) {
+        Platform.runLater(() -> unHighlight(zoneID));
+    }
+
     public void unHighlight(int zoneID) {
-        this.ZONES.get(zoneID).getKey().setOpacity(0);
+        setDefaultBehavior(this.ZONES.get(zoneID).getKey());
+    }
+
+    public void highLightFxThread(int zone, Color color) {
+        Platform.runLater(() -> highLightFxThread(zone, color));
+    }
+
+    public void highlight(int zone, Color color) {
+        Polygon poly = this.ZONES.get(zone).getKey();
+        poly.setOnMouseEntered(e -> {
+        });
+        poly.setOnMouseExited(e -> {
+        });
+        poly.setFill(color);
     }
 
     public void highlightNeighbour(int zoneID, int distance) {
@@ -381,29 +430,71 @@ public class GMap extends Group {
         }
     }
 
-    private String getDescription(int zoneID) {
-        return "Number of units zone " + zoneID + ": " + this.MAP.getNumberOfUnits(zoneID);
+    public void displayUnitsGrids(boolean b) {
+        if (b) {
+            if (!this.isDisplayinGComponentsGrids) {
+                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.showGrid());
+                this.isDisplayinGComponentsGrids = true;
+            }
+        } else {
+            if (this.isDisplayinGComponentsGrids) {
+                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.hideGrid());
+                this.isDisplayinGComponentsGrids = false;
+            }
+        }
     }
 
-    private static final class UnitRectangle extends Parent {
+    public void displayZonesGrids(boolean b) {
+        if (b) {
+            if (!this.isDisplayingZonesGrids) {
+                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> {
+                    poly.setFill(Color.TRANSPARENT);
+                    poly.setOpacity(1);
+                    poly.setOnMouseEntered(e -> poly.setFill(Color.rgb(255, 255, 255, 0.3)));
+                    poly.setOnMouseExited(e -> poly.setFill(Color.TRANSPARENT));
+                });
+                this.isDisplayingZonesGrids = true;
+            }
+        } else {
+            if (this.isDisplayingZonesGrids) {
+                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> setDefaultBehavior(poly));
+                this.isDisplayingZonesGrids = false;
+            }
+        }
+    }
+
+    public void switchUnitsGridsDisplay() {
+        this.displayUnitsGrids(!this.isDisplayinGComponentsGrids);
+    }
+
+    public void switchZonesGridsDisplay() {
+        this.displayZonesGrids(!this.isDisplayingZonesGrids);
+    }
+
+    public void scrollEvent(ScrollEvent e) {
+        this.getOnScroll().handle(e);
+    }
+
+    private class GComponentRectangle extends Parent {
 
         final double x, y;
         static final int WIDTH = 42;
         static final int HEIGHT = 42;
+        final Polygon grid;
 
-        private GUnit unit;
+        private GComponent unit;
 
-        public UnitRectangle(double x, double y) {
+        public GComponentRectangle(double x, double y) {
             this.x = x;
-            this.y = y;/*
-            Polygon p = new Polygon(x, y, x, y + WIDTH, x + WIDTH, y + WIDTH, x + WIDTH, y);
-            p.setFill(Color.TRANSPARENT);
-            p.setStroke(Color.RED);
-            p.setMouseTransparent(true);
-            getChildren().add(p);*/
+            this.y = y;
+
+            this.grid = new Polygon(x, y, x, y + WIDTH, x + WIDTH, y + WIDTH, x + WIDTH, y);
+            this.grid.setFill(Color.TRANSPARENT);
+            this.grid.setStroke(Color.YELLOW);
+            this.grid.setMouseTransparent(true);
         }
 
-        public void setUnit(GUnit unit) {
+        public void setUnit(GComponent unit) {
             if (this.unit != null) {
                 this.getChildren().remove(this.unit);
             }
@@ -415,16 +506,24 @@ public class GMap extends Group {
             this.unit = unit;
         }
 
-        public GUnit getUnit() {
+        public GComponent getUnit() {
             return this.unit;
+        }
+
+        public void showGrid() {
+            getChildren().add(this.grid);
+        }
+
+        public void hideGrid() {
+            getChildren().remove(this.grid);
         }
 
         @Override
         public boolean equals(Object o) {
-            return (o instanceof UnitRectangle) && this.equals((UnitRectangle) o);
+            return (o instanceof GComponentRectangle) && this.equals((GComponentRectangle) o);
         }
 
-        public boolean equals(UnitRectangle r) {
+        public boolean equals(GComponentRectangle r) {
             return r.x == this.x && r.y == this.y;
         }
 
@@ -434,14 +533,14 @@ public class GMap extends Group {
         }
     }
 
-    private static final class ZoneUnitMap extends Parent {
+    private class ZoneUnitMap extends Parent {
 
-        private static final class Int {
+        private class Int {
             int value = 0;
         }
 
-        private final HashMap<Integer, List<UnitRectangle>> map = new HashMap<>();
-        private final HashMap<Integer, List<GUnit>> orphans = new HashMap<>();
+        private final HashMap<Integer, List<GComponentRectangle>> map = new HashMap<>();
+        private final HashMap<Integer, List<GComponent>> orphans = new HashMap<>();
 
         private final List<Int> numberOfUnitsPerZone = new ArrayList<>(17);
 
@@ -460,28 +559,28 @@ public class GMap extends Group {
             int i = 0;
 
             for (Polygon polygon : polygons) {
-                List<UnitRectangle> rectList = new ArrayList<>(20);
+                List<GComponentRectangle> rectList = new ArrayList<>(20);
                 Bounds bounds = polygon.getLayoutBounds();
 
                 int xdirection = 1;
                 boolean pouredOne = false;
 
-                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += UnitRectangle.HEIGHT) {
+                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += GComponentRectangle.HEIGHT) {
                     double x = xdirection > 0 ? bounds.getMinX() + 3 : bounds.getMaxX() - 3;
                     while (x > bounds.getMinX() && x < bounds.getMaxX()) {
 
                         do {
                             if (polygon.contains(x - 2, y - 2)
-                                    && polygon.contains(x + UnitRectangle.WIDTH + 2, y - 2)
-                                    && polygon.contains(x - 2, y + UnitRectangle.HEIGHT + 2)
-                                    && polygon.contains(x + UnitRectangle.WIDTH + 2, y + UnitRectangle.HEIGHT + 2)
+                                    && polygon.contains(x + GComponentRectangle.WIDTH + 2, y - 2)
+                                    && polygon.contains(x - 2, y + GComponentRectangle.HEIGHT + 2)
+                                    && polygon.contains(x + GComponentRectangle.WIDTH + 2, y + GComponentRectangle.HEIGHT + 2)
                                     ) {
-                                rectList.add(new UnitRectangle(x, y));
+                                rectList.add(new GComponentRectangle(x, y));
                                 pouredOne = true;
                             }
                             x += xdirection;
                         } while (!pouredOne && x < bounds.getMaxX() && x > bounds.getMinX());
-                        x += (UnitRectangle.WIDTH - 1) * xdirection;
+                        x += (GComponentRectangle.WIDTH - 1) * xdirection;
                     }
                     pouredOne = false;
                     xdirection = -xdirection;
@@ -493,14 +592,14 @@ public class GMap extends Group {
             }
         }
 
-        public void put(int zoneID, GUnit unit) {
-            UnitRectangle unitRectangle = this.map.get(new Integer(zoneID)).parallelStream()
+        public GComponentRectangle put(GComponent unit, int zoneID) {
+            GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
                     .filter(ur -> ur.unit == null)
                     .findAny().orElse(null);
-            if (unitRectangle != null) {
-                unitRectangle.setUnit(unit);
+            if (gcomponentRectangle != null) {
+                gcomponentRectangle.setUnit(unit);
             } else {
-                List<GUnit> list = this.orphans.get(new Integer(zoneID));
+                List<GComponent> list = this.orphans.get(new Integer(zoneID));
                 if (list != null) {
                     list.add(unit);
                 } else {
@@ -510,36 +609,128 @@ public class GMap extends Group {
                 }
             }
             this.numberOfUnitsPerZone.get(zoneID).value++;
+            updateDescription(zoneID);
+
+            return gcomponentRectangle;
         }
 
-        public void remove(GUnit unit, int zoneID) {
-            UnitRectangle unitRectangle = this.map.get(new Integer(zoneID)).parallelStream()
+        public GComponentRectangle remove(GComponent unit, int zoneID) {
+            GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
                     .filter(ur -> unit.equals(ur.getUnit()))
                     .findAny()
                     .orElse(null);
-            if (unitRectangle != null) {
-                GUnit newUnit = null;
-                List<GUnit> list = this.orphans.get(new Integer(zoneID));
+            if (gcomponentRectangle != null) {
+                GComponent newUnit = null;
+                List<GComponent> list = this.orphans.get(new Integer(zoneID));
                 if (list != null) {
                     if (list.size() != 0) {
                         newUnit = list.remove(0);
                     }
                 }
-                unitRectangle.setUnit(newUnit);
+                gcomponentRectangle.setUnit(newUnit);
                 --this.numberOfUnitsPerZone.get(zoneID).value;
             } else {
-                List<GUnit> list = this.orphans.get(new Integer(zoneID));
+                List<GComponent> list = this.orphans.get(new Integer(zoneID));
                 if (list != null) {
                     if (list.remove(unit)) {
                         --this.numberOfUnitsPerZone.get(zoneID).value;
                     }
                 }
             }
+            updateDescription(zoneID);
+
+            return gcomponentRectangle;
+        }
+
+        public void move(GComponent unit, int source, int destination) {
+            remove(unit, source);
+            put(unit, destination);
         }
 
         public int getNumberOfUnits(int zoneID) {
             return this.numberOfUnitsPerZone.get(zoneID).value;
         }
+
+        public List<GComponentRectangle> getRectangles() {
+            List<GComponentRectangle> ans = new ArrayList<>(200);
+            for (List<GComponentRectangle> gcomponentRectangles : this.map.values()) {
+                ans.addAll(gcomponentRectangles);
+            }
+            return ans;
+        }
     }
 
+    private String getDescription(int zoneID) {
+        return "Number of units zone " + zoneID + ": " + this.MAP.getNumberOfUnits(zoneID);
+    }
+
+    private static void setDefaultBehavior(Polygon polygon) {
+        polygon.setFill(Color.WHITE);
+        polygon.setStroke(Color.BLACK);
+        polygon.setStrokeWidth(3);
+        polygon.setOpacity(0);
+        polygon.setPickOnBounds(false);
+        polygon.setOnMouseEntered(e -> polygon.setOpacity(0.3));
+        polygon.setOnMouseExited(e -> polygon.setOpacity(0));
+    }
+
+    private void updateDescription(int zoneID) {
+        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
+    }
+
+
+    @Override
+    public void handleUnitMovedNetevent(UnitMoveNetevent event) {
+        if (event.getDestination() != Integer.MIN_VALUE) {
+            if (event.getSource() != Integer.MIN_VALUE) {
+                moveGComponentFxThread(GUnit.get(event.getUnitID()), event.getSource(), event.getDestination());
+            } else {
+                addGComponentFxThread(GUnit.get(event.getUnitID()), event.getDestination());
+            }
+        } else if (event.getSource() != Integer.MIN_VALUE) {
+            removeGComponentFxThread(GUnit.get(event.getUnitID()), event.getSource());
+        } else {
+            Log.warn("Received " + UnitMoveNetevent.class.getName().toString() + " with both destination and target and 0.");
+        }
+    }
+
+    @Override
+    public void handleStudioCreation(StudioNetevent event) {
+        this.addGComponentFxThread(GStudio.getOrCreate(event.getZoneID()), event.getZoneID());
+    }
+
+    @Override
+    public void handleStudioRemoved(StudioNetevent event) {
+        this.removeGComponentFxThread(GStudio.get(event.getZoneID()), event.getZoneID());
+    }
+
+    @Override
+    public void handleStudioDeserted(StudioNetevent event) {
+        Platform.runLater(() -> GStudio.get(event.getZoneID()).setTeam(null));
+    }
+
+    @Override
+    public void handleStudioCaptured(StudioNetevent event) {
+        Platform.runLater(() -> GStudio.get(event.getZoneID()).setTeam(event.getPlayerID()));
+    }
+
+    @Override
+    public void handlePreBattle(BattleNetevent event) {
+        this.highLightFxThread(event.getZone(), Color.color(1.0f, 0.64705884f, 0.0f, 0.3));
+    }
+
+    @Override
+    public void handleDuringBattle(BattleNetevent event) {
+        // todo
+    }
+
+    @Override
+    public void handlePostBattle(BattleNetevent event) {
+        // todo
+    }
+
+    @Override
+    public void handleBattleFinished(BattleNetevent event) {
+        this.unHighlightFxThread(event.getZone());
+    }
 }
