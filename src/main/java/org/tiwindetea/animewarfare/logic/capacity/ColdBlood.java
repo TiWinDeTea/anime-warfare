@@ -34,11 +34,11 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 		@Override
 		public void handleDuringBattle(BattleEvent event) {
 			if (event.getBattleContext().getAttacker().equals(getPlayer())) {
-				if (event.getBattleContext().getDefender().getNumberOfDices() > 7) {
+				if (event.getBattleContext().getDefender().getAttack() > 7) {
 					this.me = event.getBattleContext().getAttacker();
 				}
 			} else if (event.getBattleContext().getDefender().equals(getPlayer())) {
-				if (event.getBattleContext().getDefender().getNumberOfDices() > 7) {
+				if (event.getBattleContext().getDefender().getAttack() > 7) {
 					this.me = event.getBattleContext().getDefender();
 				}
 			}
@@ -52,7 +52,7 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 		@Override
 		public void handleBattleFinished(BattleEvent event) {
 			if (this.me != null) {
-				if (this.me.getDeads() == 0) {
+				if (this.me.getNumberOfDeads() == 0) {
 					activateAndDestroy(new ColdBlood(getPlayer()));
 				}
 			}

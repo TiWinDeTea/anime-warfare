@@ -36,8 +36,10 @@ import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Benoît CORTIER
@@ -47,7 +49,7 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 	private final List<CapacityName> defenderCapacities = new ArrayList<>();
 	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
 
-	private int numberOfReady = 0;
+	private Set<Integer> playersReady = new LinkedHashSet<>();
 
 	public PreBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -93,8 +95,8 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 
 	@Override
 	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
-		this.numberOfReady++;
-		if (this.numberOfReady >= 2 + this.thirdPartiesCapacities.size()) {
+		this.playersReady.add(event.getPlayerID());
+		if (this.playersReady.size() >= 2 + this.thirdPartiesCapacities.size()) {
 			this.nextState = new DuringBattleState(this.battleContext);
 			update();
 		}

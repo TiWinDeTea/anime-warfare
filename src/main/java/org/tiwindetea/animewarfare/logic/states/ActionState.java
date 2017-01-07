@@ -52,8 +52,8 @@ import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
  *
  * @author Jérôme BOULMIER
  */
-class ActionState extends GameState implements MoveUnitEventListener, OpenStudioEventListener,
+class ActionState extends GameState implements MoveUnitsEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipTurnEventListener, StartBattleEventListener,
 		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
@@ -105,7 +105,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	private void registerEventListeners() {
-		LogicEventDispatcher.getInstance().addListener(MoveUnitEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(MoveUnitsEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(OpenStudioEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(InvokeUnitEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
@@ -146,7 +146,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	private void unregisterEventListeners() {
-		LogicEventDispatcher.getInstance().removeListener(MoveUnitEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(MoveUnitsEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(OpenStudioEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(InvokeUnitEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
@@ -172,14 +172,14 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	@Override
-	public void handleMoveUnitEvent(MoveUnitEvent event) {
+	public void handleMoveUnitsEvent(MoveUnitsEvent event) {
 		if (isInvalidPlayer(event)) {
 			return;
 		}
 
-		List<Pair<Unit, MoveUnitEvent.Movement>> validMovements = new LinkedList<>();
+		List<Pair<Unit, MoveUnitsEvent.Movement>> validMovements = new LinkedList<>();
 
-		for (MoveUnitEvent.Movement movement : event.getMovements()) {
+		for (MoveUnitsEvent.Movement movement : event.getMovements()) {
 			if (this.gameBoard.getMap().isValid(movement.getSourceZone())
 					&& this.gameBoard.getMap().isValid(movement.getDestinationZone())) {
 
@@ -203,7 +203,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			if (event.getMovements().size() == validMovements.size()) {
 				this.currentPlayer.decrementStaffPoints(MOVE_COST, validMovements.size());
 
-				for (Pair<Unit, MoveUnitEvent.Movement> movement : validMovements) {
+				for (Pair<Unit, MoveUnitsEvent.Movement> movement : validMovements) {
 					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
 					this.alreadyMovedUnit.add(Integer.valueOf(movement.getKey().getID()));
 				}

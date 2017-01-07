@@ -75,7 +75,7 @@ public class ClownArtist extends PlayerCapacity implements BattleEventListener {
 			return;
 		}
 
-		this.enemy.setNumberOfDices(this.enemy.getNumberOfDices());
+		this.enemy.decrementAttack(this.enemy.getAttack() / 2);
 	}
 
 	@Override

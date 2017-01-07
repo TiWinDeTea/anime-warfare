@@ -61,10 +61,12 @@ import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SelectWoundedsUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
@@ -78,10 +80,12 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSele
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitsRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectUnitsRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectWoundedUnitsRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
@@ -608,9 +612,9 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetMoveUnitRequest unitMoveRequest) {
+        public void received(Connection connection, NetMoveUnitsRequest unitMoveRequest) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new MoveUnitEvent(connection.getID(), unitMoveRequest.getMovements()));
+                GameServer.this.eventDispatcher.fire(new MoveUnitsEvent(connection.getID(), unitMoveRequest.getMovements()));
             }
         }
 
@@ -648,6 +652,20 @@ public class GameServer {
                 this.server.sendToAllTCP(new NetFactionSelected(faction.getFactionType(), this.room.find(connection.getID())));
                 Log.trace(GameServer.NetworkListener.class.toString(),
                         this.room.find(connection.getID()) + " selected " + faction);
+            }
+        }
+
+        public void received(Connection connection, NetSelectUnitsRequest selectUnitsRequest) {
+            if (isLegit(connection)) {
+                GameServer.this.eventDispatcher.fire(new SelectUnitsEvent(connection.getID(), selectUnitsRequest.getUnits()));
+            }
+        }
+
+        public void received(Connection connection, NetSelectWoundedUnitsRequest selectWoundedUnitsRequest) {
+            if (isLegit(connection)) {
+                GameServer.this.eventDispatcher.fire(
+                        new SelectWoundedsUnitsEvent(connection.getID(), selectWoundedUnitsRequest.getWoundedsToMove())
+                );
             }
         }
 

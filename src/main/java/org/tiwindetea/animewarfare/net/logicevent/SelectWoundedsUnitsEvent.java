@@ -22,29 +22,31 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.client;
-
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitEvent;
+package org.tiwindetea.animewarfare.net.logicevent;
 
 import java.util.Collections;
 import java.util.Set;
 
 /**
- * @author Lucas Lazare
- * @since 0.1.0
+ * @author Benoît CORTIER
  */
-public class NetMoveUnitRequest implements NetSendable {
+public class SelectWoundedsUnitsEvent extends ActionEvent<SelectWoundedUnitsEventListener> {
+	private final Set<MoveUnitsEvent.Movement> woundedsToMove;
 
-    private final Set<MoveUnitEvent.Movement> movements;
+	public SelectWoundedsUnitsEvent(int playerID, Set<MoveUnitsEvent.Movement> woundedsToMove) {
+		super(playerID);
+		this.woundedsToMove = Collections.unmodifiableSet(woundedsToMove);
+	}
 
-    /**
-     * @param movements List of the movements you want to do
-     */
-    public NetMoveUnitRequest(Set<MoveUnitEvent.Movement> movements) {
-        this.movements = Collections.unmodifiableSet(movements);
-    }
+	@Override
+	public void notify(SelectWoundedUnitsEventListener listener) {
+		listener.handleSelectWoundedUnits(this);
+	}
 
-    public Set<MoveUnitEvent.Movement> getMovements() {
-        return this.movements;
-    }
+	/**
+	 * @return an unmodifiable set as specified in {@link Collections#unmodifiableSet(Set)}
+	 */
+	public Set<MoveUnitsEvent.Movement> getWoundedsToMove() {
+		return this.woundedsToMove;
+	}
 }

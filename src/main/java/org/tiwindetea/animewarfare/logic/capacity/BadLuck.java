@@ -37,9 +37,9 @@ public class BadLuck extends PlayerCapacity {
 		public void handleBattleFinished(BattleEvent event) {
 			int deadCount = 0;
 			if (event.getBattleContext().getAttacker().getPlayer().equals(getPlayer())) {
-				deadCount = event.getBattleContext().getAttacker().getDeads();
+				deadCount = event.getBattleContext().getAttacker().getNumberOfDeads();
 			} else if (event.getBattleContext().getDefender().getPlayer().equals(getPlayer())) {
-				deadCount = event.getBattleContext().getDefender().getDeads();
+				deadCount = event.getBattleContext().getDefender().getNumberOfDeads();
 			}
 
 			if (deadCount > 0) {

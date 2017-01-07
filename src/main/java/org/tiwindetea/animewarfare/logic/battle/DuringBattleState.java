@@ -25,21 +25,23 @@
 package org.tiwindetea.animewarfare.logic.battle;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleDeadsSelectedEvent;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
-import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
-import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEventListener;
+import org.tiwindetea.animewarfare.logic.units.Unit;
+import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEventListener;
 
+import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * @author Benoît CORTIER
  */
-public class DuringBattleState extends BattleState implements BattlePhaseReadyEventListener {
+public class DuringBattleState extends BattleState implements SelectUnitsEventListener {
 	private final Random random = new Random();
 
-	private boolean deadsSelected = false;
-
-	private int numberOfReady = 0;
+	private Set<Integer> playersReady = new LinkedHashSet<>();
 
 	public DuringBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -59,23 +61,57 @@ public class DuringBattleState extends BattleState implements BattlePhaseReadyEv
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.DURING_BATTLE, this.battleContext));
 
 		// register events.
-		LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
+		LogicEventDispatcher.registerListener(SelectUnitsEvent.class, this);
 	}
 
 	@Override
 	protected void onExit() {
+		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
+			for (Unit unit : battleSide.getDeads()) {
+				unit.removeFromMap();
+				battleSide.getPlayer().getUnitCounter().removeUnit(unit.getType());
+			}
+		}
+
 		// unregister events.
-		LogicEventDispatcher.unregisterListener(BattlePhaseReadyEvent.class, this);
+		LogicEventDispatcher.unregisterListener(SelectUnitsEvent.class, this);
 	}
 
-	// TODO: listen for deads selection.
-	// event should provides all units to be killed and ignore those that are invincibles.
-
 	@Override
-	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
-		if (this.deadsSelected) {
-			this.numberOfReady++;
-			if (this.numberOfReady >= 2) {
+	public void handleSelectUnits(SelectUnitsEvent event) {
+		if (!this.playersReady.contains(event.getPlayerID())) {
+			BattleSide battleSide = null;
+			if (event.getPlayerID() == this.battleContext.getAttacker().getPlayer().getID()) {
+				battleSide = this.battleContext.getAttacker();
+			} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
+				battleSide = this.battleContext.getDefender();
+			} else {
+				return;
+			}
+
+			if (event.getUnits().size() != battleSide.getNumberOfDeads()
+					&& event.getUnits().size() != battleSide.getUnits().size()) {
+				return;
+			}
+
+			for (Unit unit : battleSide.getUnits()) {
+				if (event.getUnits().contains(unit.getID())) {
+					if (unit.getUnitBuffedCharacteristics().isAttackable()) {
+						battleSide.addDead(unit);
+					} else {
+						// if not attackable, the unit is not dead, just removed
+						// from the battle (to avoid taking wounds as well later).
+						battleSide.removeUnit(unit);
+					}
+				}
+			}
+
+			this.playersReady.add(event.getPlayerID());
+
+			if (this.playersReady.size() >= 2) {
+				this.playersReady.clear();
+				LogicEventDispatcher.send(new BattleDeadsSelectedEvent(this.battleContext));
+
 				this.nextState = new PostBattleState(this.battleContext);
 				update();
 			}

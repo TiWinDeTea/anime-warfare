@@ -25,64 +25,28 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
-public class MoveUnitEvent extends ActionEvent<MoveUnitEventListener> {
-	private final Set<Movement> movements;
+/**
+ * @author Benoît CORTIER
+ */
+public class SelectUnitsEvent extends ActionEvent<SelectUnitsEventListener> {
+	private final Set<Integer> units;
 
-	public static class Movement {
-		private final int unitID;
-		private final int sourceZone;
-		private final int destinationZone;
-
-		public Movement(int unitID, int sourceZone, int destinationZone) {
-			this.unitID = unitID;
-			this.sourceZone = sourceZone;
-			this.destinationZone = destinationZone;
-		}
-
-		public int getUnitID() {
-			return this.unitID;
-		}
-
-		public int getSourceZone() {
-			return this.sourceZone;
-		}
-
-		public int getDestinationZone() {
-			return this.destinationZone;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			Movement movement = (Movement) o;
-			return this.unitID == movement.unitID;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(this.unitID);
-		}
-	}
-
-	public MoveUnitEvent(int playerID,
-	                     Set<Movement> movements) {
+	public SelectUnitsEvent(int playerID, Set<Integer> units) {
 		super(playerID);
-		this.movements = Collections.unmodifiableSet(movements);
+		this.units = Collections.unmodifiableSet(units);
 	}
 
 	@Override
-	public void notify(MoveUnitEventListener listener) {
-		listener.handleMoveUnitEvent(this);
+	public void notify(SelectUnitsEventListener listener) {
+		listener.handleSelectUnits(this);
 	}
 
 	/**
 	 * @return an unmodifiable set as specified in {@link Collections#unmodifiableSet(Set)}
 	 */
-	public Set<Movement> getMovements() {
-		return this.movements;
+	public Set<Integer> getUnits() {
+		return this.units;
 	}
 }

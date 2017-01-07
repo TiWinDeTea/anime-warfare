@@ -38,12 +38,14 @@ import java.util.List;
  */
 public class BattleSide {
 	private final Player player;
+
 	private final List<Unit> units = new ArrayList<>();
+	private final List<Unit> deadUnits = new ArrayList<>();
+	private final List<Unit> woundedUnits = new ArrayList<>();
+
 	private int attack = 0;
 	private int woundeds = 0;
 	private int deads = 0;
-	private int numberOfDices;
-	// TODO: Add dead unit : See ColdBlood#handleBattleFinished
 
 	public BattleSide(Player player) {
 		this.player = player;
@@ -65,15 +67,39 @@ public class BattleSide {
 		this.units.remove(unit);
 	}
 
+	public List<Unit> getDeads() {
+		return Collections.unmodifiableList(this.deadUnits);
+	}
+
+	public void addDead(Unit unit) {
+		this.deadUnits.add(unit);
+	}
+
+	public void removeDead(Unit unit) {
+		this.deadUnits.remove(unit);
+	}
+
+	public List<Unit> getWoundeds() {
+		return Collections.unmodifiableList(this.woundedUnits);
+	}
+
+	public void addWounded(Unit unit) {
+		this.woundedUnits.add(unit);
+	}
+
+	public void removeWounded(Unit unit) {
+		this.woundedUnits.remove(unit);
+	}
+
 	public int getAttack() {
 		return this.attack;
 	}
 
-	public int getWoundeds() {
+	public int getNumberOfWoundeds() {
 		return this.woundeds;
 	}
 
-	public int getDeads() {
+	public int getNumberOfDeads() {
 		return this.deads;
 	}
 
@@ -99,13 +125,5 @@ public class BattleSide {
 
 	public void decrementDeads(int value) {
 		this.deads -= value;
-	}
-
-	public int getNumberOfDices() {
-		return this.numberOfDices;
-	}
-
-	public void setNumberOfDices(int numberOfDices) {
-		this.numberOfDices = numberOfDices;
 	}
 }
