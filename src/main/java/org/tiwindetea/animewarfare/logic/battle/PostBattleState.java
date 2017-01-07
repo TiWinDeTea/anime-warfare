@@ -29,6 +29,8 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
@@ -40,12 +42,14 @@ import java.util.Map;
 /**
  * @author Benoît CORTIER
  */
-public class PostBattleState extends BattleState implements UseCapacityEventListener {
+public class PostBattleState extends BattleState implements UseCapacityEventListener, BattlePhaseReadyEventListener {
 	private final List<CapacityName> attackerCapacities = new ArrayList<>();
 	private final List<CapacityName> defenderCapacities = new ArrayList<>();
 	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
 
 	private boolean woundedsSelected = false;
+
+	private int numberOfReady = 0;
 
 	public PostBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -88,9 +92,14 @@ public class PostBattleState extends BattleState implements UseCapacityEventList
 		}
 	}
 
-	// TODO: update when receiving battlePhaseReady event.
-	/*
-		this.nextState = new BattleEndedState()
-		update();
-	 */
+	@Override
+	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
+		if (this.woundedsSelected) {
+			this.numberOfReady++;
+			if (this.numberOfReady >= 2 + this.thirdPartiesCapacities.size()) {
+				this.nextState = new BattleEndedState();
+				update();
+			}
+		}
+	}
 }

@@ -29,6 +29,8 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
@@ -40,10 +42,12 @@ import java.util.Map;
 /**
  * @author Benoît CORTIER
  */
-public class PreBattleState extends BattleState implements UseCapacityEventListener {
+public class PreBattleState extends BattleState implements UseCapacityEventListener, BattlePhaseReadyEventListener {
 	private final List<CapacityName> attackerCapacities = new ArrayList<>();
 	private final List<CapacityName> defenderCapacities = new ArrayList<>();
 	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
+
+	private int numberOfReady = 0;
 
 	public PreBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -61,6 +65,7 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 
 		// register events.
 		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
+		LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
 	}
 
 	@Override
@@ -73,6 +78,7 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 
 		// unregister events.
 		LogicEventDispatcher.unregisterListener(UseCapacityEvent.class, this);
+		LogicEventDispatcher.unregisterListener(BattlePhaseReadyEvent.class, this);
 	}
 
 	@Override
@@ -85,9 +91,12 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 		}
 	}
 
-	// TODO: update when receiving battlePhaseReady event.
-	/*
-		this.nextState = new DuringBattleState(this.battleContext);
-		update();
-	 */
+	@Override
+	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
+		this.numberOfReady++;
+		if (this.numberOfReady >= 2 + this.thirdPartiesCapacities.size()) {
+			this.nextState = new DuringBattleState(this.battleContext);
+			update();
+		}
+	}
 }

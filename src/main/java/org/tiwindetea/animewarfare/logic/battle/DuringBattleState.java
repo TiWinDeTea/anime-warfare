@@ -26,14 +26,20 @@ package org.tiwindetea.animewarfare.logic.battle;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
+import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEventListener;
 
 import java.util.Random;
 
 /**
  * @author Benoît CORTIER
  */
-public class DuringBattleState extends BattleState {
+public class DuringBattleState extends BattleState implements BattlePhaseReadyEventListener {
 	private final Random random = new Random();
+
+	private boolean deadsSelected = false;
+
+	private int numberOfReady = 0;
 
 	public DuringBattleState(BattleContext battleContext) {
 		super(battleContext);
@@ -53,21 +59,28 @@ public class DuringBattleState extends BattleState {
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.DURING_BATTLE, this.battleContext));
 
 		// register events.
+		LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
 	}
 
 	@Override
 	protected void onExit() {
 		// unregister events.
+		LogicEventDispatcher.unregisterListener(BattlePhaseReadyEvent.class, this);
 	}
 
 	// TODO: listen for deads selection.
 	// event should provides all units to be killed and ignore those that are invincibles.
 
-	// TODO: update when receiving battlePhaseReady event.
-	/*
-		this.nextState = new PostBattleState(this.battleContext)
-		update();
-	 */
+	@Override
+	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
+		if (this.deadsSelected) {
+			this.numberOfReady++;
+			if (this.numberOfReady >= 2) {
+				this.nextState = new PostBattleState(this.battleContext);
+				update();
+			}
+		}
+	}
 
 	// helper
 	private void computeWoundedsAndDeads(BattleSide attacker, BattleSide target) {
