@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleDeadsSelectedEvent;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
@@ -43,8 +44,8 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 
 	private Set<Integer> playersReady = new LinkedHashSet<>();
 
-	public DuringBattleState(BattleContext battleContext) {
-		super(battleContext);
+	public DuringBattleState(BattleContext battleContext, GameMap map) {
+		super(battleContext, map);
 	}
 
 	@Override
@@ -79,48 +80,56 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 
 	@Override
 	public void handleSelectUnits(SelectUnitsEvent event) {
-		if (!this.playersReady.contains(event.getPlayerID())) {
-			BattleSide battleSide = null;
-			if (event.getPlayerID() == this.battleContext.getAttacker().getPlayer().getID()) {
-				battleSide = this.battleContext.getAttacker();
-			} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
-				battleSide = this.battleContext.getDefender();
-			} else {
-				return;
-			}
+		if (this.playersReady.contains(event.getPlayerID())) {
+			return;
+		}
 
-			if (event.getUnits().size() != battleSide.getNumberOfDeads()
-					&& event.getUnits().size() != battleSide.getUnits().size()) {
-				return;
-			}
+		BattleSide battleSide;
+		if (event.getPlayerID() == this.battleContext.getAttacker().getPlayer().getID()) {
+			battleSide = this.battleContext.getAttacker();
+		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
+			battleSide = this.battleContext.getDefender();
+		} else {
+			return;
+		}
 
-			for (Unit unit : battleSide.getUnits()) {
-				if (event.getUnits().contains(unit.getID())) {
-					if (unit.getUnitBuffedCharacteristics().isAttackable()) {
-						battleSide.addDead(unit);
-					} else {
-						// if not attackable, the unit is not dead, just removed
-						// from the battle (to avoid taking wounds as well later).
-						battleSide.removeUnit(unit);
-					}
+		if (event.getUnits().size() != battleSide.getNumberOfDeads()
+				&& event.getUnits().size() != battleSide.getUnits().size()) {
+			return;
+		}
+
+		if (event.getUnits().stream()
+				.anyMatch(id -> battleSide.getUnits().stream()
+						.anyMatch(u -> id != u.getID()))
+				) {
+			return; // ohw! This unit is not concerned!
+		}
+
+		for (Unit unit : battleSide.getUnits()) {
+			if (event.getUnits().contains(unit.getID())) {
+				if (unit.getUnitBuffedCharacteristics().isAttackable()) {
+					battleSide.addDead(unit);
+				} else {
+					// if not attackable, the unit is not dead, just removed
+					// from the battle (to avoid taking wounds as well later).
+					battleSide.removeUnit(unit);
 				}
 			}
+		}
 
-			this.playersReady.add(event.getPlayerID());
+		this.playersReady.add(event.getPlayerID());
 
-			if (this.playersReady.size() >= 2) {
-				this.playersReady.clear();
-				LogicEventDispatcher.send(new BattleDeadsSelectedEvent(this.battleContext));
+		if (this.playersReady.size() >= 2) {
+			LogicEventDispatcher.send(new BattleDeadsSelectedEvent(this.battleContext));
 
-				this.nextState = new PostBattleState(this.battleContext);
-				update();
-			}
+			this.nextState = new PostBattleState(this.battleContext, this.map);
+			update();
 		}
 	}
 
 	// helper
 	private void computeWoundedsAndDeads(BattleSide attacker, BattleSide target) {
-		for (int i = 0; i < this.battleContext.getAttacker().getAttack(); i++) {
+		for (int i = 0; i < attacker.getAttack(); i++) {
 			int roll = this.random.nextInt() % 6;
 			if (roll >= 3) {
 				if (roll == 5) { // dead

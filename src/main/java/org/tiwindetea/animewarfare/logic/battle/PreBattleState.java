@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
@@ -51,8 +52,8 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 
 	private Set<Integer> playersReady = new LinkedHashSet<>();
 
-	public PreBattleState(BattleContext battleContext) {
-		super(battleContext);
+	public PreBattleState(BattleContext battleContext, GameMap map) {
+		super(battleContext, map);
 	}
 
 	@Override
@@ -97,7 +98,7 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
 		this.playersReady.add(event.getPlayerID());
 		if (this.playersReady.size() >= 2 + this.thirdPartiesCapacities.size()) {
-			this.nextState = new DuringBattleState(this.battleContext);
+			this.nextState = new DuringBattleState(this.battleContext, this.map);
 			update();
 		}
 	}

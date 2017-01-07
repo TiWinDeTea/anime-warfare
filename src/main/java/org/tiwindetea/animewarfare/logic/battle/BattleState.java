@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.logic.battle;
 
 import org.lomadriel.lfc.statemachine.State;
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
@@ -40,10 +41,13 @@ import java.util.Map;
 public abstract class BattleState extends State {
 	protected BattleContext battleContext;
 
+	protected GameMap map;
+
 	protected State nextState = this;
 
-	public BattleState(BattleContext battleContext) {
+	public BattleState(BattleContext battleContext, GameMap map) {
 		this.battleContext = battleContext;
+		this.map = map;
 	}
 
 	@Override

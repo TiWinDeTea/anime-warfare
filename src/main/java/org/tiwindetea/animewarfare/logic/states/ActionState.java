@@ -304,7 +304,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 				this.gameBoard.getMap().getZone(event.getZone()),
 				thirdPartPlayers);
 
-		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext));
+		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext, this.gameBoard.getMap()));
 	}
 
 	@Override

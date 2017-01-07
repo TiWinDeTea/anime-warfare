@@ -24,13 +24,18 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleWoundedsSelectedEvent;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
 import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SelectWoundedUnitsEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.SelectWoundedsUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
@@ -41,6 +46,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -56,8 +62,8 @@ public class PostBattleState extends BattleState
 
 	private Set<Integer> playersReady = new LinkedHashSet<>();
 
-	public PostBattleState(BattleContext battleContext) {
-		super(battleContext);
+	public PostBattleState(BattleContext battleContext, GameMap map) {
+		super(battleContext, map);
 	}
 
 	@Override
@@ -78,6 +84,15 @@ public class PostBattleState extends BattleState
 			playerCapacityNameEntry.getKey().useCapacity(playerCapacityNameEntry.getValue());
 		}
 
+		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
+			for (Unit unit : battleSide.getWoundeds()) {
+				if (unit.getZone().equals(this.battleContext.getZone())) {
+					unit.removeFromMap();
+					battleSide.getPlayer().getUnitCounter().removeUnit(unit.getType());
+				}
+			}
+		}
+
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE_FINISHED, this.battleContext));
 
 		// unregister events.
@@ -88,14 +103,69 @@ public class PostBattleState extends BattleState
 
 	@Override
 	public void handleSelectWoundedUnits(SelectWoundedsUnitsEvent event) {
-		// TODO
-		// attacker first.
-		// defender second.
-		// kill units that cannot escape (except if invincible).
-		/*
-		this.nextState = new BattleEndedState();
-		update();
-		*/
+		if (!this.capacitiesChosen) {
+			return;
+		}
+
+		if (this.playersReady.contains(event.getPlayerID())) {
+			return; // no need to choose twice.
+		}
+
+		BattleSide currentSide, opponentSide;
+		if (event.getPlayerID() == this.battleContext.getAttacker().getPlayer().getID()) {
+			currentSide = this.battleContext.getAttacker();
+			opponentSide = this.battleContext.getDefender();
+		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
+			if (!this.playersReady.contains(this.battleContext.getAttacker().getPlayer().getID())) {
+				return; // attacker first!
+			}
+			currentSide = this.battleContext.getDefender();
+			opponentSide = this.battleContext.getAttacker();
+		} else {
+			return;
+		}
+
+		if (event.getWoundedsToMove().size() != currentSide.getNumberOfDeads()
+				&& event.getWoundedsToMove().size() != currentSide.getUnits().size()) {
+			return;
+		}
+
+		if (event.getWoundedsToMove().stream()
+				.anyMatch(m -> currentSide.getUnits().stream()
+						.anyMatch(u -> m.getUnitID() != u.getID()))
+				) {
+			return; // ohw! This unit is not concerned!
+		}
+
+		for (Unit unit : currentSide.getUnits()) {
+			Optional<MoveUnitsEvent.Movement> movement =
+					event.getWoundedsToMove().stream().filter(m -> m.getUnitID() == unit.getID()).findFirst();
+			if (movement.isPresent()) {
+				if (unit.getUnitBuffedCharacteristics().isAttackable()) {
+					if (GameMap.getDistanceBetween(movement.get().getDestinationZone(),
+							this.battleContext.getZone().getID()) == 1) {
+						Zone destinationZone = this.map.getZone(movement.get().getDestinationZone());
+						if (destinationZone.getUnits().stream()
+								.noneMatch(u -> u.getFaction() == opponentSide.getPlayer().getFaction())) {
+							unit.move(destinationZone);
+							continue;
+						}
+					}
+					currentSide.addWounded(unit);
+				} else {
+					// if not attackable, the unit is not wounded, just removed
+					// from the battle.
+					currentSide.removeUnit(unit);
+				}
+			}
+		}
+
+		if (this.playersReady.size() >= 2) {
+			LogicEventDispatcher.send(new BattleWoundedsSelectedEvent(this.battleContext));
+
+			this.nextState = new BattleEndedState();
+			update();
+		}
 	}
 
 	@Override

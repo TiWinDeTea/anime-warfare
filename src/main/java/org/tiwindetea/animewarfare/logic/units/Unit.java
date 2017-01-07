@@ -82,6 +82,10 @@ public class Unit {
 		LogicEventDispatcher.getInstance().fire(new UnitMovedEvent(this, null, this.zone));
 	}
 
+	public Zone getZone() {
+		return this.zone;
+	}
+
 	/**
 	 * Returns the number of attacks points for this unit.
 	 *

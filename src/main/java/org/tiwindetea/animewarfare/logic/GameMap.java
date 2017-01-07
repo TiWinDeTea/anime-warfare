@@ -113,6 +113,7 @@ public class GameMap {
 	public Collection<Zone> getZones() {
 		return this.zones;
 	}
+
 	public Zone getZone(int id) {
 		return this.zones.get(id);
 	}
