@@ -264,7 +264,8 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 	}
 
 	private void invokeUnit(Zone zone, UnitType unitType) {
-		zone.addUnit(new Unit(unitType));
+		Unit unit = new Unit(unitType);
+		unit.addInZone(zone);
 		this.currentPlayer.getUnitCounter().addUnit(unitType);
 	}
 
@@ -375,7 +376,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 		}
 
 		this.currentPlayer.addUnitCaptured(mascot, this.huntedPlayer);
-		this.huntingZone.removeUnit(mascot);
+		mascot.removeFromMap();
 
 		this.huntingZone = null;
 		this.huntedPlayer = null;

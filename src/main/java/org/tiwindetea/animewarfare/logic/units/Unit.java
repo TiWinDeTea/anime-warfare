@@ -68,6 +68,20 @@ public class Unit {
 		return previousZone;
 	}
 
+	public void removeFromMap() {
+		Zone previousZone = this.zone;
+		previousZone.removeUnit(this);
+
+		LogicEventDispatcher.getInstance().fire(new UnitMovedEvent(this, previousZone, null));
+	}
+
+	public void addInZone(Zone zone) {
+		this.zone = zone;
+		this.zone.addUnit(this);
+
+		LogicEventDispatcher.getInstance().fire(new UnitMovedEvent(this, null, this.zone));
+	}
+
 	/**
 	 * Returns the number of attacks points for this unit.
 	 *
