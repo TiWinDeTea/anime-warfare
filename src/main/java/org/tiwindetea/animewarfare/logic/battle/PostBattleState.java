@@ -132,7 +132,7 @@ public class PostBattleState extends BattleState
 
 		if (event.getWoundedsToMove().stream()
 				.anyMatch(m -> currentSide.getUnits().stream()
-						.anyMatch(u -> m.getUnitID() != u.getID()))
+						.noneMatch(u -> m.getUnitID() == u.getID()))
 				) {
 			return; // ohw! This unit is not concerned!
 		}

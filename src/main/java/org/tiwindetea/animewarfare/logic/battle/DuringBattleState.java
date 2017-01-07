@@ -100,7 +100,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 
 		if (event.getUnits().stream()
 				.anyMatch(id -> battleSide.getUnits().stream()
-						.anyMatch(u -> id != u.getID()))
+						.noneMatch(u -> id == u.getID()))
 				) {
 			return; // ohw! This unit is not concerned!
 		}
