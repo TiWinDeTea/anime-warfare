@@ -1,12 +1,8 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
-
-public class ActivateFlyingStudioEvent implements Event<ActivateFlyingStudioEventListener> {
-	private final int playerID;
-
+public class ActivateFlyingStudioEvent extends ActionEvent<ActivateFlyingStudioEventListener> {
 	public ActivateFlyingStudioEvent(int playerID) {
-		this.playerID = playerID;
+		super(playerID);
 	}
 
 	@Override
@@ -14,7 +10,4 @@ public class ActivateFlyingStudioEvent implements Event<ActivateFlyingStudioEven
 		listener.onFlyingStudioActivationRequest(this);
 	}
 
-	public int getPlayerID() {
-		return this.playerID;
-	}
 }

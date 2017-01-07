@@ -1,11 +1,11 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
-
-public class NumberOfUnitiesToReconfortEvent implements Event<NumberOfUnitiesToReconfortEventListener> {
+public class NumberOfUnitiesToReconfortEvent extends ActionEvent<NumberOfUnitiesToReconfortEventListener> {
 	private final int number;
 
-	public NumberOfUnitiesToReconfortEvent(int number) {
+	public NumberOfUnitiesToReconfortEvent(int playerID, int number) {
+		super(playerID);
+
 		this.number = number;
 	}
 

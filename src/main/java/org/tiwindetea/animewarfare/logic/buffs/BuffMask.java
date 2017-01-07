@@ -33,4 +33,5 @@ class BuffMask {
 	int attackPoints;
 	boolean canAttack = true;
 	boolean attackable = true;
+	boolean visible = true;
 }

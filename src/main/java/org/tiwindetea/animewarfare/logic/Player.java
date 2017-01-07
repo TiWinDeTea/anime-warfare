@@ -84,6 +84,8 @@ public class Player {
 	}
 
 	public boolean hasRequiredStaffPoints(int actionCost, int numberOfActions) {
+		assert (actionCost > 0 && numberOfActions >= 1);
+
 		return actionCost * numberOfActions >= this.staffAvailable;
 	}
 
@@ -275,5 +277,9 @@ public class Player {
 		} else {
 			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED_PLAYER, this.ID));
 		}
+	}
+
+	public BuffManager getBuffManager() {
+		return this.buffManager;
 	}
 }

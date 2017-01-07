@@ -1,12 +1,13 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
-public class ColdBloodUnitTypeChoiceEvent implements Event<ColdBloodUnitTypeChoiceEventListener> {
+public class ColdBloodUnitTypeChoiceEvent extends ActionEvent<ColdBloodUnitTypeChoiceEventListener> {
 	private final UnitType unitType;
 
-	public ColdBloodUnitTypeChoiceEvent(UnitType unitType) {
+	public ColdBloodUnitTypeChoiceEvent(int playerID, UnitType unitType) {
+		super(playerID);
+
 		this.unitType = unitType;
 	}
 

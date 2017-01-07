@@ -1,11 +1,11 @@
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.lomadriel.lfc.event.Event;
-
-public class FlyingStudioZoneChoiceEvent implements Event<FlyingStudioZoneChoiceEventListener> {
+public class FlyingStudioZoneChoiceEvent extends ActionEvent<FlyingStudioZoneChoiceEventListener> {
 	private final int ID;
 
-	public FlyingStudioZoneChoiceEvent(int ID) {
+	public FlyingStudioZoneChoiceEvent(int playerID, int ID) {
+		super(playerID);
+
 		this.ID = ID;
 	}
 
