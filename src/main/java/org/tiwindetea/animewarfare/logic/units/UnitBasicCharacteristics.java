@@ -30,13 +30,23 @@ public class UnitBasicCharacteristics {
 		FEMALE
 	}
 
-	private final Gender gender;
-	private final boolean isHero;
-	private final int baseAttackPoints;
+	/**
+	 * MAGIC_NBR_STUDIO_MASCOT = Number of studio of player and number of mascots of the player
+	 */
+	public static final float MAGIC_NBR_STUDIO_MASCOT = -1.f;
 
-	UnitBasicCharacteristics(Gender gender, boolean isHero, int baseAttackPoints) {
+	/**
+	 * MAGIC_NBR_ENEMY_FANS = (Number of enemy fans + 1) /2
+	 */
+	public static final float MAGIC_NBR_ENEMY_FANS = -2.f;
+
+	public static final float MAGIC_NBR_NBR_ENEMY_HEROES = -3.f;
+
+	private final Gender gender;
+	private final float baseAttackPoints;
+
+	UnitBasicCharacteristics(Gender gender, float baseAttackPoints) {
 		this.gender = gender;
-		this.isHero = isHero;
 		this.baseAttackPoints = baseAttackPoints;
 	}
 
@@ -44,11 +54,7 @@ public class UnitBasicCharacteristics {
 		return this.gender;
 	}
 
-	public boolean isHero() {
-		return this.isHero;
-	}
-
-	public int getBaseAttackPoints() {
+	public float getBaseAttackPoints() {
 		return this.baseAttackPoints;
 	}
 }

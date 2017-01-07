@@ -87,7 +87,7 @@ public class Unit {
 	 *
 	 * @return the number of attacks points
 	 */
-	public int getAttackPoints() {
+	public float getAttackPoints() {
 		return this.unitBuffedCharacteristics.getAttackPoints()
 				+ this.type.getUnitBasicCharacteristics()
 				           .getBaseAttackPoints();

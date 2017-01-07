@@ -43,7 +43,7 @@ public class BattleSide {
 	private final List<Unit> deadUnits = new ArrayList<>();
 	private final List<Unit> woundedUnits = new ArrayList<>();
 
-	private int attack = 0;
+	private float attack = 0;
 	private int woundeds = 0;
 	private int deads = 0;
 
@@ -92,7 +92,7 @@ public class BattleSide {
 	}
 
 	public int getAttack() {
-		return this.attack;
+		return (int) this.attack; // rounded down
 	}
 
 	public int getNumberOfWoundeds() {
@@ -103,11 +103,11 @@ public class BattleSide {
 		return this.deads;
 	}
 
-	public void incrementAttack(int value) {
+	public void incrementAttack(float value) {
 		this.attack += value;
 	}
 
-	public void decrementAttack(int value) {
+	public void decrementAttack(float value) {
 		this.attack -= value;
 	}
 

@@ -83,20 +83,20 @@ public class Player {
 		LogicEventDispatcher.send(new StaffPointUpdatedEvent(this.ID, this.staffAvailable));
 	}
 
-	public boolean hasRequiredStaffPoints(int actionCost, int numberOfActions) {
+	public boolean hasRequiredStaffPoints(float actionCost, int numberOfActions) {
 		assert (actionCost > 0 && numberOfActions >= 1);
 
 		return actionCost * numberOfActions >= this.staffAvailable;
 	}
 
-	public boolean hasRequiredStaffPoints(int actionCost) {
+	public boolean hasRequiredStaffPoints(float actionCost) {
 		return hasRequiredStaffPoints(actionCost, 1);
 	}
 
-	public void decrementStaffPoints(int actionCost, int numberOfActions) {
+	public void decrementStaffPoints(float actionCost, int numberOfActions) {
 		assert (hasRequiredStaffPoints(actionCost, numberOfActions));
 
-		setStaffAvailable(this.staffAvailable - actionCost * numberOfActions);
+		setStaffAvailable((int) Math.ceil(this.staffAvailable - actionCost * numberOfActions));
 	}
 
 	public void decrementStaffPoints(int actionCost) {
@@ -240,8 +240,8 @@ public class Player {
 		return cost < 0 ? 0 : cost;
 	}
 
-	public int getUnitCost(UnitType type) {
-		int cost = this.costModifier.getUnitCostModifier(type) + type.getDefaultCost();
+	public float getUnitCost(UnitType type) {
+		float cost = this.costModifier.getUnitCostModifier(type) + type.getDefaultCost();
 
 		return cost < 0 ? 0 : cost;
 	}
