@@ -28,6 +28,8 @@ import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 
+import java.util.Objects;
+
 public class Studio {
 	private final int zoneID;
 	private FactionType currentFaction;
@@ -63,5 +65,18 @@ public class Studio {
 
 			LogicEventDispatcher.send(new StudioControllerChangedEvent(this.zoneID, null, -1));
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Studio studio = (Studio) o;
+		return this.zoneID == studio.zoneID;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.zoneID);
 	}
 }
