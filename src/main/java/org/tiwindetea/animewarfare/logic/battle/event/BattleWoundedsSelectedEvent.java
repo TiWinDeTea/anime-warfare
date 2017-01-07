@@ -25,7 +25,6 @@
 package org.tiwindetea.animewarfare.logic.battle.event;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.BattleContext;
 
 /*
@@ -34,19 +33,12 @@ import org.tiwindetea.animewarfare.logic.battle.BattleContext;
 public class BattleWoundedsSelectedEvent implements Event<BattleWoundedsSelectedEventListener> {
 	private final BattleContext battleContext;
 
-	private final Player player;
-
-	public BattleWoundedsSelectedEvent(BattleContext battleContext, Player player) {
+	public BattleWoundedsSelectedEvent(BattleContext battleContext) {
 		this.battleContext = battleContext;
-		this.player = player;
 	}
 
 	public BattleContext getBattleContext() {
 		return this.battleContext;
-	}
-
-	public Player getPlayer() {
-		return this.player;
 	}
 
 	@Override

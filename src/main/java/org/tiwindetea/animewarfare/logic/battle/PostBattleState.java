@@ -92,6 +92,10 @@ public class PostBattleState extends BattleState
 		// attacker first.
 		// defender second.
 		// kill units that cannot escape (except if invincible).
+		/*
+		this.nextState = new BattleEndedState();
+		update();
+		*/
 	}
 
 	@Override
@@ -109,8 +113,8 @@ public class PostBattleState extends BattleState
 		if (!this.capacitiesChosen) {
 			this.playersReady.add(event.getPlayerID());
 			if (this.playersReady.size() >= 2 + this.thirdPartiesCapacities.size()) {
-				this.nextState = new BattleEndedState();
-				update();
+				this.playersReady.clear();
+				this.capacitiesChosen = true;
 			}
 		}
 	}
