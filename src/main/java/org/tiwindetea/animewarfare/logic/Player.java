@@ -29,8 +29,10 @@ import org.tiwindetea.animewarfare.logic.capacity.Capacity;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.events.AdvertisingCampaignRightEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.events.ProductionEvent;
 import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCapturedEvent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
@@ -141,10 +143,13 @@ public class Player {
 		return this.costModifier;
 	}
 
-	public boolean addUnitCaptured(Unit unit) {
-		return this.unitCaptured.add(unit);
+	public boolean addUnitCaptured(Unit unit, Player huntedPlayer) {
+		if (this.unitCaptured.add(unit)) {
+			LogicEventDispatcher.send(new UnitCapturedEvent(this, huntedPlayer, unit.getFaction(), unit.getType()));
+			return true;
+		}
 
-		// TODO: Event
+		return false;
 	}
 
 	public Set<Unit> getUnitCaptured() {
@@ -199,7 +204,11 @@ public class Player {
 	}
 
 	public void activateCapacity(Capacity capacity) {
+		assert (this.capacities.get(capacity.getName()) == null);
+
 		this.capacities.put(capacity.getName(), capacity);
+
+		LogicEventDispatcher.send(new ProductionEvent(ProductionEvent.Type.ACTIVATED, this.ID, capacity.getName()));
 	}
 
 	public void useCapacity(CapacityName capacityName) {
@@ -212,7 +221,11 @@ public class Player {
 	}
 
 	public void desactivateCapactiy(CapacityName capacity) {
+		assert (this.capacities.get(capacity) != null);
+
 		this.capacities.remove(capacity);
+
+		LogicEventDispatcher.send(new ProductionEvent(ProductionEvent.Type.ACTIVATED, this.ID, capacity));
 	}
 
 	public Set<CapacityName> getActivatedCapacities() {

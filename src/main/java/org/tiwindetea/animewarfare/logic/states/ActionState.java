@@ -374,7 +374,7 @@ class ActionState extends GameState implements MoveUnitEventListener, OpenStudio
 			return;
 		}
 
-		this.currentPlayer.addUnitCaptured(mascot);
+		this.currentPlayer.addUnitCaptured(mascot, this.huntedPlayer);
 		this.huntingZone.removeUnit(mascot);
 
 		this.huntingZone = null;
