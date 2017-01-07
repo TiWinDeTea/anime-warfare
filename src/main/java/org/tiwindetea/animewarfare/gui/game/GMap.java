@@ -56,7 +56,7 @@ import java.util.List;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GMap extends Pane implements UnitNeteventListener, StudioNeteventListener, BattleNeteventListener, UnitCrea {
+public class GMap extends Pane implements UnitNeteventListener, StudioNeteventListener, BattleNeteventListener {
 
     // TODO: rework this class
 

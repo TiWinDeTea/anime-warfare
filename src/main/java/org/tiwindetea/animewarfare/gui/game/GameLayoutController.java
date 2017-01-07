@@ -6,14 +6,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
-import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -50,35 +48,6 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		for (Node node : this.rootBorderPane.getChildren()) { // center everyone!
 			this.rootBorderPane.setAlignment(node, Pos.CENTER);
 		}
-
-		testing();
-	}
-
-	// todo : remove
-	private void testing() {
-		EventDispatcher.registerListener(ZoneClickedEvent.class, event -> {
-			if (event.getMouseEvent().getButton().equals(MouseButton.PRIMARY)) {
-				if (event.getMouseEvent().isControlDown()) {
-					this.map.switchZonesGridsDisplay();
-				} else if (event.getMouseEvent().isShiftDown()) {
-					this.map.switchUnitsGridsDisplay();
-				} else {
-					this.map.addUnit(new GUnit(), event.getZoneID());
-				}
-			} else if (event.getMouseEvent().getButton().equals(MouseButton.SECONDARY)) {
-				this.map.removeUnit(new GUnit(), event.getZoneID());
-			} else {
-				this.map.highlightNeighbour(event.getZoneID(), 1);
-				new Thread(() -> {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					this.map.unHighlightNeigbour(event.getZoneID(), 1);
-				}).start();
-			}
-		});
 	}
 
 	private void initScroll() {
