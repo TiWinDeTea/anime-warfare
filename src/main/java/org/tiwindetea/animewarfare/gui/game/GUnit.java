@@ -24,13 +24,18 @@
 
 package org.tiwindetea.animewarfare.gui.game;
 
+import com.esotericsoftware.minlog.Log;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitCreatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNetevent;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,11 +49,13 @@ public class GUnit extends GComponent {
 
     private static final HashMap<UnitType, Image> pictures = new HashMap<>();
     private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::getID));
+    private static boolean initialized = false;
 
     private final int ID;
 
     static {
         //todo : initialize pictures
+
     }
 
     private GUnit(int ID, UnitType type, GameClientInfo owner) {
@@ -114,6 +121,24 @@ public class GUnit extends GComponent {
      */
     public static void delete(int id) {
         units.remove(new GUnit(id));
+    }
+
+    /**
+     * Initializes the factory, registering unit creation and deletion events.
+     */
+    public static void initFactory() {
+        if (!initialized) {
+            EventDispatcher.registerListener(UnitCreatedNetevent.class
+                    , e -> GUnit.create(e.getUnitId(), e.getUnitType(), null /* todo : e.getFactionType() */));
+
+            EventDispatcher.registerListener(UnitDeletedNetevent.class
+                    , e -> GUnit.delete(e.getUnitId()));
+
+            EventDispatcher.registerListener(GameEndedNetevent.class, e -> units.clear());
+            initialized = true;
+        } else {
+            Log.warn("Tried to init GUnit factory (at least) twice !");
+        }
     }
 
     @Override

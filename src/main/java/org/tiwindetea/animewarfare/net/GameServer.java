@@ -43,6 +43,8 @@ import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEventListener;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEventListener;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
@@ -673,11 +675,13 @@ public class GameServer {
             GameEndedEventListener,
             PhaseChangedEventListener,
 
+            UnitMovedEventListener,
+
             GameEndConditionsReachedEventListener,
             MarketingLadderUpdatedEventListener,
             NumberOfFansChangedEventListener,
             StudioEventListener,
-            UnitMovedEventListener {
+            UnitCounterEventListener {
 
         private final Server server;
 
@@ -791,7 +795,10 @@ public class GameServer {
             this.server.sendToAllTCP(new NetUnitMoveEvent(event));
         }
 
-        // todo (idem)
+        @Override
+        public void handleUnitEvent(UnitCounterEvent event) {
+            this.server.sendToAllTCP(new NetUnitCountChange(event));
+        }
     }
 
     static final String[] names = {"Suna", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Ceres", "Pallas", "Vesta", "Hygiea", "Interamnia", "Europa", "Davida", "Sylvia", "Cybele", "Eunomia", "Juno", "Euphrosyne", "Hektor", "Thisbe", "Bamberga", "Patientia", "Herculina", "Doris", "Ursula", "Camilla", "Eugenia", "Iris", "Amphitrite"};

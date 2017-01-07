@@ -13,11 +13,13 @@ public class UnitCounterEvent implements Event<UnitCounterEventListener> {
 	private final Type type;
 	private final FactionType faction;
 	private final UnitType unitType;
+	private final int unitId;
 
-	public UnitCounterEvent(Type type, FactionType faction, UnitType unitType) {
+	public UnitCounterEvent(Type type, FactionType faction, UnitType unitType, int unitId) {
 		this.type = type;
 		this.faction = faction;
 		this.unitType = unitType;
+		this.unitId = unitId;
 	}
 
 	public Type getType() {
@@ -30,6 +32,10 @@ public class UnitCounterEvent implements Event<UnitCounterEventListener> {
 
 	public UnitType getUnitType() {
 		return this.unitType;
+	}
+
+	public int getUnitId() {
+		return this.unitId;
 	}
 
 	@Override

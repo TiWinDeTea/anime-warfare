@@ -40,18 +40,18 @@ public class UnitCounter {
 		return this.numberOfUnitsByLevel[level.ordinal()];
 	}
 
-	public void addUnit(UnitType type) {
+	public void addUnit(UnitType type, int unitID) {
 		++this.numberOfUnitsByType[type.ordinal()];
 		++this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
 
-		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.ADDED, type.getDefaultFaction(), type));
+		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.ADDED, type.getDefaultFaction(), type, unitID));
 	}
 
-	public void removeUnit(UnitType type) {
+	public void removeUnit(UnitType type, int unitID) {
 		--this.numberOfUnitsByType[type.ordinal()];
 		--this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
 
-		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.REMOVED, type.getDefaultFaction(), type));
+		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.REMOVED, type.getDefaultFaction(), type, unitID));
 	}
 
 	public boolean hasUnits() {

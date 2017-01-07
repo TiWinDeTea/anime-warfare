@@ -37,6 +37,7 @@ import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
@@ -110,7 +111,6 @@ class Utils {
 		kryo.register(HashMap.class);
 		kryo.register(LinkedList.class);
 		kryo.register(NetPlayingOrderChosen.class);
-		kryo.register(NetUnitMoveEvent.class);
 		kryo.register(Room.class);
 		kryo.register(String.class);
 
@@ -153,11 +153,14 @@ class Utils {
 		kryo.register(NetStudio.class);
 		kryo.register(NetPhaseChange.class);
 		kryo.register(NetSelectMascotToCapture.class);
+		kryo.register(NetUnitCountChange.class);
+		kryo.register(NetUnitMoveEvent.class);
 
 		// inner
 		kryo.register(CapacityName.class);
 		kryo.register(CapacityType.class);
 		kryo.register(FactionType.class);
+		kryo.register(UnitCounterEvent.Type.class);
 	}
 
 	static void registerAsLogicListener(GameServer.LogicListener logicListener) {

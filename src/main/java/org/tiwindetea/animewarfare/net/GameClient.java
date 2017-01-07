@@ -29,6 +29,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.net.networkevent.*;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
@@ -370,11 +371,6 @@ public class GameClient {
             EventDispatcher.send(new MessageReceivedNetevent(message));
         }
 
-        public void received(Connection connection, NetStudio newStudio) {
-            Log.trace(GameClient.Listener.class.toString(), "Received " + newStudio);
-            EventDispatcher.send(new StudioNetevent(newStudio));
-        }
-
         public void received(Connection connection, NetPhaseChange phaseChange) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + phaseChange);
             EventDispatcher.send(new PhaseChangeNetevent(phaseChange));
@@ -385,10 +381,24 @@ public class GameClient {
             EventDispatcher.send(new PlayOrderChosenNetevent(playingOrderChosen));
         }
 
+        public void received(Connection connection, NetStudio newStudio) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + newStudio);
+            EventDispatcher.send(new StudioNetevent(newStudio));
+        }
+
+        public void received(Connection connection, NetUnitCountChange unitCountChange) {
+            if (unitCountChange.getType().equals(UnitCounterEvent.Type.ADDED)) {
+                EventDispatcher.send(new UnitCreatedNetevent(unitCountChange));
+            } else {
+                EventDispatcher.send(new UnitDeletedNetevent(unitCountChange));
+            }
+        }
+
         public void received(Connection connection, NetSelectMascotToCapture selectMascotToCapture) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + selectMascotToCapture);
             EventDispatcher.send(new SelectMascotToCaptureRequestNetevent(selectMascotToCapture));
         }
+
 
         public void received(Connection connection, NetUnitMoveEvent unitEvent) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + unitEvent);

@@ -45,21 +45,7 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
-import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
-import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
-import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
-import org.tiwindetea.animewarfare.net.logicevent.StartBattleEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -268,7 +254,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	private void invokeUnit(Zone zone, UnitType unitType) {
 		Unit unit = new Unit(unitType);
 		unit.addInZone(zone);
-		this.currentPlayer.getUnitCounter().addUnit(unitType);
+		this.currentPlayer.getUnitCounter().addUnit(unitType, unit.getID());
 	}
 
 	@Override
