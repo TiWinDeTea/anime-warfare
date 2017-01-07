@@ -62,7 +62,7 @@ public class GMap extends Pane implements UnitNeteventListener, StudioNeteventLi
 
     private final ImageView MAP_PICT;
     private final Group POLYGONES = new Group();
-    private final ZoneUnitMap MAP = new ZoneUnitMap();
+    private final ZoneComponentsMap MAP = new ZoneComponentsMap();
     private final List<Pair<Polygon, Tooltip>> ZONES = new ArrayList<>(17);
     private boolean isDisplayingZonesGrids = false;
     private boolean isDisplayinGComponentsGrids = false;
@@ -81,6 +81,362 @@ public class GMap extends Pane implements UnitNeteventListener, StudioNeteventLi
             setScaleX(getScaleX() + getScaleX() * e.getDeltaY() / 1000.0); // TODO externalize & settings
             setScaleY(getScaleY() + getScaleY() * e.getDeltaY() / 1000.0); // TODO externalize & settings
         });
+    }
+
+    /**
+     * Adds a GComponent to the map, using Javafx's thread.
+     */
+    public void addGComponentFxThread(GComponent gComponent, int zoneID) {
+        Platform.runLater(() -> addGComponent(gComponent, zoneID));
+    }
+
+    /**
+     * Adds a GComponent to the map.
+     */
+    public void addGComponent(GComponent gComponent, int zoneID) {
+        this.MAP.put(gComponent, zoneID);
+        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
+    }
+
+    /**
+     * Removes a GComponent from the map, using Javafx's thread.
+     */
+    public void removeGComponentFxThread(GComponent gComponent, int zoneID) {
+        Platform.runLater(() -> removeGComponent(gComponent, zoneID));
+    }
+
+    /**
+     * Removes a GComponent from the map.
+     */
+    public void removeGComponent(GComponent gComponent, int zoneID) {
+        this.MAP.remove(gComponent, zoneID);
+        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
+    }
+
+    /**
+     * Moves a GComponent from a zone to another, using JavaFX's thread.
+     */
+    public void moveGComponentFxThread(GComponent gComponent, int source, int destination) {
+        Platform.runLater(() -> moveGComponent(gComponent, source, destination));
+    }
+
+    /**
+     * Moves a GComponent from a zone to another
+     */
+    public void moveGComponent(GComponent gComponent, int source, int destination) {
+        this.MAP.move(gComponent, source, destination);
+    }
+
+    /**
+     * Removes any highlightig of a given zone, unsing JavaFX's thread
+     */
+    public void unHighlightFxThread(int zoneID) {
+        Platform.runLater(() -> unHighlight(zoneID));
+    }
+
+    /**
+     * Removes any highlightig of a given zone
+     */
+    public void unHighlight(int zoneID) {
+        setDefaultBehavior(this.ZONES.get(zoneID).getKey());
+    }
+
+    /**
+     * Highlights a given zone in a given color, using JavaFX's thread
+     */
+    public void highLightFxThread(int zone, Color color) {
+        Platform.runLater(() -> highlight(zone, color));
+    }
+
+    /**
+     * Highlights a given zone in a given color
+     */
+    public void highlight(int zone, Color color) {
+        Polygon poly = this.ZONES.get(zone).getKey();
+        poly.setOnMouseEntered(e -> {
+        });
+        poly.setOnMouseExited(e -> {
+        });
+        poly.setFill(color);
+    }
+
+    /**
+     * Highlights any zone at at most {@code distance} distance from a given zone, appart from the zone itself
+     */
+    public void highlightNeighbour(int zoneID, int distance) {
+        for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
+            Polygon p = this.ZONES.get(integer.intValue()).getKey();
+            p.setOpacity(.3);
+            p.setFill(Color.ORANGE);
+        }
+    }
+
+    /**
+     * Remove the highlighting of any zone within {@code distance} zones of a given zone
+     */
+    public void unHighlightNeigbour(int zoneID, int distance) {
+        for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
+            Polygon p = this.ZONES.get(integer.intValue()).getKey();
+            p.setFill(Color.WHITE);
+            p.setOpacity(0);
+        }
+    }
+
+    /**
+     * Displays or Hides GComponents squares (debug)
+     */
+    public void displayComponentssGrids(boolean b) {
+        if (b) {
+            if (!this.isDisplayinGComponentsGrids) {
+                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.showGrid());
+                this.isDisplayinGComponentsGrids = true;
+            }
+        } else {
+            if (this.isDisplayinGComponentsGrids) {
+                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.hideGrid());
+                this.isDisplayinGComponentsGrids = false;
+            }
+        }
+    }
+
+    /**
+     * Displays or Hides zones borders
+     */
+    public void displayZonesGrids(boolean b) {
+        if (b) {
+            if (!this.isDisplayingZonesGrids) {
+                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> {
+                    poly.setFill(Color.TRANSPARENT);
+                    poly.setOpacity(1);
+                    poly.setOnMouseEntered(e -> poly.setFill(Color.rgb(255, 255, 255, 0.3)));
+                    poly.setOnMouseExited(e -> poly.setFill(Color.TRANSPARENT));
+                });
+                this.isDisplayingZonesGrids = true;
+            }
+        } else {
+            if (this.isDisplayingZonesGrids) {
+                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> setDefaultBehavior(poly));
+                this.isDisplayingZonesGrids = false;
+            }
+        }
+    }
+
+    public void switchComponentsGridsDisplay() {
+        this.displayComponentssGrids(!this.isDisplayinGComponentsGrids);
+    }
+
+    public void switchZonesGridsDisplay() {
+        this.displayZonesGrids(!this.isDisplayingZonesGrids);
+    }
+
+    /**
+     * Used to disable the ScrollPane wheel scroll without removing the zooming ability
+     */
+    public void scrollEvent(ScrollEvent e) {
+        this.getOnScroll().handle(e);
+    }
+
+    private class GComponentRectangle extends Parent {
+
+        final double x, y;
+        static final int WIDTH = 42;
+        static final int HEIGHT = 42;
+        final Polygon grid;
+
+        private GComponent gComponent;
+
+        public GComponentRectangle(double x, double y) {
+            this.x = x;
+            this.y = y;
+
+            this.grid = new Polygon(x, y, x, y + WIDTH, x + WIDTH, y + WIDTH, x + WIDTH, y);
+            this.grid.setFill(Color.TRANSPARENT);
+            this.grid.setStroke(Color.YELLOW);
+            this.grid.setMouseTransparent(true);
+        }
+
+        public void setUnit(GComponent gComponent) {
+            if (this.gComponent != null) {
+                this.getChildren().remove(this.gComponent);
+            }
+            if (gComponent != null) {
+                gComponent.setTranslateX(this.x + WIDTH / 2);
+                gComponent.setTranslateY(this.y + HEIGHT / 2);
+                this.getChildren().add(gComponent);
+            }
+            this.gComponent = gComponent;
+        }
+
+        public GComponent getUnit() {
+            return this.gComponent;
+        }
+
+        public void showGrid() {
+            getChildren().add(this.grid);
+        }
+
+        public void hideGrid() {
+            getChildren().remove(this.grid);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return (o instanceof GComponentRectangle) && this.equals((GComponentRectangle) o);
+        }
+
+        public boolean equals(GComponentRectangle r) {
+            return r.x == this.x && r.y == this.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) (this.x + this.y);
+        }
+    }
+
+    private class ZoneComponentsMap extends Parent {
+
+        private class Int {
+            int value = 0;
+        }
+
+        private final HashMap<Integer, List<GComponentRectangle>> map = new HashMap<>();
+        private final HashMap<Integer, List<GComponent>> orphans = new HashMap<>();
+
+        private final List<Int> numberOfgComponentsPerZone = new ArrayList<>(17);
+
+        public ZoneComponentsMap() {
+            for (int i = 0; i < 17; i++) {
+                this.numberOfgComponentsPerZone.add(new Int());
+            }
+        }
+
+        void setZones(List<Polygon> polygons) {
+
+            if (this.map.size() != 0) {
+                throw new IllegalStateException();
+            }
+
+            int i = 0;
+
+            for (Polygon polygon : polygons) {
+                List<GComponentRectangle> rectList = new ArrayList<>(20);
+                Bounds bounds = polygon.getLayoutBounds();
+
+                int xdirection = 1;
+                boolean pouredOne = false;
+
+                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += GComponentRectangle.HEIGHT) {
+                    double x = xdirection > 0 ? bounds.getMinX() + 3 : bounds.getMaxX() - 3;
+                    while (x > bounds.getMinX() && x < bounds.getMaxX()) {
+
+                        do {
+                            if (polygon.contains(x - 2, y - 2)
+                                    && polygon.contains(x + GComponentRectangle.WIDTH + 2, y - 2)
+                                    && polygon.contains(x - 2, y + GComponentRectangle.HEIGHT + 2)
+                                    && polygon.contains(x + GComponentRectangle.WIDTH + 2, y + GComponentRectangle.HEIGHT + 2)
+                                    ) {
+                                rectList.add(new GComponentRectangle(x, y));
+                                pouredOne = true;
+                            }
+                            x += xdirection;
+                        } while (!pouredOne && x < bounds.getMaxX() && x > bounds.getMinX());
+                        x += (GComponentRectangle.WIDTH - 1) * xdirection;
+                    }
+                    pouredOne = false;
+                    xdirection = -xdirection;
+                }
+                getChildren().addAll(rectList);
+
+                this.map.put(new Integer(i), rectList);
+                ++i;
+            }
+        }
+
+        public GComponentRectangle put(GComponent gComponent, int zoneID) {
+            GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
+                    .filter(ur -> ur.gComponent == null)
+                    .findAny().orElse(null);
+            if (gcomponentRectangle != null) {
+                gcomponentRectangle.setUnit(gComponent);
+            } else {
+                List<GComponent> list = this.orphans.get(new Integer(zoneID));
+                if (list != null) {
+                    list.add(gComponent);
+                } else {
+                    list = new ArrayList<>(5);
+                    list.add(gComponent);
+                    this.orphans.put(new Integer(zoneID), list);
+                }
+            }
+            this.numberOfgComponentsPerZone.get(zoneID).value++;
+            updateDescription(zoneID);
+
+            return gcomponentRectangle;
+        }
+
+        public GComponentRectangle remove(GComponent gComponent, int zoneID) {
+            GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
+                    .filter(ur -> gComponent.equals(ur.getUnit()))
+                    .findAny()
+                    .orElse(null);
+            if (gcomponentRectangle != null) {
+                GComponent newgComponent = null;
+                List<GComponent> list = this.orphans.get(new Integer(zoneID));
+                if (list != null) {
+                    if (list.size() != 0) {
+                        newgComponent = list.remove(0);
+                    }
+                }
+                gcomponentRectangle.setUnit(newgComponent);
+                --this.numberOfgComponentsPerZone.get(zoneID).value;
+            } else {
+                List<GComponent> list = this.orphans.get(new Integer(zoneID));
+                if (list != null) {
+                    if (list.remove(gComponent)) {
+                        --this.numberOfgComponentsPerZone.get(zoneID).value;
+                    }
+                }
+            }
+            updateDescription(zoneID);
+
+            return gcomponentRectangle;
+        }
+
+        public void move(GComponent gComponent, int source, int destination) {
+            remove(gComponent, source);
+            put(gComponent, destination);
+        }
+
+        public int getNumberOfComponents(int zoneID) {
+            return this.numberOfgComponentsPerZone.get(zoneID).value;
+        }
+
+        public List<GComponentRectangle> getRectangles() {
+            List<GComponentRectangle> ans = new ArrayList<>(200);
+            for (List<GComponentRectangle> gcomponentRectangles : this.map.values()) {
+                ans.addAll(gcomponentRectangles);
+            }
+            return ans;
+        }
+    }
+
+    private String getDescription(int zoneID) {
+        return "Number of units zone " + zoneID + ": " + this.MAP.getNumberOfComponents(zoneID);
+    }
+
+    private static void setDefaultBehavior(Polygon polygon) {
+        polygon.setFill(Color.WHITE);
+        polygon.setStroke(Color.BLACK);
+        polygon.setStrokeWidth(3);
+        polygon.setOpacity(0);
+        polygon.setPickOnBounds(false);
+        polygon.setOnMouseEntered(e -> polygon.setOpacity(0.3));
+        polygon.setOnMouseExited(e -> polygon.setOpacity(0));
+    }
+
+    private void updateDescription(int zoneID) {
+        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
     }
 
     private void initZones() {
@@ -365,317 +721,6 @@ public class GMap extends Pane implements UnitNeteventListener, StudioNeteventLi
                 606.0, 0.0
         ));
         return polygons;
-    }
-
-    public void addGComponentFxThread(GComponent unit, int zoneID) {
-        Platform.runLater(() -> addGComponent(unit, zoneID));
-    }
-
-    public void addGComponent(GComponent unit, int zoneID) {
-        this.MAP.put(unit, zoneID);
-        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
-    }
-
-    public void removeGComponentFxThread(GComponent unit, int zoneID) {
-        Platform.runLater(() -> removeGComponent(unit, zoneID));
-    }
-
-    public void removeGComponent(GComponent unit, int zoneID) {
-        this.MAP.remove(unit, zoneID);
-        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
-    }
-
-    public void moveGComponentFxThread(GComponent unit, int source, int destination) {
-        Platform.runLater(() -> moveGComponent(unit, source, destination));
-    }
-
-    public void moveGComponent(GComponent unit, int source, int destination) {
-        this.MAP.move(unit, source, destination);
-    }
-
-    public void unHighlightFxThread(int zoneID) {
-        Platform.runLater(() -> unHighlight(zoneID));
-    }
-
-    public void unHighlight(int zoneID) {
-        setDefaultBehavior(this.ZONES.get(zoneID).getKey());
-    }
-
-    public void highLightFxThread(int zone, Color color) {
-        Platform.runLater(() -> highLightFxThread(zone, color));
-    }
-
-    public void highlight(int zone, Color color) {
-        Polygon poly = this.ZONES.get(zone).getKey();
-        poly.setOnMouseEntered(e -> {
-        });
-        poly.setOnMouseExited(e -> {
-        });
-        poly.setFill(color);
-    }
-
-    public void highlightNeighbour(int zoneID, int distance) {
-        for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
-            Polygon p = this.ZONES.get(integer.intValue()).getKey();
-            p.setOpacity(.3);
-            p.setFill(Color.ORANGE);
-        }
-    }
-
-    public void unHighlightNeigbour(int zoneID, int distance) {
-        for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
-            Polygon p = this.ZONES.get(integer.intValue()).getKey();
-            p.setOpacity(0);
-            p.setFill(Color.WHITE);
-        }
-    }
-
-    public void displayUnitsGrids(boolean b) {
-        if (b) {
-            if (!this.isDisplayinGComponentsGrids) {
-                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.showGrid());
-                this.isDisplayinGComponentsGrids = true;
-            }
-        } else {
-            if (this.isDisplayinGComponentsGrids) {
-                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.hideGrid());
-                this.isDisplayinGComponentsGrids = false;
-            }
-        }
-    }
-
-    public void displayZonesGrids(boolean b) {
-        if (b) {
-            if (!this.isDisplayingZonesGrids) {
-                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> {
-                    poly.setFill(Color.TRANSPARENT);
-                    poly.setOpacity(1);
-                    poly.setOnMouseEntered(e -> poly.setFill(Color.rgb(255, 255, 255, 0.3)));
-                    poly.setOnMouseExited(e -> poly.setFill(Color.TRANSPARENT));
-                });
-                this.isDisplayingZonesGrids = true;
-            }
-        } else {
-            if (this.isDisplayingZonesGrids) {
-                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> setDefaultBehavior(poly));
-                this.isDisplayingZonesGrids = false;
-            }
-        }
-    }
-
-    public void switchUnitsGridsDisplay() {
-        this.displayUnitsGrids(!this.isDisplayinGComponentsGrids);
-    }
-
-    public void switchZonesGridsDisplay() {
-        this.displayZonesGrids(!this.isDisplayingZonesGrids);
-    }
-
-    public void scrollEvent(ScrollEvent e) {
-        this.getOnScroll().handle(e);
-    }
-
-    private class GComponentRectangle extends Parent {
-
-        final double x, y;
-        static final int WIDTH = 42;
-        static final int HEIGHT = 42;
-        final Polygon grid;
-
-        private GComponent unit;
-
-        public GComponentRectangle(double x, double y) {
-            this.x = x;
-            this.y = y;
-
-            this.grid = new Polygon(x, y, x, y + WIDTH, x + WIDTH, y + WIDTH, x + WIDTH, y);
-            this.grid.setFill(Color.TRANSPARENT);
-            this.grid.setStroke(Color.YELLOW);
-            this.grid.setMouseTransparent(true);
-        }
-
-        public void setUnit(GComponent unit) {
-            if (this.unit != null) {
-                this.getChildren().remove(this.unit);
-            }
-            if (unit != null) {
-                unit.setTranslateX(this.x + WIDTH / 2);
-                unit.setTranslateY(this.y + HEIGHT / 2);
-                this.getChildren().add(unit);
-            }
-            this.unit = unit;
-        }
-
-        public GComponent getUnit() {
-            return this.unit;
-        }
-
-        public void showGrid() {
-            getChildren().add(this.grid);
-        }
-
-        public void hideGrid() {
-            getChildren().remove(this.grid);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return (o instanceof GComponentRectangle) && this.equals((GComponentRectangle) o);
-        }
-
-        public boolean equals(GComponentRectangle r) {
-            return r.x == this.x && r.y == this.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return (int) (this.x + this.y);
-        }
-    }
-
-    private class ZoneUnitMap extends Parent {
-
-        private class Int {
-            int value = 0;
-        }
-
-        private final HashMap<Integer, List<GComponentRectangle>> map = new HashMap<>();
-        private final HashMap<Integer, List<GComponent>> orphans = new HashMap<>();
-
-        private final List<Int> numberOfUnitsPerZone = new ArrayList<>(17);
-
-        public ZoneUnitMap() {
-            for (int i = 0; i < 17; i++) {
-                this.numberOfUnitsPerZone.add(new Int());
-            }
-        }
-
-        void setZones(List<Polygon> polygons) {
-
-            if (this.map.size() != 0) {
-                throw new IllegalStateException();
-            }
-
-            int i = 0;
-
-            for (Polygon polygon : polygons) {
-                List<GComponentRectangle> rectList = new ArrayList<>(20);
-                Bounds bounds = polygon.getLayoutBounds();
-
-                int xdirection = 1;
-                boolean pouredOne = false;
-
-                for (double y = bounds.getMinY() + 3; y < bounds.getMaxY(); y += GComponentRectangle.HEIGHT) {
-                    double x = xdirection > 0 ? bounds.getMinX() + 3 : bounds.getMaxX() - 3;
-                    while (x > bounds.getMinX() && x < bounds.getMaxX()) {
-
-                        do {
-                            if (polygon.contains(x - 2, y - 2)
-                                    && polygon.contains(x + GComponentRectangle.WIDTH + 2, y - 2)
-                                    && polygon.contains(x - 2, y + GComponentRectangle.HEIGHT + 2)
-                                    && polygon.contains(x + GComponentRectangle.WIDTH + 2, y + GComponentRectangle.HEIGHT + 2)
-                                    ) {
-                                rectList.add(new GComponentRectangle(x, y));
-                                pouredOne = true;
-                            }
-                            x += xdirection;
-                        } while (!pouredOne && x < bounds.getMaxX() && x > bounds.getMinX());
-                        x += (GComponentRectangle.WIDTH - 1) * xdirection;
-                    }
-                    pouredOne = false;
-                    xdirection = -xdirection;
-                }
-                getChildren().addAll(rectList);
-
-                this.map.put(new Integer(i), rectList);
-                ++i;
-            }
-        }
-
-        public GComponentRectangle put(GComponent unit, int zoneID) {
-            GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
-                    .filter(ur -> ur.unit == null)
-                    .findAny().orElse(null);
-            if (gcomponentRectangle != null) {
-                gcomponentRectangle.setUnit(unit);
-            } else {
-                List<GComponent> list = this.orphans.get(new Integer(zoneID));
-                if (list != null) {
-                    list.add(unit);
-                } else {
-                    list = new ArrayList<>(5);
-                    list.add(unit);
-                    this.orphans.put(new Integer(zoneID), list);
-                }
-            }
-            this.numberOfUnitsPerZone.get(zoneID).value++;
-            updateDescription(zoneID);
-
-            return gcomponentRectangle;
-        }
-
-        public GComponentRectangle remove(GComponent unit, int zoneID) {
-            GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
-                    .filter(ur -> unit.equals(ur.getUnit()))
-                    .findAny()
-                    .orElse(null);
-            if (gcomponentRectangle != null) {
-                GComponent newUnit = null;
-                List<GComponent> list = this.orphans.get(new Integer(zoneID));
-                if (list != null) {
-                    if (list.size() != 0) {
-                        newUnit = list.remove(0);
-                    }
-                }
-                gcomponentRectangle.setUnit(newUnit);
-                --this.numberOfUnitsPerZone.get(zoneID).value;
-            } else {
-                List<GComponent> list = this.orphans.get(new Integer(zoneID));
-                if (list != null) {
-                    if (list.remove(unit)) {
-                        --this.numberOfUnitsPerZone.get(zoneID).value;
-                    }
-                }
-            }
-            updateDescription(zoneID);
-
-            return gcomponentRectangle;
-        }
-
-        public void move(GComponent unit, int source, int destination) {
-            remove(unit, source);
-            put(unit, destination);
-        }
-
-        public int getNumberOfUnits(int zoneID) {
-            return this.numberOfUnitsPerZone.get(zoneID).value;
-        }
-
-        public List<GComponentRectangle> getRectangles() {
-            List<GComponentRectangle> ans = new ArrayList<>(200);
-            for (List<GComponentRectangle> gcomponentRectangles : this.map.values()) {
-                ans.addAll(gcomponentRectangles);
-            }
-            return ans;
-        }
-    }
-
-    private String getDescription(int zoneID) {
-        return "Number of units zone " + zoneID + ": " + this.MAP.getNumberOfUnits(zoneID);
-    }
-
-    private static void setDefaultBehavior(Polygon polygon) {
-        polygon.setFill(Color.WHITE);
-        polygon.setStroke(Color.BLACK);
-        polygon.setStrokeWidth(3);
-        polygon.setOpacity(0);
-        polygon.setPickOnBounds(false);
-        polygon.setOnMouseEntered(e -> polygon.setOpacity(0.3));
-        polygon.setOnMouseExited(e -> polygon.setOpacity(0));
-    }
-
-    private void updateDescription(int zoneID) {
-        this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
     }
 
 

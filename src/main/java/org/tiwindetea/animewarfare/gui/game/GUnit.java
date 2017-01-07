@@ -77,6 +77,45 @@ public class GUnit extends GComponent {
         return this.ID;
     }
 
+    /**
+     * @param id ID of the unit
+     * @return the unit or {@code null} if the is no such unit.
+     */
+    public static GUnit get(int id) {
+        GUnit unit = units.floor(new GUnit(id));
+        if (unit != null && unit.getID() == id) {
+            return unit;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return the unit, creating it if it doesn't exist.
+     */
+    public static GUnit getOrCreate(int id, UnitType type, GameClientInfo owner) {
+        GUnit unit = get(id);
+        if (unit == null) {
+            unit = new GUnit(id, type, owner);
+            units.add(unit);
+        }
+        return unit;
+    }
+
+    /**
+     * Creates a unit. Any unit with the same ID will be overwride
+     */
+    public static void create(int id, UnitType type, GameClientInfo owner) {
+        units.add(new GUnit(id, type, owner));
+    }
+
+    /**
+     * Deletes a unit
+     */
+    public static void delete(int id) {
+        units.remove(new GUnit(id));
+    }
+
     @Override
     public int hashCode() {
         return this.ID;
@@ -94,29 +133,4 @@ public class GUnit extends GComponent {
         return false;
     }
 
-    /**
-     * @param id ID of the unit
-     * @return the unit or {@code null} if the is no such unit.
-     */
-    public static GUnit get(int id) {
-        GUnit unit = units.floor(new GUnit(id));
-        if (unit != null && unit.getID() == id) {
-            return unit;
-        } else {
-            return null;
-        }
-    }
-
-    public static GUnit getOrCreate(int id, UnitType type, GameClientInfo owner) {
-        GUnit unit = get(id);
-        if (unit == null) {
-            unit = new GUnit(id, type, owner);
-            units.add(unit);
-        }
-        return unit;
-    }
-
-    public static void create(int id, UnitType type, GameClientInfo owner) {
-        units.add(new GUnit(id, type, owner));
-    }
 }
