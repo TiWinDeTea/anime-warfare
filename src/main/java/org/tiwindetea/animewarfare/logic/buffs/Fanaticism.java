@@ -27,6 +27,6 @@ public class Fanaticism extends Buff implements ConventionOrganizedEventListener
 
 	@Override
 	public void onConventionOrganized(ConventionOrganizedEvent event) {
-		event.getPlayer().addAdvertisingCampaignRights(this.pool.getAdvertisingCampaignRight());
+		this.pool.addAdvertisingCampaignRightToPlayer(event.getPlayer());
 	}
 }

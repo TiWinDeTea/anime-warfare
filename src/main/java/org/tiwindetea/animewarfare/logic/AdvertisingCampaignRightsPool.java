@@ -60,10 +60,26 @@ public class AdvertisingCampaignRightsPool {
 		this.pool.addAll(advertisingCampaignRights);
 	}
 
+	/**
+	 * @return the campaign right or null if there is no campaign rights left.
+	 */
 	public AdvertisingCampaignRight getAdvertisingCampaignRight() {
-		// TODO: fire an event when it become empty?
-		AdvertisingCampaignRight right = this.pool.get(0);
-		return right;
+		try {
+			AdvertisingCampaignRight right = this.pool.get(0);
+			// TODO: fire an event when it become empty?
+			return right;
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
+	}
+
+	public void addAdvertisingCampaignRightToPlayer(Player player) {
+		AdvertisingCampaignRight right = getAdvertisingCampaignRight();
+		if (right == null) {
+			player.incrementFans(1);
+		} else {
+			player.addAdvertisingCampaignRights(right);
+		}
 	}
 
 	public void returnAdvertisingCampaignRight(AdvertisingCampaignRight right) {

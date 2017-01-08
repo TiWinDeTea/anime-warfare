@@ -68,7 +68,7 @@ public class FlyingStudio extends PlayerCapacity implements FlyingStudioZoneChoi
 					Player player = playerWeakReference.get();
 					if (player != null && player.getID() != getPlayer().getID()
 							&& player.getActivatedCapacities().size() == 6) {
-						getPlayer().addAdvertisingCampaignRights(this.pool.getAdvertisingCampaignRight());
+						this.pool.addAdvertisingCampaignRightToPlayer(getPlayer());
 					}
 				}
 

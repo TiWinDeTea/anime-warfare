@@ -24,10 +24,10 @@
 
 package org.tiwindetea.animewarfare.net.logicevent;
 
-public class NumberOfUnitiesToReconfortEvent extends ActionEvent<NumberOfUnitiesToReconfortEventListener> {
+public class NumberOfUnitsToReconfortEvent extends ActionEvent<NumberOfUnitiesToReconfortEventListener> {
 	private final int number;
 
-	public NumberOfUnitiesToReconfortEvent(int playerID, int number) {
+	public NumberOfUnitsToReconfortEvent(int playerID, int number) {
 		super(playerID);
 
 		this.number = number;
