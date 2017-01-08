@@ -38,7 +38,7 @@ import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEventListener;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
-import org.tiwindetea.animewarfare.gui.game.GUnit;
+import org.tiwindetea.animewarfare.gui.game.GComponent;
 import org.tiwindetea.animewarfare.gui.game.GameState;
 import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
@@ -46,7 +46,6 @@ import org.tiwindetea.animewarfare.gui.menu.ServersListState;
 import org.tiwindetea.animewarfare.gui.menu.SettingsMenuState;
 import org.tiwindetea.animewarfare.net.GameClient;
 import org.tiwindetea.animewarfare.net.GameServer;
-import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.settings.SettingsUpdatedEvent;
 import org.tiwindetea.animewarfare.settings.SettingsUpdatedEventListener;
@@ -99,7 +98,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		ServersListState.initStaticFields();
 		GameRoomState.initStaticFields();
 		GameState.initStaticFields();
-		GUnit.initFactory();
+		GComponent.initSubFactories();
 
 		this.guiStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 

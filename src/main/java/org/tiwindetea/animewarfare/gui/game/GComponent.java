@@ -40,4 +40,9 @@ public abstract class GComponent extends StackPane {
     public GComponent(Image image) {
         getChildren().add(new ImageView(image));
     }
+
+    public static void initSubFactories() {
+        GUnit.initFactory();
+        GStudio.initFactory();
+    }
 }

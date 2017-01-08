@@ -30,7 +30,7 @@ import java.util.EventListener;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface UnitNeteventListener extends EventListener {
+public interface UnitMovedNeteventListener extends EventListener {
 
-    void handleUnitMovedNetevent(UnitMoveNetevent event);
+    void handleUnitMovedNetevent(UnitMovedNetevent event);
 }

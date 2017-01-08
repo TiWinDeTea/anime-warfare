@@ -36,14 +36,14 @@ import java.util.EventListener;
 public class LogicEventDispatcher extends EventDispatcher {
 
     private static class LEDHolder {
-        static final EventDispatcher INSTANCE = new LogicEventDispatcher();
+        static final LogicEventDispatcher INSTANCE = new LogicEventDispatcher();
     }
 
     LogicEventDispatcher() {
         super();
     }
 
-    public static EventDispatcher getInstance() {
+    public static LogicEventDispatcher getInstance() {
         return LEDHolder.INSTANCE;
     }
 

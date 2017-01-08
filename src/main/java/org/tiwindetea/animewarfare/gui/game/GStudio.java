@@ -24,10 +24,15 @@
 
 package org.tiwindetea.animewarfare.gui.game;
 
+import com.esotericsoftware.minlog.Log;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -40,6 +45,7 @@ import java.util.TreeSet;
 public class GStudio extends GComponent {
 
     private static final TreeSet<GStudio> STUDIOS = new TreeSet<>(Comparator.comparingInt(GStudio::getZoneID));
+    private static boolean initialized = false;
 
     private Rectangle ownerRectangle;
     private int zoneID;
@@ -50,6 +56,7 @@ public class GStudio extends GComponent {
         this.zoneID = zoneID;
         this.ownerRectangle = new Rectangle(10, 10, Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256)));
         this.ownerRectangle.setStrokeWidth(2);
+        this.ownerRectangle.setStroke(Color.BLACK);
         this.ownerRectangle.setFill(Color.TRANSPARENT);
         getChildren().add(this.ownerRectangle);
     }
@@ -61,6 +68,20 @@ public class GStudio extends GComponent {
     public int getZoneID() {
         return this.zoneID;
     }
+
+    public void setTeam(GameClientInfo client) {
+        if (client == null) {
+            this.ownerRectangle.setVisible(false);
+        } else {
+            this.ownerRectangle.setVisible(true);
+            this.ownerRectangle.setStroke(GlobalChat.getClientColor(client));
+        }
+    }
+
+    public void setTeam(int playerID) {
+        // todo
+    }
+
 
     public static GStudio get(int zoneID) {
         GStudio studio = STUDIOS.floor(new GStudio(zoneID));
@@ -80,21 +101,43 @@ public class GStudio extends GComponent {
         return studio;
     }
 
-    public void setTeam(GameClientInfo client) {
-        if (client == null) {
-            this.ownerRectangle.setVisible(false);
-        } else {
-            this.ownerRectangle.setVisible(true);
-            this.ownerRectangle.setStroke(GlobalChat.getClientColor(client));
-        }
-    }
-
-    public void setTeam(int playerID) {
-        // todo
-    }
-
     public static void create(int zoneID) {
         STUDIOS.add(new GStudio(zoneID));
+    }
+
+    public static void delete(int zoneID) {
+        STUDIOS.remove(new GStudio(zoneID));
+    }
+
+    public static void initFactory() {
+
+        if (!initialized) {
+            EventDispatcher.registerListener(StudioNetevent.class, new StudioNeteventListener() {
+                @Override
+                public void handleStudioCreation(StudioNetevent event) {
+                    create(event.getZoneID());
+                }
+
+                @Override
+                public void handleStudioRemoved(StudioNetevent event) {
+                    delete(event.getZoneID());
+                }
+
+                @Override
+                public void handleStudioDeserted(StudioNetevent event) {
+                    getOrCreate(event.getZoneID()).setTeam(null);
+                }
+
+                @Override
+                public void handleStudioCaptured(StudioNetevent event) {
+                    getOrCreate(event.getZoneID()).setTeam(event.getPlayerID());
+                }
+            });
+            EventDispatcher.registerListener(GameEndedNetevent.class, e -> STUDIOS.clear());
+            initialized = true;
+        } else {
+            Log.warn("Tried to init GUnit factory (at least) twice !");
+        }
     }
 
     @Override

@@ -24,22 +24,31 @@
 
 package org.tiwindetea.animewarfare.logic;
 
+import org.tiwindetea.animewarfare.logic.units.Studio;
+import org.tiwindetea.animewarfare.logic.units.Unit;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class GameBoard {
 	private final GameMap gameMap;
 
-	private final Map<Integer, Player> players = new HashMap<>();
-	private final List<Player> playersInOrder = new ArrayList<>(); // Used to cache.
+	private final Map<Integer, Player> players = new HashMap<>(); // todo possibly useless [ players are now in a circular linked list fashion.
+	// /!\ They are however using WeakReferences, so they need to be stored somewhere
+	private final List<Player> playersInOrder = new ArrayList<>(); // Used to cache. [Same for this one]
 
 	private Player lastFirstPlayer;
+	private Player firstPlayer;
 	private int firstPlayerID;
 	private boolean clockWiseRotationTurn;
 
@@ -58,7 +67,43 @@ public class GameBoard {
 
 		initializePlayers(players);
 		this.gameMap = new GameMap(this.players.size());
-		this.marketingLadder = new MarketingLadder(players.size());
+		this.marketingLadder = new MarketingLadder(this.players.size());
+
+		List<Zone> zones = new ArrayList<>(this.gameMap.getZones());
+		Random r = new Random();
+		for (Player player : this.players.values()) {
+			Zone playerZone = zones.get(r.nextInt(zones.size()));
+			zones.remove(playerZone);
+
+			Unit unit = null;
+			switch (player.getFaction()) {
+				case NO_NAME:
+					unit = new Unit(UnitType.RUSSELL_JIN);
+					break;
+				case THE_BLACK_KNIGHTS:
+					unit = new Unit(UnitType.NUNNALLY);
+					break;
+				case HAIYORE:
+					unit = new Unit(UnitType.YOICHI_TAKEHIKO);
+					break;
+				case F_CLASS_NO_BAKA:
+					unit = new Unit(UnitType.YOSHII_AKIHISA);
+					break;
+			}
+
+			player.getUnitCounter().addUnit(unit.getType(), unit.getID());
+			unit.addInZone(playerZone);
+
+			Studio studio = new Studio(playerZone.getID());
+			playerZone.setStudio(studio);
+			studio.setController(unit);
+
+			for (int i = 0; i < 5; i++) {
+				unit = new Unit(unit.getType());
+				player.getUnitCounter().addUnit(unit.getType(), unit.getID());
+				unit.addInZone(playerZone);
+			}
+		}
 	}
 
 	public int getLastFirstPlayerID() {
@@ -81,11 +126,26 @@ public class GameBoard {
 	}
 
 	public Player selectRandomPlayer() {
-		return this.players.get(new Random().nextInt(this.players.size()));
+
+		Player p;
+		int chosenPlayer = new Random().nextInt(this.players.size());
+
+		Collection<Player> localPlayers = this.players.values();
+		Iterator<Player> playerIterator = localPlayers.iterator();
+		do {
+			p = playerIterator.next();
+			--chosenPlayer;
+		} while (chosenPlayer >= 0);
+
+		return p;
 	}
 
-	public List<Player> getPlayersInOrder() {
+	public List<Player> getPlayersInOrder() { // todo : possibly useless (cf line 42, players hashmap)
 		return Collections.unmodifiableList(this.playersInOrder);
+	}
+
+	public Player getFirstPlayer() {
+		return this.firstPlayer;
 	}
 
 	public static List<Integer> getPlayersIndex(List<Player> players) {
@@ -101,23 +161,32 @@ public class GameBoard {
 	}
 
 	private void initializePlayers(Map<Integer, FactionType> players) {
-		players.entrySet()
-		       .stream()
-		       .map(entry -> new Player(entry.getKey().intValue(), entry.getValue()))
-		       .collect(Collectors.toMap(Player::getID, player -> player));
+
+		TreeSet<Player> playersInOrder = new TreeSet<>(Comparator.comparingInt(Player::getID));
+		players.entrySet().stream()
+				.map(entry -> new Player(entry.getKey(), entry.getValue()))
+				.forEach(p -> playersInOrder.add(p));
+
+		Player previous = null;
+		Player first = null;
+
+		for (Player current : playersInOrder) {
+			this.players.put(new Integer(current.getID()), current);
+			if (previous != null) {
+				current.setClockwisePreviousPlayer(previous);
+				previous.setClockwiseNextPlayer(current);
+			} else {
+				first = current;
+			}
+			previous = current;
+		}
+		previous.setClockwiseNextPlayer(first);
+		first.setClockwisePreviousPlayer(previous);
 	}
 
-	private void buildPlayerList() { // FIXME: Doesn't work (Linked list of players ??)
-		this.playersInOrder.clear();
-		if (this.clockWiseRotationTurn) {
-			for (int i = 0, j = this.firstPlayerID; i < this.players.size(); ++i) {
-				this.playersInOrder.add(this.players.get((i + j) % this.players.size()));
-			}
-		} else {
-			for (int i = this.players.size(), j = this.firstPlayerID; i > 0; --i) {
-				this.playersInOrder.add(this.players.get((i + j) % this.players.size()));
-			}
-		}
+	private void buildPlayerList() {
+		this.firstPlayer = this.players.get(new Integer(this.firstPlayerID));
+		this.firstPlayer.setClockwiseness(this.clockWiseRotationTurn);
 	}
 
 	public GameMap getMap() {
@@ -135,4 +204,5 @@ public class GameBoard {
 	public void destroy() {
 		this.endGameMonitor.destroy();
 	}
+
 }

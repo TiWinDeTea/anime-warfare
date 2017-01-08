@@ -33,7 +33,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class UnitMoveNetevent implements Event<UnitNeteventListener> {
+public class UnitMovedNetevent implements Event<UnitMovedNeteventListener> {
 
     private final int destination;
     private final int source;
@@ -41,7 +41,7 @@ public class UnitMoveNetevent implements Event<UnitNeteventListener> {
     private final FactionType factionType;
     private final UnitType unitType;
 
-    public UnitMoveNetevent(NetUnitMoveEvent unitEvent) {
+    public UnitMovedNetevent(NetUnitMoveEvent unitEvent) {
         this.destination = unitEvent.getDestination();
         this.source = unitEvent.getSource();
         this.ID = unitEvent.getID();
@@ -50,7 +50,7 @@ public class UnitMoveNetevent implements Event<UnitNeteventListener> {
     }
 
     @Override
-    public void notify(UnitNeteventListener listener) {
+    public void notify(UnitMovedNeteventListener listener) {
         listener.handleUnitMovedNetevent(this);
     }
 

@@ -37,6 +37,7 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +52,11 @@ import java.util.Set;
  * @author Benoît CORTIER
  */
 public class Player {
+
+	private WeakReference<Player> clockwiseNextPlayer = new WeakReference<>(null);
+	private WeakReference<Player> clockwisePreviousPlayer = new WeakReference<>(null);
+	private WeakReference<Player> nextPlayerInGameOrder = new WeakReference<>(null);
+
 	private static final int BATTLE_COST = 1; // TODO: Externalize
 
 	private final int ID;
@@ -71,6 +77,40 @@ public class Player {
 	public Player(int id, FactionType faction) {
 		this.ID = id;
 		this.faction = faction;
+	}
+
+	public void setClockwiseNextPlayer(Player p) {
+		this.clockwiseNextPlayer = new WeakReference<>(p);
+	}
+
+	public Player getClockwiseNextPlayer() {
+		return this.clockwiseNextPlayer.get();
+	}
+
+	public void setClockwisePreviousPlayer(Player clockwisePreviousPlayer) {
+		this.clockwisePreviousPlayer = new WeakReference(clockwisePreviousPlayer);
+	}
+
+	public Player getClockwisePreviousPlayer() {
+		return this.clockwisePreviousPlayer.get();
+	}
+
+	public void setClockwiseness(boolean clockwiseness) {
+		if (clockwiseness) {
+			if (this.nextPlayerInGameOrder != this.clockwiseNextPlayer) { // checking references
+				this.nextPlayerInGameOrder = this.clockwiseNextPlayer;
+				this.clockwiseNextPlayer.get().setClockwiseness(clockwiseness);
+			}
+		} else {
+			if (this.nextPlayerInGameOrder != this.clockwisePreviousPlayer) { // checking references
+				this.nextPlayerInGameOrder = this.clockwisePreviousPlayer;
+				this.clockwiseNextPlayer.get().setClockwiseness(clockwiseness);
+			}
+		}
+	}
+
+	public Player getNextPlayerInGameOrder() {
+		return this.nextPlayerInGameOrder.get();
 	}
 
 	public int getID() {
@@ -240,10 +280,10 @@ public class Player {
 		return cost < 0 ? 0 : cost;
 	}
 
-	public float getUnitCost(UnitType type) {
+	public int getUnitCost(UnitType type) {
 		float cost = this.costModifier.getUnitCostModifier(type) + type.getDefaultCost();
 
-		return cost < 0 ? 0 : cost;
+		return (int) (cost < 0 ? 0 : cost);
 	}
 
 	@Override

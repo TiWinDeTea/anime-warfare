@@ -29,7 +29,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
-import org.lomadriel.lfc.event.EventDispatcher;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
@@ -104,7 +103,7 @@ public class GameServer {
     private DefaultStateMachine stateMachine;
     private final Server server = new Server();
 
-    private final EventDispatcher eventDispatcher = LogicEventDispatcher.getInstance();
+    private final LogicEventDispatcher eventDispatcher = LogicEventDispatcher.getInstance();
 
     private final Room room = new Room();
     private final NetworkListener networkNetworkListener = new NetworkListener(this.server, this.room);

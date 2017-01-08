@@ -402,7 +402,7 @@ public class GameClient {
 
         public void received(Connection connection, NetUnitMoveEvent unitEvent) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + unitEvent);
-            EventDispatcher.send(new UnitMoveNetevent(unitEvent));
+            EventDispatcher.send(new UnitMovedNetevent(unitEvent));
         }
 
     }

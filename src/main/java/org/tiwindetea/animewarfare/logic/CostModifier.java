@@ -39,7 +39,7 @@ public class CostModifier {
 
 	int getUnitCostModifier(UnitType unitType) {
 		if (!this.unitCost.containsKey(unitType)) {
-			throw new IllegalArgumentException();
+			return 0;
 		}
 
 		return getCost(this.unitCost.get(unitType));

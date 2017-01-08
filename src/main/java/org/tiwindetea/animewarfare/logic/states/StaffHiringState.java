@@ -47,9 +47,8 @@ class StaffHiringState extends GameState {
 
 	@Override
 	public void onEnter() {
-		computeStaffAvailable();
-
 		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.STAFF_HIRING));
+		computeStaffAvailable();
 	}
 
 	@Override

@@ -53,19 +53,19 @@ public class NetUnitMoveEvent implements NetReceivable {
 
     public NetUnitMoveEvent(UnitMovedEvent event) {
 
-        if (event.getSource() == null) {
+        if (event.getSource() != null) {
             this.source = event.getSource().getID();
         } else {
             this.source = Integer.MIN_VALUE;
         }
 
-        if (event.getDestination() == null) {
+        if (event.getDestination() != null) {
             this.destination = event.getDestination().getID();
         } else {
             this.destination = Integer.MIN_VALUE;
         }
 
-        this.ID = event.getSource().getID();
+        this.ID = event.getUnit().getID();
         this.factionType = event.getUnit().getFaction();
         this.unitType = event.getUnit().getType();
     }

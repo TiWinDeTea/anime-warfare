@@ -44,8 +44,8 @@ import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.UnitMoveNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.UnitNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNeteventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ import java.util.List;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GMap extends Pane implements UnitNeteventListener, StudioNeteventListener, BattleNeteventListener {
+public class GMap extends Pane implements UnitMovedNeteventListener, StudioNeteventListener, BattleNeteventListener {
 
     // TODO: rework this class
 
@@ -81,6 +81,10 @@ public class GMap extends Pane implements UnitNeteventListener, StudioNeteventLi
             setScaleX(getScaleX() + getScaleX() * e.getDeltaY() / 1000.0); // TODO externalize & settings
             setScaleY(getScaleY() + getScaleY() * e.getDeltaY() / 1000.0); // TODO externalize & settings
         });
+        // todo : unregister
+        EventDispatcher.registerListener(UnitMovedNetevent.class, this);
+        EventDispatcher.registerListener(StudioNetevent.class, this);
+        EventDispatcher.registerListener(BattleNetevent.class, this);
     }
 
     /**
@@ -725,7 +729,7 @@ public class GMap extends Pane implements UnitNeteventListener, StudioNeteventLi
 
 
     @Override
-    public void handleUnitMovedNetevent(UnitMoveNetevent event) {
+    public void handleUnitMovedNetevent(UnitMovedNetevent event) {
         if (event.getDestination() != Integer.MIN_VALUE) {
             if (event.getSource() != Integer.MIN_VALUE) {
                 moveGComponentFxThread(GUnit.get(event.getUnitID()), event.getSource(), event.getDestination());
@@ -735,7 +739,7 @@ public class GMap extends Pane implements UnitNeteventListener, StudioNeteventLi
         } else if (event.getSource() != Integer.MIN_VALUE) {
             removeGComponentFxThread(GUnit.get(event.getUnitID()), event.getSource());
         } else {
-            Log.warn("Received " + UnitMoveNetevent.class.getName().toString() + " with both destination and target and 0.");
+            Log.warn("Received " + UnitMovedNetevent.class.getName().toString() + " with both destination and target and 0.");
         }
     }
 

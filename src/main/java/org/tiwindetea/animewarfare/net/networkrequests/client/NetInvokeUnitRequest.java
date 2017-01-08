@@ -35,6 +35,11 @@ public class NetInvokeUnitRequest implements NetSendable {
     private final UnitType unitType;
     private final int zoneID;
 
+    public NetInvokeUnitRequest(){
+        unitType = null;
+        zoneID = Integer.MIN_VALUE;
+    }
+
     /**
      * @param unitType Unit you want to invoke
      * @param zoneID   Zone where you want to invoke the unit.

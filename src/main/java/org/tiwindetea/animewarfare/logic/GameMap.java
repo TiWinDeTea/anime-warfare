@@ -28,6 +28,7 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -111,7 +112,7 @@ public class GameMap {
 	}
 
 	public Collection<Zone> getZones() {
-		return this.zones;
+		return Collections.unmodifiableCollection(this.zones);
 	}
 
 	public Zone getZone(int id) {

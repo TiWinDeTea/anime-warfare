@@ -26,6 +26,8 @@ package org.tiwindetea.animewarfare.logic.states;
 
 import org.lomadriel.lfc.statemachine.State;
 import org.tiwindetea.animewarfare.logic.GameBoard;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 
 class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
 	FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
@@ -34,9 +36,11 @@ class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
 
 	@Override
 	public void onEnter() {
-		registerEventListeners();
-
 		this.firstPlayer = this.gameBoard.selectRandomPlayer();
+
+		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
+
+		registerEventListeners();
 	}
 
 	@Override

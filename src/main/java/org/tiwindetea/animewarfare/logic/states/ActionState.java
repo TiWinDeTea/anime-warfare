@@ -67,7 +67,6 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	private final List<Integer> zonesThatHadABattle = new ArrayList<>();
 	private final List<Integer> alreadyMovedUnit = new ArrayList<>();
 
-	private List<Player> players;
 	private boolean gameEnded;
 	private boolean phaseEnded;
 
@@ -87,7 +86,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	public void onEnter() {
 		registerEventListeners();
 		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.ACTION));
-		this.players = this.gameBoard.getPlayersInOrder();
+		this.currentPlayer = this.gameBoard.getFirstPlayer();
 	}
 
 	private void registerEventListeners() {
@@ -110,15 +109,14 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	}
 
 	private void setNextPlayer() {
-		int counter = 0;
 
+		Player localCurrentPlayer = this.currentPlayer;
 		do {
-			this.currentPlayerPosition = (this.currentPlayerPosition + 1) % this.players.size();
-			this.currentPlayer = this.players.get(this.currentPlayerPosition);
-			++counter;
-		} while (this.currentPlayer.getStaffAvailable() == 0 && counter != this.players.size());
+			this.currentPlayer = this.currentPlayer.getNextPlayerInGameOrder();
+		}
+		while (this.currentPlayer.getStaffAvailable() == 0 && localCurrentPlayer != this.currentPlayer); // checking references
 
-		if (counter == this.players.size()) {
+		if (this.currentPlayer.getStaffAvailable() == 0) {
 			// End the phase.
 			this.phaseEnded = true;
 		} else {
@@ -236,15 +234,17 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		}
 
 		if (this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getUnitCost(event.getUnitType()))) {
-			if (this.currentPlayer.getUnitCounter().getNumberOfUnits(event.getUnitType()) <= event.getUnitType()
-			                                                                                      .getMaxNumber()) {
+			if (this.currentPlayer.getUnitCounter().getNumberOfUnits(event.getUnitType()) < event.getUnitType()
+					.getMaxNumber()) {
 				Zone invocationZone = this.gameBoard.getMap().getZone(event.getZone());
 
 				if (invocationZone.hasStudio()
 						&& (this.currentPlayer.hasFaction(invocationZone.getStudio().getCurrentFaction())
-						|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
-						|| !this.currentPlayer.getUnitCounter().hasUnits() && event.getUnitType()
-						                                                           .isLevel(UnitLevel.MASCOT)) {
+							|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
+						|| (event.getUnitType().isLevel(UnitLevel.MASCOT)
+							&& (!this.currentPlayer.getUnitCounter().hasUnits()
+								|| invocationZone.getUnits().stream().anyMatch(unit -> unit.getFaction().equals(this.currentPlayer.getFaction()))))
+						) {
 					invokeUnit(invocationZone, event.getUnitType());
 				}
 			}
@@ -253,8 +253,9 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 	private void invokeUnit(Zone zone, UnitType unitType) {
 		Unit unit = new Unit(unitType);
-		unit.addInZone(zone);
 		this.currentPlayer.getUnitCounter().addUnit(unitType, unit.getID());
+		this.currentPlayer.decrementStaffPoints(this.currentPlayer.getUnitCost(unitType));
+		unit.addInZone(zone);
 	}
 
 	@Override

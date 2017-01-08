@@ -43,7 +43,9 @@ import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
+import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.*;
 import org.tiwindetea.animewarfare.net.networkrequests.server.*;
@@ -161,6 +163,10 @@ class Utils {
 		kryo.register(CapacityType.class);
 		kryo.register(FactionType.class);
 		kryo.register(UnitCounterEvent.Type.class);
+		kryo.register(PhaseChangedEvent.Phase.class);
+		kryo.register(MoveUnitsEvent.Movement.class);
+		kryo.register(UnitType.class);
+		kryo.register(StudioEvent.Type.class);
 	}
 
 	static void registerAsLogicListener(GameServer.LogicListener logicListener) {
@@ -186,6 +192,7 @@ class Utils {
 		ed.addListener(MarketingLadderUpdatedEvent.class, logicListener);
 		ed.addListener(NumberOfFansChangedEvent.class, logicListener);
 		ed.addListener(StudioEvent.class, logicListener);
+		ed.addListener(UnitCounterEvent.class, logicListener);
 		ed.addListener(UnitMovedEvent.class, logicListener);
 	}
 
@@ -212,6 +219,7 @@ class Utils {
 		ed.removeListener(MarketingLadderUpdatedEvent.class, logicListener);
 		ed.removeListener(NumberOfFansChangedEvent.class, logicListener);
 		ed.removeListener(StudioEvent.class, logicListener);
+		ed.removeListener(UnitCounterEvent.class, logicListener);
 		ed.removeListener(UnitMovedEvent.class, logicListener);
 	}
 }
