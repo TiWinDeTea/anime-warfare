@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.capacity;
 
+import com.esotericsoftware.minlog.Log;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
@@ -85,6 +86,8 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 		}
 	}
 
+	private static final int COST = 3;
+
 	private final GameBoard gameBoard;
 	private Zone targetZone;
 	private int targetPlayer = -1;
@@ -92,6 +95,8 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 	public UndercoverAgent(Player player, GameBoard gameBoard) {
 		super(player);
 		this.gameBoard = gameBoard;
+
+		LogicEventDispatcher.registerListener(UndercoverAgentCapacityEvent.class, this);
 	}
 
 	@Override
@@ -110,6 +115,13 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 
 	@Override
 	public void handleUndercoverAgentZoneChoice(UndercoverAgentCapacityEvent event) {
+		if (!getPlayer().hasRequiredStaffPoints(COST)) {
+			Log.debug(UndercoverAgent.class.getName(), "Not enough staff points.");
+			return;
+		}
+
+		getPlayer().decrementStaffPoints(COST);
+
 		this.targetZone = this.gameBoard.getMap().getZone(event.getZoneID());
 		this.targetPlayer = event.getTargetPlayerID();
 	}
@@ -135,6 +147,9 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 				if (isController) {
 					this.targetZone.getStudio().setController(unit);
 				}
+
+				this.targetZone = null;
+				this.targetPlayer = -1;
 			}
 		}
 	}
