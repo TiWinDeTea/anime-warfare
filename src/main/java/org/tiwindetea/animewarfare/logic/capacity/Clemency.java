@@ -38,8 +38,15 @@ import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEventListener
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.logicevent.NumberOfUnitiesToReconfortEvent;
 import org.tiwindetea.animewarfare.net.logicevent.NumberOfUnitiesToReconfortEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
+import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
-public class Clemency extends PlayerCapacity implements BattleEventListener, PhaseChangedEventListener, NumberOfUnitiesToReconfortEventListener {
+public class Clemency extends PlayerCapacity implements BattleEventListener,
+		PhaseChangedEventListener, NumberOfUnitiesToReconfortEventListener,
+		UseCapacityEventListener {
+
+	// FIXME: need rework. See rules.
+
 	public static class ClemencyActivable extends PlayerActivable implements UnitCounterEventListener {
 		private final AdvertisingCampaignRightsPool pool;
 
@@ -70,44 +77,14 @@ public class Clemency extends PlayerCapacity implements BattleEventListener, Pha
 	private BattleSide battleSide;
 	private boolean usedThisTurn;
 
+	private int numberOfUnitsToReconfort;
+
 	Clemency(Player player, AdvertisingCampaignRightsPool pool) {
 		super(player);
 		this.pool = pool;
 
 		LogicEventDispatcher.registerListener(BattleEvent.class, this);
 		LogicEventDispatcher.registerListener(PhaseChangedEvent.class, this);
-	}
-
-	@Override
-	public void use() {
-		if (this.battleSide == null || this.usedThisTurn || getPlayer().hasRequiredStaffPoints(COST)) {
-			return;
-		}
-
-		LogicEventDispatcher.registerListener(NumberOfUnitiesToReconfortEvent.class, this);
-		this.usedThisTurn = true;
-	}
-
-	@Override
-	public void handleNumberOfUnitiesToReconfortEvent(NumberOfUnitiesToReconfortEvent numberOfUnitiesToReconfortEvent) {
-		if (numberOfUnitiesToReconfortEvent.getNumber() > getPlayer().getAdvertisingCampaignRights().size()) {
-			int weight = 1;
-			int counter = 0;
-			do {
-				AdvertisingCampaignRight right = getPlayer().removeAdvertisingCampainRights(weight);
-				if (right == null) {
-					++weight;
-				} else {
-					this.pool.returnAdvertisingCampaignRight(right);
-					++counter;
-				}
-
-			} while (counter != numberOfUnitiesToReconfortEvent.getNumber());
-
-			this.battleSide.decrementDeads(counter);
-		}
-
-		LogicEventDispatcher.unregisterListener(NumberOfUnitiesToReconfortEvent.class, this);
 	}
 
 	@Override
@@ -122,16 +99,58 @@ public class Clemency extends PlayerCapacity implements BattleEventListener, Pha
 
 	@Override
 	public void handlePostBattle(BattleEvent event) {
+		if (this.usedThisTurn || !getPlayer().hasRequiredStaffPoints(COST)) {
+			return;
+		}
+
 		if (event.getBattleContext().getAttacker().getPlayer().equals(getPlayer())) {
 			this.battleSide = event.getBattleContext().getAttacker();
 		} else if (event.getBattleContext().getDefender().getPlayer().equals(getPlayer())) {
 			this.battleSide = event.getBattleContext().getDefender();
 		}
+
+		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
 	}
 
 	@Override
 	public void handleBattleFinished(BattleEvent event) {
 		// Nothing to do
+	}
+
+	@Override
+	public void handlePlayerUseCapacity(UseCapacityEvent event) {
+		if (event.getName() == getName()) {
+			LogicEventDispatcher.unregisterListener(UseCapacityEvent.class, this);
+			LogicEventDispatcher.registerListener(NumberOfUnitiesToReconfortEvent.class, this);
+		}
+	}
+
+	@Override
+	public void handleNumberOfUnitiesToReconfortEvent(NumberOfUnitiesToReconfortEvent numberOfUnitiesToReconfortEvent) {
+		if (numberOfUnitiesToReconfortEvent.getNumber() > getPlayer().getAdvertisingCampaignRights().size()) {
+			int weight = 1;
+			this.numberOfUnitsToReconfort = 0;
+			do {
+				AdvertisingCampaignRight right = getPlayer().removeAdvertisingCampainRights(weight);
+				if (right == null) {
+					++weight;
+				} else {
+					this.pool.returnAdvertisingCampaignRight(right);
+					++this.numberOfUnitsToReconfort;
+				}
+			} while (this.numberOfUnitsToReconfort != numberOfUnitiesToReconfortEvent.getNumber());
+		}
+
+		LogicEventDispatcher.unregisterListener(NumberOfUnitiesToReconfortEvent.class, this);
+	}
+
+	@Override
+	public void use() {
+		this.battleSide.decrementDeads(this.numberOfUnitsToReconfort);
+		this.numberOfUnitsToReconfort = 0;
+		this.battleSide = null;
+
+		this.usedThisTurn = true;
 	}
 
 	@Override
