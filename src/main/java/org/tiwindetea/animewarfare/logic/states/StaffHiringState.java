@@ -75,14 +75,11 @@ class StaffHiringState extends GameState {
 
 		List<Pair<Integer, Integer>> playerStaff = new LinkedList<>();
 		for (Player player : this.gameBoard.getPlayers()) {
-			int numberOfCapturedMascot = (int) player.getUnitCaptured()
-			                                         .stream()
-			                                         .filter(unit -> unit.isLevel(UnitLevel.MASCOT))
-			                                         .count();
+			int numberOfCapturedMonster = player.getUnitCaptured().size();
 
 			int staffPoints = 2 * getNumberOfControlledPortal(studios, player)
 					+ player.getUnitCounter().getNumberOfUnits(UnitLevel.MASCOT)
-					+ numberOfCapturedMascot
+					+ numberOfCapturedMonster
 					+ numberOfNonControlledPortal;
 
 			playerStaff.add(new Pair<>(Integer.valueOf(player.getID()), Integer.valueOf(staffPoints)));
