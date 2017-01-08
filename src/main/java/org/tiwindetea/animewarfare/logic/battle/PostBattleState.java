@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
+import com.esotericsoftware.minlog.Log;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
@@ -58,8 +59,6 @@ public class PostBattleState extends BattleState
 	private final List<CapacityName> defenderCapacities = new ArrayList<>();
 	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
 
-	private boolean capacitiesChosen = false;
-
 	private Set<Integer> playersReady = new LinkedHashSet<>();
 
 	public PostBattleState(BattleContext battleContext, GameMap map) {
@@ -70,9 +69,6 @@ public class PostBattleState extends BattleState
 	protected void onEnter() {
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.POST_BATTLE, this.battleContext));
 
-		// register events.
-		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
-		LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
 		LogicEventDispatcher.registerListener(SelectWoundedsUnitsEvent.class, this);
 	}
 
@@ -94,20 +90,12 @@ public class PostBattleState extends BattleState
 		}
 
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.BATTLE_FINISHED, this.battleContext));
-
-		// unregister events.
-		LogicEventDispatcher.unregisterListener(UseCapacityEvent.class, this);
-		LogicEventDispatcher.unregisterListener(BattlePhaseReadyEvent.class, this);
-		LogicEventDispatcher.unregisterListener(SelectWoundedsUnitsEvent.class, this);
 	}
 
 	@Override
 	public void handleSelectWoundedUnits(SelectWoundedsUnitsEvent event) {
-		if (!this.capacitiesChosen) {
-			return;
-		}
-
 		if (this.playersReady.contains(event.getPlayerID())) {
+			Log.debug(getClass().getName().toString(), event.getPlayerID() + " has already choosen his woundeds.");
 			return; // no need to choose twice.
 		}
 
@@ -117,16 +105,19 @@ public class PostBattleState extends BattleState
 			opponentSide = this.battleContext.getDefender();
 		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
 			if (!this.playersReady.contains(this.battleContext.getAttacker().getPlayer().getID())) {
+				Log.debug(getClass().getName().toString(), "attacker should choose his woundeds first.");
 				return; // attacker first!
 			}
 			currentSide = this.battleContext.getDefender();
 			opponentSide = this.battleContext.getAttacker();
 		} else {
+			Log.debug(getClass().getName().toString(), event.getPlayerID() + " doesn't belongs to a battle side.");
 			return;
 		}
 
 		if (event.getWoundedsToMove().size() != currentSide.getNumberOfDeads()
 				&& event.getWoundedsToMove().size() != currentSide.getUnits().size()) {
+			Log.debug(getClass().getName().toString(), "Number of woundeds doesn't match.");
 			return;
 		}
 
@@ -134,6 +125,7 @@ public class PostBattleState extends BattleState
 				.anyMatch(m -> currentSide.getUnits().stream()
 						.noneMatch(u -> m.getUnitID() == u.getID()))
 				) {
+			Log.debug(getClass().getName().toString(), "Unit not concerned!");
 			return; // ohw! This unit is not concerned!
 		}
 
@@ -163,29 +155,36 @@ public class PostBattleState extends BattleState
 		if (this.playersReady.size() >= 2) {
 			LogicEventDispatcher.send(new BattleWoundedsSelectedEvent(this.battleContext));
 
-			this.nextState = new BattleEndedState();
-			update();
+			LogicEventDispatcher.unregisterListener(SelectWoundedsUnitsEvent.class, this);
+
+			LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
+			LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
 		}
 	}
 
 	@Override
 	public void handlePlayerUseCapacity(UseCapacityEvent event) {
-		if (!this.capacitiesChosen && event.getName().getType().equals(CapacityType.POST_BATTLE)) {
+		if (event.getName().getType().equals(CapacityType.POST_BATTLE)) {
 			takeCapacityIntoConsideration(event,
 					this.attackerCapacities,
 					this.defenderCapacities,
 					this.thirdPartiesCapacities);
+		} else {
+			Log.debug(getClass().getName().toString(), event.getPlayerID() + ": " + event.getName() + " is not post battle.");
 		}
 	}
 
 	@Override
 	public void handleBattlePhaseReadyCapacity(BattlePhaseReadyEvent event) {
-		if (!this.capacitiesChosen) {
-			this.playersReady.add(event.getPlayerID());
-			if (this.playersReady.size() >= 2 + this.thirdPartiesCapacities.size()) {
-				this.playersReady.clear();
-				this.capacitiesChosen = true;
-			}
+		this.playersReady.add(event.getPlayerID());
+		if (this.playersReady.size() >= 2 + this.thirdPartiesCapacities.size()) {
+			this.playersReady.clear();
+
+			LogicEventDispatcher.unregisterListener(UseCapacityEvent.class, this);
+			LogicEventDispatcher.unregisterListener(BattlePhaseReadyEvent.class, this);
+
+			this.nextState = new BattleEndedState();
+			update();
 		}
 	}
 }

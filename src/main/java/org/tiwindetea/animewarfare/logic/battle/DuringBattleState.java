@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
+import com.esotericsoftware.minlog.Log;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleDeadsSelectedEvent;
@@ -81,6 +82,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 	@Override
 	public void handleSelectUnits(SelectUnitsEvent event) {
 		if (this.playersReady.contains(event.getPlayerID())) {
+			Log.debug(getClass().getName().toString(), event.getPlayerID() + " has already choosen his deads.");
 			return;
 		}
 
@@ -90,11 +92,13 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
 			battleSide = this.battleContext.getDefender();
 		} else {
+			Log.debug(getClass().getName().toString(), event.getPlayerID() + " doesn't belongs to a battle side.");
 			return;
 		}
 
 		if (event.getUnits().size() != battleSide.getNumberOfDeads()
 				&& event.getUnits().size() != battleSide.getUnits().size()) {
+			Log.debug(getClass().getName().toString(), "Number of deads doesn't match.");
 			return;
 		}
 
@@ -102,6 +106,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 				.anyMatch(id -> battleSide.getUnits().stream()
 						.noneMatch(u -> id == u.getID()))
 				) {
+			Log.debug(getClass().getName().toString(), "Unit not concerned!");
 			return; // ohw! This unit is not concerned!
 		}
 

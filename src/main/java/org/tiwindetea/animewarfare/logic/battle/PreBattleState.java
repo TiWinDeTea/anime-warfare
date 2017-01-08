@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.battle;
 
+import com.esotericsoftware.minlog.Log;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
@@ -91,6 +92,8 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 					this.attackerCapacities,
 					this.defenderCapacities,
 					this.thirdPartiesCapacities);
+		} else {
+			Log.debug(getClass().getName().toString(), event.getPlayerID() + ": " + event.getName() + " is not pre battle.");
 		}
 	}
 
