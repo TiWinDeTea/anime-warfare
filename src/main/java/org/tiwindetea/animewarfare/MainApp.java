@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -37,6 +38,7 @@ import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEvent;
 import org.tiwindetea.animewarfare.gui.event.AskMenuStateUpdateEventListener;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
+import org.tiwindetea.animewarfare.gui.game.GUnit;
 import org.tiwindetea.animewarfare.gui.game.GameState;
 import org.tiwindetea.animewarfare.gui.menu.GameRoomState;
 import org.tiwindetea.animewarfare.gui.menu.MainMenuState;
@@ -44,6 +46,7 @@ import org.tiwindetea.animewarfare.gui.menu.ServersListState;
 import org.tiwindetea.animewarfare.gui.menu.SettingsMenuState;
 import org.tiwindetea.animewarfare.net.GameClient;
 import org.tiwindetea.animewarfare.net.GameServer;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.settings.SettingsUpdatedEvent;
 import org.tiwindetea.animewarfare.settings.SettingsUpdatedEventListener;
@@ -69,6 +72,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 	private Stage primaryStage;
 
+	@FXML
 	private BorderPane rootLayout;
 
 	private DefaultStateMachine guiStateMachine;
@@ -95,6 +99,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		ServersListState.initStaticFields();
 		GameRoomState.initStaticFields();
 		GameState.initStaticFields();
+		GUnit.initFactory();
 
 		this.guiStateMachine = new DefaultStateMachine(new MainMenuState(this.rootLayout));
 
@@ -105,12 +110,12 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		// Load root layout from fxml file.
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(MainApp.class.getResource("RootLayout.fxml"));
+		loader.setController(this);
 		try {
-			this.rootLayout = loader.load();
-			this.rootLayout.getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
 
 			// Show the scene containing the root layout.
-			Scene scene = new Scene(this.rootLayout);
+			Scene scene = new Scene(loader.load());
+			this.rootLayout.getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
 			this.primaryStage.setScene(scene);
 			this.primaryStage.show();
 		} catch (IOException e) {
