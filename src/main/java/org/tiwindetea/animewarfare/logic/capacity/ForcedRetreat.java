@@ -76,6 +76,10 @@ public class ForcedRetreat extends PlayerCapacity {
 	}
 
 	@Override
+	public void destroy() {
+	}
+
+	@Override
 	public CapacityName getName() {
 		return CapacityName.FORCED_RETREAT;
 	}

@@ -103,7 +103,14 @@ public class ClownArtist extends PlayerCapacity implements BattleEventListener {
 	}
 
 	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
+	}
+
+	@Override
 	public void handlePreBattle(BattleEvent event) {
+		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
+
 		if (event.getBattleContext().getAttacker().equals(getPlayer())) {
 			this.enemy = event.getBattleContext().getDefender();
 		} else if (event.getBattleContext().getDefender().equals(getPlayer())) {

@@ -83,6 +83,10 @@ public class BackStab extends PlayerCapacity implements BattleEventListener {
 	}
 
 	@Override
+	public void destroy() {
+	}
+
+	@Override
 	public void handlePreBattle(BattleEvent event) {
 	}
 

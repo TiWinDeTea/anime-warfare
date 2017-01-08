@@ -89,17 +89,21 @@ public class Holocaust extends PlayerCapacity {
 			this.pool.submit(() -> {
 				try {
 					Thread.sleep(TimeUnit.MINUTES.toMillis(2));
+
+					endOfTheTimer();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
-				endOfTheTimer();
 			});
 		}
 	}
 
 	private void endOfTheTimer() {
 		// TODO: S'ils n'y parviennent pas, vous choisissez qui est humilié.
+	}
+
+	@Override
+	public void destroy() {
 	}
 
 	@Override

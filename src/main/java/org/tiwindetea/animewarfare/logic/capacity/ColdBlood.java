@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.capacity;
 
+import com.esotericsoftware.minlog.Log;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.battle.BattleSide;
@@ -93,15 +94,18 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 	*/
 	ColdBlood(Player player) {
 		super(player);
+
+		LogicEventDispatcher.registerListener(ColdBloodUnitTypeChoiceEvent.class, this);
 	}
 
 	@Override
 	public void use() {
-		if (this.usedThisTurn || !getPlayer().hasRequiredStaffPoints(COST)) {
-			return;
-		}
+		LogicEventDispatcher.registerListener(BattleEvent.class, this);
+	}
 
-		LogicEventDispatcher.registerListener(ColdBloodUnitTypeChoiceEvent.class, this);
+	@Override
+	public void destroy() {
+
 	}
 
 	@Override
@@ -123,7 +127,16 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 	public void handleBattleFinished(BattleEvent event) {
 		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
 
-		// TODO: Need dead unit type in BattleSide class.
+		if (getPlayer().equals(event.getBattleContext().getAttacker().getPlayer())) {
+			int numberOfBuffToApply = (int) event.getBattleContext()
+			                                     .getAttacker()
+			                                     .getDeads()
+			                                     .stream()
+			                                     .filter(u -> u.getType() == this.unitTypeToResurect).count();
+			if (numberOfBuffToApply > 0) {
+
+			}
+		}
 	}
 
 	@Override
@@ -133,8 +146,10 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 
 	@Override
 	public void handleUnitTypeChoice(ColdBloodUnitTypeChoiceEvent event) {
-		LogicEventDispatcher.unregisterListener(ColdBloodUnitTypeChoiceEvent.class, this);
-		LogicEventDispatcher.registerListener(BattleEvent.class, this);
+		if (this.usedThisTurn || !getPlayer().hasRequiredStaffPoints(COST)) {
+			Log.debug(ColdBlood.class.getName(), "Already used this turn or hasRequiredStaffPoints is false.");
+			return;
+		}
 
 		if (getPlayer().hasFaction(event.getUnitType().getDefaultFaction())) {
 			getPlayer().decrementStaffPoints(COST);

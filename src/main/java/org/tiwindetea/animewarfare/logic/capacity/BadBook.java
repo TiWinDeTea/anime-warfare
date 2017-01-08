@@ -65,33 +65,40 @@ public class BadBook extends PlayerCapacity implements BadBookCapacityChoseEvent
 
 	private final static int COST = 1;
 	private final List<CapacityName> capacities = new ArrayList<>();
+	private CapacityName capacityToDesactivate;
 
 	BadBook(Player player) {
 		super(player);
+
+		LogicEventDispatcher.registerListener(BadBookCapacityChoseEvent.class, this);
 	}
 
 	@Override
 	public void use() {
-		if (getPlayer().getActivatedCapacities().size() == 6 || !getPlayer().hasRequiredStaffPoints(COST)) {
-			return;
-		}
+		getPlayer().desactivateCapactiy(this.capacityToDesactivate);
 
-		LogicEventDispatcher.registerListener(BadBookCapacityChoseEvent.class, this);
-		getPlayer().decrementStaffPoints(COST);
+		CapacityName capacityName;
+		Random random = new Random();
+		do {
+			capacityName = this.capacities.get(random.nextInt(this.capacities.size()));
+		} while (!getPlayer().hasCapacity(capacityName));
+
+		// TODO: Big switch
+	}
+
+	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(BadBookCapacityChoseEvent.class, this);
 	}
 
 	@Override
 	public void handleCapacityChose(BadBookCapacityChoseEvent event) {
-		LogicEventDispatcher.unregisterListener(BadBookCapacityChoseEvent.class, this);
-		getPlayer().desactivateCapactiy(event.getName());
+		if (getPlayer().getActivatedCapacities().size() == 6 || !getPlayer().hasRequiredStaffPoints(COST)) {
+			return;
+		}
 
-		CapacityName type;
-		Random random = new Random();
-		do {
-			type = this.capacities.get(random.nextInt(this.capacities.size()));
-		} while (getPlayer().hasCapacity(type));
-
-		// TODO
+		this.capacityToDesactivate = event.getName();
+		getPlayer().decrementStaffPoints(COST);
 	}
 
 	@Override

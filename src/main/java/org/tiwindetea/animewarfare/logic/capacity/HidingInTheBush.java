@@ -106,6 +106,11 @@ public class HidingInTheBush extends PlayerCapacity implements PhaseChangedEvent
 	}
 
 	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(PhaseChangedEvent.class, this);
+	}
+
+	@Override
 	public void handlePhaseChanged(PhaseChangedEvent event) {
 		if (event.getNewPhase() == PhaseChangedEvent.Phase.ACTION) {
 			LogicEventDispatcher.registerListener(HidingInTheBushUnitsChoiceEvent.class, this);

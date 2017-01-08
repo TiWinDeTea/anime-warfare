@@ -82,6 +82,11 @@ public class BadLuck extends PlayerCapacity {
 	}
 
 	@Override
+	public void destroy() {
+		// TODO
+	}
+
+	@Override
 	public CapacityName getName() {
 		return CapacityName.BAD_LUCK;
 	}

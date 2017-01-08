@@ -95,6 +95,11 @@ public class FlyingStudio extends PlayerCapacity implements FlyingStudioZoneChoi
 	}
 
 	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(FlyingStudioZoneChoiceEvent.class, this);
+	}
+
+	@Override
 	public void handleZoneChoice(FlyingStudioZoneChoiceEvent event) {
 		LogicEventDispatcher.unregisterListener(FlyingStudioZoneChoiceEvent.class, this);
 

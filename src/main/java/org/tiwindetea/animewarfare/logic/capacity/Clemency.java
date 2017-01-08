@@ -158,6 +158,13 @@ public class Clemency extends PlayerCapacity implements BattleEventListener,
 	}
 
 	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(NumberOfUnitsToReconfortEvent.class, this);
+		LogicEventDispatcher.registerListener(BattleEvent.class, this);
+		LogicEventDispatcher.registerListener(PhaseChangedEvent.class, this);
+	}
+
+	@Override
 	public void handlePhaseChanged(PhaseChangedEvent event) {
 		if (event.getNewPhase() == PhaseChangedEvent.Phase.ACTION) {
 			this.usedThisTurn = false;

@@ -103,6 +103,12 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 	}
 
 	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(MascotToSwapEvent.class, this);
+		LogicEventDispatcher.unregisterListener(UndercoverAgentCapacityEvent.class, this);
+	}
+
+	@Override
 	public void handleUndercoverAgentZoneChoice(UndercoverAgentCapacityEvent event) {
 		this.targetZone = this.gameBoard.getMap().getZone(event.getZoneID());
 		this.targetPlayer = event.getTargetPlayerID();

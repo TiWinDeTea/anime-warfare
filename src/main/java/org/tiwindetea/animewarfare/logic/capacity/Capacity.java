@@ -27,5 +27,7 @@ package org.tiwindetea.animewarfare.logic.capacity;
 public interface Capacity {
 	void use();
 
+	void destroy();
+
 	CapacityName getName();
 }

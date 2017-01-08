@@ -67,6 +67,11 @@ public class MarketFlooding implements Capacity {
 	}
 
 	@Override
+	public void destroy() {
+		// Nothin to do here.
+	}
+
+	@Override
 	public CapacityName getName() {
 		return CapacityName.MARKET_FLOODING;
 	}

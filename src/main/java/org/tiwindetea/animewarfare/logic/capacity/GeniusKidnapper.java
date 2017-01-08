@@ -48,6 +48,11 @@ public class GeniusKidnapper extends PlayerCapacity {
 	}
 
 	@Override
+	public void destroy() {
+
+	}
+
+	@Override
 	public CapacityName getName() {
 		return CapacityName.GENIUS_KIDNAPPER;
 	}

@@ -65,6 +65,11 @@ public class DeafEar extends PlayerCapacity implements DeafEarZoneChoiceEventLis
 	}
 
 	@Override
+	public void destroy() {
+		LogicEventDispatcher.unregisterListener(DeafEarZoneChoiceEvent.class, this);
+	}
+
+	@Override
 	public void handleDeafEarZoneChoice(DeafEarZoneChoiceEvent event) {
 
 	}

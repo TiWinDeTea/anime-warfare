@@ -243,7 +243,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 							|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
 						|| (event.getUnitType().isLevel(UnitLevel.MASCOT)
 							&& (!this.currentPlayer.getUnitCounter().hasUnits()
-								|| invocationZone.getUnits().stream().anyMatch(unit -> unit.getFaction().equals(this.currentPlayer.getFaction()))))
+								|| invocationZone.getUnits().stream().anyMatch(unit -> this.currentPlayer.hasFaction(unit.getFaction()))))
 						) {
 					invokeUnit(invocationZone, event.getUnitType());
 				}

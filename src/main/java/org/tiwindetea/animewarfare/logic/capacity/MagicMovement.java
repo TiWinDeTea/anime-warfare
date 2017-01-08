@@ -52,6 +52,10 @@ public class MagicMovement implements Capacity {
 	}
 
 	@Override
+	public void destroy() {
+	}
+
+	@Override
 	public CapacityName getName() {
 		return CapacityName.MAGIC_MOVEMENT;
 	}
