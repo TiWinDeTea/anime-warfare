@@ -1,21 +1,21 @@
 package org.tiwindetea.animewarfare.gui.game;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,6 +31,12 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@FXML
 	private HBox hBox;
 
+	@FXML
+	private HBox playerHUD;
+
+	@FXML
+	private AnchorPane playerCommandsContainer;
+
 	private GMap map;
 
 	@Override
@@ -44,7 +50,16 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		this.initScroll();
 
 
-		this.rootBorderPane.setBottom(new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM));
+		this.playerHUD.getChildren().add(new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM));
+
+		FXMLLoader actionCommandLoader = new FXMLLoader();
+		actionCommandLoader.setLocation(getClass().getResource("BasicActionCommands.fxml"));
+		try {
+			this.playerCommandsContainer.getChildren().add(actionCommandLoader.load());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP));
 		this.rootBorderPane.setRight(new PlayerInfoPane(PlayerInfoPane.Position.RIGHT));
 		this.rootBorderPane.setLeft(new PlayerInfoPane(PlayerInfoPane.Position.LEFT));

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox alignment="CENTER_RIGHT" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <PaperGridPane alignment="CENTER" hgap="5.0" prefHeight="80.0" prefWidth="650.0" vgap="5.0">
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+         <children>
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="Draw character" GridPane.columnIndex="1" />
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="Move units" GridPane.columnIndex="2" />
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="Capture mascot" GridPane.columnIndex="3" />
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="Open studio" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="Engage battle" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="End turn" GridPane.rowIndex="1" />
+            <PaperButton prefHeight="25.0" prefWidth="150.0" text="Use special ability" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </PaperGridPane>
+   </children>
+</HBox>
