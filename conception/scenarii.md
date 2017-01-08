@@ -9,7 +9,7 @@
 5. Attente des autres joueurs
 6. Démarrage de la partie
 
-## Scénario alternatif
+## Scénario d'exception
 
 3. Lancement du salon impossible (port déjà utilisé, …), retour à 1.
 
@@ -33,7 +33,7 @@
 7. Attente des autres joueurs
 8. Démarrage de la partie
 
-## Scénario alternatif "impossible de se connecter"
+## Scénario d'exception "impossible de se connecter"
 
 3. Connexion impossible, retour à 1.
 

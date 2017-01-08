@@ -15,7 +15,7 @@ Tous les X tours (avec X un nombre aléatoire), le premier joueur tire une carte
 La carte précédente est remélangée dans le deck après avoir pioché la nouvelle carte.
 
 - **Persistence du personnage secondaire** *(1 tour)*
-    
+
         Lors de ce tour, les personnages secondaires ne peuvent pas mourir ni être capturés.
         Ils peuvent cependant encaisser des humiliations à la place d'autres personnages.
 
@@ -69,7 +69,6 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
         organisent un spéctacle de jonglage et déconcentrent vos adversaires.
         Le nombre de dés lancé par votre adversaire est réduit de moitié, arrondi à l'inferieur.
         (ie : nombre de dés lancés arrondit au supérieur).
-        
 
 - **Retour à l'état de croquis**
 
@@ -84,7 +83,6 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
         Pas de reboursement d'unité
         Sans effet sur les Héros.
 
-
 - **Dilemne**
 
         Si un Héro est en jeu, votre adversaire doit choisir l'une des options suivante avant l'affrontement :
@@ -92,17 +90,15 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
             - Il perd mille fans.
             - Vous gagnez un droit de campagne publicitaire.
             - Tous ses jets qui auraient dû vous humilier ne font que blesser légèrement votre égo.
-            
+
 - **Déchainement** *(1.5PP par unité ennemie)*
 
-        Libère toute la puissance de votre Héro.
+        Libère toute la puissance de votre Héros.
         Toutes les unités adverses qui en sortent indemnes sont blessées.
 
-# Durant l'affrontement
-
-- **Dent dure** *(1 PP)*
-
-        Après avoir lancé les dés d'humiliation vous pouvez relancer tous les dés qui ont ratés.
+            - Il perd mille fans.
+            - Vous gagnez un droit de campagne publicitaire.
+            - Tous ses jets qui auraient dû vous humilier ne font que blesser légèrement votre égo.
 
 # Postbataille
 
@@ -129,7 +125,7 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
 
         Chaque joueur vous offre mille fans, ou vous gagnez un droit de campagne publicitaire.
 
-- **[V] Inondation du marché**
+- **[V] Inondation du marché // Infiltration de studios**
 
         Permet de créer des personages sur n'importe quelle zone munie d'un studio.
 
@@ -158,7 +154,7 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
 - **Sang froid** *(4 PP, une fois par phase d'action)*
 
         Vous choisissez une unitée (alliée ou ennemie).
-        Pendant toute la phase, si cette unité est insultée à mort, la redessiner est gratuit. 
+        Pendant toute la phase, si cette unité est insultée à mort, la redessiner est gratuit.
 
 - **[V] Ce livre est nul !** *(1 PP)*
 
@@ -176,7 +172,6 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
         La license adverse peut toujours utiliser la capacité liée à cette production.
 
 - **Mouvance magique [W]** *(… PP)*
-
 
         Téléporter des unités (groupe, alliés, ennemis, … ?)
         (possiblement à couper en plusieurs actions différentes pour différentes factions/unités…)
@@ -216,3 +211,4 @@ La carte précédente est remélangée dans le deck après avoir pioché la nouv
 - **Apparition dans le Shonen Jump** *(une fois pendant la partie, phase marketing)*
 
         Double le nombre de droit de campagne publicitaire accordés lors d'une convention.
+

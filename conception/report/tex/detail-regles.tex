@@ -1,0 +1,193 @@
+\chapter{Détails des règles} \label{chapter:detail-regles}
+
+        \section{Tour de jeu}
+
+            Un tour de jeu est décomposé en 4 phases :
+
+            \begin{enumerate}
+                \item La phase de recrutement du staff.
+                \item La phase de détermination du premier joueur
+                \item La phase de marketing
+                \item La phase d'action
+            \end{enumerate}
+
+            Après avoir effectué la dernière phase du jeu, on retourne à la première phase.
+            À noter toutefois que la phase de marketing n'est pas jouée durant le premier tour de jeu.
+
+        \section{Recrutement du staff}
+            Durant cette phase, on détermine le nombre d'employés de chaque joueur. Ces employés seront utilisés
+            pendant les autres phases pour effectuer des actions.
+
+            \subsection{Détail du calcul}
+                Le nombre d'employés qu'un joueur recrute dépend du nombre de studios et de mascottes sur la carte.
+                \begin{itemize}
+                    \item Une mascotte alliée rapporte 1 employé.
+                    \item Une mascotte ennemie capturée rapporte 1 employé.
+                    \item Un studio indépendant rapporte 1 employé.
+                    \item Un studio contrôlé rapporte 2 employés.
+                \end{itemize}
+
+                Si un joueur recrute moins de la moitié des employés du joueur ayant le plus d'employés, on augmente
+                le nombre de membres de son staff pour qu'il en ai au moins la moitié (arrondi au supérieur).
+
+        \section{Détermination du premier joueur}
+
+            Le premier joueur pour un tour donné est déterminé de la façon suivante :
+            \begin{itemize}
+                \item Au premier tour, le premier joueur est choisi aléatoirement
+                \item Aux autres tours, le joueur ayant le plus d'employés commence
+                \item En cas d'égalité, le premier joueur du tour précédent départage.
+            \end{itemize}
+
+            Le premier joueur est aussi celui qui choisira le sens de rotation du tour de jeu.
+            \newline
+            Enfin, le premier joueur aura parfois la responsabilité de piocher dans le
+            \emph{Deck Global}, en choisissant parmi ses trois premières cartes. La
+            carte ainsi choisie affectera tout les joueurs, en bien ou en mal, pendant
+            un nombre donné de tours.
+
+        \section{Marketing}
+
+            Durant la phase marketing, en mode partie courte, chaque joueur gagne 1k fans par
+            studio contrôlé.
+            \newline
+            Chacun leur tour, les joueurs peuvent également employer du staff pour effectuer
+            une convention, et ainsi gagner en popularité (ie : gagner des fans).
+            Un joueur ne peut effectuer \emph{qu'une seule} convention par phase marketing.
+            \newline
+            En débutant par le premier joueur, chacun choisi s'il souhaite effectuer une convention.
+            \subsection{Organiser une convention}
+
+                Le coût d'une convention est déterminé en regardant la \textit{piste Marketing}. Il s'agit
+                d'une échelle sur laquelle sont placés des nombres indiquant le coût des conventions, et d'un
+                curseur, qui est placé au début du jeu au début de la piste.
+                \\
+                Comment l'effectuer :
+                    \begin{enumerate}
+                        \item On utilise autant d'employés qu'indiqués par le curseur de la piste marketing.
+                        \item On avance le curseur d'un cran.
+                        \item Le joueur gagne alors 1k fans pour chaque studio qu'il contrôle et gagne un droit de campagne publicitaire pour chacun de ses Héros en jeu.
+                    \end{enumerate}
+
+                Si le curseur atteint la fin de la piste, l'évènement \textit{Crise économique du secteur} est déclenché.
+                Le jeu se termine, et on tente de déterminer un gagnant. Dans certains cas, il peut n'y avoir aucun gagnant.
+
+            \subsection{Évènements spéciaux}
+
+                Certaines capacités et productions prennent effet durant la phase marketing.
+                Sauf cas exceptionnel, les effets surviennent après les conventions, et sont
+                appliqués dans l'ordre du tour de table.
+
+        \section{Campagne publicitaires}
+
+            Lorsque l'on gagne un droit de campagne publicitaire, on le pioche dans la réserve
+            (sans le révéler aux autres joueurs). La valeur du droit de campagne (entre 1k et 3k fans)
+            n'est connue que du joueur. À tout moment, ce dit joueur peut décider de révéler et
+            d'utiliser ses droits de campagne et ainsi gagner leur valeur en fans.
+
+        \section{Progression sur l'échelle de popularité}
+
+            Le plateau de jeu dispose d'un échelle de popularité, allant de 0k fans à 30k.
+            Chaque joueur dispose de sa propre jauge de fans (représentant sa position sur l'échelle),
+            qui augmente de 1 lorsqu'il obtient 1k fans.
+            \\
+            Avoir un maximum de fans est une des conditions de victoires.
+
+
+
+        \section{Phase d'action}
+
+            Pendant la phase d'action, chaque joueur doit effectuer une action, en respectant l'ordre de jeu.
+            \\
+            Trois types d'actions sont possible :
+            \begin{itemize}
+                \item Les \textit{actions Communes}
+                \item Les \textit{actions Uniques}
+                \item Les \textit{actions Illimités}
+            \end{itemize}
+
+            Les actions communes sont celles disponibles pour toutes les licenses.
+            On ne peut en effectuer qu'un par tour.
+            \\
+            Les actions uniques sont, comme leur nom l'indique, uniques à chaque license.
+            Dans la majorité des cas, on ne peut en effectuer qu'une seule par tour
+            \\
+            Enfin, les actions illimités sont celles effectuables autant de fois que
+            l'on veut, avant et/ou après son action commune/unique.
+            \newline
+            La phase d'action continue tant qu'il reste au moins un joueur ayant au moins un employé disponible.
+            Si un joueur n'a plus aucun employé disponible, il ne peut plus effectuer d'actions (même gratuite)
+            jusqu'à la fin de la phase.
+            Un joueur peut passer son tour, ce qui fait immédiatement prendre congé à tout son staff.
+            \newline
+            Lors d'un round de la phase, le joueur concerné \emph{doit} effectuer une action commune
+            ou une action unique mais ne peut pas faire les deux.
+
+            \subsection{Liste des actions communes avec coût}
+
+                \begin{itemize}
+                    \item 3 membres du staff – ouvrir un studio. \\
+                        Il est nécessaire de disposer d'une mascotte dans la \emph{zone sans studio} où vous voulez ouvrir votre studio.
+                    \item N membre(s) du staff – Déplacer N unités d'une case.
+                    \item 1 membre du staff – Engager un affrontement. \\
+                        Cette action devient \textit{pseudo illimité}\footnote{Il est possible d'effectuer autant de combat qu'on le souhaite,
+                        avec un maximum d'un combat par zone. On peut néanmoins choisir de n'effectuer qu'un combat comme action pour le round.}
+                        quand la license possède ses 6 productions \\
+                        Il n'est \emph{pas possible de lancer plus d'un affrontement par zone} lors de son round.
+                    \item 1 membre du staff – Capturer une mascotte. \\
+                        Pour capturer un adorateur, il faut une unité supérieure aux adversaires de la faction concernée de la zone
+                        \footnote{Héros \(>\) personnages \(>\) mascottes}. \\
+                        L'adorateur ne peut pas se défendre même s'il a des points de combat.
+                    \item 1 membre du staff – Dessiner une mascotte. \\
+                        Ne peuvent apparaître que dans une zone où il y a déjà une unité du joueur ou
+                        n'importe où si le joueur n'a plus d'unité.
+                    \item ? membre(s) du staff – Dessiner un personnage. \\
+                        Un personnage ne peut apparaître que dans une zone ayant un studio contrôlé par le joueur.
+                    \item ? membre(s) du staff – Dessiner un Héros. \\
+                        Voir les spécificités de chaque héros
+                    \item Tous son personnel – passer son tour.
+                \end{itemize}
+
+
+            \subsection{Affrontement publicitaire}
+                Les affrontements sont des concours d'insultes et se déroulent en trois étapes :
+                \begin{itemize}
+                    \item Pré-affrontement : \\
+                        L'attaquant puis le défenseur appliquent les capacités de préaffrontement de leur choix.
+                        Les capacités permanentes et de préaffrontement des factions tierces s'appliquent ensuite.
+                    \item Affrontement : \\
+                        Les deux opposants jettent simultanément leurs dés en fonction de leur score de combat (un dé par point d'insulte des unités).
+                        Un jet de 6 humilie, un jet de 4 ou 5 blesse leur égo, le reste rate.
+                        Les unités humiliées sont retirées du jeu et remis en réserve. C'est le joueur qui perd les unités qui décide quelles unités sont perdues.
+                    \item Post-affrontement : \\
+                        Les blessures et les capacités post-affrontement sont appliquées (de la même façon que les capacités pré-affrontement).
+                        Une unité blessée doit se replier sur une zone adjacente où il n'y a pas d'unité de l'autre faction.
+                        Si cela s'avère impossible, l'unité meurt.
+                        L'attaquant effectue sa retraite en premier.
+                \end{itemize}
+
+
+        \section{Les productions majeure}
+
+            Chaque production majeure (manga, light novel, …) a un effet unique.
+            Lorsqu'une production majeure est créée, elle n'est sera jamais perdue, même si la condition de création n'est plus remplie.
+
+        \section{Réserves}
+            Chaque joueur dispose d'une réserve d'unités. En en dessinant une, elle est placée sur la carte et
+            sort donc de la réserve. Il est impossible de dessiner une unité si on en pas en réserve. \newline
+            Les licences disposent toutes d'un stock de 6 mascottes. Le stock des autres unités dépendent de
+            la license.
+
+        \section{Détermination de la victoire ou de la défaite}
+
+            La partie peux se terminer dans deux cas :
+            \begin{itemize}
+                \item Un joueur possède plus de 30000 fans.
+                \item L'évènement \textit{Crise économique du secteur} est déclenché.
+            \end{itemize}
+
+            Si le jeu s'est terminé pendant une phase de marketing, les joueurs n'ayant pas joués peuvent toujours organiser une dernière convention.
+            Dans tout les cas, il est possible de révéler ses droits de campagne publicitaires.\newline
+            Le vainqueur est celui qui a le plus de fans parmi ceux qui possèdent 6 productions.
+            En cas d'égalité, les joueurs concernés se partagent la victoire. Si personne n'a les 6 productions,
+            tout le monde perd, et les studios d'animation du monde entier font faillite.

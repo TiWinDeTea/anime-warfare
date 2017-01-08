@@ -4,3 +4,5 @@ gradlew*
 .idea/*
 out/*
 build/*
+*.psd
+classes/*

@@ -32,7 +32,7 @@
 On revient à la phase 1 après avoir effectué la phase 4,
 sauf si la partie est gagnée.
 
-/!\\ lors du premier tour de jour, pas de phase 3.
+/!\\ lors du premier tour de jeu, pas de phase 3.
 
 
 ## Progression sur l'échelle de l'apocalypse

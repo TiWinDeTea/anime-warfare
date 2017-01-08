@@ -27,3 +27,4 @@ Cthuka : Condition d'invocation -- Nyaruko est en jeu
 
 L: 2 * (nombre de héros ennemis en jeu)
 Lelouch : Condition d'invocation -- Il y a un CC en jeu. On bute un CC et on la remplace par Lelouch
+
