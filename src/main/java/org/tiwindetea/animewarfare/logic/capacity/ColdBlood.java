@@ -84,7 +84,6 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 		}
 	}
 
-	private static final int COST = 4;
 	private boolean usedThisTurn;
 	private UnitType unitTypeToResurect;
 
@@ -129,10 +128,10 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 
 		if (getPlayer().equals(event.getBattleContext().getAttacker().getPlayer())) {
 			int numberOfBuffToApply = (int) event.getBattleContext()
-			                                     .getAttacker()
-			                                     .getDeads()
-			                                     .stream()
-			                                     .filter(u -> u.getType() == this.unitTypeToResurect).count();
+					.getAttacker()
+					.getDeads()
+					.stream()
+					.filter(u -> u.getType() == this.unitTypeToResurect).count();
 			if (numberOfBuffToApply > 0) {
 
 			}
@@ -146,13 +145,13 @@ public class ColdBlood extends PlayerCapacity implements BattleEventListener, Ph
 
 	@Override
 	public void handleUnitTypeChoice(ColdBloodUnitTypeChoiceEvent event) {
-		if (this.usedThisTurn || !getPlayer().hasRequiredStaffPoints(COST)) {
+		if (this.usedThisTurn || !getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
 			Log.debug(ColdBlood.class.getName(), "Already used this turn or hasRequiredStaffPoints is false.");
 			return;
 		}
 
 		if (getPlayer().hasFaction(event.getUnitType().getDefaultFaction())) {
-			getPlayer().decrementStaffPoints(COST);
+			getPlayer().decrementStaffPoints(getName().getStaffCost());
 			this.usedThisTurn = true;
 			this.unitTypeToResurect = event.getUnitType();
 		}

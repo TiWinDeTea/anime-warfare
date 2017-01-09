@@ -58,8 +58,6 @@ public class BackStab extends PlayerCapacity implements BattleEventListener {
 		}
 	}
 
-	private static final int COST = -1; // FIXME
-
 	private final GameMap map;
 	private Zone battleZone;
 	private BattleSide me;
@@ -75,11 +73,11 @@ public class BackStab extends PlayerCapacity implements BattleEventListener {
 	// Vos personnages niveau LV0 adjacents à la zone d'affrontement peuvent humilier les ennemis à coup sûr.
 	@Override
 	public void use() {
-		if (!getPlayer().hasRequiredStaffPoints(COST) || this.battleZone == null) {
+		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost()) || this.battleZone == null) {
 			return;
 		}
 
-		getPlayer().decrementStaffPoints(COST);
+		getPlayer().decrementStaffPoints(getName().getStaffCost());
 	}
 
 	@Override

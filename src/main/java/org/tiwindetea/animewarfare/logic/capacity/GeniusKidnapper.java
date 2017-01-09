@@ -66,7 +66,6 @@ public class GeniusKidnapper extends PlayerCapacity implements GeniusKidnapperMo
 		}
 	}
 
-	private static final int COST = 1;
 	private final GameBoard gameBoard;
 
 	private Unit victim;
@@ -90,7 +89,7 @@ public class GeniusKidnapper extends PlayerCapacity implements GeniusKidnapperMo
 
 	@Override
 	public void handleGeniusKidnapperMonsterChoiceEvent(GeniusKidnapperMonsterChoiceEvent event) {
-		if (!getPlayer().hasRequiredStaffPoints(COST)) {
+		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
 			return;
 		}
 
@@ -102,19 +101,19 @@ public class GeniusKidnapper extends PlayerCapacity implements GeniusKidnapperMo
 		Unit victim = actionZone.getUnit(event.getUnitID());
 
 		Optional<Unit> hunter = actionZone.getUnits()
-		                                  .stream()
-		                                  .filter(u -> u.hasFaction(getPlayer().getFaction()))
-		                                  .max(Unit::bestUnitComparator);
+				.stream()
+				.filter(u -> u.hasFaction(getPlayer().getFaction()))
+				.max(Unit::bestUnitComparator);
 
 		if (!hunter.isPresent()) {
 			return;
 		}
 
 		Optional<Unit> victimProtect = actionZone.getUnits()
-		                                         .stream()
-		                                         .filter(u -> u.hasFaction(victim.getFaction())
-				                                         && Unit.bestUnitComparator(hunter.get(), u) <= 0)
-		                                         .findFirst();
+				.stream()
+				.filter(u -> u.hasFaction(victim.getFaction())
+						&& Unit.bestUnitComparator(hunter.get(), u) <= 0)
+				.findFirst();
 
 		if (victimProtect.isPresent()) {
 			return;

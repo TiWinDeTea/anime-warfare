@@ -73,15 +73,13 @@ public class MoreFans extends PlayerCapacity implements UnitCapturedEventListene
 		}
 	}
 
-	private static final int COST = 4 - 1; // COST - CAPTURE_MASCOT_COST
-
 	MoreFans(Player player) {
 		super(player);
 	}
 
 	@Override
 	public void use() {
-		if (getPlayer().hasRequiredStaffPoints(COST + 1))
+		if (getPlayer().hasRequiredStaffPoints(getName().getStaffCost()))
 			LogicEventDispatcher.registerListener(UnitCapturedEvent.class, this);
 	}
 
@@ -94,7 +92,7 @@ public class MoreFans extends PlayerCapacity implements UnitCapturedEventListene
 	public void onUnitCaptured(UnitCapturedEvent event) {
 		if (event.getHunter().getID() == getPlayer().getID()) {
 			LogicEventDispatcher.unregisterListener(UnitCapturedEvent.class, this);
-			getPlayer().decrementStaffPoints(COST);
+			getPlayer().decrementStaffPoints(getName().getStaffCost());
 			event.getHuntedPlayer().decrementFans(1);
 			getPlayer().incrementFans(1);
 		}

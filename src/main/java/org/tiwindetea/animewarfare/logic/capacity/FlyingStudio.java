@@ -45,8 +45,8 @@ public class FlyingStudio extends PlayerCapacity implements FlyingStudioZoneChoi
 		private final GameMap gameMap;
 
 		public FlyingStudioActivable(Player player,
-		                             List<WeakReference<Player>> players,
-		                             AdvertisingCampaignRightsPool pool, GameMap gameMap) {
+									 List<WeakReference<Player>> players,
+									 AdvertisingCampaignRightsPool pool, GameMap gameMap) {
 			super(player);
 			this.players = players;
 			this.pool = pool;
@@ -77,7 +77,6 @@ public class FlyingStudio extends PlayerCapacity implements FlyingStudioZoneChoi
 		}
 	}
 
-	private static final int COST = 1;
 	private final GameMap gameMap;
 
 	FlyingStudio(Player player, GameMap gameMap) {
@@ -87,7 +86,7 @@ public class FlyingStudio extends PlayerCapacity implements FlyingStudioZoneChoi
 
 	@Override
 	public void use() {
-		if (!getPlayer().hasRequiredStaffPoints(COST)) {
+		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
 			return;
 		}
 
@@ -109,14 +108,14 @@ public class FlyingStudio extends PlayerCapacity implements FlyingStudioZoneChoi
 
 			if (studio != null) {
 				if (getPlayer().hasFaction(studio.getCurrentFaction())) {
-					getPlayer().decrementStaffPoints(COST);
+					getPlayer().decrementStaffPoints(getName().getStaffCost());
 					zone.setStudio(null);
 					getPlayer().setStudio(studio);
 				}
 			} else {
 				studio = getPlayer().getStudio();
 				if (studio != null) {
-					getPlayer().decrementStaffPoints(COST);
+					getPlayer().decrementStaffPoints(getName().getStaffCost());
 					getPlayer().setStudio(null);
 					zone.setStudio(studio);
 				}

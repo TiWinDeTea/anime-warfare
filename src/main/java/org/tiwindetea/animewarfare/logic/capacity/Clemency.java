@@ -41,6 +41,9 @@ import org.tiwindetea.animewarfare.net.logicevent.NumberOfUnitsToReconfortEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEventListener;
 
+/*
+ * @author Benoît CORTIER
+ */
 public class Clemency extends PlayerCapacity implements BattleEventListener,
 		PhaseChangedEventListener, NumberOfUnitiesToReconfortEventListener,
 		UseCapacityEventListener {

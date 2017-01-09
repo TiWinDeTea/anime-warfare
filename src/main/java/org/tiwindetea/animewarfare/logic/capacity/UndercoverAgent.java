@@ -86,8 +86,6 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 		}
 	}
 
-	private static final int COST = 3;
-
 	private final GameBoard gameBoard;
 	private Zone targetZone;
 	private int targetPlayer = -1;
@@ -115,12 +113,11 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 
 	@Override
 	public void handleUndercoverAgentZoneChoice(UndercoverAgentCapacityEvent event) {
-		if (!getPlayer().hasRequiredStaffPoints(COST)) {
+		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
 			Log.debug(UndercoverAgent.class.getName(), "Not enough staff points.");
 			return;
 		}
-
-		getPlayer().decrementStaffPoints(COST);
+		getPlayer().decrementStaffPoints(getName().getStaffCost());
 
 		this.targetZone = this.gameBoard.getMap().getZone(event.getZoneID());
 		this.targetPlayer = event.getTargetPlayerID();
@@ -130,16 +127,16 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 	public void handleMascotToSwapEvent(MascotToSwapEvent event) {
 		Unit mascot = this.targetZone.getUnit(event.getUnitID());
 		if (mascot != null && mascot.isLevel(UnitLevel.MASCOT) && this.gameBoard.getPlayer(event.getPlayerID())
-		                                                                        .hasFaction(mascot.getFaction())) {
+				.hasFaction(mascot.getFaction())) {
 			boolean isController = this.targetZone.getStudio().getController().equals(mascot);
 			mascot.removeFromMap();
 
 			this.gameBoard.getPlayer(event.getPlayerID()).getUnitCounter().removeUnit(mascot.getType(), mascot.getID());
 
 			UnitType casterMascotType = Arrays.stream(UnitType.values())
-			                                  .filter(t -> t.isLevel(UnitLevel.MASCOT) && getPlayer().hasFaction(t.getDefaultFaction()))
-			                                  .findFirst()
-			                                  .get(); // Can't be null
+					.filter(t -> t.isLevel(UnitLevel.MASCOT) && getPlayer().hasFaction(t.getDefaultFaction()))
+					.findFirst()
+					.get(); // Can't be null
 
 			if (getPlayer().getUnitCounter().getNumberOfUnits(UnitLevel.MASCOT) == casterMascotType.getMaxNumber()) {
 				Unit unit = new Unit(casterMascotType);

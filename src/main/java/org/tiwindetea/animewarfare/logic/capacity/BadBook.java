@@ -63,7 +63,6 @@ public class BadBook extends PlayerCapacity implements BadBookCapacityChoseEvent
 		}
 	}
 
-	private final static int COST = 1;
 	private final List<CapacityName> capacities = new ArrayList<>();
 	private CapacityName capacityToDesactivate;
 
@@ -93,12 +92,12 @@ public class BadBook extends PlayerCapacity implements BadBookCapacityChoseEvent
 
 	@Override
 	public void handleCapacityChose(BadBookCapacityChoseEvent event) {
-		if (getPlayer().getActivatedCapacities().size() == 6 || !getPlayer().hasRequiredStaffPoints(COST)) {
+		if (getPlayer().getActivatedCapacities().size() == 6 || !getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
 			return;
 		}
 
 		this.capacityToDesactivate = event.getName();
-		getPlayer().decrementStaffPoints(COST);
+		getPlayer().decrementStaffPoints(getName().getStaffCost());
 	}
 
 	@Override

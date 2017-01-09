@@ -84,7 +84,6 @@ public class ClownArtist extends PlayerCapacity implements BattleEventListener {
 		}
 	}
 
-	private static final int COST = 2;
 	private BattleSide enemy;
 
 	ClownArtist(Player player) {
@@ -95,7 +94,7 @@ public class ClownArtist extends PlayerCapacity implements BattleEventListener {
 
 	@Override
 	public void use() {
-		if (!getPlayer().hasRequiredStaffPoints(COST) || this.enemy == null) {
+		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost()) || this.enemy == null) {
 			return;
 		}
 
