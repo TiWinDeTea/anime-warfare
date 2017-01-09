@@ -141,7 +141,7 @@ public class GUnit extends GComponent {
     public static void initFactory() {
         if (!initialized) {
             EventDispatcher.registerListener(UnitCreatedNetevent.class
-                    , e -> GUnit.create(e.getUnitId(), e.getUnitType(), null /* todo : e.getFactionType() */));
+                    , e -> GUnit.create(e.getUnitId(), e.getUnitType(), GlobalChat.getFactionClient(e.getFactionType())));
 
             EventDispatcher.registerListener(UnitDeletedNetevent.class
                     , e -> GUnit.delete(e.getUnitId()));

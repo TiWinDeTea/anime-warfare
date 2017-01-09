@@ -781,12 +781,12 @@ public class GameServer {
 
         @Override
         public void handleStudioAddedEvent(StudioEvent event) {
-            this.server.sendToAllTCP(new NetStudio(event));
+            this.server.sendToAllTCP(new NetStudio(event, null));
         }
 
         @Override
         public void handleStudioRemovedEvent(StudioEvent event) {
-            this.server.sendToAllTCP(new NetStudio(event));
+            this.server.sendToAllTCP(new NetStudio(event, null));
         }
 
         @Override

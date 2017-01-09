@@ -25,13 +25,14 @@
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
 public class NetStudio implements NetReceivable {
-    private final int playerID;
+    private final GameClientInfo playerInfo;
     private final int studioID;
     private final StudioEvent.Type type;
 
@@ -41,16 +42,16 @@ public class NetStudio implements NetReceivable {
      */
     public NetStudio() {
         this.studioID = 0;
-        this.playerID = 0;
+        this.playerInfo = null;
         this.type = null;
     }
 
-    public NetStudio(StudioEvent event) {
+    public NetStudio(StudioEvent event, GameClientInfo player) {
         if (event.getType() == StudioEvent.Type.ADDED || event.getType() == StudioEvent.Type.REMOVED) {
             this.studioID = event.getZoneID();
-            this.playerID = -1;
+            this.playerInfo = null;
         } else {
-            this.playerID = event.getPlayerID();
+            this.playerInfo = player;
             this.studioID = -1;
         }
 
@@ -61,8 +62,8 @@ public class NetStudio implements NetReceivable {
         return this.studioID;
     }
 
-    public int getPlayerID() {
-        return this.playerID;
+    public GameClientInfo getPlayerInfo() {
+        return this.playerInfo;
     }
 
     public StudioEvent.Type getType() {

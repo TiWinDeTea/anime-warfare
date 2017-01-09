@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 
 /**
@@ -33,13 +34,13 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
  * @since 0.1.0
  */
 public class StudioNetevent implements Event<StudioNeteventListener> {
-    private final int playerID;
+    private final GameClientInfo playerInfo;
     private final int zoneID;
     private final StudioEvent.Type type;
 
     public StudioNetevent(NetStudio newStudio) {
         this.zoneID = newStudio.getZoneID();
-        this.playerID = newStudio.getPlayerID();
+        this.playerInfo = newStudio.getPlayerInfo();
         this.type = newStudio.getType();
     }
 
@@ -69,12 +70,12 @@ public class StudioNetevent implements Event<StudioNeteventListener> {
         return this.zoneID;
     }
 
-    public int getPlayerID() {
-        if (this.playerID == -1) {
+    public GameClientInfo getPlayerInfo() {
+        if (this.playerInfo == null) {
             throw new IllegalStateException();
         }
 
-        return this.playerID;
+        return this.playerInfo;
     }
 
     public StudioEvent.Type getType() {

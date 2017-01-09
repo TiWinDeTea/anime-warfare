@@ -29,9 +29,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
+import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GUIState;
-import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 
 import java.io.IOException;
 
@@ -82,7 +83,10 @@ public class GameState extends GUIState {
 
 		// play the fade transition
 		AnimationsManager.conditionalPlay(GameState.fadeTransition);
-		this.gContextActionMenu = new GContextActionMenu(FactionType.F_CLASS_NO_BAKA, this.rootLayout); // Fixme : use real faction type
+		this.gContextActionMenu = new GContextActionMenu(
+				GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()),
+				this.rootLayout
+		);
 		// listen events.
 	}
 

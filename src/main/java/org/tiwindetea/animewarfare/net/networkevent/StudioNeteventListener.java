@@ -36,7 +36,7 @@ public interface StudioNeteventListener extends EventListener {
 
     void handleStudioRemoved(StudioNetevent event);
 
-    void handleStudioDeserted(StudioNetevent event);
+    void handleStudioDeserted(StudioNetevent event); // FIXME : This is not this event !
 
-    void handleStudioCaptured(StudioNetevent event);
+    void handleStudioCaptured(StudioNetevent event); // FIXME : This is not this event !
 }

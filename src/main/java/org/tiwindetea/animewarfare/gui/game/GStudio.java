@@ -83,10 +83,6 @@ public class GStudio extends GComponent {
         }
     }
 
-    public void setTeam(int playerID) {
-        // todo
-    }
-
 
     public static GStudio get(int zoneID) {
         GStudio studio = STUDIOS.floor(new GStudio(zoneID));
@@ -130,12 +126,12 @@ public class GStudio extends GComponent {
 
                 @Override
                 public void handleStudioDeserted(StudioNetevent event) {
-                    getOrCreate(event.getZoneID()).setTeam(null);
+                    getOrCreate(event.getZoneID()).setTeam(null); // FIXME : This is not this event !
                 }
 
                 @Override
                 public void handleStudioCaptured(StudioNetevent event) {
-                    getOrCreate(event.getZoneID()).setTeam(event.getPlayerID());
+                    getOrCreate(event.getZoneID()).setTeam(event.getPlayerInfo()); // FIXME : This is not this event !
                 }
             });
             EventDispatcher.registerListener(GameEndedNetevent.class, e -> STUDIOS.clear());

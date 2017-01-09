@@ -763,7 +763,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
     @Override
     public void handleStudioCaptured(StudioNetevent event) {
-        Platform.runLater(() -> GStudio.get(event.getZoneID()).setTeam(event.getPlayerID()));
+        Platform.runLater(() -> GStudio.get(event.getZoneID()).setTeam(event.getPlayerInfo()));
     }
 
     @Override
