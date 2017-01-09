@@ -96,7 +96,7 @@ public class Clemency extends PlayerCapacity implements BattleEventListener,
 	@Override
 	public void handlePostBattle(BattleEvent event) {
 		if (this.usedThisTurn) {
-			Log.debug(getClass().getName().toString(), "Clemency has already been used.");
+			Log.debug(getClass().getName(), "Clemency has already been used.");
 			return;
 		}
 
@@ -127,14 +127,14 @@ public class Clemency extends PlayerCapacity implements BattleEventListener,
 	public void handleNumberOfUnitiesToReconfortEvent(NumberOfUnitsToReconfortEvent numberOfUnitsToReconfortEvent) {
 		int numberOfUnitsToReconfort;
 		if (numberOfUnitsToReconfortEvent.getNumber() > this.opponentSide.getWoundeds().size()) {
-			Log.debug(Clemency.class.getName(), "Number of unities to reconfort > number of unities woundeds");
+			Log.debug(getClass().getName(), "Number of unities to reconfort > number of unities woundeds");
 			numberOfUnitsToReconfort = this.opponentSide.getWoundeds().size();
 		} else {
 			numberOfUnitsToReconfort = numberOfUnitsToReconfortEvent.getNumber();
 		}
 
 		if (!getPlayer().hasRequiredStaffPoints(numberOfUnitsToReconfort)) {
-			Log.debug(getClass().getName().toString(), "Not enough staff points.");
+			Log.debug(getClass().getName(), "Not enough staff points.");
 			return;
 		}
 		getPlayer().decrementStaffPoints(numberOfUnitsToReconfort);

@@ -93,7 +93,7 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 					this.defenderCapacities,
 					this.thirdPartiesCapacities);
 		} else {
-			Log.debug(getClass().getName().toString(), event.getPlayerID() + ": " + event.getName() + " is not pre battle.");
+			Log.debug(getClass().getName(), event.getPlayerID() + ": " + event.getName() + " is not pre battle.");
 		}
 	}
 

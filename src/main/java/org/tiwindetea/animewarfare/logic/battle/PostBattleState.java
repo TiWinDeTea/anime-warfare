@@ -95,7 +95,7 @@ public class PostBattleState extends BattleState
 	@Override
 	public void handleSelectWoundedUnits(SelectWoundedsUnitsEvent event) {
 		if (this.playersReady.contains(event.getPlayerID())) {
-			Log.debug(getClass().getName().toString(), event.getPlayerID() + " has already choosen his woundeds.");
+			Log.debug(getClass().getName(), event.getPlayerID() + " has already choosen his woundeds.");
 			return; // no need to choose twice.
 		}
 
@@ -105,19 +105,19 @@ public class PostBattleState extends BattleState
 			opponentSide = this.battleContext.getDefender();
 		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
 			if (!this.playersReady.contains(this.battleContext.getAttacker().getPlayer().getID())) {
-				Log.debug(getClass().getName().toString(), "attacker should choose his woundeds first.");
+				Log.debug(getClass().getName(), "attacker should choose his woundeds first.");
 				return; // attacker first!
 			}
 			currentSide = this.battleContext.getDefender();
 			opponentSide = this.battleContext.getAttacker();
 		} else {
-			Log.debug(getClass().getName().toString(), event.getPlayerID() + " doesn't belongs to a battle side.");
+			Log.debug(getClass().getName(), event.getPlayerID() + " doesn't belongs to a battle side.");
 			return;
 		}
 
 		if (event.getWoundedsToMove().size() != currentSide.getNumberOfDeads()
 				&& event.getWoundedsToMove().size() != currentSide.getUnits().size()) {
-			Log.debug(getClass().getName().toString(), "Number of woundeds doesn't match.");
+			Log.debug(getClass().getName(), "Number of woundeds doesn't match.");
 			return;
 		}
 
@@ -125,7 +125,7 @@ public class PostBattleState extends BattleState
 				.anyMatch(m -> currentSide.getUnits().stream()
 						.noneMatch(u -> m.getUnitID() == u.getID()))
 				) {
-			Log.debug(getClass().getName().toString(), "Unit not concerned!");
+			Log.debug(getClass().getName(), "Unit not concerned!");
 			return; // ohw! This unit is not concerned!
 		}
 
@@ -170,7 +170,7 @@ public class PostBattleState extends BattleState
 					this.defenderCapacities,
 					this.thirdPartiesCapacities);
 		} else {
-			Log.debug(getClass().getName().toString(), event.getPlayerID() + ": " + event.getName() + " is not post battle.");
+			Log.debug(getClass().getName(), event.getPlayerID() + ": " + event.getName() + " is not post battle.");
 		}
 	}
 

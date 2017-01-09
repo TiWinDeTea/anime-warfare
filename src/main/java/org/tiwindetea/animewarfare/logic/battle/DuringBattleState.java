@@ -82,7 +82,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 	@Override
 	public void handleSelectUnits(SelectUnitsEvent event) {
 		if (this.playersReady.contains(event.getPlayerID())) {
-			Log.debug(getClass().getName().toString(), event.getPlayerID() + " has already choosen his deads.");
+			Log.debug(getClass().getName(), event.getPlayerID() + " has already choosen his deads.");
 			return;
 		}
 
@@ -92,13 +92,13 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 		} else if (event.getPlayerID() == this.battleContext.getDefender().getPlayer().getID()) {
 			battleSide = this.battleContext.getDefender();
 		} else {
-			Log.debug(getClass().getName().toString(), event.getPlayerID() + " doesn't belongs to a battle side.");
+			Log.debug(getClass().getName(), event.getPlayerID() + " doesn't belongs to a battle side.");
 			return;
 		}
 
 		if (event.getUnits().size() != battleSide.getNumberOfDeads()
 				&& event.getUnits().size() != battleSide.getUnits().size()) {
-			Log.debug(getClass().getName().toString(), "Number of deads doesn't match.");
+			Log.debug(getClass().getName(), "Number of deads doesn't match.");
 			return;
 		}
 
@@ -106,7 +106,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 				.anyMatch(id -> battleSide.getUnits().stream()
 						.noneMatch(u -> id == u.getID()))
 				) {
-			Log.debug(getClass().getName().toString(), "Unit not concerned!");
+			Log.debug(getClass().getName(), "Unit not concerned!");
 			return; // ohw! This unit is not concerned!
 		}
 
