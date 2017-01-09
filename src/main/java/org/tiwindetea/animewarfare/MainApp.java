@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare;
 
+import com.esotericsoftware.minlog.Log;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -152,6 +153,8 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	}
 
 	public static void main(String[] args) {
+		Log.set(Log.LEVEL_DEBUG);
+
 		launch(args);
 	}
 
