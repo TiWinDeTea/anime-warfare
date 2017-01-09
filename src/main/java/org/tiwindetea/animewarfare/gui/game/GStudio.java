@@ -25,10 +25,12 @@
 package org.tiwindetea.animewarfare.gui.game;
 
 import com.esotericsoftware.minlog.Log;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
+import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
@@ -45,13 +47,14 @@ import java.util.TreeSet;
 public class GStudio extends GComponent {
 
     private static final TreeSet<GStudio> STUDIOS = new TreeSet<>(Comparator.comparingInt(GStudio::getZoneID));
+    private static final Image STUDIO_IMAGE = null; // todo
     private static boolean initialized = false;
 
     private Rectangle ownerRectangle;
     private int zoneID;
 
     private GStudio(int zoneID) {
-        super();
+        super(STUDIO_IMAGE);
         Random r = new Random();
         this.zoneID = zoneID;
         this.ownerRectangle = new Rectangle(10, 10, Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256)));
@@ -59,6 +62,8 @@ public class GStudio extends GComponent {
         this.ownerRectangle.setStroke(Color.BLACK);
         this.ownerRectangle.setFill(Color.TRANSPARENT);
         getChildren().add(this.ownerRectangle);
+
+        setOnMouseClicked(e -> EventDispatcher.send(new GStudioClickedEvent(e, this)));
     }
 
     public void setZoneID(int zoneID) {

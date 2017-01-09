@@ -100,6 +100,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     public void addGComponent(GComponent gComponent, int zoneID) {
         this.MAP.put(gComponent, zoneID);
         this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
+        autosize();
     }
 
     /**
@@ -115,6 +116,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     public void removeGComponent(GComponent gComponent, int zoneID) {
         this.MAP.remove(gComponent, zoneID);
         this.ZONES.get(zoneID).getValue().setText(getDescription(zoneID));
+        autosize();
     }
 
     /**
@@ -129,6 +131,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
      */
     public void moveGComponent(GComponent gComponent, int source, int destination) {
         this.MAP.move(gComponent, source, destination);
+        autosize();
     }
 
     /**

@@ -74,6 +74,8 @@ public class Loan extends PlayerCapacity {
 	@Override
 	public void use() {
 		// TODO
+	}
+
 	@Override
 	public void destroy() {
 	}

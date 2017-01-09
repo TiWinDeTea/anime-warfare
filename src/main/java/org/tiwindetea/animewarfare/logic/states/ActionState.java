@@ -238,7 +238,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	}
 
 	@Override
-	public void handleInvokeUnitEvent(InvokeUnitEvent event) {
+	public void handleInvokeUnitEvent(InvokeUnitEvent event) { // FIXME : heroes conditions
 		if (isInvalidPlayer(event)) {
 			return;
 		}
@@ -260,6 +260,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 								|| invocationZone.getUnits().stream().anyMatch(unit -> this.currentPlayer.hasFaction(unit.getFaction()))))
 						) {
 					invokeUnit(invocationZone, event.getUnitType());
+					setNextPlayer(); // FIXME : Unlimited actions still available
 				}
 			}
 		}

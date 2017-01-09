@@ -31,6 +31,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GUIState;
+import org.tiwindetea.animewarfare.logic.FactionType;
 
 import java.io.IOException;
 
@@ -64,6 +65,9 @@ public class GameState extends GUIState {
 		GameState.fadeTransition.setAutoReverse(false);
 	}
 
+
+	private GContextActionMenu gContextActionMenu;
+
 	public static void initStaticFields() {
 	}
 
@@ -78,12 +82,13 @@ public class GameState extends GUIState {
 
 		// play the fade transition
 		AnimationsManager.conditionalPlay(GameState.fadeTransition);
-
+		this.gContextActionMenu = new GContextActionMenu(FactionType.F_CLASS_NO_BAKA, this.rootLayout); // Fixme : use real faction type
 		// listen events.
 	}
 
 	@Override
 	public void onExit() {
 		// stop listening events.
+		this.gContextActionMenu.destroy();
 	}
 }

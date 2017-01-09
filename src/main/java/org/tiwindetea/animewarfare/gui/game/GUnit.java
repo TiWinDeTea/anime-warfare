@@ -30,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
+import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
@@ -51,6 +52,7 @@ public class GUnit extends GComponent {
     private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::getID));
     private static boolean initialized = false;
 
+    private final UnitType type;
     private final int ID;
 
     static {
@@ -62,6 +64,8 @@ public class GUnit extends GComponent {
         super(pictures.get(type));
         //todo : css
         this.ID = ID;
+        this.type = type;
+
         Circle s = new Circle();
         s.setStroke(GlobalChat.getClientColor(owner));
         s.setStrokeWidth(2);
@@ -74,14 +78,22 @@ public class GUnit extends GComponent {
             s.setRadius(12);
         }
         getChildren().add(s);
+
+        setOnMouseClicked(e -> EventDispatcher.send(new GUnitClickedEvent(e, this)));
+        s.setOnMouseClicked(getOnMouseClicked());
     }
 
     private GUnit(int ID) {
         this.ID = ID;
+        this.type = null;
     }
 
     public int getID() {
         return this.ID;
+    }
+
+    public UnitType getType() {
+        return this.type;
     }
 
     /**
@@ -157,5 +169,4 @@ public class GUnit extends GComponent {
         }
         return false;
     }
-
 }

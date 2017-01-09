@@ -21,42 +21,37 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 ////////////////////////////////////////////////////////////
-package org.tiwindetea.animewarfare.gui.game;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+package org.tiwindetea.animewarfare.gui.event;
+
+import javafx.scene.input.MouseEvent;
+import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.gui.game.GStudio;
 
 /**
- * Created by benoit on 02/01/17.
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
-public class CampaignRightToken extends VBox {
-	private Label value = new Label("0");
+public class GStudioClickedEvent implements Event<GStudioClickedEventListener> {
 
-	public CampaignRightToken(String label) {
-		setAlignment(Pos.CENTER);
+    private final MouseEvent mouseEvent;
+    private final GStudio studio;
 
-		this.value.setStyle("-fx-background-radius: 100%;" +
-				"-fx-background-color: black;" +
-				"-fx-padding: 11px 15px 11px 15px;" +
-				"-fx-font-weight: bold;" +
-				"-fx-text-fill: white;"); // TODO: externalize
-		getChildren().add(this.value);
+    public GStudioClickedEvent(MouseEvent mouseEvent, GStudio studio) {
+        this.mouseEvent = mouseEvent;
+        this.studio = studio;
+    }
 
-		getChildren().add(new Label(label));
-	}
+    @Override
+    public void notify(GStudioClickedEventListener listener) {
+        listener.handleClick(this);
+    }
 
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		getChildren().clear();
-	}
+    public MouseEvent getMouseEvent() {
+        return this.mouseEvent;
+    }
 
-	public void setValue(int value) {
-		this.value.setText(String.valueOf(value));
-	}
-
-	public void increment(int value) {
-		this.value.setText(String.valueOf(Integer.valueOf(this.value.getText()) + value));
-	}
+    public GStudio getStudio() {
+        return this.studio;
+    }
 }

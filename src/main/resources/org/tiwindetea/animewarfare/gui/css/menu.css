@@ -158,3 +158,15 @@ PaperButton:pressed {
     -fx-background-color: transparent;
     -fx-background-image: url("../pictures/ui/checkbox-marked.png");
 }
+
+.MagicPane {
+    -fx-background-color: transparent;
+}
+
+.MagicPane * {
+    -fx-background-color: transparent;
+}
+
+GMap {
+    -fx-background-color: transparent;
+}

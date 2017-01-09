@@ -126,7 +126,7 @@ public class Player {
 	public boolean hasRequiredStaffPoints(float actionCost, int numberOfActions) {
 		assert (actionCost > 0 && numberOfActions >= 1);
 
-		return actionCost * numberOfActions >= this.staffAvailable;
+		return actionCost * numberOfActions <= this.staffAvailable;
 	}
 
 	public boolean hasRequiredStaffPoints(float actionCost) {
