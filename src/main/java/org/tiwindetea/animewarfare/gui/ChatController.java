@@ -37,9 +37,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNeteventListener;
-import org.tiwindetea.animewarfare.settings.Settings;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.util.ArrayDeque;
@@ -97,7 +98,7 @@ public class ChatController implements MessageReceivedNeteventListener {
 	private void handleSend() {
 		if (!this.answerTextArea.getText().isEmpty()) {
 			MainApp.getGameClient().send(this.answerTextArea.getText());
-			addMessage(Settings.getPlayerName() + ": " + this.answerTextArea.getText(),
+			addMessage(formatMessage(MainApp.getGameClient().getClientInfo(), this.answerTextArea.getText()),
 					GlobalChat.getClientColor(MainApp.getGameClient().getClientInfo()));
 			this.answerTextArea.setText("");
 		}
@@ -120,9 +121,18 @@ public class ChatController implements MessageReceivedNeteventListener {
 	@Override
 	public void handleMessage(MessageReceivedNetevent message) {
 		Platform.runLater(() ->
-				addMessage(message.getSenderInfos().getGameClientName() + ": " + message.getMessage(),
+				addMessage(formatMessage(message.getSenderInfos(), message.getMessage()),
 						GlobalChat.getClientColor(message.getSenderInfos()))
 		);
+	}
+
+	// helper
+	private String formatMessage(GameClientInfo info, String message) {
+		FactionType faction = GlobalChat.getClientFaction(info);
+		if (faction != null) {
+			return info.getGameClientName() + " (" + faction.name() + "): " + message;
+		}
+		return info.getGameClientName() + ": " + message;
 	}
 }
 

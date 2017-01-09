@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.gui;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
@@ -44,6 +45,8 @@ public class GlobalChat {
 	private static ChatController chatController;
 
 	private static Map<GameClientInfo, Color> colorsByClient = new HashMap<>();
+	private static Map<GameClientInfo, FactionType> factionsByClient = new HashMap<>();
+	private static Map<FactionType, GameClientInfo> clientsByFactions = new HashMap<>();
 
 	static {
 		FXMLLoader chatLoader = new FXMLLoader();
@@ -76,5 +79,25 @@ public class GlobalChat {
 
 	public static Color getClientColor(GameClientInfo gameClientInfo) {
 		return GlobalChat.colorsByClient.getOrDefault(gameClientInfo, Color.BLACK);
+	}
+
+	public static void registerClientFaction(GameClientInfo gameClientInfo, FactionType factionType) {
+		GlobalChat.factionsByClient.put(gameClientInfo, factionType);
+		GlobalChat.clientsByFactions.put(factionType, gameClientInfo);
+	}
+
+	public static void unregisterClientFaction(GameClientInfo gameClientInfo) {
+		GlobalChat.factionsByClient.remove(gameClientInfo);
+		GlobalChat.clientsByFactions.entrySet().stream()
+				.filter(entrySet -> entrySet.getValue() == gameClientInfo)
+				.forEach(entrySet -> GlobalChat.clientsByFactions.remove(entrySet.getKey()));
+	}
+
+	public static FactionType getClientFaction(GameClientInfo gameClientInfo) {
+		return GlobalChat.factionsByClient.getOrDefault(gameClientInfo, null);
+	}
+
+	public static GameClientInfo getFactionClient(FactionType factionType) {
+		return GlobalChat.clientsByFactions.get(factionType);
 	}
 }

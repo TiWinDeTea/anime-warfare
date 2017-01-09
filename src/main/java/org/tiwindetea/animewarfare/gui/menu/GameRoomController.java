@@ -343,6 +343,7 @@ public class GameRoomController
 			GameClientInfo info = playerLockedFactionNetevent.getPlayerInfo();
 			getImageViewByFactionType(playerLockedFactionNetevent.getFaction()).setEffect(LOCKED_EFFECT);
 			GlobalChat.registerClientColor(info, getColorByFaction(playerLockedFactionNetevent.getFaction()));
+			GlobalChat.registerClientFaction(info, playerLockedFactionNetevent.getFaction());
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
 
 			getVBoxByFactionType(playerLockedFactionNetevent.getFaction()).getChildren().clear();
@@ -364,6 +365,7 @@ public class GameRoomController
 									: NORMAL_EFFECT
 					);
 			GlobalChat.unregisterClientColor(info);
+			GlobalChat.unregisterClientFaction(info);
 			this.userNamesLabels.get(info.getId()).setTextFill(GlobalChat.getClientColor(info));
 			getLabelByFactionType(factionUnlockedNetevent.getFaction()).setText("");
 		});
