@@ -24,20 +24,33 @@
 
 package org.tiwindetea.animewarfare.logic.capacity;
 
+import com.esotericsoftware.minlog.Log;
+import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.battle.BattleContext;
+import org.tiwindetea.animewarfare.logic.battle.BattleSide;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEventListener;
 
-public class ForcedRetreat extends PlayerCapacity {
+/*
+ * @author Benoît CORTIER
+ */
+public class ForcedRetreat extends PlayerCapacity implements BattleEventListener, SelectUnitsEventListener {
 	public static class ForcedRetreatActivable extends PlayerActivable implements UnitMovedEventListener {
 		public ForcedRetreatActivable(Player player) {
 			super(player);
+			LogicEventDispatcher.registerListener(UnitMovedEvent.class, this);
 		}
 
 		@Override
 		public void destroy() {
+			LogicEventDispatcher.unregisterListener(UnitMovedEvent.class, this);
 		}
 
 		@Override
@@ -67,16 +80,74 @@ public class ForcedRetreat extends PlayerCapacity {
 		}
 	}
 
+	private BattleContext battleContext;
+
 	ForcedRetreat(Player player) {
 		super(player);
+
+		LogicEventDispatcher.registerListener(BattleEvent.class, this);
+	}
+
+	@Override
+	public void handlePreBattle(BattleEvent event) {
+		this.battleContext = event.getBattleContext();
+		LogicEventDispatcher.registerListener(SelectUnitsEvent.class, this);
+	}
+
+	@Override
+	public void handleDuringBattle(BattleEvent event) {
+		// nothing to do.
+	}
+
+	@Override
+	public void handlePostBattle(BattleEvent event) {
+		// nothing to do.
+	}
+
+	@Override
+	public void handleBattleFinished(BattleEvent event) {
+		// nothing to do.
+	}
+
+	@Override
+	public void handleSelectUnits(SelectUnitsEvent event) {
+		if (event.getUnits().size() != 1) {
+			Log.debug(getClass().getName(), "One and only one unit should be provided.");
+			return;
+		}
+
+		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
+			Log.debug(getClass().getName().toString(), "Not enough staff points.");
+			return;
+		}
+
+		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
+			for (Unit unit : battleSide.getUnits()) {
+				if (event.getUnits().contains(unit)) {
+					if (unit.getType().getUnitLevel().equals(UnitLevel.HERO)) {
+						Log.debug(getClass().getName().toString(), "Doesn't works against heros.");
+						return;
+					} else {
+						battleSide.removeUnit(unit);
+						break;
+					}
+				}
+			}
+		}
+
+		getPlayer().decrementStaffPoints(getName().getStaffCost());
+		LogicEventDispatcher.unregisterListener(SelectUnitsEvent.class, this);
 	}
 
 	@Override
 	public void use() {
+		this.battleContext = null;
 	}
 
 	@Override
 	public void destroy() {
+		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
+		this.battleContext = null;
 	}
 
 	@Override
