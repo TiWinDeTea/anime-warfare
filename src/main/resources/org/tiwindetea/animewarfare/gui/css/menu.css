@@ -93,7 +93,7 @@ PaperButton:pressed {
     -fx-font-size: 21 !important;
 }
 
-.settingsMenu > PaperGridPane {
+PaperGridPane {
     -fx-padding: 15 60 40 15;
     -fx-background-image: url("../pictures/ui/background.png");
     -fx-background-position: center center;

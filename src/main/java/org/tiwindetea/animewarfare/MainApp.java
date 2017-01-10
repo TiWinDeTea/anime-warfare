@@ -112,10 +112,9 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		loader.setLocation(MainApp.class.getResource("RootLayout.fxml"));
 		loader.setController(this);
 		try {
-
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(loader.load());
-			this.rootLayout.getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
+			scene.getRoot().getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
 			this.primaryStage.setScene(scene);
 			this.primaryStage.show();
 		} catch (IOException e) {

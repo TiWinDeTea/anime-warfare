@@ -49,8 +49,6 @@ public class GameState extends GUIState {
 	static {
 		FXMLLoader gameLayoutLoader = new FXMLLoader();
 		gameLayoutLoader.setLocation(GameState.class.getResource("GameLayout.fxml"));
-		/*gameRoomLoader.setResources(ResourceBundleHelper.getBundle(
-				"org.tiwindetea.animewarfare.gui.game.GameLayoutController"));*/
 
 		try {
 			GameState.gameLayout = gameLayoutLoader.load();
@@ -66,11 +64,10 @@ public class GameState extends GUIState {
 		GameState.fadeTransition.setAutoReverse(false);
 	}
 
-
-	private GContextActionMenu gContextActionMenu;
-
 	public static void initStaticFields() {
 	}
+
+	private GContextActionMenu gContextActionMenu;
 
 	public GameState(BorderPane rootLayout) {
 		super(rootLayout);
@@ -87,12 +84,18 @@ public class GameState extends GUIState {
 				GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()),
 				this.rootLayout
 		);
+
+		GameState.gameLayoutController.initOverlay();
+
 		// listen events.
 	}
 
 	@Override
 	public void onExit() {
-		// stop listening events.
 		this.gContextActionMenu.destroy();
+
+		GameState.gameLayoutController.clearOverlay();
+
+		// stop listening events.
 	}
 }

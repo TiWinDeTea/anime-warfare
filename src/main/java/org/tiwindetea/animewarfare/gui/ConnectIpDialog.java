@@ -34,8 +34,8 @@ public class ConnectIpDialog extends Stage implements Initializable {
 
 	public ConnectIpDialog() {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ConnectIpDialog.class.getResource("ConnectIpDialog.fxml"));
-		loader.setResources(ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.ConnectIpDialog"));
+		loader.setLocation(getClass().getResource("ConnectIpDialog.fxml"));
+		loader.setResources(ResourceBundleHelper.getBundle(getClass().getName()));
 		loader.setController(this);
 
 		try {

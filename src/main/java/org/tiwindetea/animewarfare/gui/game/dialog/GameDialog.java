@@ -22,34 +22,39 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states;
+package org.tiwindetea.animewarfare.gui.game.dialog;
 
-import org.lomadriel.lfc.statemachine.State;
-import org.tiwindetea.animewarfare.logic.GameBoard;
-import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
-import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
-import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.layout.VBox;
 
-class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
-	FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
-		super(gameBoard);
+/**
+ * @author Benoît CORTIER
+ */
+public abstract class GameDialog {
+	private final VBox overlay;
+	private final Group dialogElements;
+
+	GameDialog(VBox overlay) {
+		this.overlay = overlay;
+
+		this.dialogElements = new Group();
+
+		this.overlay.setMouseTransparent(false);
+		this.overlay.getChildren().add(this.dialogElements);
 	}
 
-	@Override
-	public void onEnter() {
-		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
-		registerEventListeners();
-
-		this.firstPlayer = this.gameBoard.selectRandomPlayer();
-		LogicEventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
+	protected void addElement(Node element) {
+		this.dialogElements.getChildren().add(element);
 	}
 
-	@Override
-	public State next() {
-		if (this.firstPlayer == null || this.clockWise == null) {
-			throw new IllegalStateException(TURN_NOT_INITIALIZED);
-		}
+	protected void removeElement(Node element) {
+		this.dialogElements.getChildren().remove(element);
+	}
 
-		return new ActionState(this.gameBoard);
+	public void close() {
+		this.dialogElements.getChildren().clear();
+		this.overlay.getChildren().remove(this.dialogElements);
+		this.overlay.setMouseTransparent(true);
 	}
 }

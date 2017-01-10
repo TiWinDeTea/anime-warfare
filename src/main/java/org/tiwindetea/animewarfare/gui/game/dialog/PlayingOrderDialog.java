@@ -22,34 +22,45 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states;
+package org.tiwindetea.animewarfare.gui.game.dialog;
 
-import org.lomadriel.lfc.statemachine.State;
-import org.tiwindetea.animewarfare.logic.GameBoard;
-import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
-import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
-import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.VBox;
+import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
-class FirstTurnFirstPlayerSelectionState extends FirstPlayerSelectionState {
-	FirstTurnFirstPlayerSelectionState(GameBoard gameBoard) {
-		super(gameBoard);
-	}
+import java.io.IOException;
 
-	@Override
-	public void onEnter() {
-		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
-		registerEventListeners();
+/**
+ * @author Benoît CORTIER
+ */
+public class PlayingOrderDialog extends GameDialog {
+	public PlayingOrderDialog(VBox overlay) {
+		super(overlay);
 
-		this.firstPlayer = this.gameBoard.selectRandomPlayer();
-		LogicEventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
-	}
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("PlayingOrderDialog.fxml"));
+		loader.setResources(ResourceBundleHelper.getBundle(getClass().getName()));
+		loader.setController(this);
 
-	@Override
-	public State next() {
-		if (this.firstPlayer == null || this.clockWise == null) {
-			throw new IllegalStateException(TURN_NOT_INITIALIZED);
+		try {
+			addElement(loader.load());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
 
-		return new ActionState(this.gameBoard);
+	@FXML
+	private void handleLeftClicked() {
+		MainApp.getGameClient().send(new NetPlayingOrderChosen(true));
+		close();
+	}
+
+	@FXML
+	private void handleRightClicked() {
+		MainApp.getGameClient().send(new NetPlayingOrderChosen(false));
+		close();
 	}
 }

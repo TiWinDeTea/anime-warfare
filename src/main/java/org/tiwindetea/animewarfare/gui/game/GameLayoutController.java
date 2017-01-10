@@ -21,28 +21,44 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 ////////////////////////////////////////////////////////////
+
 package org.tiwindetea.animewarfare.gui.game;
 
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
+import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Created by benoit on 02/01/17.
+ * @author Benoît CORTIER
  */
-public class GameLayoutController implements Initializable, QuitApplicationEventListener {
+public class GameLayoutController implements Initializable, QuitApplicationEventListener,
+		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener {
 	private ResourceBundle resourceBundle;
 
 	@FXML
@@ -53,11 +69,32 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	private GMap map;
 
+	private StackPane mainRoot;
+
+	private VBox overlay;
+
+	public void initOverlay() {
+		this.mainRoot = (StackPane) this.rootBorderPane.getScene().getRoot();
+		this.mainRoot.getChildren().add(this.overlay);
+	}
+
+	public void clearOverlay() {
+		this.overlay.getChildren().clear();
+		this.mainRoot.getChildren().remove(this.overlay);
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		EventDispatcher.registerListener(QuitApplicationEvent.class, this);
-
 		this.resourceBundle = resources;
+
+		EventDispatcher.registerListener(QuitApplicationEvent.class, this);
+		EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
+		EventDispatcher.registerListener(FirstPlayerSelectedNetevent.class, this);
+
+		this.overlay = new VBox(10);
+		this.overlay.setAlignment(Pos.CENTER);
+		this.overlay.setMouseTransparent(true);
+
 		this.map = new GMap();
 		this.map.autosize();
 		this.hBox.autosize();
@@ -75,7 +112,6 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	}
 
 	private void initScroll() {
-
 		ScrollPane scrollPane = new ScrollPane();
 
 		scrollPane.setContent(new Group(this.map));
@@ -92,5 +128,43 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@Override
 	public void handleQuitApplication() {
 		EventDispatcher.unregisterListener(QuitApplicationEvent.class, this);
+		EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
+		EventDispatcher.unregisterListener(FirstPlayerSelectedNetevent.class, this);
+	}
+
+	@Override
+	public void handlePhaseChanged(PhaseChangeNetevent event) {
+		if (event.getPhase().equals(PhaseChangedEvent.Phase.STAFF_HIRING)) {
+			return;
+		}
+
+		Platform.runLater(() -> {
+			addOverlayMessage(event.getPhase().name() + " phase started"); // TODO: externalize.
+		});
+	}
+
+	@Override
+	public void handlePlayerSelection(FirstPlayerSelectedNetevent firstPlayerSelectedNetevent) {
+		Platform.runLater(() -> {
+			GameClientInfo info = firstPlayerSelectedNetevent.getGameClientInfo();
+			if (MainApp.getGameClient().getClientInfo().equals(info)) {
+				new PlayingOrderDialog(this.overlay);
+			} else {
+				addOverlayMessage(info.getGameClientName() + " is the first player."); // TODO: externalize.
+			}
+		});
+	}
+
+	// helper
+	private void addOverlayMessage(String message) {
+		Label label = new Label(message);
+		label.setStyle("-fx-background-color: black;" +
+				"-fx-text-fill: white;"); // TODO: externalize.
+
+		this.overlay.getChildren().add(label);
+
+		PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+		pauseTransition.setOnFinished(e -> this.overlay.getChildren().remove(label));
+		pauseTransition.play();
 	}
 }

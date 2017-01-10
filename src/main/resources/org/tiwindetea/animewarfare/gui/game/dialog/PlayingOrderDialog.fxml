@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
+
+<PaperGridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="520.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="40.0" />
+      <RowConstraints minHeight="10.0" prefHeight="40.0" />
+   </rowConstraints>
+   <columnConstraints>
+      <ColumnConstraints minWidth="10.0" prefWidth="300.0" />
+      <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
+   </columnConstraints>
+   <children>
+      <PaperButton onAction="#handleLeftClicked" prefHeight="30.0" prefWidth="150.0" text="%button.clockwise" GridPane.rowIndex="1" />
+      <PaperButton onAction="#handleRightClicked" prefHeight="30.0" prefWidth="150.0" text="%button.anticlockwise" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label text="%label.message">
+         <padding>
+            <Insets left="10.0" />
+         </padding></Label>
+   </children>
+</PaperGridPane>

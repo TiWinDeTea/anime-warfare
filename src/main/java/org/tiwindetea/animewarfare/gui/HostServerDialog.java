@@ -62,8 +62,8 @@ public class HostServerDialog extends Stage implements Initializable {
 
 	public HostServerDialog() {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(HostServerDialog.class.getResource("HostServerDialog.fxml"));
-		loader.setResources(ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.HostServerDialog"));
+		loader.setLocation(getClass().getResource("HostServerDialog.fxml"));
+		loader.setResources(ResourceBundleHelper.getBundle(getClass().getName()));
 		loader.setController(this);
 
 		try {

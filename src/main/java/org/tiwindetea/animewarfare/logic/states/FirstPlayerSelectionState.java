@@ -58,9 +58,9 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 
 	@Override
 	public void onEnter() {
-		registerEventListeners();
-
 		LogicEventDispatcher.getInstance().fire(new PhaseChangedEvent(PhaseChangedEvent.Phase.PLAYER_SELECTION));
+
+		registerEventListeners();
 
 		selectionFirstPlayer();
 	}
