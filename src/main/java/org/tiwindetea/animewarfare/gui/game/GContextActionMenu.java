@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
@@ -100,11 +102,29 @@ public class GContextActionMenu extends ContextMenu
         this.destroy();
     }
 
+    public void addUnitContextManager(String id, BiFunction<FactionType, GUnit, List<MenuItem>> handler) {
+        this.items.addUnitContextManager(id, handler);
+    }
+
+    public BiFunction<FactionType, GUnit, List<MenuItem>> removeUnitContextManager(String id) {
+        return this.items.removeUnitContextManager(id);
+    }
+
+    public void addStudioContextManager(String id, BiFunction<FactionType, GStudio, List<MenuItem>> handler) {
+        this.items.addStudioContextManager(id, handler);
+    }
+
+    public BiFunction<FactionType, GStudio, List<MenuItem>> removeStudioContextManager(String id, BiFunction<FactionType, GStudio, List<MenuItem>> handler) {
+        return this.items.removeStudioContextManager(id);
+    }
+
     private void setAndShow(Stream<MenuItem> localItems, MouseEvent mouseEvent) {
         ObservableList<MenuItem> parentItems = getItems();
         parentItems.clear();
         localItems.forEach(parentItems::add);
-        show(this.ownerNode, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+        if (!parentItems.isEmpty()) {
+            show(this.ownerNode, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+        }
     }
 
     private class DynamicItemList implements PhaseChangedNeteventListener {
@@ -123,6 +143,10 @@ public class GContextActionMenu extends ContextMenu
         private final HashMap<Integer, List<MenuItem>> zoneItems = new HashMap<>();
         //same apply here
 
+        private final Map<String, BiFunction<FactionType, GUnit, List<MenuItem>>> filteredUnitItems = new HashMap<>();
+        private final Map<String, BiFunction<FactionType, GStudio, List<MenuItem>>> filteredStudioItems = new HashMap<>();
+        // The biFunction should never return null. Use Stream.empty() instead.
+
         DynamicItemList(FactionType playerFaction) {
             this.playerFaction = playerFaction;
 
@@ -131,44 +155,71 @@ public class GContextActionMenu extends ContextMenu
         }
 
         void destroy() {
+            clearAll();
             // unregister events
             EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
         }
 
-        Stream<MenuItem> getItems(UnitType unit, int unitID) {
+        public void addUnitContextManager(String id, BiFunction<FactionType, GUnit, List<MenuItem>> handler) {
+            this.filteredUnitItems.put(id, handler);
+        }
+
+        public BiFunction<FactionType, GUnit, List<MenuItem>> removeUnitContextManager(String id) {
+            return this.filteredUnitItems.remove(id);
+        }
+
+        public void addStudioContextManager(String id, BiFunction<FactionType, GStudio, List<MenuItem>> handler) {
+            this.filteredStudioItems.put(id, handler);
+        }
+
+        public BiFunction<FactionType, GStudio, List<MenuItem>> removeStudioContextManager(String id) {
+            return this.filteredStudioItems.remove(id);
+        }
+
+        Stream<MenuItem> getItems(GUnit unit) {
             List<MenuItem> perUnitTypeItems = this.itemsPerUnitType.get(unit);
             if (perUnitTypeItems == null) {
                 perUnitTypeItems = new ArrayList<>(0);
             }
 
-            List<MenuItem> perUnitItems = this.itemsPerUnit.get(new Integer(unitID));
+            List<MenuItem> perUnitItems = this.itemsPerUnit.get(new Integer(unit.getID()));
             if (perUnitItems == null) {
                 perUnitItems = new ArrayList<>(0);
             }
 
-            if (unit.getDefaultFaction().equals(this.playerFaction)) {
-                return Stream.concat(Stream.concat(this.unitsItems.stream(), this.friendlyUnitsItems.stream()),
-                        Stream.concat(perUnitItems.stream(), perUnitTypeItems.stream()));
-            } else {
-                return Stream.concat(Stream.concat(this.unitsItems.stream(), this.ennemyUnitsItems.stream()),
-                        Stream.concat(perUnitItems.stream(), perUnitTypeItems.stream()));
-            }
-        }
+            Stream<MenuItem> stream = Stream.concat(
+                    Stream.concat(this.unitsItems.stream(), perUnitItems.stream()),
+                    perUnitTypeItems.stream()
+            );
 
-        Stream<MenuItem> getItems(GUnit unit) {
-            return getItems(unit.getType(), unit.getID());
+            for (BiFunction<FactionType, GUnit, List<MenuItem>> biFunction : this.filteredUnitItems.values()) {
+                Stream.concat(stream, biFunction.apply(this.playerFaction, unit).stream());
+            }
+
+            if (unit.getFaction().equals(this.playerFaction)) {
+                return Stream.concat(stream, this.friendlyUnitsItems.stream());
+            } else {
+                return Stream.concat(stream, this.ennemyUnitsItems.stream());
+            }
         }
 
         Stream<MenuItem> getItems(GStudio studio) {
             Collection<MenuItem> items = this.studioItemsPerStudio.get(new Integer(studio.getZoneID()));
+
             Stream<MenuItem> stream = Stream.concat(
                     (items == null
                             ? Stream.empty()
                             : items.stream())
                     , this.studioItems.stream());
+
             if (GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()).equals(studio.getFaction())) {
                 stream = Stream.concat(stream, this.friendlyUnitsItems.stream());
             }
+
+            for (BiFunction<FactionType, GStudio, List<MenuItem>> biFunction : this.filteredStudioItems.values()) {
+                Stream.concat(stream, biFunction.apply(this.playerFaction, studio).stream());
+            }
+
             return stream;
         }
 
@@ -205,6 +256,8 @@ public class GContextActionMenu extends ContextMenu
             this.itemsPerUnit.clear();
             this.studioItemsPerStudio.clear();
             this.zoneItems.clear();
+            //this.filteredStudioItems.clear();
+            //this.filteredUnitItems.clear();
         }
     }
 }
