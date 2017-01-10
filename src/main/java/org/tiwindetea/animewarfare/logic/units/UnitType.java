@@ -74,9 +74,9 @@ public enum UnitType {
 			8, 1),
 
 	// Haiyore
-	YOICHI_TAKEHIKO(FactionType.HAIYORE,
+	KUREI_TAMAO(FactionType.HAIYORE,
 			UnitLevel.MASCOT,
-			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, 0),
+			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, 0),
 			1, 6),
 	YASAKA_MAHIRO(FactionType.HAIYORE,
 			UnitLevel.LVL0,

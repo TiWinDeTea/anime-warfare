@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.gui.game;
 
 import com.esotericsoftware.minlog.Log;
+import javafx.beans.binding.Bindings;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -51,7 +52,7 @@ import java.util.TreeSet;
  */
 public class GUnit extends GComponent {
 
-    private static final HashMap<UnitType, Image> pictures = new HashMap<>();
+    private static final HashMap<UnitType, Image> PICTURES = new HashMap<>();
     private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::getID));
     private static boolean initialized = false;
 
@@ -59,32 +60,92 @@ public class GUnit extends GComponent {
     private final int ID;
 
     static {
-        //todo : initialize pictures
-
+        PICTURES.put(UnitType.KUDOU_ASUKA,
+                new Image(GUnit.class.getResourceAsStream("pictures/asuka_circle.png")));
+        PICTURES.put(UnitType.CC,
+                new Image(GUnit.class.getResourceAsStream("pictures/CC_circle.png")));
+        PICTURES.put(UnitType.CTHUKO,
+                new Image(GUnit.class.getResourceAsStream("pictures/Cthuka_circle.png")));
+        PICTURES.put(UnitType.HASUTA,
+                new Image(GUnit.class.getResourceAsStream("pictures/Hasuta_circle.png")));
+        PICTURES.put(UnitType.HIMEJI_MIZUKI,
+                new Image(GUnit.class.getResourceAsStream("pictures/Himeji_circle.png")));
+        PICTURES.put(UnitType.SAKAMAKI_IZAYOI,
+                new Image(GUnit.class.getResourceAsStream("pictures/Izayoi_circle.png")));
+        PICTURES.put(UnitType.RUSSELL_JIN,
+                new Image(GUnit.class.getResourceAsStream("pictures/JinRussell_circle.png")));
+        PICTURES.put(UnitType.KALLEN,
+                new Image(GUnit.class.getResourceAsStream("pictures/Kallen_circle.png")));
+        PICTURES.put(UnitType.TSUCHIYA_KOUTA,
+                new Image(GUnit.class.getResourceAsStream("pictures/Kouta_circle.png")));
+        PICTURES.put(UnitType.KUROUSAGI,
+                new Image(GUnit.class.getResourceAsStream("pictures/Kurousagi_circle.png")));
+        PICTURES.put(UnitType.LELOUCH,
+                new Image(GUnit.class.getResourceAsStream("pictures/Lelouch_circle.png")));
+        PICTURES.put(UnitType.YASAKA_MAHIRO,
+                new Image(GUnit.class.getResourceAsStream("pictures/Mahiro_circle.png")));
+        PICTURES.put(UnitType.SHIMADA_MINAMI,
+                new Image(GUnit.class.getResourceAsStream("pictures/Minami_circle.png")));
+        PICTURES.put(UnitType.NUNNALLY,
+                new Image(GUnit.class.getResourceAsStream("pictures/Nunally_circle.png")));
+        PICTURES.put(UnitType.NYARUKO,
+                new Image(GUnit.class.getResourceAsStream("pictures/Nyaruko_circle.png")));
+        PICTURES.put(UnitType.SUZAKU,
+                new Image(GUnit.class.getResourceAsStream("pictures/Suzaku_circle.png")));
+        PICTURES.put(UnitType.KUREI_TAMAO,
+                new Image(GUnit.class.getResourceAsStream("pictures/Tamao_circle.png")));
+        PICTURES.put(UnitType.YOSHII_AKIHISA,
+                new Image(GUnit.class.getResourceAsStream("pictures/Yoshii_circle.png")));
+        PICTURES.put(UnitType.KASUKABE_YOU,
+                new Image(GUnit.class.getResourceAsStream("pictures/You_circle.png")));
+        PICTURES.put(UnitType.SAKAMOTO_YUUJI,
+                new Image(GUnit.class.getResourceAsStream("pictures/Yuuji_circle.png")));
     }
 
     private GUnit(int ID, UnitType type, FactionType faction, GameClientInfo owner) {
-        super(pictures.get(type));
+        super(PICTURES.get(type));
         //todo : css
         this.ID = ID;
         this.type = type;
 
-        Circle s = new Circle();
-        s.setStroke(GlobalChat.getClientColor(owner));
-        s.setStrokeWidth(2);
-        s.setFill(Color.TRANSPARENT);
-        if (UnitLevel.MASCOT.equals(type.getUnitLevel())) {
-            s.setRadius(10);
-        } else if (UnitLevel.HERO.equals(type.getUnitLevel())) {
-            s.setRadius(14);
-        } else {
-            s.setRadius(12);
-        }
-        getChildren().add(s);
+        //getChildren().add(s);
+        initializeImage(owner);
 
         setOnMouseClicked(e -> EventDispatcher.send(new GUnitClickedEvent(e, this)));
         setFactionType(faction);
-        s.setOnMouseClicked(getOnMouseClicked());
+        getImageView().setOnMouseClicked(getOnMouseClicked());
+    }
+
+    private void initializeImage(GameClientInfo owner) {
+        Circle s = new Circle();
+        s.translateXProperty().bind(s.radiusProperty());
+        s.translateYProperty().bind(s.radiusProperty());
+        s.radiusProperty().bind(Bindings.divide(getImageView().fitWidthProperty(), 2));
+
+        Circle background = new Circle();
+        background.radiusProperty().bind(s.radiusProperty());
+        background.setFill(GlobalChat.getClientColor(owner));
+        background.setStroke(GlobalChat.getClientColor(owner));
+        getChildren().add(background);
+
+        getImageView().setClip(s);
+        getImageView().setPreserveRatio(true);
+        getImageView().toFront();
+
+        Circle border = new Circle();
+        border.radiusProperty().bind(s.radiusProperty());
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(GlobalChat.getClientColor(owner));
+        border.setStrokeWidth(2);
+        getChildren().add(border);
+
+        if (UnitLevel.MASCOT.equals(this.type.getUnitLevel())) {
+            getImageView().setFitWidth(20);
+        } else if (UnitLevel.HERO.equals(this.type.getUnitLevel())) {
+            getImageView().setFitWidth(28);
+        } else {
+            getImageView().setFitWidth(24);
+        }
     }
 
     private GUnit(int ID) {

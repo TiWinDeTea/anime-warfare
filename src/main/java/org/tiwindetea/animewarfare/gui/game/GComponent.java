@@ -34,14 +34,15 @@ import org.tiwindetea.animewarfare.logic.FactionType;
  * @since 0.1.0
  */
 public abstract class GComponent extends StackPane {
-
-    private FactionType factionType;
+	private ImageView imageView;
+	private FactionType factionType;
 
     protected GComponent() {
     }
 
     public GComponent(Image image) {
-        getChildren().add(new ImageView(image));
+	    this.imageView = new ImageView(image);
+	    getChildren().add(this.imageView);
     }
 
     public static void initSubFactories() {
@@ -49,9 +50,13 @@ public abstract class GComponent extends StackPane {
         GStudio.initFactory();
     }
 
-    public FactionType getFaction() {
-        return this.factionType;
-    }
+	public ImageView getImageView() {
+		return this.imageView;
+	}
+
+	public FactionType getFaction() {
+		return this.factionType;
+	}
 
     protected void setFactionType(FactionType f) {
         this.factionType = f;

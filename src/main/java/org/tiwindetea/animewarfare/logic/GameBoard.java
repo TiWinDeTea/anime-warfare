@@ -84,7 +84,7 @@ public class GameBoard {
 					unit = new Unit(UnitType.NUNNALLY);
 					break;
 				case HAIYORE:
-					unit = new Unit(UnitType.YOICHI_TAKEHIKO);
+					unit = new Unit(UnitType.KUREI_TAMAO);
 					break;
 				case F_CLASS_NO_BAKA:
 					unit = new Unit(UnitType.YOSHII_AKIHISA);

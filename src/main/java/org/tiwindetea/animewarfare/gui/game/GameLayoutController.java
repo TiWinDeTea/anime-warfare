@@ -62,6 +62,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		this.map.autosize();
 		this.hBox.autosize();
 		this.initScroll();
+		this.map.displayZonesGrids(true);
+		this.map.displayComponentssGrids(true);
 
 		this.rootBorderPane.setBottom(new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM));
 		this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP));
