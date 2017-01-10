@@ -371,7 +371,7 @@ public class GameClient {
             EventDispatcher.send(new MessageReceivedNetevent(message));
         }
 
-        public void received(Connection connection, NetPhaseChange phaseChange) {
+        public void received(Connection connection, NetPhaseChanged phaseChange) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + phaseChange);
             EventDispatcher.send(new PhaseChangeNetevent(phaseChange));
         }

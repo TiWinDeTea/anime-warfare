@@ -37,9 +37,12 @@ import org.tiwindetea.animewarfare.gui.event.GUnitClickedEventListener;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,8 +105,7 @@ public class GContextActionMenu extends ContextMenu
         show(this.ownerNode, mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
-    private class DynamicItemList {
-
+    private class DynamicItemList implements PhaseChangedNeteventListener {
         private final FactionType playerFaction;
 
         private final List<MenuItem> unitsItems = new ArrayList<>(); // for all units
@@ -117,24 +119,19 @@ public class GContextActionMenu extends ContextMenu
         private final HashMap<Integer, List<MenuItem>> zoneItems = new HashMap<>();
         //same apply here
 
-
         DynamicItemList(FactionType playerFaction) {
             this.playerFaction = playerFaction;
 
-            // dummy example
-            MenuItem sayHello = new MenuItem("Say hello with this unit");
-            sayHello.setOnAction(e -> System.out.println("Hello !"));
-            this.friendlyUnitsItems.add(sayHello);
-
             //register events
+            EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
         }
 
         void destroy() {
-            // deregister events
+            // unregister events
+            EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
         }
 
         Stream<MenuItem> getItems(UnitType unit, int unitID) {
-
             List<MenuItem> perUnitTypeItems = this.ItemsPerUnitType.get(unit);
             if (perUnitTypeItems == null) {
                 perUnitTypeItems = new ArrayList<>(0);
@@ -166,6 +163,36 @@ public class GContextActionMenu extends ContextMenu
         Stream<MenuItem> getItems(int zoneID) {
             Collection<MenuItem> items = this.zoneItems.get(new Integer(zoneID));
             return items == null ? new ArrayList<MenuItem>(0).stream() : items.stream();
+        }
+
+        @Override
+        public void handlePhaseChanged(PhaseChangeNetevent event) {
+            clearAll();
+
+            if (event.getPhase().equals(PhaseChangedEvent.Phase.ACTION)) {
+                MenuItem unitInfos = new MenuItem("Unit infos");
+                unitInfos.setOnAction(e -> System.out.println("TODO: Open unit infos!"));
+                this.unitsItems.add(unitInfos);
+
+                MenuItem moveUnit = new MenuItem("Move unit");
+                moveUnit.setOnAction(e -> System.out.println("TODO: move unit context."));
+                this.friendlyUnitsItems.add(moveUnit);
+
+                MenuItem drawUnit = new MenuItem("Draw unit");
+                drawUnit.setOnAction(e -> System.out.println("TODO: Open a menu to select the unit to draw."));
+                //this.friendlyStudioItems.add(drawUnit); TODO: add this.
+            }
+        }
+
+        // helper
+        private void clearAll() {
+            this.unitsItems.clear();
+            this.ennemyUnitsItems.clear();
+            this.friendlyUnitsItems.clear();
+            this.ItemsPerUnitType.clear();
+            this.ItemsPerUnit.clear();
+            this.studioItems.clear();
+            this.zoneItems.clear();
         }
     }
 }

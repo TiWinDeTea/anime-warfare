@@ -38,8 +38,10 @@ import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitCreatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNetevent;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 /**
@@ -107,6 +109,10 @@ public class GUnit extends GComponent {
         } else {
             return null;
         }
+    }
+
+    public static NavigableSet<GUnit> getAll() {
+        return Collections.unmodifiableNavigableSet(units.descendingSet());
     }
 
     /**

@@ -759,7 +759,7 @@ public class GameServer {
 
         @Override
         public void handlePhaseChanged(PhaseChangedEvent event) {
-            this.server.sendToAllTCP(new NetPhaseChange(event));
+            this.server.sendToAllTCP(new NetPhaseChanged(event));
         }
 
 

@@ -26,23 +26,23 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class PhaseChangeNetevent implements Event<PhaseChangeNeteventListener> {
+public class PhaseChangeNetevent implements Event<PhaseChangedNeteventListener> {
 
     private final PhaseChangedEvent.Phase phase;
 
-    public PhaseChangeNetevent(NetPhaseChange phaseChange) {
+    public PhaseChangeNetevent(NetPhaseChanged phaseChange) {
         this.phase = phaseChange.getPhase();
     }
 
     @Override
-    public void notify(PhaseChangeNeteventListener listener) {
-        listener.handlePhaseChange(this);
+    public void notify(PhaseChangedNeteventListener listener) {
+        listener.handlePhaseChanged(this);
     }
 
     public PhaseChangedEvent.Phase getPhase() {

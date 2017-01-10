@@ -153,7 +153,7 @@ class Utils {
 		kryo.register(NetMarketingLadderUpdated.class);
 		kryo.register(NetMessage.class);
 		kryo.register(NetStudio.class);
-		kryo.register(NetPhaseChange.class);
+		kryo.register(NetPhaseChanged.class);
 		kryo.register(NetSelectMascotToCapture.class);
 		kryo.register(NetUnitCountChange.class);
 		kryo.register(NetUnitMoveEvent.class);

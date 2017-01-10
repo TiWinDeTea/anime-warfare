@@ -22,15 +22,30 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkevent;
+package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import java.util.EventListener;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface PhaseChangeNeteventListener extends EventListener {
+public class NetPhaseChanged implements NetReceivable {
 
-    void handlePhaseChange(PhaseChangeNetevent event);
+    private final PhaseChangedEvent.Phase phase;
+
+    /**
+     * Default constructor, required by Kryo.net
+     */
+    public NetPhaseChanged() {
+        this.phase = null;
+    }
+
+    public NetPhaseChanged(PhaseChangedEvent event) {
+        this.phase = event.getNewPhase();
+    }
+
+    public PhaseChangedEvent.Phase getPhase() {
+        return this.phase;
+    }
 }

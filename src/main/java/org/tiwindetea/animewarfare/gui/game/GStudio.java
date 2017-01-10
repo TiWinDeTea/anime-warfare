@@ -36,7 +36,9 @@ import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.NavigableSet;
 import java.util.Random;
 import java.util.TreeSet;
 
@@ -91,6 +93,10 @@ public class GStudio extends GComponent {
         } else {
             return null;
         }
+    }
+
+    public static NavigableSet<GStudio> getAll() {
+        return Collections.unmodifiableNavigableSet(STUDIOS.descendingSet());
     }
 
     public static GStudio getOrCreate(int zoneID) {
