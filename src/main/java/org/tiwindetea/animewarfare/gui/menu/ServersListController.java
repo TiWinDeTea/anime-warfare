@@ -172,7 +172,7 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 
 	@FXML
 	private void handleConnectIp() {
-		ConnectIpDialog connectIpDialog = new ConnectIpDialog(null);
+		ConnectIpDialog connectIpDialog = new ConnectIpDialog();
 		this.roomsTableView.getScene().getRoot().setDisable(true);
 		connectIpDialog.showAndWait();
 		this.roomsTableView.getScene().getRoot().setDisable(false);
@@ -196,7 +196,7 @@ public class ServersListController implements Initializable, ConnectedNeteventLi
 	@FXML
 	private void handleHost() {
 		try {
-			HostServerDialog hostServerDialog = new HostServerDialog(null);
+			HostServerDialog hostServerDialog = new HostServerDialog();
 			this.roomsTableView.getScene().getRoot().setDisable(true);
 			hostServerDialog.showAndWait();
 			this.roomsTableView.getScene().getRoot().setDisable(false);

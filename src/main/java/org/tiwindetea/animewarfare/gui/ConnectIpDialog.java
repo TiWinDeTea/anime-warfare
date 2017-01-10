@@ -3,7 +3,6 @@ package org.tiwindetea.animewarfare.gui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -33,7 +32,7 @@ public class ConnectIpDialog extends Stage implements Initializable {
 
 	private boolean canceled = true;
 
-	public ConnectIpDialog(Parent parent) {
+	public ConnectIpDialog() {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ConnectIpDialog.class.getResource("ConnectIpDialog.fxml"));
 		loader.setResources(ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.ConnectIpDialog"));

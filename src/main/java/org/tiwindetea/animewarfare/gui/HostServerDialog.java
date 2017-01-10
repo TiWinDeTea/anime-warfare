@@ -27,7 +27,6 @@ package org.tiwindetea.animewarfare.gui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -61,7 +60,7 @@ public class HostServerDialog extends Stage implements Initializable {
 
 	private boolean canceled = true;
 
-	public HostServerDialog(Parent parent) {
+	public HostServerDialog() {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(HostServerDialog.class.getResource("HostServerDialog.fxml"));
 		loader.setResources(ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.HostServerDialog"));
