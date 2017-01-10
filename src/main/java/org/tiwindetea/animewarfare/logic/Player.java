@@ -310,12 +310,13 @@ public class Player {
 	}
 
 	public void setStudio(Studio studio) {
+		Studio previousStudio = this.studio;
 		this.studio = studio;
 
-		if (this.studio != null) {
-			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.ADDED_PLAYER, this.ID));
+		if (studio != null) {
+			LogicEventDispatcher.send(StudioEvent.addedToPlayer(studio, this.ID));
 		} else {
-			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED_PLAYER, this.ID));
+			LogicEventDispatcher.send(StudioEvent.removedFromPlayer(previousStudio, this.ID));
 		}
 	}
 

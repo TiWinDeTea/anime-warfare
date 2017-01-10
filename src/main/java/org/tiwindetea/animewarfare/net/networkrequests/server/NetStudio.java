@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.server;
 
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 
@@ -33,33 +34,31 @@ import org.tiwindetea.animewarfare.net.GameClientInfo;
  */
 public class NetStudio implements NetReceivable {
     private final GameClientInfo playerInfo;
-    private final int studioID;
-    private final StudioEvent.Type type;
 
+    private final int zoneID;
+    private final StudioEvent.Type type;
+    private final FactionType studioFaction;
 
     /**
      * Default constructor, required by Kryo.net
      */
     public NetStudio() {
-        this.studioID = 0;
+        this.studioFaction = null;
         this.playerInfo = null;
+        this.zoneID = 0;
         this.type = null;
     }
 
     public NetStudio(StudioEvent event, GameClientInfo player) {
-        if (event.getType() == StudioEvent.Type.ADDED || event.getType() == StudioEvent.Type.REMOVED) {
-            this.studioID = event.getZoneID();
-            this.playerInfo = null;
-        } else {
-            this.playerInfo = player;
-            this.studioID = -1;
-        }
-
+        this.zoneID = event.getZoneID();
         this.type = event.getType();
+        this.studioFaction = event.getStudio().getCurrentFaction();
+
+        this.playerInfo = player;
     }
 
     public int getZoneID() {
-        return this.studioID;
+        return this.zoneID;
     }
 
     public GameClientInfo getPlayerInfo() {
@@ -68,5 +67,9 @@ public class NetStudio implements NetReceivable {
 
     public StudioEvent.Type getType() {
         return this.type;
+    }
+
+    public FactionType getStudioFaction() {
+        return this.studioFaction;
     }
 }

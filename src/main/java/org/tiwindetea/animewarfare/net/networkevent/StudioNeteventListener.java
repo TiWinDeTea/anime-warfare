@@ -32,11 +32,18 @@ import java.util.EventListener;
  */
 public interface StudioNeteventListener extends EventListener {
 
-    void handleStudioCreation(StudioNetevent event);
+    /**
+     * Called when a studio is created or deleted
+     */
+    void handleStudioBuiltOrDestroyed(StudioNetevent studioNetevent);
 
-    void handleStudioRemoved(StudioNetevent event);
+    /**
+     * Called when a studio is added to a player or removed from a player
+     */
+    void handleStudioPlayered(StudioNetevent studioNetevent);
 
-    void handleStudioDeserted(StudioNetevent event); // FIXME : This is not this event !
-
-    void handleStudioCaptured(StudioNetevent event); // FIXME : This is not this event !
+    /**
+     * Called when a studio is added to the map or removed from the map
+     */
+    void handleStudioMapped(StudioNetevent studioNetevent);
 }

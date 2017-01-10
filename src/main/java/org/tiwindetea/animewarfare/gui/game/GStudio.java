@@ -31,6 +31,7 @@ import javafx.scene.shape.Rectangle;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
+import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
@@ -76,12 +77,14 @@ public class GStudio extends GComponent {
         return this.zoneID;
     }
 
-    public void setTeam(GameClientInfo client) {
+    private void setTeam(GameClientInfo client) {
         if (client == null) {
             this.ownerRectangle.setVisible(false);
+            setFactionType(null);
         } else {
             this.ownerRectangle.setVisible(true);
             this.ownerRectangle.setStroke(GlobalChat.getClientColor(client));
+            setFactionType(GlobalChat.getClientFaction(client));
         }
     }
 
@@ -120,24 +123,24 @@ public class GStudio extends GComponent {
 
         if (!initialized) {
             EventDispatcher.registerListener(StudioNetevent.class, new StudioNeteventListener() {
+
                 @Override
-                public void handleStudioCreation(StudioNetevent event) {
-                    create(event.getZoneID());
+                public void handleStudioBuiltOrDestroyed(StudioNetevent studioNetevent) {
+                    if (studioNetevent.getType() == StudioEvent.Type.CREATED) {
+                        create(studioNetevent.getZoneID());
+                    } else if (studioNetevent.getType() == StudioEvent.Type.DELETED) {
+                        delete(studioNetevent.getZoneID());
+                    }
                 }
 
                 @Override
-                public void handleStudioRemoved(StudioNetevent event) {
-                    delete(event.getZoneID());
+                public void handleStudioPlayered(StudioNetevent studioNetevent) {
+                    get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
                 }
 
                 @Override
-                public void handleStudioDeserted(StudioNetevent event) {
-                    getOrCreate(event.getZoneID()).setTeam(null); // FIXME : This is not this event !
-                }
-
-                @Override
-                public void handleStudioCaptured(StudioNetevent event) {
-                    getOrCreate(event.getZoneID()).setTeam(event.getPlayerInfo()); // FIXME : This is not this event !
+                public void handleStudioMapped(StudioNetevent studioNetevent) {
+                    get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
                 }
             });
             EventDispatcher.registerListener(GameEndedNetevent.class, e -> STUDIOS.clear());
@@ -154,9 +157,6 @@ public class GStudio extends GComponent {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof GStudio) {
-            return ((GStudio) o).zoneID == this.zoneID;
-        }
-        return false;
+        return (o instanceof GStudio) && ((GStudio) o).zoneID == this.zoneID;
     }
 }

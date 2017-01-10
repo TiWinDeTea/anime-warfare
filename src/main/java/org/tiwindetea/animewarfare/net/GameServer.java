@@ -781,12 +781,25 @@ public class GameServer {
 
         @Override
         public void handleStudioAddedEvent(StudioEvent event) {
-            this.server.sendToAllTCP(new NetStudio(event, null));
+            if (event.getType() == StudioEvent.Type.ADDED_TO_MAP) {
+                this.server.sendToAllTCP(new NetStudio(event, null));
+            } else {
+                this.server.sendToAllTCP(new NetStudio(event, GameServer.this.room.find(event.getPlayerID())));
+            }
         }
 
         @Override
         public void handleStudioRemovedEvent(StudioEvent event) {
-            this.server.sendToAllTCP(new NetStudio(event, null));
+            if (event.getType() == StudioEvent.Type.REMOVED_FROM_MAP) {
+                this.server.sendToAllTCP(new NetStudio(event, null));
+            } else {
+                this.server.sendToAllTCP(new NetStudio(event, GameServer.this.room.find(event.getPlayerID())));
+            }
+        }
+
+        @Override
+        public void handleStudioBuiltOrDestroyed(StudioEvent studioEvent) {
+            this.server.sendToAllTCP(new NetStudio(studioEvent, null));
         }
 
         @Override

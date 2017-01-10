@@ -66,15 +66,25 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 
 		@Override
 		public void handleStudioAddedEvent(StudioEvent event) {
-			if (event.getPlayerID() != getPlayer().getID()) {
-				this.studioBuiltByOtherPlayers.add(this.gameBoard.getMap().getZone(event.getZoneID()).getStudio());
-			}
 		}
 
 		@Override
 		public void handleStudioRemovedEvent(StudioEvent event) {
 			if (event.getPlayerID() != getPlayer().getID()) {
 				this.studioBuiltByOtherPlayers.remove(this.gameBoard.getMap().getZone(event.getZoneID()).getStudio());
+			}
+		}
+
+		@Override
+		public void handleStudioBuiltOrDestroyed(StudioEvent event) {
+			if (event.getType() == StudioEvent.Type.CREATED) {
+				if (event.getPlayerID() != getPlayer().getID()) {
+					this.studioBuiltByOtherPlayers.add(this.gameBoard.getMap().getZone(event.getZoneID()).getStudio());
+				}
+			} else {
+				if (event.getPlayerID() != getPlayer().getID()) {
+					this.studioBuiltByOtherPlayers.remove(this.gameBoard.getMap().getZone(event.getZoneID()).getStudio());
+				}
 			}
 		}
 

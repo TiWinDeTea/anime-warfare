@@ -55,32 +55,41 @@ public class ClownArtist extends PlayerCapacity implements BattleEventListener {
 
 		@Override
 		public void handleStudioAddedEvent(StudioEvent event) {
-			Zone zone = this.map.getZone(event.getZoneID());
+			if (event.getType() == StudioEvent.Type.ADDED_TO_MAP) {
+				Zone zone = this.map.getZone(event.getZoneID());
 
-			if (!zone.isCountrySide()) {
-				++this.numberOfStudioInTown;
+				if (!zone.isCountrySide()) {
+					++this.numberOfStudioInTown;
 
-				if (getPlayer().hasFaction(zone.getStudio().getCurrentFaction())) {
-					++this.numberOfControlledStudioInTown;
-				}
+					if (getPlayer().hasFaction(zone.getStudio().getCurrentFaction())) {
+						++this.numberOfControlledStudioInTown;
+					}
 
-				if (this.numberOfControlledStudioInTown >= 3 || this.numberOfStudioInTown >= 4) {
-					activateAndDestroy(new ClownArtist(getPlayer()));
+					if (this.numberOfControlledStudioInTown >= 3 || this.numberOfStudioInTown >= 4) {
+						activateAndDestroy(new ClownArtist(getPlayer()));
+					}
 				}
 			}
 		}
 
 		@Override
 		public void handleStudioRemovedEvent(StudioEvent event) {
-			Zone zone = this.map.getZone(event.getZoneID());
+			if (event.getType() == StudioEvent.Type.REMOVED_FROM_MAP) {
+				Zone zone = this.map.getZone(event.getZoneID());
 
-			if (!zone.isCountrySide()) {
-				--this.numberOfStudioInTown;
+				if (!zone.isCountrySide()) {
+					--this.numberOfStudioInTown;
 
-				if (getPlayer().hasFaction(zone.getStudio().getCurrentFaction())) {
-					--this.numberOfControlledStudioInTown;
+					if (getPlayer().hasFaction(zone.getStudio().getCurrentFaction())) {
+						--this.numberOfControlledStudioInTown;
+					}
 				}
 			}
+		}
+
+		@Override
+		public void handleStudioBuiltOrDestroyed(StudioEvent studioEvent) {
+			// nothing to do
 		}
 	}
 

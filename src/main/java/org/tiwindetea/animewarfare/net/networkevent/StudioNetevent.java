@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
@@ -37,28 +38,23 @@ public class StudioNetevent implements Event<StudioNeteventListener> {
     private final GameClientInfo playerInfo;
     private final int zoneID;
     private final StudioEvent.Type type;
+    private final FactionType studioFaction;
 
     public StudioNetevent(NetStudio newStudio) {
         this.zoneID = newStudio.getZoneID();
         this.playerInfo = newStudio.getPlayerInfo();
         this.type = newStudio.getType();
+        this.studioFaction = newStudio.getStudioFaction();
     }
 
     @Override
     public void notify(StudioNeteventListener listener) {
-        switch (this.type) {
-            case ADDED:
-                listener.handleStudioCreation(this);
-                break;
-            case ADDED_PLAYER:
-                listener.handleStudioCaptured(this);
-                break;
-            case REMOVED:
-                listener.handleStudioRemoved(this);
-                break;
-            case REMOVED_PLAYER:
-                listener.handleStudioDeserted(this);
-                break;
+        if (this.type == StudioEvent.Type.ADDED_TO_MAP || this.type == StudioEvent.Type.REMOVED_FROM_MAP) {
+            listener.handleStudioMapped(this);
+        } else if (this.type == StudioEvent.Type.ADDED_TO_PLAYER || this.type == StudioEvent.Type.REMOVED_FROM_PLAYER) {
+            listener.handleStudioPlayered(this);
+        } else {
+            listener.handleStudioBuiltOrDestroyed(this);
         }
     }
 
@@ -71,14 +67,14 @@ public class StudioNetevent implements Event<StudioNeteventListener> {
     }
 
     public GameClientInfo getPlayerInfo() {
-        if (this.playerInfo == null) {
-            throw new IllegalStateException();
-        }
-
         return this.playerInfo;
     }
 
     public StudioEvent.Type getType() {
         return this.type;
+    }
+
+    public FactionType getStudioFaction() {
+        return this.studioFaction;
     }
 }

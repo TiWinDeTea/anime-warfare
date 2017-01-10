@@ -95,12 +95,13 @@ public class Zone {
 	}
 
 	public void setStudio(Studio studio) {
+		Studio previousStudio = this.studio;
 		this.studio = studio;
 
 		if (studio != null) {
-			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.ADDED, this.ID));
+			LogicEventDispatcher.send(StudioEvent.addedToMap(studio, this.ID));
 		} else {
-			LogicEventDispatcher.send(new StudioEvent(StudioEvent.Type.REMOVED, this.ID));
+			LogicEventDispatcher.send(StudioEvent.removedFromMap(previousStudio, this.ID));
 		}
 	}
 

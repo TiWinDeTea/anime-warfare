@@ -41,7 +41,6 @@ public class BadBook extends PlayerCapacity implements BadBookCapacityChoseEvent
 
 		public BadBookActivable(Player player) {
 			super(player);
-
 			LogicEventDispatcher.registerListener(StudioEvent.class, this);
 		}
 
@@ -52,14 +51,23 @@ public class BadBook extends PlayerCapacity implements BadBookCapacityChoseEvent
 
 		@Override
 		public void handleStudioAddedEvent(StudioEvent event) {
-			if (++this.studioCounter == 8) {
-				activateAndDestroy(new BadBook(getPlayer()));
-			}
+			// nothing to do
 		}
 
 		@Override
 		public void handleStudioRemovedEvent(StudioEvent studioEvent) {
-			--this.studioCounter;
+			// nothing to do
+		}
+
+		@Override
+		public void handleStudioBuiltOrDestroyed(StudioEvent studioEvent) {
+			if (studioEvent.getType() == StudioEvent.Type.CREATED) {
+				if (++this.studioCounter == 8) {
+					activateAndDestroy(new BadBook(getPlayer()));
+				}
+			} else if (studioEvent.getType() == StudioEvent.Type.DELETED) {
+				--this.studioCounter;
+			}
 		}
 	}
 

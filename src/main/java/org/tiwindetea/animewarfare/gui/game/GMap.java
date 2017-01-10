@@ -40,6 +40,7 @@ import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.logic.GameMap;
+import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
@@ -747,23 +748,22 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     }
 
     @Override
-    public void handleStudioCreation(StudioNetevent event) {
-        this.addGComponentFxThread(GStudio.getOrCreate(event.getZoneID()), event.getZoneID());
+    public void handleStudioBuiltOrDestroyed(StudioNetevent studioNetevent) {
+        // nothing to do
     }
 
     @Override
-    public void handleStudioRemoved(StudioNetevent event) {
-        this.removeGComponentFxThread(GStudio.get(event.getZoneID()), event.getZoneID());
+    public void handleStudioPlayered(StudioNetevent studioNetevent) {
+        // nothing to do
     }
 
     @Override
-    public void handleStudioDeserted(StudioNetevent event) {
-        Platform.runLater(() -> GStudio.get(event.getZoneID()).setTeam(null));
-    }
-
-    @Override
-    public void handleStudioCaptured(StudioNetevent event) {
-        Platform.runLater(() -> GStudio.get(event.getZoneID()).setTeam(event.getPlayerInfo()));
+    public void handleStudioMapped(StudioNetevent studioNetevent) {
+        if (studioNetevent.getType() == StudioEvent.Type.ADDED_TO_MAP) {
+            this.addGComponentFxThread(GStudio.get(studioNetevent.getZoneID()), studioNetevent.getZoneID());
+        } else if (studioNetevent.getType() == StudioEvent.Type.REMOVED_FROM_MAP) {
+            this.removeGComponentFxThread(GStudio.get(studioNetevent.getZoneID()), studioNetevent.getZoneID());
+        }
     }
 
     @Override

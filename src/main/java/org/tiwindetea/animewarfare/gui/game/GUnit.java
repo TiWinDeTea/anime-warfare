@@ -31,6 +31,7 @@ import javafx.scene.shape.Circle;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
@@ -62,7 +63,7 @@ public class GUnit extends GComponent {
 
     }
 
-    private GUnit(int ID, UnitType type, GameClientInfo owner) {
+    private GUnit(int ID, UnitType type, FactionType faction, GameClientInfo owner) {
         super(pictures.get(type));
         //todo : css
         this.ID = ID;
@@ -82,6 +83,7 @@ public class GUnit extends GComponent {
         getChildren().add(s);
 
         setOnMouseClicked(e -> EventDispatcher.send(new GUnitClickedEvent(e, this)));
+        setFactionType(faction);
         s.setOnMouseClicked(getOnMouseClicked());
     }
 
@@ -118,10 +120,10 @@ public class GUnit extends GComponent {
     /**
      * Return the unit, creating it if it doesn't exist.
      */
-    public static GUnit getOrCreate(int id, UnitType type, GameClientInfo owner) {
+    public static GUnit getOrCreate(int id, UnitType type, FactionType factionType, GameClientInfo owner) {
         GUnit unit = get(id);
         if (unit == null) {
-            unit = new GUnit(id, type, owner);
+            unit = new GUnit(id, type, factionType, owner);
             units.add(unit);
         }
         return unit;
@@ -130,8 +132,8 @@ public class GUnit extends GComponent {
     /**
      * Creates a unit. Any unit with the same ID will be overwride
      */
-    public static void create(int id, UnitType type, GameClientInfo owner) {
-        units.add(new GUnit(id, type, owner));
+    public static void create(int id, UnitType type, FactionType factionType, GameClientInfo owner) {
+        units.add(new GUnit(id, type, factionType, owner));
     }
 
     /**
@@ -147,7 +149,7 @@ public class GUnit extends GComponent {
     public static void initFactory() {
         if (!initialized) {
             EventDispatcher.registerListener(UnitCreatedNetevent.class
-                    , e -> GUnit.create(e.getUnitId(), e.getUnitType(), GlobalChat.getFactionClient(e.getFactionType())));
+                    , e -> GUnit.create(e.getUnitId(), e.getUnitType(), e.getFactionType(), GlobalChat.getFactionClient(e.getFactionType())));
 
             EventDispatcher.registerListener(UnitDeletedNetevent.class
                     , e -> GUnit.delete(e.getUnitId()));
