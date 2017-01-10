@@ -30,6 +30,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEventListener;
 import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
@@ -111,11 +113,13 @@ public class GContextActionMenu extends ContextMenu
         private final List<MenuItem> unitsItems = new ArrayList<>(); // for all units
         private final List<MenuItem> ennemyUnitsItems = new ArrayList<>(); // for all ennemy units
         private final List<MenuItem> friendlyUnitsItems = new ArrayList<>(); // for all friendly units
-        private final HashMap<UnitType, List<MenuItem>> ItemsPerUnitType = new HashMap<>(); // for all units given their types
-        private final HashMap<Integer, List<MenuItem>> ItemsPerUnit = new HashMap<>(); // for a particular unit
+        private final HashMap<UnitType, List<MenuItem>> itemsPerUnitType = new HashMap<>(); // for all units given their types
+        private final HashMap<Integer, List<MenuItem>> itemsPerUnit = new HashMap<>(); // for a particular unit
         //never set a list to null (you can clearit or remove it though)
 
-        private final HashMap<Integer, List<MenuItem>> studioItems = new HashMap<>();
+        private final List<MenuItem> studioItems = new ArrayList<>();
+        private final List<MenuItem> friendlyStudioItems = new ArrayList<>();
+        private final HashMap<Integer, List<MenuItem>> studioItemsPerStudio = new HashMap<>();
         private final HashMap<Integer, List<MenuItem>> zoneItems = new HashMap<>();
         //same apply here
 
@@ -132,12 +136,12 @@ public class GContextActionMenu extends ContextMenu
         }
 
         Stream<MenuItem> getItems(UnitType unit, int unitID) {
-            List<MenuItem> perUnitTypeItems = this.ItemsPerUnitType.get(unit);
+            List<MenuItem> perUnitTypeItems = this.itemsPerUnitType.get(unit);
             if (perUnitTypeItems == null) {
                 perUnitTypeItems = new ArrayList<>(0);
             }
 
-            List<MenuItem> perUnitItems = this.ItemsPerUnit.get(new Integer(unitID));
+            List<MenuItem> perUnitItems = this.itemsPerUnit.get(new Integer(unitID));
             if (perUnitItems == null) {
                 perUnitItems = new ArrayList<>(0);
             }
@@ -156,8 +160,16 @@ public class GContextActionMenu extends ContextMenu
         }
 
         Stream<MenuItem> getItems(GStudio studio) {
-            Collection<MenuItem> items = this.studioItems.get(new Integer(studio.getZoneID()));
-            return items == null ? new ArrayList<MenuItem>(0).stream() : items.stream();
+            Collection<MenuItem> items = this.studioItemsPerStudio.get(new Integer(studio.getZoneID()));
+            Stream<MenuItem> stream = Stream.concat(
+                    (items == null
+                            ? Stream.empty()
+                            : items.stream())
+                    , this.studioItems.stream());
+            if (GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()).equals(studio.getFaction())) {
+                stream = Stream.concat(stream, this.friendlyUnitsItems.stream());
+            }
+            return stream;
         }
 
         Stream<MenuItem> getItems(int zoneID) {
@@ -189,9 +201,9 @@ public class GContextActionMenu extends ContextMenu
             this.unitsItems.clear();
             this.ennemyUnitsItems.clear();
             this.friendlyUnitsItems.clear();
-            this.ItemsPerUnitType.clear();
-            this.ItemsPerUnit.clear();
-            this.studioItems.clear();
+            this.itemsPerUnitType.clear();
+            this.itemsPerUnit.clear();
+            this.studioItemsPerStudio.clear();
             this.zoneItems.clear();
         }
     }

@@ -27,12 +27,15 @@ package org.tiwindetea.animewarfare.gui.game;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import org.tiwindetea.animewarfare.logic.FactionType;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
 public abstract class GComponent extends StackPane {
+
+    private FactionType factionType;
 
     protected GComponent() {
     }
@@ -44,5 +47,13 @@ public abstract class GComponent extends StackPane {
     public static void initSubFactories() {
         GUnit.initFactory();
         GStudio.initFactory();
+    }
+
+    public FactionType getFaction() {
+        return this.factionType;
+    }
+
+    protected void setFactionType(FactionType f) {
+        this.factionType = f;
     }
 }
