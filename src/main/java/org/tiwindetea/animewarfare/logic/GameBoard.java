@@ -94,7 +94,7 @@ public class GameBoard {
 			player.getUnitCounter().addUnit(unit.getType(), unit.getID());
 			unit.addInZone(playerZone);
 
-			Studio studio = new Studio(playerZone.getID());
+			Studio studio = new Studio(playerZone.getID(), player);
 			playerZone.setStudio(studio);
 			studio.setController(unit);
 

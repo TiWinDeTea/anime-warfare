@@ -19,56 +19,46 @@ public class StudioEvent implements Event<StudioEventListener> {
 		DELETED
 	}
 
-	private StudioEvent() {
+	private StudioEvent(Studio studio, Type type) {
 		this.zoneID = this.playerID = -1;
-		this.type = null;
-		this.studio = null;
+		this.type = type;
+		this.studio = studio;
 	}
 
-	public static StudioEvent created(int zoneID, int playerID) {
-		StudioEvent event = new StudioEvent();
+	public static StudioEvent created(Studio studio, int zoneID, int playerID) {
+		StudioEvent event = new StudioEvent(studio, Type.CREATED);
 		event.zoneID = zoneID;
 		event.playerID = playerID;
-		event.type = Type.CREATED;
 		return event;
 	}
 
-	public static StudioEvent deleted(int zoneID) {
-		StudioEvent event = new StudioEvent();
+	public static StudioEvent deleted(Studio studio, int zoneID) {
+		StudioEvent event = new StudioEvent(studio, Type.DELETED);
 		event.zoneID = zoneID;
-		event.type = Type.DELETED;
 		return event;
 	}
 
 	public static StudioEvent addedToMap(Studio studio, int zoneID) {
-		StudioEvent event = new StudioEvent();
+		StudioEvent event = new StudioEvent(studio, Type.ADDED_TO_MAP);
 		event.zoneID = zoneID;
-		event.type = Type.ADDED_TO_MAP;
-		event.studio = studio;
 		return event;
 	}
 
 	public static StudioEvent removedFromMap(Studio studio, int zoneID) {
-		StudioEvent event = new StudioEvent();
+		StudioEvent event = new StudioEvent(studio, Type.REMOVED_FROM_MAP);
 		event.zoneID = zoneID;
-		event.studio = studio;
-		event.type = Type.REMOVED_FROM_MAP;
 		return event;
 	}
 
 	public static StudioEvent addedToPlayer(Studio studio, int playerID) {
-		StudioEvent event = new StudioEvent();
+		StudioEvent event = new StudioEvent(studio, Type.ADDED_TO_PLAYER);
 		event.playerID = playerID;
-		event.studio = studio;
-		event.type = Type.ADDED_TO_PLAYER;
 		return event;
 	}
 
 	public static StudioEvent removedFromPlayer(Studio studio, int playerID) {
-		StudioEvent event = new StudioEvent();
+		StudioEvent event = new StudioEvent(studio, Type.REMOVED_FROM_PLAYER);
 		event.playerID = playerID;
-		event.studio = studio;
-		event.type = Type.REMOVED_FROM_PLAYER;
 		return event;
 	}
 

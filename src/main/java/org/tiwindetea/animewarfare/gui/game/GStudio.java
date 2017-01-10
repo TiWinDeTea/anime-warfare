@@ -40,7 +40,6 @@ import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.NavigableSet;
-import java.util.Random;
 import java.util.TreeSet;
 
 /**
@@ -58,12 +57,10 @@ public class GStudio extends GComponent {
 
     private GStudio(int zoneID) {
         super(STUDIO_IMAGE);
-        Random r = new Random();
         this.zoneID = zoneID;
-        this.ownerRectangle = new Rectangle(10, 10, Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256)));
+        this.ownerRectangle = new Rectangle(10, 10, Color.TRANSPARENT);
         this.ownerRectangle.setStrokeWidth(2);
-        this.ownerRectangle.setStroke(Color.BLACK);
-        this.ownerRectangle.setFill(Color.TRANSPARENT);
+        this.ownerRectangle.setStroke(GlobalChat.getDefaultColor());
         getChildren().add(this.ownerRectangle);
 
         setOnMouseClicked(e -> EventDispatcher.send(new GStudioClickedEvent(e, this)));
@@ -79,10 +76,9 @@ public class GStudio extends GComponent {
 
     private void setTeam(GameClientInfo client) {
         if (client == null) {
-            this.ownerRectangle.setVisible(false);
+            this.ownerRectangle.setStroke(GlobalChat.getDefaultColor());
             setFactionType(null);
         } else {
-            this.ownerRectangle.setVisible(true);
             this.ownerRectangle.setStroke(GlobalChat.getClientColor(client));
             setFactionType(GlobalChat.getClientFaction(client));
         }

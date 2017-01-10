@@ -26,6 +26,8 @@ package org.tiwindetea.animewarfare.logic.units;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.Player;
+import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 
 import java.util.Objects;
@@ -35,8 +37,9 @@ public class Studio {
 	private FactionType currentFaction;
 	private Unit controller;
 
-	public Studio(int zoneID) {
+	public Studio(int zoneID, Player builder) {
 		this.zoneID = zoneID;
+		LogicEventDispatcher.send(StudioEvent.created(this, zoneID, builder.getID()));
 	}
 
 	private void setCurrentFaction(FactionType currentFaction) {

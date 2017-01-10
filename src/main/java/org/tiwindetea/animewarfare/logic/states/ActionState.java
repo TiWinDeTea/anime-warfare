@@ -226,7 +226,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 					if (mascot != null) {
 						this.currentPlayer.decrementStaffPoints(OPEN_STUDIO_COST);
-						Studio newStudio = new Studio(event.getZone());
+						Studio newStudio = new Studio(event.getZone(), this.currentPlayer);
 						this.gameBoard.getMap().getZone(event.getZone()).setStudio(newStudio);
 						newStudio.setController(mascot);
 					}

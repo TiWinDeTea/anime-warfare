@@ -44,9 +44,11 @@ public class GlobalChat {
 	private static AnchorPane chat;
 	private static ChatController chatController;
 
-	private static Map<GameClientInfo, Color> colorsByClient = new HashMap<>();
-	private static Map<GameClientInfo, FactionType> factionsByClient = new HashMap<>();
-	private static Map<FactionType, GameClientInfo> clientsByFactions = new HashMap<>();
+	private static final Map<GameClientInfo, Color> colorsByClient = new HashMap<>();
+	private static final Map<GameClientInfo, FactionType> factionsByClient = new HashMap<>();
+	private static final Map<FactionType, GameClientInfo> clientsByFactions = new HashMap<>();
+
+	private static final Color DEFAULT_COLOR = Color.BLACK;
 
 	static {
 		FXMLLoader chatLoader = new FXMLLoader();
@@ -78,7 +80,7 @@ public class GlobalChat {
 	}
 
 	public static Color getClientColor(GameClientInfo gameClientInfo) {
-		return GlobalChat.colorsByClient.getOrDefault(gameClientInfo, Color.BLACK);
+		return GlobalChat.colorsByClient.getOrDefault(gameClientInfo, GlobalChat.DEFAULT_COLOR);
 	}
 
 	public static void registerClientFaction(GameClientInfo gameClientInfo, FactionType factionType) {
@@ -99,5 +101,9 @@ public class GlobalChat {
 
 	public static GameClientInfo getFactionClient(FactionType factionType) {
 		return GlobalChat.clientsByFactions.get(factionType);
+	}
+
+	public static Color getDefaultColor() {
+		return DEFAULT_COLOR;
 	}
 }

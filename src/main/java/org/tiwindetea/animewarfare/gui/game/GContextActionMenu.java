@@ -243,7 +243,7 @@ public class GContextActionMenu extends ContextMenu
 
                 MenuItem drawUnit = new MenuItem("Draw unit");
                 drawUnit.setOnAction(e -> System.out.println("TODO: Open a menu to select the unit to draw."));
-                //this.friendlyStudioItems.add(drawUnit); TODO: add this.
+                this.friendlyStudioItems.add(drawUnit);
             }
         }
 
