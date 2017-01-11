@@ -62,7 +62,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderCho
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectUnitsRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectWoundedUnitsRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
@@ -167,7 +167,7 @@ class Utils {
 		kryo.register(NetMoveUnitsRequest.class);
 		kryo.register(NetOpenStudioRequest.class);
 		kryo.register(NetPassword.class);
-		kryo.register(NetSkipTurnRequest.class);
+		kryo.register(NetSkipAllRequest.class);
 		kryo.register(NetSelectFactionRequest.class);
 		kryo.register(NetSelectUnitsRequest.class);
 		kryo.register(NetSelectWoundedUnitsRequest.class);

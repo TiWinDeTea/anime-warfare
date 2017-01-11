@@ -22,15 +22,11 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.logicevent;
+package org.tiwindetea.animewarfare.net.networkrequests.client;
 
-public class SkipTurnEvent extends ActionEvent<SkipTurnEventListener> {
-	public SkipTurnEvent(int playerID) {
-		super(playerID);
-	}
-
-	@Override
-	public void notify(SkipTurnEventListener listener) {
-		listener.handleSkipTurnEvent(this);
-	}
+/**
+ * @author Lucas Lazare
+ * @since 0.1.0
+ */
+public class NetSkipAllRequest implements NetSendable {
 }

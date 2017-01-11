@@ -22,11 +22,10 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.client;
+package org.tiwindetea.animewarfare.net.logicevent;
 
-/**
- * @author Lucas Lazare
- * @since 0.1.0
- */
-public class NetSkipTurnRequest implements NetSendable {
+import java.util.EventListener;
+
+public interface SkipAllEventListener extends EventListener {
+	void handleSkipAllEvent(SkipAllEvent event);
 }

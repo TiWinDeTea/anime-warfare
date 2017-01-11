@@ -72,7 +72,7 @@ import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent
 import org.tiwindetea.animewarfare.net.logicevent.PlayingOrderChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SelectWoundedsUnitsEvent;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SkipAllEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
@@ -90,7 +90,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderCho
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectUnitsRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectWoundedUnitsRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipTurnRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
@@ -666,9 +666,9 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetSkipTurnRequest ignored) {
+        public void received(Connection connection, NetSkipAllRequest ignored) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new SkipTurnEvent(connection.getID()));
+                GameServer.this.eventDispatcher.fire(new SkipAllEvent(connection.getID()));
             }
         }
 

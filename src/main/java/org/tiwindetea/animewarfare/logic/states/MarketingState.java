@@ -36,8 +36,8 @@ import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEvent;
-import org.tiwindetea.animewarfare.net.logicevent.SkipTurnEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.SkipAllEvent;
+import org.tiwindetea.animewarfare.net.logicevent.SkipAllEventListener;
 
 import java.util.Iterator;
 
@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Benoît CORTIER
  */
 class MarketingState extends GameState
-		implements OrganizeConventionRequestEventListener, SkipTurnEventListener,
+		implements OrganizeConventionRequestEventListener, SkipAllEventListener,
 		GameEndedEventListener {
 	private Iterator<Player> playerIterator;
 	private Player currentPlayer;
@@ -97,13 +97,13 @@ class MarketingState extends GameState
 
 	private void registerEventListeners() {
 		LogicEventDispatcher.getInstance().addListener(OrganizeConventionRequestEvent.class, this);
-		LogicEventDispatcher.getInstance().addListener(SkipTurnEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(SkipAllEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 	}
 
 	private void unregisterEventListeners() {
 		LogicEventDispatcher.getInstance().removeListener(OrganizeConventionRequestEvent.class, this);
-		LogicEventDispatcher.getInstance().removeListener(SkipTurnEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(SkipAllEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 	}
 
@@ -131,7 +131,7 @@ class MarketingState extends GameState
 	}
 
 	@Override
-	public void handleSkipTurnEvent(SkipTurnEvent event) {
+	public void handleSkipAllEvent(SkipAllEvent event) {
 		this.machine.get().update();
 	}
 

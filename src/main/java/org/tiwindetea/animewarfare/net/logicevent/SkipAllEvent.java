@@ -24,8 +24,13 @@
 
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import java.util.EventListener;
+public class SkipAllEvent extends ActionEvent<SkipAllEventListener> {
+	public SkipAllEvent(int playerID) {
+		super(playerID);
+	}
 
-public interface SkipTurnEventListener extends EventListener {
-	void handleSkipTurnEvent(SkipTurnEvent event);
+	@Override
+	public void notify(SkipAllEventListener listener) {
+		listener.handleSkipAllEvent(this);
+	}
 }
