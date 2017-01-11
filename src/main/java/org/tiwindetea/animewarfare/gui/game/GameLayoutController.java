@@ -37,6 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.gui.PaperButton;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.game.dialog.OverlayMessageDialog;
@@ -46,9 +47,13 @@ import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
 
 import java.net.URL;
 import java.util.List;
@@ -58,7 +63,7 @@ import java.util.ResourceBundle;
  * @author Benoît CORTIER
  */
 public class GameLayoutController implements Initializable, QuitApplicationEventListener,
-		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener {
+		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener, NextPlayerNeteventListener {
 	private ResourceBundle resourceBundle;
 
 	@FXML
@@ -66,6 +71,15 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	@FXML
 	private HBox hBox;
+
+	@FXML
+	private HBox currentPlayerPanel;
+
+	@FXML
+	private PaperButton skipAllButton;
+
+	@FXML
+	private PaperButton endTurnButton;
 
 	private GMap map;
 
@@ -80,7 +94,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		for (GameClientInfo player : players) {
 			++j;
 			if (MainApp.getGameClient().getClientInfo().equals(player)) {
-				this.rootBorderPane.setBottom(new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM, player));
+				this.currentPlayerPanel.getChildren().add(1, new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM, player));
 				break;
 			}
 		}
@@ -138,6 +152,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(QuitApplicationEvent.class, this);
 		EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
 		EventDispatcher.registerListener(FirstPlayerSelectedNetevent.class, this);
+		EventDispatcher.registerListener(NextPlayerNetevent.class, this);
 
 		GamePhaseMonitor.init();
 
@@ -167,17 +182,36 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		scrollPane.addEventFilter(ScrollEvent.ANY, this.map::scrollEvent);
 	}
 
+	@FXML
+	private void handleFinishTurn() {
+		MainApp.getGameClient().send(new NetFinishTurnRequest());
+	}
+
+	@FXML
+	private void handleSkipAll() {
+		MainApp.getGameClient().send(new NetSkipAllRequest());
+	}
+
 	@Override
 	public void handleQuitApplication() {
 		EventDispatcher.unregisterListener(QuitApplicationEvent.class, this);
 		EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
 		EventDispatcher.unregisterListener(FirstPlayerSelectedNetevent.class, this);
+		EventDispatcher.unregisterListener(NextPlayerNetevent.class, this);
 	}
 
 	@Override
 	public void handlePhaseChanged(PhaseChangeNetevent event) {
 		if (event.getPhase().equals(PhaseChangedEvent.Phase.STAFF_HIRING)) {
 			return;
+		}
+
+		if (!event.getPhase().equals(PhaseChangedEvent.Phase.PLAYER_SELECTION)) {
+			this.skipAllButton.setDisable(false);
+			this.skipAllButton.setDisable(false);
+		} else {
+			this.skipAllButton.setDisable(true);
+			this.skipAllButton.setDisable(true);
 		}
 
 		Platform.runLater(() -> {
@@ -198,6 +232,18 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 				}
 			} else {
 				new OverlayMessageDialog(this.overlay, info.getGameClientName() + " is the first player."); // TODO: externalize.
+			}
+		});
+	}
+
+	@Override
+	public void handleNextPlayer(NextPlayerNetevent event) {
+		Platform.runLater(() -> {
+			GameClientInfo info = event.getGameClientInfo();
+			if (MainApp.getGameClient().getClientInfo().equals(info)) {
+				new OverlayMessageDialog(this.overlay, "This is your turn."); // TODO: externalize.
+			} else {
+				new OverlayMessageDialog(this.overlay, info.getGameClientName() + "'s turn."); // TODO: externalize.
 			}
 		});
 	}

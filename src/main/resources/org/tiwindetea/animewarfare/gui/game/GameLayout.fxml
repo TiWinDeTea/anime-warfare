@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tiwindetea.animewarfare.gui.game.GameLayoutController">
+<?import javafx.scene.layout.VBox?>
+<?import org.tiwindetea.animewarfare.gui.PaperButton?>
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.tiwindetea.animewarfare.gui.game.GameLayoutController">
     <children>
         <BorderPane fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <bottom>
@@ -26,6 +26,17 @@
                </children>
             </VBox>
             </center>
+            <bottom>
+                <HBox fx:id="currentPlayerPanel" alignment="BOTTOM_CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <PaperButton fx:id="skipAllButton" onAction="#handleSkipAll" prefHeight="30.0" prefWidth="150.0"
+                                     text="Skip all"/>
+                        <PaperButton fx:id="endTurnButton" onAction="#handleFinishTurn" prefHeight="30.0"
+                                     prefWidth="150.0"
+                                     text="Finish turn"/>
+                    </children>
+                </HBox>
+            </bottom>
         </BorderPane>
     </children>
 </AnchorPane>
