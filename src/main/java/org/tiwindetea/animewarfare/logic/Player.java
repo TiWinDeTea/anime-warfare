@@ -258,6 +258,10 @@ public class Player {
 		// TODO: fire event capacityUsed.
 	}
 
+	public int getNumberOfProduction() {
+		return (int) this.capacities.keySet().stream().filter(k -> hasFaction(k.getFaction())).count();
+	}
+
 	public boolean hasCapacity(CapacityName type) {
 		return this.capacities.containsKey(type);
 	}
