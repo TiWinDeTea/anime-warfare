@@ -31,12 +31,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
 import org.tiwindetea.animewarfare.gui.game.GMap;
 import org.tiwindetea.animewarfare.gui.game.GUnit;
 import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
+import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
+import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitsRequest;
 
@@ -63,6 +67,10 @@ public class Move extends AbstractUnitFilter {
 
     @Override
     public List<MenuItem> apply(FactionType factionType, GUnit unit) {
+        if (GamePhaseMonitor.getCurrentPhase() != PhaseChangedEvent.Phase.ACTION
+                || GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPhase()) != factionType) {
+            return Collections.emptyList();
+        }
 
         GMap map = GameLayoutController.getMap();
 

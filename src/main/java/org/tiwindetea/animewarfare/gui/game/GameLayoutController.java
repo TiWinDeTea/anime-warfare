@@ -79,7 +79,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private PaperButton skipAllButton;
 
 	@FXML
-	private PaperButton endTurnButton;
+	private PaperButton finishTurnButton;
 
 	@FXML
 	private VBox mainVBox;
@@ -161,6 +161,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(NextPlayerNetevent.class, this);
 
 		GamePhaseMonitor.init();
+		PlayerTurnMonitor.init();
 
 		this.overlay = new VBox(10);
 		this.overlay.setAlignment(Pos.CENTER);
@@ -212,10 +213,14 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		}
 
 		if (!event.getPhase().equals(PhaseChangedEvent.Phase.PLAYER_SELECTION)) {
-			this.skipAllButton.setDisable(false);
+			this.finishTurnButton.setDisable(false);
+		} else {
+			this.finishTurnButton.setDisable(true);
+		}
+
+		if (event.getPhase().equals(PhaseChangedEvent.Phase.ACTION)) {
 			this.skipAllButton.setDisable(false);
 		} else {
-			this.skipAllButton.setDisable(true);
 			this.skipAllButton.setDisable(true);
 		}
 

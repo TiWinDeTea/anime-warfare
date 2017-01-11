@@ -31,7 +31,7 @@
                     <children>
                         <PaperButton fx:id="skipAllButton" onAction="#handleSkipAll" prefHeight="30.0" prefWidth="150.0"
                                      text="Skip all"/>
-                        <PaperButton fx:id="endTurnButton" onAction="#handleFinishTurn" prefHeight="30.0"
+                        <PaperButton fx:id="finishTurnButton" onAction="#handleFinishTurn" prefHeight="30.0"
                                      prefWidth="150.0"
                                      text="Finish turn"/>
                     </children>
