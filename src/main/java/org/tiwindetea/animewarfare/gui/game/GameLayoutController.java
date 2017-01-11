@@ -43,6 +43,7 @@ import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
+import org.tiwindetea.animewarfare.logic.GFanCounter;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
@@ -115,6 +116,10 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		for (Node node : this.rootBorderPane.getChildren()) { // center everyone!
 			this.rootBorderPane.setAlignment(node, Pos.CENTER);
 		}
+
+		GFanCounter gfc = new GFanCounter();
+		gfc.init();
+		this.hBox.getChildren().add(gfc);
 	}
 
 	public void clearEnd() {
