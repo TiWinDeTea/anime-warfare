@@ -51,6 +51,8 @@ import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
@@ -79,7 +81,7 @@ import java.util.stream.Collectors;
 class ActionState extends GameState implements MoveUnitsEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipAllEventListener, StartBattleEventListener,
 		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener,
-		BattleEventListener {
+		BattleEventListener, FinishTurnRequestEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
 
@@ -119,6 +121,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().addListener(MascotToCaptureChoiceEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(BattleEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(FinishTurnRequestEvent.class, this);
 	}
 
 	@Override
@@ -160,6 +163,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().removeListener(MascotToCaptureChoiceEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(BattleEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(FinishTurnRequestEvent.class, this);
 	}
 
 	@Override
@@ -466,5 +470,20 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	@Override
 	public void handleBattleFinished(BattleEvent event) {
 		this.currentBattleStateMachine = null;
+	}
+
+	@Override
+	public void handleFinishTurnRequest(FinishTurnRequestEvent event) {
+		if (!isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		if (!this.nonUlimitedActionDone) {
+			Log.debug(getClass().getName(), "Non ulimited action not done.");
+			return;
+		}
+
+		this.machine.get().update();
 	}
 }
