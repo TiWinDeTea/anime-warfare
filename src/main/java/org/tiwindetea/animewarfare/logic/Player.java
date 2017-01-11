@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.logic;
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
 import org.tiwindetea.animewarfare.logic.capacity.Capacity;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import org.tiwindetea.animewarfare.logic.capacity.SelfActivable;
 import org.tiwindetea.animewarfare.logic.events.AdvertisingCampaignRightEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.events.ProductionEvent;
@@ -52,7 +53,7 @@ import java.util.Set;
  * @author Benoît CORTIER
  */
 public class Player {
-
+	final List<SelfActivable> activables = new ArrayList<>();
 	private WeakReference<Player> clockwiseNextPlayer = new WeakReference<>(null);
 	private WeakReference<Player> clockwisePreviousPlayer = new WeakReference<>(null);
 	private WeakReference<Player> nextPlayerInGameOrder = new WeakReference<>(null);

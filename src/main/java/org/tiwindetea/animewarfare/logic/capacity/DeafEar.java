@@ -33,7 +33,7 @@ import org.tiwindetea.animewarfare.net.logicevent.DeafEarZoneChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.DeafEarZoneChoiceEventListener;
 
 public class DeafEar extends PlayerCapacity implements DeafEarZoneChoiceEventListener {
-	public class DeafEarActivable extends PlayerActivable implements UnitCounterEventListener {
+	public static class DeafEarActivable extends PlayerActivable implements UnitCounterEventListener {
 		public DeafEarActivable(Player player) {
 			super(player);
 
@@ -55,7 +55,7 @@ public class DeafEar extends PlayerCapacity implements DeafEarZoneChoiceEventLis
 		}
 	}
 
-	public DeafEar(Player player) {
+	DeafEar(Player player) {
 		super(player);
 	}
 

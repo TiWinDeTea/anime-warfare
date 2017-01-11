@@ -24,10 +24,27 @@
 
 package org.tiwindetea.animewarfare.logic;
 
+import org.tiwindetea.animewarfare.logic.capacity.BackStab;
+import org.tiwindetea.animewarfare.logic.capacity.BadBook;
+import org.tiwindetea.animewarfare.logic.capacity.BadLuck;
+import org.tiwindetea.animewarfare.logic.capacity.Clemency;
+import org.tiwindetea.animewarfare.logic.capacity.ColdBlood;
+import org.tiwindetea.animewarfare.logic.capacity.DeafEar;
+import org.tiwindetea.animewarfare.logic.capacity.FlyingStudio;
+import org.tiwindetea.animewarfare.logic.capacity.ForcedRetreat;
+import org.tiwindetea.animewarfare.logic.capacity.GeniusKidnapper;
+import org.tiwindetea.animewarfare.logic.capacity.HidingInTheBush;
+import org.tiwindetea.animewarfare.logic.capacity.Holocaust;
+import org.tiwindetea.animewarfare.logic.capacity.Loan;
+import org.tiwindetea.animewarfare.logic.capacity.MagicMovement;
+import org.tiwindetea.animewarfare.logic.capacity.MarketFlooding;
+import org.tiwindetea.animewarfare.logic.capacity.MoreFans;
+import org.tiwindetea.animewarfare.logic.capacity.UndercoverAgent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -103,6 +120,13 @@ public class GameBoard {
 				player.getUnitCounter().addUnit(unit.getType(), unit.getID());
 				unit.addInZone(playerZone);
 			}
+
+			List<WeakReference<Player>> otherPlayers = this.players.values()
+			                                                       .stream()
+			                                                       .filter(player1 -> player.getID() != player1.getID())
+			                                                       .map(p -> new WeakReference<>(p))
+			                                                       .collect(Collectors.toList());
+			createActivable(player, otherPlayers);
 		}
 	}
 
@@ -205,4 +229,35 @@ public class GameBoard {
 		this.endGameMonitor.destroy();
 	}
 
+	private void createActivable(Player player, List<WeakReference<Player>> otherPlayers) {
+		switch (player.getFaction()) {
+			case NO_NAME:
+				player.activables.add(new Clemency.ClemencyActivable(player, getAdvertisingCampaignRightsPool()));
+				player.activables.add(new Loan.LoanActivable(player));
+				player.activables.add(new GeniusKidnapper.GeniusKidnapperActivable(player, this));
+				player.activables.add(new ColdBlood.ColdBloodActivable(player));
+				break;
+			case THE_BLACK_KNIGHTS:
+				player.activables.add(new MarketFlooding.MarketFloodingActivable(player));
+				player.activables.add(new UndercoverAgent.UndercoverAgentActivable(player, this));
+				player.activables.add(new Holocaust.HolocaustActivable(player, this.gameMap));
+				break;
+			case HAIYORE:
+				player.activables.add(new BadLuck.BadLuckActivable(player));
+				player.activables.add(new MagicMovement.MagicMovementActivable(player, this.gameMap));
+				player.activables.add(new MoreFans.MoreFansActivable(player));
+				player.activables.add(new HidingInTheBush.HidingInTheBushActivable(player, this.gameMap));
+				break;
+			case F_CLASS_NO_BAKA:
+				player.activables.add(new BadBook.BadBookActivable(player));
+				player.activables.add(new ForcedRetreat.ForcedRetreatActivable(player));
+				player.activables.add(new BackStab.BackStabActivable(player, this.gameMap));
+				player.activables.add(new FlyingStudio.FlyingStudioActivable(player,
+						otherPlayers,
+						getAdvertisingCampaignRightsPool(),
+						this.gameMap));
+				player.activables.add(new DeafEar.DeafEarActivable(player));
+				break;
+		}
+	}
 }
