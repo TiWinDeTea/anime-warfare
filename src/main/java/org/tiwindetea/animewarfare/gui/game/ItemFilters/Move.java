@@ -77,7 +77,10 @@ public class Move extends AbstractUnitFilter {
         if (actionMenuState == GCAMState.NOTHING || actionMenuState == GCAMState.MOVING_UNITS) {
             if (factionType == unit.getFaction()) {
                 if (!this.movements.stream().anyMatch(m -> m.getUnitID() == unit.gameID())) {
-                    MenuItem item = new MenuItem("Move " + unit.getType()); // todo externalize
+                    MenuItem item = new MenuItem("Move " + unit.getType() + " (1 SP)"); // todo externalize
+                    if (this.movements.size() + 1 > GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue()) {
+                        item.setDisable(true);
+                    }
 
                     item.setOnAction(new EventHandler<ActionEvent>() {
                         ZoneClickedEventListener listener;
