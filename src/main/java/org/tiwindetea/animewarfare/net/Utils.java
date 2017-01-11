@@ -45,6 +45,7 @@ import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
@@ -85,6 +86,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudioControllerChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitCountChange;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
 
@@ -192,6 +194,7 @@ class Utils {
 		kryo.register(NetMessage.class);
 		kryo.register(NetStaffPointsUpdated.class);
 		kryo.register(NetStudio.class);
+		kryo.register(NetStudioControllerChanged.class);
 		kryo.register(NetPhaseChanged.class);
 		kryo.register(NetSelectMascotToCapture.class);
 		kryo.register(NetUnitCountChange.class);
@@ -231,6 +234,7 @@ class Utils {
 		ed.addListener(MarketingLadderUpdatedEvent.class, logicListener);
 		ed.addListener(NumberOfFansChangedEvent.class, logicListener);
 		ed.addListener(StaffPointUpdatedEvent.class, logicListener);
+		ed.addListener(StudioControllerChangedEvent.class, logicListener);
 		ed.addListener(StudioEvent.class, logicListener);
 		ed.addListener(UnitCounterEvent.class, logicListener);
 		ed.addListener(UnitMovedEvent.class, logicListener);
@@ -259,6 +263,7 @@ class Utils {
 		ed.removeListener(MarketingLadderUpdatedEvent.class, logicListener);
 		ed.removeListener(NumberOfFansChangedEvent.class, logicListener);
 		ed.removeListener(StaffPointUpdatedEvent.class, logicListener);
+		ed.removeListener(StudioControllerChangedEvent.class, logicListener);
 		ed.removeListener(StudioEvent.class, logicListener);
 		ed.removeListener(UnitCounterEvent.class, logicListener);
 		ed.removeListener(UnitMovedEvent.class, logicListener);

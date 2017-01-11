@@ -51,6 +51,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.SelectMascotToCaptureRequestNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitCreatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNetevent;
@@ -77,6 +78,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudioControllerChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitCountChange;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
 
@@ -428,6 +430,11 @@ public class GameClient {
         public void received(Connection connection, NetStaffPointsUpdated staffPointsUpdated) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + staffPointsUpdated);
             EventDispatcher.send(new StaffPointUpdatedNetevent(staffPointsUpdated));
+        }
+
+        public void received(Connection connection, NetStudioControllerChanged studioControllerChanged) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + studioControllerChanged);
+            EventDispatcher.send(new StudioControllerChangedNetevent(studioControllerChanged));
         }
 
         public void received(Connection connection, NetStudio newStudio) {

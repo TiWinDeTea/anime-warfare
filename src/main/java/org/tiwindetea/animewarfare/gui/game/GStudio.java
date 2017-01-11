@@ -34,6 +34,7 @@ import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
 
@@ -118,6 +119,12 @@ public class GStudio extends GComponent {
     public static void initFactory() {
 
         if (!initialized) {
+            EventDispatcher.registerListener(StudioControllerChangedNetevent.class,
+                    event -> {
+                        get(event.getZoneID()).setTeam(GlobalChat.getFactionClient(event.getControllerFaction()));
+
+                        // TODO: Adds link between controller and studio.
+                    });
             EventDispatcher.registerListener(StudioNetevent.class, new StudioNeteventListener() {
 
                 @Override
@@ -131,12 +138,12 @@ public class GStudio extends GComponent {
 
                 @Override
                 public void handleStudioPlayered(StudioNetevent studioNetevent) {
-                    get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
+                    //get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
                 }
 
                 @Override
                 public void handleStudioMapped(StudioNetevent studioNetevent) {
-                    get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
+                    //get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
                 }
             });
             EventDispatcher.registerListener(GameEndedNetevent.class, e -> STUDIOS.clear());

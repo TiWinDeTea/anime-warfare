@@ -57,6 +57,8 @@ import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEventListener;
+import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
+import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEventListener;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
@@ -112,6 +114,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudioControllerChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitCountChange;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
 
@@ -718,6 +721,7 @@ public class GameServer {
             GameEndConditionsReachedEventListener,
             MarketingLadderUpdatedEventListener,
             NumberOfFansChangedEventListener,
+            StudioControllerChangedEventListener,
             StudioEventListener,
             UnitCounterEventListener,
             StaffPointUpdatedEventListener {
@@ -854,7 +858,12 @@ public class GameServer {
 
         @Override
         public void onStaffPointChange(StaffPointUpdatedEvent event) {
-            this.server.sendToAllTCP((new NetStaffPointsUpdated(event, GameServer.this.room.find(event.getPlayerID()))));
+            this.server.sendToAllTCP(new NetStaffPointsUpdated(event, GameServer.this.room.find(event.getPlayerID())));
+        }
+
+        @Override
+        public void handleStudioController(StudioControllerChangedEvent event) {
+            this.server.sendToAllTCP(new NetStudioControllerChanged(event));
         }
     }
 
