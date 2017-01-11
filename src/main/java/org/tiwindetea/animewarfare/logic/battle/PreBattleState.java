@@ -102,7 +102,7 @@ public class PreBattleState extends BattleState implements UseCapacityEventListe
 		this.playersReady.add(event.getPlayerID());
 		if (this.playersReady.size() >= 2 + this.thirdPartiesCapacities.size()) {
 			this.nextState = new DuringBattleState(this.battleContext, this.map);
-			update();
+			this.machine.get().update();
 		}
 	}
 }

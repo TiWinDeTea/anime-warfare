@@ -184,7 +184,7 @@ public class PostBattleState extends BattleState
 			LogicEventDispatcher.unregisterListener(BattlePhaseReadyEvent.class, this);
 
 			this.nextState = new BattleEndedState();
-			update();
+			this.machine.get().update();
 		}
 	}
 }

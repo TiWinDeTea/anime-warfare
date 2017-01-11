@@ -128,7 +128,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 			LogicEventDispatcher.send(new BattleDeadsSelectedEvent(this.battleContext));
 
 			this.nextState = new PostBattleState(this.battleContext, this.map);
-			update();
+			this.machine.get().update();
 		}
 	}
 
