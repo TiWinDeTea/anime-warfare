@@ -24,45 +24,46 @@
 
 package org.tiwindetea.animewarfare.gui.game.dialog;
 
-import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.animation.PauseTransition;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
+
+import java.io.IOException;
 
 /**
  * @author Benoît CORTIER
  */
-public abstract class GameDialog {
-	private static int numberOfDialog = 0;
+public class OverlayMessageDialog extends GameDialog {
+	@FXML
+	private Label messageLabel;
 
-	private final VBox overlay;
-	private final Group dialogElements;
+	public OverlayMessageDialog(VBox overlay, String message) {
+		super(overlay);
 
-	GameDialog(VBox overlay) {
-		++GameDialog.numberOfDialog;
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("OverlayMessageDialog.fxml"));
+		loader.setResources(ResourceBundleHelper.getBundle(getClass().getName()));
+		loader.setController(this);
 
-		this.overlay = overlay;
-
-		this.dialogElements = new Group();
-
-		this.overlay.setMouseTransparent(false);
-		this.overlay.getChildren().add(this.dialogElements);
-	}
-
-	protected void addElement(Node element) {
-		this.dialogElements.getChildren().add(element);
-	}
-
-	protected void removeElement(Node element) {
-		this.dialogElements.getChildren().remove(element);
-	}
-
-	public void close() {
-		--GameDialog.numberOfDialog;
-
-		this.dialogElements.getChildren().clear();
-		this.overlay.getChildren().remove(this.dialogElements);
-		if (GameDialog.numberOfDialog == 0) {
-			this.overlay.setMouseTransparent(true);
+		try {
+			addElement(loader.load());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		this.messageLabel.setText(message);
+
+		PauseTransition pauseTransition = new PauseTransition(Duration.seconds(10));
+		pauseTransition.setOnFinished(e -> close());
+		pauseTransition.play();
+	}
+
+	@FXML
+	private void handleClose() {
+		close();
 	}
 }

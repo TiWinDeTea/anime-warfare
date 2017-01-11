@@ -53,13 +53,13 @@ public class PlayingOrderDialog extends GameDialog {
 	}
 
 	@FXML
-	private void handleLeftClicked() {
+	private void handleClockwise() {
 		MainApp.getGameClient().send(new NetPlayingOrderChosen(true));
 		close();
 	}
 
 	@FXML
-	private void handleRightClicked() {
+	private void handleAnticlockwise() {
 		MainApp.getGameClient().send(new NetPlayingOrderChosen(false));
 		close();
 	}

@@ -24,24 +24,22 @@
 
 package org.tiwindetea.animewarfare.gui.game;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
+import org.tiwindetea.animewarfare.gui.game.dialog.OverlayMessageDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
 import org.tiwindetea.animewarfare.logic.GFanCounter;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
@@ -50,6 +48,7 @@ import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 
 import java.net.URL;
 import java.util.List;
@@ -182,7 +181,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		}
 
 		Platform.runLater(() -> {
-			addOverlayMessage(event.getPhase().name() + " phase started"); // TODO: externalize.
+			new OverlayMessageDialog(this.overlay, event.getPhase().name() + " phase started"); // TODO: externalize.
 		});
 	}
 
@@ -191,23 +190,15 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		Platform.runLater(() -> {
 			GameClientInfo info = firstPlayerSelectedNetevent.getGameClientInfo();
 			if (MainApp.getGameClient().getClientInfo().equals(info)) {
-				new PlayingOrderDialog(this.overlay);
+				new OverlayMessageDialog(this.overlay, "You are the first player."); // TODO: externalize.
+				if (MainApp.getGameClient().getRoom().getMembers().size() == 2) {
+					MainApp.getGameClient().send(new NetPlayingOrderChosen(true));
+				} else {
+					new PlayingOrderDialog(this.overlay);
+				}
 			} else {
-				addOverlayMessage(info.getGameClientName() + " is the first player."); // TODO: externalize.
+				new OverlayMessageDialog(this.overlay, info.getGameClientName() + " is the first player."); // TODO: externalize.
 			}
 		});
-	}
-
-	// helper
-	private void addOverlayMessage(String message) {
-		Label label = new Label(message);
-		label.setStyle("-fx-background-color: black;" +
-				"-fx-text-fill: white;"); // TODO: externalize.
-
-		this.overlay.getChildren().add(label);
-
-		PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
-		pauseTransition.setOnFinished(e -> this.overlay.getChildren().remove(label));
-		pauseTransition.play();
 	}
 }
