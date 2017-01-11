@@ -22,52 +22,18 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.game.ItemFilters;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.MenuItem;
+import org.tiwindetea.animewarfare.gui.game.GStudio;
 import org.tiwindetea.animewarfare.logic.FactionType;
+
+import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public abstract class GComponent extends StackPane {
-	private ImageView imageView;
-	private FactionType factionType;
-    private int zone = -1;
-
-    protected GComponent() {
-    }
-
-    public GComponent(Image image) {
-	    this.imageView = new ImageView(image);
-	    getChildren().add(this.imageView);
-    }
-
-    public static void initSubFactories() {
-        GUnit.initFactory();
-        GStudio.initFactory();
-    }
-
-	public ImageView getImageView() {
-		return this.imageView;
-	}
-
-	public FactionType getFaction() {
-		return this.factionType;
-	}
-
-    public void setZone(int zone) {
-        this.zone = zone;
-    }
-
-    public int getZone() {
-        return zone;
-    }
-
-    protected void setFactionType(FactionType f) {
-        this.factionType = f;
-    }
+public abstract class AbstractStudioFilter implements BiFunction<FactionType, GStudio, List<MenuItem>> {
 }

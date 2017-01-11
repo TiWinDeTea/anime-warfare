@@ -36,6 +36,13 @@ public class MoveUnitsEvent extends ActionEvent<MoveUnitsEventListener> {
 		private final int sourceZone;
 		private final int destinationZone;
 
+		// kryo
+		public Movement() {
+			this.unitID = 0;
+			this.sourceZone = 0;
+			this.destinationZone = 0;
+		}
+
 		public Movement(int unitID, int sourceZone, int destinationZone) {
 			this.unitID = unitID;
 			this.sourceZone = sourceZone;

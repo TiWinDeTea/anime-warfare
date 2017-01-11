@@ -20,7 +20,7 @@
             <right>
             </right>
             <center>
-            <VBox alignment="CENTER">
+            <VBox fx:id="mainVBox" alignment="CENTER">
                <children>
                       <HBox fx:id="hBox" alignment="CENTER" />
                </children>

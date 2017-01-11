@@ -22,52 +22,43 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.game.ItemFilters;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import org.tiwindetea.animewarfare.gui.game.GUnit;
 import org.tiwindetea.animewarfare.logic.FactionType;
+
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public abstract class GComponent extends StackPane {
-	private ImageView imageView;
-	private FactionType factionType;
-    private int zone = -1;
+public abstract class AbstractUnitFilter implements BiFunction<FactionType, GUnit, List<MenuItem>> {
 
-    protected GComponent() {
+    protected enum GCAMState {
+        NOTHING,
+        MOVING_UNITS,
     }
 
-    public GComponent(Image image) {
-	    this.imageView = new ImageView(image);
-	    getChildren().add(this.imageView);
+    public static Function<String, Button> buttonAdder;
+    public static Consumer<Button> buttonRemover;
+
+    protected static GCAMState actionMenuState = GCAMState.NOTHING;
+
+    public abstract String getName();
+
+    protected final Button addButton(String text) {
+        return buttonAdder.apply(text);
     }
 
-    public static void initSubFactories() {
-        GUnit.initFactory();
-        GStudio.initFactory();
-    }
-
-	public ImageView getImageView() {
-		return this.imageView;
-	}
-
-	public FactionType getFaction() {
-		return this.factionType;
-	}
-
-    public void setZone(int zone) {
-        this.zone = zone;
-    }
-
-    public int getZone() {
-        return zone;
-    }
-
-    protected void setFactionType(FactionType f) {
-        this.factionType = f;
+    protected final void remove(Button... buttons) {
+        for (Button button : buttons) {
+            buttonRemover.accept(button);
+        }
     }
 }

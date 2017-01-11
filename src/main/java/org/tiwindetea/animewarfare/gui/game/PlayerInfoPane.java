@@ -1,5 +1,6 @@
 package org.tiwindetea.animewarfare.gui.game;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -178,7 +179,9 @@ public class PlayerInfoPane extends Group implements StaffPointUpdatedNeteventLi
 
 	@Override
 	public void handleStaffPointUpdated(StaffPointUpdatedNetevent event) {
-		this.staffCounter.setValue(event.getNewValue());
+		if (event.getPlayer().equals(this.playerInfo)) {
+			Platform.runLater(() -> this.staffCounter.setValue(event.getNewValue()));
+		}
 	}
 
 	// helper

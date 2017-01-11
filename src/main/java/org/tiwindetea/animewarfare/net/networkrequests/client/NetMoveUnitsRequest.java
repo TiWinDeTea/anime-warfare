@@ -26,7 +26,7 @@ package org.tiwindetea.animewarfare.net.networkrequests.client;
 
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -34,7 +34,7 @@ import java.util.Set;
  * @since 0.1.0
  */
 public class NetMoveUnitsRequest implements NetSendable {
-    private final Set<MoveUnitsEvent.Movement> movements;
+    private final HashSet<MoveUnitsEvent.Movement> movements;
 
     /**
      * Empty. Required by kryonet lib
@@ -46,8 +46,8 @@ public class NetMoveUnitsRequest implements NetSendable {
     /**
      * @param movements List of the movements you want to do
      */
-    public NetMoveUnitsRequest(Set<MoveUnitsEvent.Movement> movements) {
-        this.movements = Collections.unmodifiableSet(movements);
+    public NetMoveUnitsRequest(HashSet<MoveUnitsEvent.Movement> movements) {
+        this.movements = movements;
     }
 
     public Set<MoveUnitsEvent.Movement> getMovements() {

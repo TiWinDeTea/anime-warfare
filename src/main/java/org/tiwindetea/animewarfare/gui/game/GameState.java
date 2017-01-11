@@ -85,7 +85,7 @@ public class GameState extends GUIState {
 				this.rootLayout
 		);
 
-		GameState.gameLayoutController.initStart();
+		GameState.gameLayoutController.initStart(this.gContextActionMenu);
 
 		// listen events.
 	}

@@ -43,6 +43,7 @@ import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNetevent;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
@@ -52,8 +53,8 @@ import java.util.TreeSet;
  */
 public class GUnit extends GComponent {
 
-    private static final HashMap<UnitType, Image> PICTURES = new HashMap<>();
-    private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::getID));
+    private static final Map<UnitType, Image> PICTURES = new HashMap<>();
+    private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::gameID));
     private static boolean initialized = false;
 
     private final UnitType type;
@@ -153,7 +154,7 @@ public class GUnit extends GComponent {
         this.type = null;
     }
 
-    public int getID() {
+    public int gameID() {
         return this.ID;
     }
 
@@ -167,7 +168,7 @@ public class GUnit extends GComponent {
      */
     public static GUnit get(int id) {
         GUnit unit = units.floor(new GUnit(id));
-        if (unit != null && unit.getID() == id) {
+        if (unit != null && unit.gameID() == id) {
             return unit;
         } else {
             return null;
@@ -195,6 +196,10 @@ public class GUnit extends GComponent {
      */
     public static void create(int id, UnitType type, FactionType factionType, GameClientInfo owner) {
         units.add(new GUnit(id, type, factionType, owner));
+    }
+
+    public static GUnit createAndForget(UnitType type, FactionType factionType, GameClientInfo owner) {
+        return new GUnit(-1, type, factionType, owner);
     }
 
     /**

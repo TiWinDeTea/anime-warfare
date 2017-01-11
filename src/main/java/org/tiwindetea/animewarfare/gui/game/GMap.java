@@ -35,6 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
@@ -51,6 +52,7 @@ import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNeteventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -65,8 +67,11 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     private final Group POLYGONES = new Group();
     private final ZoneComponentsMap MAP = new ZoneComponentsMap();
     private final List<Pair<Polygon, Tooltip>> ZONES = new ArrayList<>(17);
+    private final Map<Integer, Line> LINKS = new HashMap<>();
     private boolean isDisplayingZonesGrids = false;
     private boolean isDisplayinGComponentsGrids = false;
+
+    private static int id = 0;
 
     public GMap() {
         super();
@@ -193,7 +198,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     /**
      * Displays or Hides GComponents squares (debug)
      */
-    public void displayComponentssGrids(boolean b) {
+    public void displayComponentsGrids(boolean b) {
         if (b) {
             if (!this.isDisplayinGComponentsGrids) {
                 this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.showGrid());
@@ -230,7 +235,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     }
 
     public void switchComponentsGridsDisplay() {
-        this.displayComponentssGrids(!this.isDisplayinGComponentsGrids);
+        this.displayComponentsGrids(!this.isDisplayinGComponentsGrids);
     }
 
     public void switchZonesGridsDisplay() {
@@ -242,6 +247,38 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
      */
     public void scrollEvent(ScrollEvent e) {
         this.getOnScroll().handle(e);
+    }
+
+    public int linkTo(GComponent component, double x, double y) {
+        GComponentRectangle rectangle = this.MAP.getRectangleOf(component);
+
+        Bounds b = component.getBoundsInParent();
+        double xUnitCenter = (b.getMaxX() + b.getMinX()) / 2,
+                yUnitCenter = (b.getMaxY() + b.getMinY()) / 2;
+
+        Line line = new Line(
+                xUnitCenter,
+                yUnitCenter,
+                x,
+                y
+        );
+        line.setStrokeWidth(2.);
+        line.setFill(Color.BLACK);
+        line.getStrokeDashArray().addAll(4.);
+        line.setMouseTransparent(true);
+        getChildren().add(line);
+        line.toFront();
+        this.LINKS.put(new Integer(id), line);
+        return id++;
+    }
+
+    public void removeLinks() {
+        getChildren().removeAll(this.LINKS.values());
+        this.LINKS.clear();
+    }
+
+    public void removeLink(Integer id) {
+        getChildren().remove(this.LINKS.remove(id));
     }
 
     private class GComponentRectangle extends Parent {
@@ -263,7 +300,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             this.grid.setMouseTransparent(true);
         }
 
-        public void setUnit(GComponent gComponent) {
+        public void setGComponent(GComponent gComponent) {
             if (this.gComponent != null) {
                 this.getChildren().remove(this.gComponent);
             }
@@ -275,7 +312,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             this.gComponent = gComponent;
         }
 
-        public GComponent getUnit() {
+        public GComponent getGComponent() {
             return this.gComponent;
         }
 
@@ -308,8 +345,8 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             int value = 0;
         }
 
-        private final HashMap<Integer, List<GComponentRectangle>> map = new HashMap<>();
-        private final HashMap<Integer, List<GComponent>> orphans = new HashMap<>();
+        private final Map<Integer, List<GComponentRectangle>> map = new HashMap<>();
+        private final Map<Integer, List<GComponent>> orphans = new HashMap<>();
 
         private final List<Int> numberOfgComponentsPerZone = new ArrayList<>(17);
 
@@ -366,7 +403,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                     .filter(ur -> ur.gComponent == null)
                     .findAny().orElse(null);
             if (gcomponentRectangle != null) {
-                gcomponentRectangle.setUnit(gComponent);
+                gcomponentRectangle.setGComponent(gComponent);
             } else {
                 List<GComponent> list = this.orphans.get(new Integer(zoneID));
                 if (list != null) {
@@ -380,12 +417,13 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             this.numberOfgComponentsPerZone.get(zoneID).value++;
             updateDescription(zoneID);
 
+            gComponent.setZone(zoneID);
             return gcomponentRectangle;
         }
 
         public GComponentRectangle remove(GComponent gComponent, int zoneID) {
             GComponentRectangle gcomponentRectangle = this.map.get(new Integer(zoneID)).parallelStream()
-                    .filter(ur -> gComponent.equals(ur.getUnit()))
+                    .filter(ur -> gComponent.equals(ur.getGComponent()))
                     .findAny()
                     .orElse(null);
             if (gcomponentRectangle != null) {
@@ -396,7 +434,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                         newgComponent = list.remove(0);
                     }
                 }
-                gcomponentRectangle.setUnit(newgComponent);
+                gcomponentRectangle.setGComponent(newgComponent);
                 --this.numberOfgComponentsPerZone.get(zoneID).value;
             } else {
                 List<GComponent> list = this.orphans.get(new Integer(zoneID));
@@ -408,6 +446,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             }
             updateDescription(zoneID);
 
+            gComponent.setZone(-1);
             return gcomponentRectangle;
         }
 
@@ -426,6 +465,10 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                 ans.addAll(gcomponentRectangles);
             }
             return ans;
+        }
+
+        public GComponentRectangle getRectangleOf(GComponent component) {
+            return this.map.get(new Integer(component.getZone())).stream().filter(r -> component.equals(r.getGComponent())).findAny().orElse(null);
         }
     }
 

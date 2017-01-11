@@ -25,21 +25,25 @@
 package org.tiwindetea.animewarfare.gui.game;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
+import org.tiwindetea.animewarfare.gui.PaperButton;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEventListener;
 import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.GUnitClickedEventListener;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractStudioFilter;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractUnitFilter;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.Move;
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
@@ -63,15 +67,19 @@ public class GContextActionMenu extends ContextMenu
         GameEndedNeteventListener {
 
     private final DynamicItemList items;
-    private final Node ownerNode;
+    private Pane ownerNode;
 
-    public GContextActionMenu(FactionType playerFaction, Node ownerNode) {
+    public GContextActionMenu(FactionType playerFaction, Pane ownerNode) {
         this.ownerNode = ownerNode;
         this.items = new DynamicItemList(playerFaction);
         EventDispatcher.registerListener(GUnitClickedEvent.class, this);
         EventDispatcher.registerListener(ZoneClickedEvent.class, this);
         EventDispatcher.registerListener(GStudioClickedEvent.class, this);
         EventDispatcher.registerListener(GameEndedNetevent.class, this);
+    }
+
+    public void setOwnerNode(Pane node) {
+        this.ownerNode = node;
     }
 
     public void destroy() {
@@ -102,7 +110,7 @@ public class GContextActionMenu extends ContextMenu
         this.destroy();
     }
 
-    public void addUnitContextManager(String id, BiFunction<FactionType, GUnit, List<MenuItem>> handler) {
+    public void addUnitContextManager(String id, AbstractUnitFilter handler) {
         this.items.addUnitContextManager(id, handler);
     }
 
@@ -110,7 +118,7 @@ public class GContextActionMenu extends ContextMenu
         return this.items.removeUnitContextManager(id);
     }
 
-    public void addStudioContextManager(String id, BiFunction<FactionType, GStudio, List<MenuItem>> handler) {
+    public void addStudioContextManager(String id, AbstractStudioFilter handler) {
         this.items.addStudioContextManager(id, handler);
     }
 
@@ -133,22 +141,24 @@ public class GContextActionMenu extends ContextMenu
         private final List<MenuItem> unitsItems = new ArrayList<>(); // for all units
         private final List<MenuItem> ennemyUnitsItems = new ArrayList<>(); // for all ennemy units
         private final List<MenuItem> friendlyUnitsItems = new ArrayList<>(); // for all friendly units
-        private final HashMap<UnitType, List<MenuItem>> itemsPerUnitType = new HashMap<>(); // for all units given their types
-        private final HashMap<Integer, List<MenuItem>> itemsPerUnit = new HashMap<>(); // for a particular unit
+        private final Map<UnitType, List<MenuItem>> itemsPerUnitType = new HashMap<>(); // for all units given their types
+        private final Map<Integer, List<MenuItem>> itemsPerUnit = new HashMap<>(); // for a particular unit
         //never set a list to null (you can clearit or remove it though)
 
         private final List<MenuItem> studioItems = new ArrayList<>();
         private final List<MenuItem> friendlyStudioItems = new ArrayList<>();
-        private final HashMap<Integer, List<MenuItem>> studioItemsPerStudio = new HashMap<>();
-        private final HashMap<Integer, List<MenuItem>> zoneItems = new HashMap<>();
+        private final Map<Integer, List<MenuItem>> studioItemsPerStudio = new HashMap<>();
+        private final Map<Integer, List<MenuItem>> zoneItems = new HashMap<>();
         //same apply here
 
-        private final Map<String, BiFunction<FactionType, GUnit, List<MenuItem>>> filteredUnitItems = new HashMap<>();
-        private final Map<String, BiFunction<FactionType, GStudio, List<MenuItem>>> filteredStudioItems = new HashMap<>();
-        // The biFunction should never return null. Use Stream.empty() instead.
+        private final Map<String, AbstractUnitFilter> filteredUnitItems = new HashMap<>();
+        private final Map<String, AbstractStudioFilter> filteredStudioItems = new HashMap<>();
+        // The biFunction should never return null. Use Collections.emptyList() instead.
+        // Keys should be written in lower case
 
         DynamicItemList(FactionType playerFaction) {
             this.playerFaction = playerFaction;
+            initFilters();
 
             //register events
             EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
@@ -160,7 +170,7 @@ public class GContextActionMenu extends ContextMenu
             EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
         }
 
-        public void addUnitContextManager(String id, BiFunction<FactionType, GUnit, List<MenuItem>> handler) {
+        public void addUnitContextManager(String id, AbstractUnitFilter handler) {
             this.filteredUnitItems.put(id, handler);
         }
 
@@ -168,7 +178,7 @@ public class GContextActionMenu extends ContextMenu
             return this.filteredUnitItems.remove(id);
         }
 
-        public void addStudioContextManager(String id, BiFunction<FactionType, GStudio, List<MenuItem>> handler) {
+        public void addStudioContextManager(String id, AbstractStudioFilter handler) {
             this.filteredStudioItems.put(id, handler);
         }
 
@@ -182,7 +192,7 @@ public class GContextActionMenu extends ContextMenu
                 perUnitTypeItems = new ArrayList<>(0);
             }
 
-            List<MenuItem> perUnitItems = this.itemsPerUnit.get(new Integer(unit.getID()));
+            List<MenuItem> perUnitItems = this.itemsPerUnit.get(new Integer(unit.gameID()));
             if (perUnitItems == null) {
                 perUnitItems = new ArrayList<>(0);
             }
@@ -193,7 +203,7 @@ public class GContextActionMenu extends ContextMenu
             );
 
             for (BiFunction<FactionType, GUnit, List<MenuItem>> biFunction : this.filteredUnitItems.values()) {
-                Stream.concat(stream, biFunction.apply(this.playerFaction, unit).stream());
+                stream = Stream.concat(stream, biFunction.apply(this.playerFaction, unit).stream());
             }
 
             if (unit.getFaction().equals(this.playerFaction)) {
@@ -230,7 +240,7 @@ public class GContextActionMenu extends ContextMenu
 
         @Override
         public void handlePhaseChanged(PhaseChangeNetevent event) {
-            clearAll();
+            /*clearAll();
 
             if (event.getPhase().equals(PhaseChangedEvent.Phase.ACTION)) {
                 MenuItem unitInfos = new MenuItem("Unit infos");
@@ -244,7 +254,7 @@ public class GContextActionMenu extends ContextMenu
                 MenuItem drawUnit = new MenuItem("Draw unit");
                 drawUnit.setOnAction(e -> System.out.println("TODO: Open a menu to select the unit to draw."));
                 this.friendlyStudioItems.add(drawUnit);
-            }
+            }*/
         }
 
         // helper
@@ -259,5 +269,23 @@ public class GContextActionMenu extends ContextMenu
             //this.filteredStudioItems.clear();
             //this.filteredUnitItems.clear();
         }
+
+
+        private void initFilters() {
+            AbstractUnitFilter.buttonAdder = GContextActionMenu.this::addButton;
+            AbstractUnitFilter.buttonRemover = GContextActionMenu.this::remove;
+            AbstractUnitFilter f = new Move();
+            this.filteredUnitItems.put(f.getName(), f);
+        }
+    }
+
+    private Button addButton(String text) {
+        Button button = new PaperButton(text);
+        this.ownerNode.getChildren().add(button);
+        return button;
+    }
+
+    private void remove(Button... buttons) {
+        this.ownerNode.getChildren().removeAll(buttons);
     }
 }

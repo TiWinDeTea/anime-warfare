@@ -81,11 +81,14 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@FXML
 	private PaperButton endTurnButton;
 
-	private GMap map;
+	@FXML
+	private VBox mainVBox;
+
+	private static GMap map;
 
 	private VBox overlay;
 
-	public void initStart() {
+	public void initStart(GContextActionMenu gContextActionMenu) {
 		MainApp.getMainRoot().getChildren().add(this.overlay);
 
 		// === dispose players info at the right place.
@@ -120,12 +123,15 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 					case 2:
 						this.rootBorderPane.setRight(new PlayerInfoPane(PlayerInfoPane.Position.RIGHT, players.get(i)));
 						break;
+					default:
+						throw new IllegalStateException("It seems that there is more than 4 players");
 				}
 				++counter;
 			}
 		}
-		// === END: dispose players info at the right place.
+		/// / === END: dispose players info at the right place.
 
+		gContextActionMenu.setOwnerNode(this.mainVBox);
 		for (Node node : this.rootBorderPane.getChildren()) { // center everyone!
 			this.rootBorderPane.setAlignment(node, Pos.CENTER);
 		}
@@ -160,12 +166,11 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		this.overlay.setAlignment(Pos.CENTER);
 		this.overlay.setMouseTransparent(true);
 
-		this.map = new GMap();
-		this.map.autosize();
+		map = new GMap();
+		map.autosize();
 		this.hBox.autosize();
 		this.initScroll();
-		this.map.displayZonesGrids(true);
-		this.map.displayComponentssGrids(true);
+		map.displayZonesGrids(true);
 	}
 
 	private void initScroll() {
@@ -246,5 +251,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 				new OverlayMessageDialog(this.overlay, info.getGameClientName() + "'s turn."); // TODO: externalize.
 			}
 		});
+	}
+	public static GMap getMap() {
+		return map;
 	}
 }

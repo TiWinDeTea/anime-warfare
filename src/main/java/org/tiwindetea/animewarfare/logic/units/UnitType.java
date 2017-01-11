@@ -96,7 +96,7 @@ public enum UnitType {
 					UnitBasicCharacteristics.MAGIC_NBR_ENEMY_FANS),
 			6, 1),
 
-	// Cool Guys
+	// The Black Knights
 	NUNNALLY(FactionType.THE_BLACK_KNIGHTS,
 			UnitLevel.MASCOT,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, 0),
@@ -124,6 +124,7 @@ public enum UnitType {
 	private final UnitBasicCharacteristics unitBasicCharacteristics;
 	private final float defaultCost;
 	private final int maxNumber;
+	private final String name;
 
 	UnitType(FactionType defaultFaction,
 	         UnitLevel unitLevel,
@@ -134,6 +135,16 @@ public enum UnitType {
 		this.unitBasicCharacteristics = unitBasicCharacteristics;
 		this.defaultCost = defaultCost;
 		this.maxNumber = maxNumber;
+		String tmp = super.toString();
+		String tmp2 = "";
+
+		if (tmp.contains("_")) {
+			tmp2 = tmp.substring(tmp.indexOf('_') + 1);
+			tmp2 = " " + tmp2.substring(0, 1).toUpperCase() + tmp2.substring(1).toLowerCase();
+			tmp = tmp.substring(0, tmp.indexOf('_'));
+		}
+
+		this.name = tmp.substring(0, 1).toUpperCase() + tmp.substring(1).toLowerCase() + tmp2;
 	}
 
 	public float getDefaultCost() {
@@ -158,5 +169,10 @@ public enum UnitType {
 
 	public int getMaxNumber() {
 		return this.maxNumber;
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
 	}
 }
