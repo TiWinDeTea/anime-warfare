@@ -56,6 +56,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderCho
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -64,6 +65,12 @@ import java.util.ResourceBundle;
  */
 public class GameLayoutController implements Initializable, QuitApplicationEventListener,
 		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener, NextPlayerNeteventListener {
+	private static GMap map;
+
+	private static List<PlayerInfoPane> playerInfoPaneList = new ArrayList<>();
+
+	private static PlayerInfoPane localPlayerInfoPane = null;
+
 	private ResourceBundle resourceBundle;
 
 	@FXML
@@ -84,8 +91,6 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@FXML
 	private VBox mainVBox;
 
-	private static GMap map;
-
 	private VBox overlay;
 
 	public void initStart(GContextActionMenu gContextActionMenu) {
@@ -97,7 +102,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		for (GameClientInfo player : players) {
 			++j;
 			if (MainApp.getGameClient().getClientInfo().equals(player)) {
-				this.currentPlayerPanel.getChildren().add(1, new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM, player));
+				GameLayoutController.localPlayerInfoPane = new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM, player);
+				this.currentPlayerPanel.getChildren().add(1, this.localPlayerInfoPane);
 				break;
 			}
 		}
@@ -113,19 +119,24 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 					this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP, players.get(i)));
 					break;
 				}
+				PlayerInfoPane playerInfoPane = null;
 				switch (counter) {
 					case 0:
-						this.rootBorderPane.setLeft(new PlayerInfoPane(PlayerInfoPane.Position.LEFT, players.get(i)));
+						playerInfoPane = new PlayerInfoPane(PlayerInfoPane.Position.LEFT, players.get(i));
+						this.rootBorderPane.setLeft(playerInfoPane);
 						break;
 					case 1:
-						this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP, players.get(i)));
+						playerInfoPane = new PlayerInfoPane(PlayerInfoPane.Position.TOP, players.get(i));
+						this.rootBorderPane.setTop(playerInfoPane);
 						break;
 					case 2:
-						this.rootBorderPane.setRight(new PlayerInfoPane(PlayerInfoPane.Position.RIGHT, players.get(i)));
+						playerInfoPane = new PlayerInfoPane(PlayerInfoPane.Position.RIGHT, players.get(i));
+						this.rootBorderPane.setRight(playerInfoPane);
 						break;
 					default:
 						throw new IllegalStateException("It seems that there is more than 4 players");
 				}
+				GameLayoutController.playerInfoPaneList.add(playerInfoPane);
 				++counter;
 			}
 		}
@@ -149,6 +160,9 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		this.rootBorderPane.setTop(null);
 		this.rootBorderPane.setRight(null);
 		this.rootBorderPane.setLeft(null);
+
+		GameLayoutController.playerInfoPaneList.clear();
+		GameLayoutController.localPlayerInfoPane = null;
 	}
 
 	@Override
@@ -261,5 +275,9 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	}
 	public static GMap getMap() {
 		return map;
+	}
+
+	public static PlayerInfoPane getLocalPlayerInfoPane() {
+		return GameLayoutController.localPlayerInfoPane;
 	}
 }

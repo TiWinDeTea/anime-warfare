@@ -29,7 +29,9 @@ import javafx.scene.control.MenuItem;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
+import org.tiwindetea.animewarfare.gui.game.CostModifierMonitor;
 import org.tiwindetea.animewarfare.gui.game.GStudio;
+import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
 import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
 import org.tiwindetea.animewarfare.logic.FactionType;
@@ -70,9 +72,15 @@ public class DrawUnit extends AbstractStudioFilter {
 		List<MenuItem> items = new LinkedList<>();
 		for (UnitType unitType : UnitType.values()) {
 			if (factionType == unitType.getDefaultFaction() && unitType.getUnitLevel() != UnitLevel.MASCOT) {
-				MenuItem item = new MenuItem("Draw " + unitType.toString() + " (" + unitType.getDefaultCost() + "SP)"); // todo: externalie
+				int cost = unitType.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(unitType);
+
+				MenuItem item = new MenuItem("Draw " + unitType.toString() + " (" + cost + " SP)"); // todo: externalie
 				item.setOnAction(e -> MainApp.getGameClient().send(new NetInvokeUnitRequest(unitType, studio.getZoneID())));
 				items.add(item);
+
+				if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {
+					item.setDisable(true);
+				}
 			}
 		}
 		return items;

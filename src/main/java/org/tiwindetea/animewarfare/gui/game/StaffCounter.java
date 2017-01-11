@@ -24,6 +24,10 @@ public class StaffCounter extends Label {
 		setText(String.valueOf(value));
 	}
 
+	public int getValue() {
+		return Integer.valueOf(getText());
+	}
+
 	public void increment(int value) {
 		setText(String.valueOf(Integer.valueOf(getText()) + value));
 	}
