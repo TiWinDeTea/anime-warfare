@@ -43,6 +43,7 @@ import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.MarketingLadderUpdatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayOrderChosenNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
@@ -74,6 +75,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNextPlayer;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
@@ -415,6 +417,11 @@ public class GameClient {
         public void received(Connection connection, NetMessage message) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + message);
             EventDispatcher.send(new MessageReceivedNetevent(message));
+        }
+
+        public void received(Connection connection, NetNextPlayer netNextPlayer) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + netNextPlayer);
+            EventDispatcher.send(new NextPlayerNetevent(netNextPlayer));
         }
 
         public void received(Connection connection, NetPhaseChanged phaseChange) {

@@ -43,6 +43,7 @@ import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
+import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
@@ -51,6 +52,7 @@ import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
@@ -160,6 +162,7 @@ class Utils {
 		kryo.register(NetBattlePhaseReadyRequest.class);
 		kryo.register(NetCapturedMascotSelection.class);
 		kryo.register(NetConventionRequest.class);
+		kryo.register(NetFinishTurnRequest.class);
 		kryo.register(NetFirstPlayerSelection.class);
 		kryo.register(NetInvokeUnitRequest.class);
 		kryo.register(NetLockFactionRequest.class);
@@ -227,6 +230,7 @@ class Utils {
 		ed.addListener(BattleEvent.class, logicListener);
 		ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.addListener(GameEndedEvent.class, logicListener);
+		ed.addListener(NextPlayerEvent.class, logicListener);
 		ed.addListener(PhaseChangedEvent.class, logicListener);
 
 		//logic.event
@@ -256,6 +260,7 @@ class Utils {
 		ed.removeListener(BattleEvent.class, logicListener);
 		ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.removeListener(GameEndedEvent.class, logicListener);
+		ed.removeListener(NextPlayerEvent.class, logicListener);
 		ed.removeListener(PhaseChangedEvent.class, logicListener);
 
 		//logic.event
