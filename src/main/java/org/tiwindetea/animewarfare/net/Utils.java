@@ -33,6 +33,7 @@ import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityType;
+import org.tiwindetea.animewarfare.logic.events.CostModifiedEvent;
 import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
@@ -144,6 +145,7 @@ class Utils {
 		// server, alphabetical order
 		kryo.register(NetBadPassword.class);
 		kryo.register(NetBattle.class);
+		kryo.register(NetCostModified.class);
 		kryo.register(NetFactionLocked.class);
 		kryo.register(NetFactionSelected.class);
 		kryo.register(NetFactionUnlocked.class);
@@ -170,6 +172,7 @@ class Utils {
 		kryo.register(CapacityName.class);
 		kryo.register(CapacityType.class);
 		kryo.register(FactionType.class);
+		kryo.register(CostModifiedEvent.Type.class);
 		kryo.register(UnitCounterEvent.Type.class);
 		kryo.register(PhaseChangedEvent.Phase.class);
 		kryo.register(MoveUnitsEvent.Movement.class);
@@ -191,6 +194,7 @@ class Utils {
 		ed.addListener(AskFirstPlayerEvent.class, logicListener);
 		ed.addListener(AskMascotToCaptureEvent.class, logicListener);
 		ed.addListener(BattleEvent.class, logicListener);
+		ed.addListener(CostModifiedEvent.class, logicListener);
 		ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.addListener(GameEndedEvent.class, logicListener);
 		ed.addListener(NextPlayerEvent.class, logicListener);
@@ -221,6 +225,7 @@ class Utils {
 		ed.removeListener(AskFirstPlayerEvent.class, logicListener);
 		ed.removeListener(AskMascotToCaptureEvent.class, logicListener);
 		ed.removeListener(BattleEvent.class, logicListener);
+		ed.removeListener(CostModifiedEvent.class, logicListener);
 		ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);
 		ed.removeListener(GameEndedEvent.class, logicListener);
 		ed.removeListener(NextPlayerEvent.class, logicListener);

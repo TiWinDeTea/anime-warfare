@@ -34,6 +34,8 @@ import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
+import org.tiwindetea.animewarfare.logic.events.CostModifiedEvent;
+import org.tiwindetea.animewarfare.logic.events.CostModifiedEventListener;
 import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEventListener;
 import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
@@ -101,6 +103,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFaction
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetCostModified;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
@@ -723,6 +726,7 @@ public class GameServer {
             AskFirstPlayerEventListener,
             AskUnitToCaptureEventListener,
             BattleEventListener,
+            CostModifiedEventListener,
             FirstPlayerSelectedEventListener,
             GameEndedEventListener,
             PhaseChangedEventListener,
@@ -800,6 +804,11 @@ public class GameServer {
                     GameServer.this.room.find(event.getBattleContext().getAttacker().getPlayer().getID()),
                     GameServer.this.room.find(event.getBattleContext().getDefender().getPlayer().getID())
             ));
+        }
+
+        @Override
+        public void onUnitCostModified(CostModifiedEvent event) {
+            this.server.sendToAllTCP(new NetCostModified(event, GameServer.this.room.find(event.getPlayerID())));
         }
 
         @Override

@@ -67,7 +67,7 @@ public class Player {
 	private final FactionType faction;
 	private final BuffManager buffManager = new BuffManager();
 	private final UnitCounter unitCounter = new UnitCounter();
-	private final CostModifier costModifier = new CostModifier();
+	private final CostModifier costModifier;
 	private final Map<CapacityName, Capacity> capacities = new HashMap<>();
 	private final Set<Unit> unitCaptured = new HashSet<>();
 	private final List<AdvertisingCampaignRight> advertisingCampaignRights = new ArrayList<>();
@@ -77,6 +77,7 @@ public class Player {
 	public Player(int id, FactionType faction) {
 		this.ID = id;
 		this.faction = faction;
+		this.costModifier = new CostModifier(this.ID);
 	}
 
 	public void setClockwiseNextPlayer(Player p) {

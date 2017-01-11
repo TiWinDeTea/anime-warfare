@@ -33,6 +33,7 @@ import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.CostModifiedNetEvent;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FanNumberUpdatedNetevent;
@@ -62,6 +63,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderCho
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetCostModified;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
@@ -350,6 +352,11 @@ public class GameClient {
         public void received(Connection connection, NetBattle battleStarted) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + battleStarted);
             EventDispatcher.send(new BattleNetevent(battleStarted));
+        }
+
+        public void received(Connection connection, NetCostModified costModified) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + costModified);
+            EventDispatcher.send(new CostModifiedNetEvent(costModified));
         }
 
         public void received(Connection connection, NetFactionLocked faction) {

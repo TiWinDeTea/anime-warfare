@@ -33,9 +33,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CostModifier {
+	private final int playerID;
 	private final Map<UnitType, List<Mask>> unitCost = new HashMap<>();
 	private final List<Mask> battleCost = new ArrayList<>();
 	private final List<Mask> uniqueActionCost = new ArrayList<>();
+
+	public CostModifier(int playerID) {
+		this.playerID = playerID;
+	}
 
 	int getUnitCostModifier(UnitType unitType) {
 		if (!this.unitCost.containsKey(unitType)) {
@@ -48,7 +53,7 @@ public class CostModifier {
 	public void addUnitCost(UnitType unitType, Mask costMask) {
 		this.unitCost.getOrDefault(unitType, new ArrayList<>()).add(costMask);
 
-		LogicEventDispatcher.send(new CostModifiedEvent(unitType, getUnitCostModifier(unitType)));
+		LogicEventDispatcher.send(new CostModifiedEvent(this.playerID, unitType, getUnitCostModifier(unitType)));
 	}
 
 	public void removeUnitCost(UnitType unitType, Mask costMask) {
@@ -56,7 +61,7 @@ public class CostModifier {
 
 		if (costMaskList != null) {
 			if (costMaskList.remove(costMask)) {
-				LogicEventDispatcher.send(new CostModifiedEvent(CostModifiedEvent.Type.UNIT,
+				LogicEventDispatcher.send(new CostModifiedEvent(this.playerID, CostModifiedEvent.Type.UNIT,
 						getUnitCostModifier(unitType)));
 			}
 		}
@@ -68,13 +73,17 @@ public class CostModifier {
 
 	public void addBattleCost(Mask costMask) {
 		if (this.battleCost.add(costMask)) {
-			LogicEventDispatcher.send(new CostModifiedEvent(CostModifiedEvent.Type.BATTLE, getBattleCostModifier()));
+			LogicEventDispatcher.send(new CostModifiedEvent(this.playerID,
+					CostModifiedEvent.Type.BATTLE,
+					getBattleCostModifier()));
 		}
 	}
 
 	public void removeBattleCost(Mask costMask) {
 		if (this.battleCost.remove(costMask)) {
-			LogicEventDispatcher.send(new CostModifiedEvent(CostModifiedEvent.Type.BATTLE, getBattleCostModifier()));
+			LogicEventDispatcher.send(new CostModifiedEvent(this.playerID,
+					CostModifiedEvent.Type.BATTLE,
+					getBattleCostModifier()));
 		}
 	}
 
@@ -84,14 +93,14 @@ public class CostModifier {
 
 	public void addUniqueActionCostMask(Mask costMask) {
 		if (this.uniqueActionCost.add(costMask)) {
-			LogicEventDispatcher.send(new CostModifiedEvent(CostModifiedEvent.Type.UNIQUE_ACTION,
+			LogicEventDispatcher.send(new CostModifiedEvent(this.playerID, CostModifiedEvent.Type.UNIQUE_ACTION,
 					getUniqueActionModifier()));
 		}
 	}
 
 	public void removeUniqueActionCostMask(Mask costMask) {
 		if (this.uniqueActionCost.remove(costMask)) {
-			LogicEventDispatcher.send(new CostModifiedEvent(CostModifiedEvent.Type.UNIQUE_ACTION,
+			LogicEventDispatcher.send(new CostModifiedEvent(this.playerID, CostModifiedEvent.Type.UNIQUE_ACTION,
 					getUniqueActionModifier()));
 		}
 	}

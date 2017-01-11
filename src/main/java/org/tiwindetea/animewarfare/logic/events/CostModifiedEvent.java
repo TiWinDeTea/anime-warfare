@@ -10,17 +10,20 @@ public class CostModifiedEvent implements Event<CostModifiedEventListener> {
 		UNIQUE_ACTION,
 	}
 
+	private final int playerID;
 	private final UnitType unitType;
 	private final int cost;
 	private final Type type;
 
-	public CostModifiedEvent(UnitType unitType, int unitCost) {
+	public CostModifiedEvent(int playerID, UnitType unitType, int unitCost) {
+		this.playerID = playerID;
 		this.unitType = unitType;
 		this.cost = unitCost;
 		this.type = Type.UNIT;
 	}
 
-	public CostModifiedEvent(Type type, int cost) {
+	public CostModifiedEvent(int playerID, Type type, int cost) {
+		this.playerID = playerID;
 		this.type = type;
 		this.cost = cost;
 		this.unitType = null;
@@ -37,5 +40,13 @@ public class CostModifiedEvent implements Event<CostModifiedEventListener> {
 
 	public int getCost() {
 		return this.cost;
+	}
+
+	public int getPlayerID() {
+		return this.playerID;
+	}
+
+	public Type getType() {
+		return this.type;
 	}
 }
