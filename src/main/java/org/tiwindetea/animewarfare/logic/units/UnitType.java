@@ -85,7 +85,7 @@ public enum UnitType {
 	HASUTA(FactionType.HAIYORE,
 			UnitLevel.LVL2,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, 3),
-			Integer.MAX_VALUE, 4), // FIXME: Cost ?
+			4, 4),
 	CTHUKO(FactionType.HAIYORE,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, 3),
@@ -122,7 +122,7 @@ public enum UnitType {
 	private final FactionType defaultFaction;
 	private final UnitLevel unitLevel;
 	private final UnitBasicCharacteristics unitBasicCharacteristics;
-	private final float defaultCost;
+	private final int defaultCost;
 	private final int maxNumber;
 	private final String name;
 
@@ -147,7 +147,7 @@ public enum UnitType {
 		this.name = tmp.substring(0, 1).toUpperCase() + tmp.substring(1).toLowerCase() + tmp2;
 	}
 
-	public float getDefaultCost() {
+	public int getDefaultCost() {
 		return this.defaultCost;
 	}
 

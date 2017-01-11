@@ -212,15 +212,13 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			return;
 		}
 
-		if (!event.getPhase().equals(PhaseChangedEvent.Phase.PLAYER_SELECTION)) {
+		if (event.getPhase().equals(PhaseChangedEvent.Phase.MARKETING)) {
 			this.finishTurnButton.setDisable(false);
-		} else {
-			this.finishTurnButton.setDisable(true);
-		}
-
-		if (event.getPhase().equals(PhaseChangedEvent.Phase.ACTION)) {
+		} else if (PlayerTurnMonitor.getCurrentPlayer() != null && PlayerTurnMonitor.getCurrentPlayer().equals(MainApp.getGameClient().getClientInfo())) {
+			this.finishTurnButton.setDisable(false);
 			this.skipAllButton.setDisable(false);
 		} else {
+			this.finishTurnButton.setDisable(true);
 			this.skipAllButton.setDisable(true);
 		}
 
@@ -252,8 +250,12 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			GameClientInfo info = event.getGameClientInfo();
 			if (MainApp.getGameClient().getClientInfo().equals(info)) {
 				new OverlayMessageDialog(this.overlay, "This is your turn."); // TODO: externalize.
+				this.finishTurnButton.setDisable(false);
+				this.skipAllButton.setDisable(false);
 			} else {
 				new OverlayMessageDialog(this.overlay, info.getGameClientName() + "'s turn."); // TODO: externalize.
+				this.finishTurnButton.setDisable(true);
+				this.skipAllButton.setDisable(true);
 			}
 		});
 	}

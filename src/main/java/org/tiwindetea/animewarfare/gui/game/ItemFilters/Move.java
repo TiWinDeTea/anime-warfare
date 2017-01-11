@@ -68,7 +68,7 @@ public class Move extends AbstractUnitFilter {
     @Override
     public List<MenuItem> apply(FactionType factionType, GUnit unit) {
         if (GamePhaseMonitor.getCurrentPhase() != PhaseChangedEvent.Phase.ACTION
-                || GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPhase()) != factionType) {
+                || GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPlayer()) != factionType) {
             return Collections.emptyList();
         }
 

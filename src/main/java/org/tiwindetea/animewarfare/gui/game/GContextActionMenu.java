@@ -42,6 +42,7 @@ import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractStudioFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractUnitFilter;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.DrawUnit;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.Move;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
@@ -227,7 +228,7 @@ public class GContextActionMenu extends ContextMenu
             }
 
             for (BiFunction<FactionType, GStudio, List<MenuItem>> biFunction : this.filteredStudioItems.values()) {
-                Stream.concat(stream, biFunction.apply(this.playerFaction, studio).stream());
+                stream = Stream.concat(stream, biFunction.apply(this.playerFaction, studio).stream());
             }
 
             return stream;
@@ -274,8 +275,12 @@ public class GContextActionMenu extends ContextMenu
         private void initFilters() {
             AbstractUnitFilter.buttonAdder = GContextActionMenu.this::addButton;
             AbstractUnitFilter.buttonRemover = GContextActionMenu.this::remove;
-            AbstractUnitFilter f = new Move();
-            this.filteredUnitItems.put(f.getName(), f);
+
+            AbstractUnitFilter move = new Move();
+            this.filteredUnitItems.put(move.getName(), move);
+
+            AbstractStudioFilter drawUnit = new DrawUnit();
+            this.filteredStudioItems.put(drawUnit.getName(), drawUnit);
         }
     }
 

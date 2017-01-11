@@ -37,7 +37,7 @@ import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNeteventListener;
 public class PlayerTurnMonitor implements NextPlayerNeteventListener, FirstPlayerSelectedNeteventListener {
 	private static final PlayerTurnMonitor MONITOR = new PlayerTurnMonitor();
 
-	public static GameClientInfo getCurrentPhase() {
+	public static GameClientInfo getCurrentPlayer() {
 		return PlayerTurnMonitor.MONITOR.currentPlayer;
 	}
 

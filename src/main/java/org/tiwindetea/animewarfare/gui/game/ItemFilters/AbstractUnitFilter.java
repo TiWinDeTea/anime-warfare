@@ -38,19 +38,9 @@ import java.util.function.Function;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public abstract class AbstractUnitFilter implements BiFunction<FactionType, GUnit, List<MenuItem>> {
-
-    protected enum GCAMState {
-        NOTHING,
-        MOVING_UNITS,
-    }
-
+public abstract class AbstractUnitFilter extends AbstractFilter implements BiFunction<FactionType, GUnit, List<MenuItem>> {
     public static Function<String, Button> buttonAdder;
     public static Consumer<Button> buttonRemover;
-
-    protected static GCAMState actionMenuState = GCAMState.NOTHING;
-
-    public abstract String getName();
 
     protected final Button addButton(String text) {
         return buttonAdder.apply(text);
