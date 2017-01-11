@@ -24,6 +24,7 @@
 
 package org.tiwindetea.animewarfare.logic.states;
 
+import com.esotericsoftware.minlog.Log;
 import javafx.util.Pair;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.lomadriel.lfc.statemachine.State;
@@ -35,6 +36,8 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.battle.BattleContext;
 import org.tiwindetea.animewarfare.logic.battle.PreBattleState;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
+import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
@@ -71,10 +74,12 @@ import java.util.stream.Collectors;
  * Action phase of the game
  *
  * @author Jérôme BOULMIER
+ * @author Benoît CORTIER
  */
 class ActionState extends GameState implements MoveUnitsEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipTurnEventListener, StartBattleEventListener,
-		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener {
+		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener,
+		BattleEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
 
@@ -85,12 +90,13 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	private boolean phaseEnded;
 
 	private Player currentPlayer;
-	private int currentPlayerPosition;
 
 	private Player huntedPlayer;
 	private Zone huntingZone;
 
 	private StateMachine currentBattleStateMachine = null;
+
+	private boolean nonUlimitedActionDone = false;
 
 	ActionState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -112,18 +118,19 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().addListener(CaptureMascotEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(MascotToCaptureChoiceEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(BattleEvent.class, this);
 	}
 
 	@Override
 	public void update() {
 		this.zonesThatHadABattle.clear();
 		this.alreadyMovedUnit.clear();
+		this.nonUlimitedActionDone = false;
 
 		setNextPlayer();
 	}
 
 	private void setNextPlayer() {
-
 		Player localCurrentPlayer = this.currentPlayer;
 		do {
 			this.currentPlayer = this.currentPlayer.getNextPlayerInGameOrder();
@@ -152,6 +159,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().removeListener(CaptureMascotEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(MascotToCaptureChoiceEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(BattleEvent.class, this);
 	}
 
 	@Override
@@ -172,6 +180,12 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	@Override
 	public void handleMoveUnitsEvent(MoveUnitsEvent event) {
 		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		if (this.nonUlimitedActionDone) {
+			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
 
@@ -182,8 +196,8 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 					&& this.gameBoard.getMap().isValid(movement.getDestinationZone())) {
 
 				Unit unitToMove = this.gameBoard.getMap()
-				                                .getZone(movement.getSourceZone())
-				                                .getUnit(movement.getUnitID());
+						.getZone(movement.getSourceZone())
+						.getUnit(movement.getUnitID());
 
 				if (unitToMove != null
 						&& unitToMove.hasFaction(this.currentPlayer.getFaction())
@@ -204,16 +218,21 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 				for (Pair<Unit, MoveUnitsEvent.Movement> movement : validMovements) {
 					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
 					this.alreadyMovedUnit.add(Integer.valueOf(movement.getKey().getID()));
+					this.nonUlimitedActionDone = true;
 				}
 			}
 		}
-
-		this.machine.get().update();
 	}
 
 	@Override
 	public void handleOpenStudioEvent(OpenStudioEvent event) {
 		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		if (this.nonUlimitedActionDone) {
+			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
 
@@ -221,29 +240,35 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			if (this.gameBoard.getMap().isValid(event.getZone())) {
 				if (!this.gameBoard.getMap().getZone(event.getZone()).hasStudio()) {
 					Unit mascot = this.gameBoard.getMap()
-					                            .getZone(event.getZone())
-					                            .getUnit(UnitLevel.MASCOT, this.currentPlayer.getFaction());
+							.getZone(event.getZone())
+							.getUnit(UnitLevel.MASCOT, this.currentPlayer.getFaction());
 
 					if (mascot != null) {
 						this.currentPlayer.decrementStaffPoints(OPEN_STUDIO_COST);
 						Studio newStudio = new Studio(event.getZone(), this.currentPlayer);
 						this.gameBoard.getMap().getZone(event.getZone()).setStudio(newStudio);
 						newStudio.setController(mascot);
+						this.nonUlimitedActionDone = true;
 					}
 				}
 			}
 		}
-
-		this.machine.get().update();
 	}
 
 	@Override
 	public void handleInvokeUnitEvent(InvokeUnitEvent event) { // FIXME : heroes conditions
 		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		if (this.nonUlimitedActionDone) {
+			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
 
 		if (!this.gameBoard.getMap().isValid(event.getZone())) {
+			Log.debug(getClass().getName(), "Invalid zone selected.");
 			return;
 		}
 
@@ -254,13 +279,14 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 				if (invocationZone.hasStudio()
 						&& (this.currentPlayer.hasFaction(invocationZone.getStudio().getCurrentFaction())
-							|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
+						|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
 						|| (event.getUnitType().isLevel(UnitLevel.MASCOT)
-							&& (!this.currentPlayer.getUnitCounter().hasUnits()
-								|| invocationZone.getUnits().stream().anyMatch(unit -> this.currentPlayer.hasFaction(unit.getFaction()))))
+						&& (!this.currentPlayer.getUnitCounter().hasUnits()
+						|| invocationZone.getUnits().stream().anyMatch(unit -> this.currentPlayer.hasFaction(unit.getFaction()))))
 						) {
 					invokeUnit(invocationZone, event.getUnitType());
-					setNextPlayer(); // FIXME : Unlimited actions still available
+
+					this.nonUlimitedActionDone = true;
 				}
 			}
 		}
@@ -276,24 +302,40 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	@Override
 	public void handleSkipTurnEvent(SkipTurnEvent event) {
 		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		if (this.nonUlimitedActionDone) {
+			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
 
 		this.currentPlayer.setStaffAvailable(0);
 		LogicEventDispatcher.getInstance().fire(new SkipTurnEvent(this.currentPlayer.getID()));
+
+		this.machine.get().update();
 	}
 
 	@Override
 	public void handleBattleEvent(StartBattleEvent event) {
 		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
 			return;
 		}
 
 		if (this.zonesThatHadABattle.contains(Integer.valueOf(event.getZone()))) {
+			Log.debug(getClass().getName(), "Zone already had a battle.");
 			return;
 		}
 
 		if (!this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getBattleCost())) {
+			Log.debug(getClass().getName(), "Not enough staff points.");
+			return;
+		}
+
+		if (this.nonUlimitedActionDone && this.currentPlayer.getNumberOfProduction() != 6) {
+			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
 
@@ -307,19 +349,29 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 				thirdPartPlayers);
 
 		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext, this.gameBoard.getMap()));
+
+		this.nonUlimitedActionDone = true;
 	}
 
 	@Override
 	public void handleCaptureMascotEvent(CaptureMascotEvent event) {
 		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		if (this.nonUlimitedActionDone) {
+			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
 
 		if (!this.gameBoard.getMap().isValid(event.getZone())) {
+			Log.debug(getClass().getName(), "Invalid zone selected.");
 			return;
 		}
 
 		if (this.currentPlayer.getID() == event.getHuntedPlayerID()) {
+			Log.debug(getClass().getName(), "Cannot hunt himself.");
 			return;
 		}
 
@@ -327,33 +379,38 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		this.huntedPlayer = this.gameBoard.getPlayer(event.getHuntedPlayerID());
 
 		Optional<Unit> hunter = this.huntingZone.getUnits()
-		                                        .stream()
-		                                        .filter(u -> u.hasFaction(this.currentPlayer.getFaction()))
-		                                        .max(Unit::bestUnitComparator);
+				.stream()
+				.filter(u -> u.hasFaction(this.currentPlayer.getFaction()))
+				.max(Unit::bestUnitComparator);
 
 		if (!hunter.isPresent()) {
+			Log.debug(getClass().getName(), "No hunter present.");
 			return;
 		}
 
 		List<Unit> huntedUnits = this.huntingZone.getUnits()
-		                                         .stream()
-		                                         .filter(u -> u.isLevel(UnitLevel.MASCOT)
-				                                         && u.hasFaction(this.huntedPlayer.getFaction()))
-		                                         .collect(Collectors.toList());
+				.stream()
+				.filter(u -> u.isLevel(UnitLevel.MASCOT)
+						&& u.hasFaction(this.huntedPlayer.getFaction()))
+				.collect(Collectors.toList());
 
 		if (huntedUnits.isEmpty()) {
+			Log.debug(getClass().getName(), "No hunted unit present.");
 			return;
 		}
 
 		Optional<Unit> mascotProtector =
 				this.huntingZone.getUnits()
-				                .stream()
-				                .filter(u -> isMascotProtector(hunter.get(), u))
-				                .findFirst();
+						.stream()
+						.filter(u -> isMascotProtector(hunter.get(), u))
+						.findFirst();
 
 		if (mascotProtector.isPresent()) {
+			Log.debug(getClass().getName(), "Mascot protector present.");
 			return;
 		}
+
+		this.nonUlimitedActionDone = true;
 
 		if (huntedUnits.size() == 1) {
 			handleMascotToCaptureChoiceEvent(new MascotToCaptureChoiceEvent(event.getHuntedPlayerID(),
@@ -389,5 +446,25 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	@Override
 	public void handleGameEndedEvent(GameEndedEvent gameEndedEvent) {
 		this.gameEnded = true;
+	}
+
+	@Override
+	public void handlePreBattle(BattleEvent event) {
+		// nothing to do
+	}
+
+	@Override
+	public void handleDuringBattle(BattleEvent event) {
+		// nothing to do
+	}
+
+	@Override
+	public void handlePostBattle(BattleEvent event) {
+		// nothing to do
+	}
+
+	@Override
+	public void handleBattleFinished(BattleEvent event) {
+		this.currentBattleStateMachine = null;
 	}
 }
