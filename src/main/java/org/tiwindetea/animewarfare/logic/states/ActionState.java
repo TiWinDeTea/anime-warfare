@@ -458,7 +458,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 	@Override
 	public void handleFinishTurnRequest(FinishTurnRequestEvent event) {
-		if (!isInvalidPlayer(event)) {
+		if (isInvalidPlayer(event)) {
 			Log.debug(getClass().getName(), "Invalid player.");
 			return;
 		}

@@ -24,12 +24,10 @@
 
 package org.tiwindetea.animewarfare.gui.game.dialog;
 
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
 
 import java.io.IOException;
@@ -57,9 +55,10 @@ public class OverlayMessageDialog extends GameDialog {
 
 		this.messageLabel.setText(message);
 
-		PauseTransition pauseTransition = new PauseTransition(Duration.seconds(10));
-		pauseTransition.setOnFinished(e -> close());
-		pauseTransition.play();
+		// fixme
+		//PauseTransition pauseTransition = new PauseTransition(Duration.seconds(10));
+		//pauseTransition.setOnFinished(e -> close());
+		//pauseTransition.play();
 	}
 
 	@FXML

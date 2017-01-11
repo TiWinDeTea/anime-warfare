@@ -29,6 +29,11 @@ import org.tiwindetea.animewarfare.net.GameClientInfo;
 public class NetNextPlayer implements NetReceivable {
 	private final GameClientInfo nextPlayer;
 
+	// kryo
+	public NetNextPlayer() {
+		this.nextPlayer = null;
+	}
+
 	public NetNextPlayer(GameClientInfo nextPlayer) {
 		this.nextPlayer = nextPlayer;
 	}

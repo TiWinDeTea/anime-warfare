@@ -155,6 +155,7 @@ class Utils {
 		kryo.register(NetGameEnded.class);
 		kryo.register(NetGameStarted.class);
 		kryo.register(NetHandlePlayerDisconnection.class);
+		kryo.register(NetNextPlayer.class);
 		kryo.register(NetMarketingLadderUpdated.class);
 		kryo.register(NetMessage.class);
 		kryo.register(NetStaffPointsUpdated.class);
