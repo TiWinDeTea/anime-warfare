@@ -140,6 +140,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
 		EventDispatcher.registerListener(FirstPlayerSelectedNetevent.class, this);
 
+		GamePhaseMonitor.init();
+
 		this.overlay = new VBox(10);
 		this.overlay.setAlignment(Pos.CENTER);
 		this.overlay.setMouseTransparent(true);
