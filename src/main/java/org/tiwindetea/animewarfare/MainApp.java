@@ -30,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.lomadriel.lfc.event.EventDispatcher;
@@ -69,6 +70,8 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 
 	private static GameClient gameClient = new GameClient();
 	private static GameServer gameServer = new GameServer();
+
+	private static StackPane mainRoot;
 
 	private Stage primaryStage;
 
@@ -114,7 +117,8 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		try {
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(loader.load());
-			scene.getRoot().getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
+			MainApp.mainRoot = (StackPane) scene.getRoot();
+			MainApp.mainRoot.getStylesheets().add(getClass().getResource("gui/css/menu.css").toExternalForm());
 			this.primaryStage.setScene(scene);
 			this.primaryStage.show();
 		} catch (IOException e) {
@@ -172,5 +176,9 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 	@Override
 	public void onFullscreenUpdated() {
 		this.primaryStage.setFullScreen(Settings.isFullscreenEnabled());
+	}
+
+	public static StackPane getMainRoot() {
+		return MainApp.mainRoot;
 	}
 }

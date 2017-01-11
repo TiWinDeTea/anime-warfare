@@ -36,7 +36,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
@@ -52,6 +51,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -69,18 +69,62 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	private GMap map;
 
-	private StackPane mainRoot;
-
 	private VBox overlay;
 
-	public void initOverlay() {
-		this.mainRoot = (StackPane) this.rootBorderPane.getScene().getRoot();
-		this.mainRoot.getChildren().add(this.overlay);
+	public void initStart() {
+		MainApp.getMainRoot().getChildren().add(this.overlay);
+
+		// === dispose players info at the right place.
+		List<GameClientInfo> players = MainApp.getGameClient().getRoom().getMembers();
+		int j = 0;
+		for (GameClientInfo player : players) {
+			++j;
+			if (MainApp.getGameClient().getClientInfo().equals(player)) {
+				this.rootBorderPane.setBottom(new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM, player));
+				break;
+			}
+		}
+
+		int counter = 0;
+		int[][] beginstart = new int[][]{
+				{j, players.size()},
+				{0, j - 1}
+		};
+		for (int k = 0; k < 2; k++) {
+			for (int i = beginstart[k][0]; i < beginstart[k][1]; i++) {
+				if (players.size() == 2) {
+					this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP, players.get(i)));
+					break;
+				}
+				switch (counter) {
+					case 0:
+						this.rootBorderPane.setLeft(new PlayerInfoPane(PlayerInfoPane.Position.LEFT, players.get(i)));
+						break;
+					case 1:
+						this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP, players.get(i)));
+						break;
+					case 2:
+						this.rootBorderPane.setRight(new PlayerInfoPane(PlayerInfoPane.Position.RIGHT, players.get(i)));
+						break;
+				}
+				++counter;
+			}
+		}
+		// === END: dispose players info at the right place.
+
+		for (Node node : this.rootBorderPane.getChildren()) { // center everyone!
+			this.rootBorderPane.setAlignment(node, Pos.CENTER);
+		}
 	}
 
-	public void clearOverlay() {
+	public void clearEnd() {
 		this.overlay.getChildren().clear();
-		this.mainRoot.getChildren().remove(this.overlay);
+		MainApp.getMainRoot().getChildren().remove(this.overlay);
+
+		this.rootBorderPane.setBottom(null);
+		this.rootBorderPane.setTop(null);
+		this.rootBorderPane.setRight(null);
+		this.rootBorderPane.setLeft(null);
 	}
 
 	@Override
@@ -101,14 +145,6 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		this.initScroll();
 		this.map.displayZonesGrids(true);
 		this.map.displayComponentssGrids(true);
-
-		this.rootBorderPane.setBottom(new PlayerInfoPane(PlayerInfoPane.Position.BOTTOM));
-		this.rootBorderPane.setTop(new PlayerInfoPane(PlayerInfoPane.Position.TOP));
-		this.rootBorderPane.setRight(new PlayerInfoPane(PlayerInfoPane.Position.RIGHT));
-		this.rootBorderPane.setLeft(new PlayerInfoPane(PlayerInfoPane.Position.LEFT));
-		for (Node node : this.rootBorderPane.getChildren()) { // center everyone!
-			this.rootBorderPane.setAlignment(node, Pos.CENTER);
-		}
 	}
 
 	private void initScroll() {

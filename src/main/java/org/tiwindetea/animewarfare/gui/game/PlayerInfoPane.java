@@ -3,9 +3,15 @@ package org.tiwindetea.animewarfare.gui.game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNeteventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +19,7 @@ import java.util.List;
 /**
  * Created by benoit on 02/01/17.
  */
-public class PlayerInfoPane extends Group {
+public class PlayerInfoPane extends Group implements StaffPointUpdatedNeteventListener {
 	public enum Position {
 		BOTTOM,
 		TOP,
@@ -23,13 +29,19 @@ public class PlayerInfoPane extends Group {
 
 	private boolean isForLocalPlayer = false;
 
+	private final GameClientInfo playerInfo;
+
 	private List<Production> productions = new ArrayList<>();
 
 	private List<CampaignRightToken> campaignRights = new ArrayList<>();
 
 	private StaffCounter staffCounter = new StaffCounter();
 
-	public PlayerInfoPane(Position position) {
+	public PlayerInfoPane(Position position, GameClientInfo playerInfo) {
+		EventDispatcher.registerListener(StaffPointUpdatedNetevent.class, this);
+
+		this.playerInfo = playerInfo;
+
 		this.productions.add(new Production());
 		this.productions.add(new Production());
 		this.productions.add(new Production());
@@ -81,6 +93,8 @@ public class PlayerInfoPane extends Group {
 			campaignRightsVBox.getChildren().addAll(this.campaignRights);
 			otherVBox.getChildren().addAll(this.staffCounter);
 			productionsVBox.getChildren().addAll(this.productions);
+
+			productionsVBox.getChildren().add(3, getPlayerLogo());
 		} else {
 			VBox rootVBox = new VBox();
 			getChildren().add(rootVBox);
@@ -132,6 +146,8 @@ public class PlayerInfoPane extends Group {
 			campaignRightsHBox.getChildren().addAll(this.campaignRights);
 			otherHBox.getChildren().addAll(this.staffCounter);
 			productionsHBox.getChildren().addAll(this.productions);
+
+			productionsHBox.getChildren().add(3, getPlayerLogo());
 		}
 	}
 
@@ -148,5 +164,32 @@ public class PlayerInfoPane extends Group {
 			return this.campaignRights.get(weight);
 		}
 		return this.campaignRights.get(0);
+	}
+
+	public void destroy() {
+		// TODO: call on game quit.
+		EventDispatcher.unregisterListener(StaffPointUpdatedNetevent.class, this);
+
+		this.staffCounter = null;
+		this.campaignRights.clear();
+		this.productions.clear();
+		getChildren().clear();
+	}
+
+	@Override
+	public void handleStaffPointUpdated(StaffPointUpdatedNetevent event) {
+		this.staffCounter.setValue(event.getNewValue());
+	}
+
+	// helper
+	private VBox getPlayerLogo() {
+		VBox logo = new VBox(10);
+		logo.setAlignment(Pos.CENTER);
+		Label playerName = new Label(this.playerInfo.getGameClientName());
+		playerName.setTextFill(GlobalChat.getClientColor(this.playerInfo));
+		Label playerFaction = new Label(GlobalChat.getClientFaction(this.playerInfo).name());
+		playerFaction.setTextFill(GlobalChat.getClientColor(this.playerInfo));
+		logo.getChildren().addAll(playerName, playerFaction);
+		return logo;
 	}
 }

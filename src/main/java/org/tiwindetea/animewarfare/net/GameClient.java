@@ -30,11 +30,55 @@ import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
-import org.tiwindetea.animewarfare.net.networkevent.*;
-import org.tiwindetea.animewarfare.net.networkrequests.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FanNumberUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectionRequestNetvent;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndConditionsReachedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MarketingLadderUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayOrderChosenNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.SelectMascotToCaptureRequestNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitCreatedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitCountChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -381,6 +425,11 @@ public class GameClient {
             EventDispatcher.send(new PlayOrderChosenNetevent(playingOrderChosen));
         }
 
+        public void received(Connection connection, NetStaffPointsUpdated staffPointsUpdated) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + staffPointsUpdated);
+            EventDispatcher.send(new StaffPointUpdatedNetevent(staffPointsUpdated));
+        }
+
         public void received(Connection connection, NetStudio newStudio) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + newStudio);
             EventDispatcher.send(new StudioNetevent(newStudio));
@@ -398,7 +447,6 @@ public class GameClient {
             Log.trace(GameClient.Listener.class.toString(), "Received " + selectMascotToCapture);
             EventDispatcher.send(new SelectMascotToCaptureRequestNetevent(selectMascotToCapture));
         }
-
 
         public void received(Connection connection, NetUnitMoveEvent unitEvent) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + unitEvent);

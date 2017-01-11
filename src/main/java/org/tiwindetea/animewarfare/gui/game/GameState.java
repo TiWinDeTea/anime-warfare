@@ -85,7 +85,7 @@ public class GameState extends GUIState {
 				this.rootLayout
 		);
 
-		GameState.gameLayoutController.initOverlay();
+		GameState.gameLayoutController.initStart();
 
 		// listen events.
 	}
@@ -94,7 +94,7 @@ public class GameState extends GUIState {
 	public void onExit() {
 		this.gContextActionMenu.destroy();
 
-		GameState.gameLayoutController.clearOverlay();
+		GameState.gameLayoutController.clearEnd();
 
 		// stop listening events.
 	}

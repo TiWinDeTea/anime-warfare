@@ -25,30 +25,33 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
 
 /**
- * @author Lucas Lazare
+ * @author Benoît CORTIER
  * @since 0.1.0
  */
-public class PlayOrderChosenNetevent implements Event<PlayOrderChosenNeteventListener> {
+public class StaffPointUpdatedNetevent implements Event<StaffPointUpdatedNeteventListener> {
 
-    private final boolean isClockwise;
+	private final GameClientInfo player;
+	private final int newValue;
 
-    public PlayOrderChosenNetevent(boolean isClockwise) {
-        this.isClockwise = isClockwise;
-    }
+	public StaffPointUpdatedNetevent(NetStaffPointsUpdated staffPointsUpdated) {
+		this.player = staffPointsUpdated.getPlayer();
+		this.newValue = staffPointsUpdated.getNewValue();
+	}
 
-    public PlayOrderChosenNetevent(NetPlayingOrderChosen netPlayingOrderChosen) {
-        this.isClockwise = netPlayingOrderChosen.isClockwise();
-    }
+	public GameClientInfo getPlayer() {
+		return this.player;
+	}
 
-    @Override
-    public void notify(PlayOrderChosenNeteventListener listener) {
-        listener.handlePlayOrderChoice(this);
-    }
+	public int getNewValue() {
+		return this.newValue;
+	}
 
-    public boolean isClockwise() {
-        return this.isClockwise;
-    }
+	@Override
+	public void notify(StaffPointUpdatedNeteventListener listener) {
+		listener.handleStaffPointUpdated(this);
+	}
 }

@@ -22,28 +22,39 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests;
+package org.tiwindetea.animewarfare.net.networkrequests.server;
+
+import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
 
 /**
- * @author Lucas Lazare
+ * @author Benoît CORTIER
  * @since 0.1.0
  */
-public class NetPlayingOrderChosen implements NetworkedClass {
+public class NetStaffPointsUpdated implements NetSendable {
 
-    private final boolean isClockwise;
+	private final GameClientInfo player;
+	private final int newValue;
 
-    /**
-     * Default constructor, required by Kryo.net
-     */
-    public NetPlayingOrderChosen() {
-        this.isClockwise = false;
-    }
+	/**
+	 * Default constructor, required by Kryo.net
+	 */
+	public NetStaffPointsUpdated() {
+		this.player = null;
+		this.newValue = 0;
+	}
 
-    public NetPlayingOrderChosen(Boolean clockWise) {
-        this.isClockwise = clockWise.booleanValue();
-    }
+	public NetStaffPointsUpdated(StaffPointUpdatedEvent event, GameClientInfo player) {
+		this.player = player;
+		this.newValue = event.getStaffAvailable();
+	}
 
-    public boolean isClockwise() {
-        return this.isClockwise;
-    }
+	public GameClientInfo getPlayer() {
+		return this.player;
+	}
+
+	public int getNewValue() {
+		return this.newValue;
+	}
 }

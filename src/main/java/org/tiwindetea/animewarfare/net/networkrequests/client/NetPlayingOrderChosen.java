@@ -22,30 +22,27 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkevent;
+package org.tiwindetea.animewarfare.net.networkrequests.client;
 
-import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.NetworkedClass;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class PlayOrderChosenNetevent implements Event<PlayOrderChosenNeteventListener> {
+public class NetPlayingOrderChosen implements NetworkedClass {
 
     private final boolean isClockwise;
 
-    public PlayOrderChosenNetevent(boolean isClockwise) {
-        this.isClockwise = isClockwise;
+    /**
+     * Default constructor, required by Kryo.net
+     */
+    public NetPlayingOrderChosen() {
+        this.isClockwise = false;
     }
 
-    public PlayOrderChosenNetevent(NetPlayingOrderChosen netPlayingOrderChosen) {
-        this.isClockwise = netPlayingOrderChosen.isClockwise();
-    }
-
-    @Override
-    public void notify(PlayOrderChosenNeteventListener listener) {
-        listener.handlePlayOrderChoice(this);
+    public NetPlayingOrderChosen(Boolean clockWise) {
+        this.isClockwise = clockWise.booleanValue();
     }
 
     public boolean isClockwise() {
