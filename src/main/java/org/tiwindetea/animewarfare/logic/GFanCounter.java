@@ -4,7 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
@@ -15,7 +15,7 @@ import org.tiwindetea.animewarfare.net.networkevent.FanNumberUpdatedNeteventList
 import java.util.HashMap;
 import java.util.Map;
 
-public class GFanCounter extends StackPane implements FanNumberUpdatedNeteventListener {
+public class GFanCounter extends AnchorPane implements FanNumberUpdatedNeteventListener {
 	private final Map<Integer, IntegerProperty> playerPosition = new HashMap<>();
 
 	public GFanCounter() {
@@ -26,7 +26,8 @@ public class GFanCounter extends StackPane implements FanNumberUpdatedNeteventLi
 		for (GameClientInfo gameClientInfo : MainApp.getGameClient().getRoom().getMembers()) {
 			IntegerProperty position = new SimpleIntegerProperty(0);
 			this.playerPosition.put(new Integer(gameClientInfo.getId()), position);
-			NumberBinding binding = Bindings.multiply(Bindings.divide(heightProperty(), 50.0), position);
+			NumberBinding binding = Bindings.subtract(heightProperty(),
+					Bindings.multiply(Bindings.divide(heightProperty(), 60.0), position));
 
 			Rectangle rectangle = new Rectangle(20, 5);
 			rectangle.setStyle("-fx-rotate: " + angle + ";");

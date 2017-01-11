@@ -17,6 +17,11 @@ PaperButton:pressed {
     -fx-effect: dropshadow(gaussian, #1d1f1d, 20, 0, 5, 5);
 }
 
+GFanCounter {
+    -fx-background-image: url("../pictures/ui/slider-track-vertical.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 102%;
+}
 .vBoxMainMenu {
     -fx-spacing: 30;
     -fx-padding: 10, 0, 10, 0;
