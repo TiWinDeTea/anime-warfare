@@ -444,6 +444,8 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		if (event.wantToSteelFans()) {
 			this.currentPlayer.decrementStaffPoints(CapacityName.MORE_FANS.getStaffCost());
+			this.huntedPlayer.decrementFans(1);
+			this.currentPlayer.incrementFans(1);
 		} else {
 			this.currentPlayer.decrementStaffPoints(1);
 		}
