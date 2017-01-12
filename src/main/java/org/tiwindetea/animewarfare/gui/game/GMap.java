@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -247,6 +248,10 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
      */
     public void scrollEvent(ScrollEvent e) {
         this.getOnScroll().handle(e);
+    }
+
+    public List<GComponent> getComponents(int zoneId) {
+        return this.MAP.getRectanglesOf(zoneId).stream().map(r -> r.getGComponent()).collect(Collectors.toList());
     }
 
     public int linkTo(GComponent component, double x, double y) {
@@ -459,6 +464,10 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             return this.numberOfgComponentsPerZone.get(zoneID).value;
         }
 
+        public List<GComponentRectangle> getRectanglesOf(int zoneId) {
+            return this.map.get(new Integer(zoneId));
+        }
+
         public List<GComponentRectangle> getRectangles() {
             List<GComponentRectangle> ans = new ArrayList<>(200);
             for (List<GComponentRectangle> gcomponentRectangles : this.map.values()) {
@@ -473,7 +482,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     }
 
     private String getDescription(int zoneID) {
-        return "Number of units zone " + zoneID + ": " + this.MAP.getNumberOfComponents(zoneID);
+        return "Number of things in zone " + zoneID + ": " + this.MAP.getNumberOfComponents(zoneID);
     }
 
     private static void setDefaultBehavior(Polygon polygon) {
