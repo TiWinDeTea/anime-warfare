@@ -121,17 +121,21 @@ public class GameBoard {
 			}
 
 			List<WeakReference<Player>> otherPlayers = this.players.values()
-			                                                       .stream()
-			                                                       .filter(player1 -> player.getID() != player1.getID())
-			                                                       .map(p -> new WeakReference<>(p))
-			                                                       .collect(Collectors.toList());
+					.stream()
+					.filter(player1 -> player.getID() != player1.getID())
+					.map(p -> new WeakReference<>(p))
+					.collect(Collectors.toList());
 			createActivable(player, otherPlayers);
 			studio.setController(unit);
 		}
 	}
 
-	public int getLastFirstPlayerID() {
-		return this.lastFirstPlayer.getID();
+	public Player getLastFirstPlayer() {
+		return this.lastFirstPlayer;
+	}
+
+	public void initializeLastFirstPlayer() {
+		this.lastFirstPlayer = this.firstPlayer;
 	}
 
 	public Player getPlayer(int id) {
@@ -140,9 +144,9 @@ public class GameBoard {
 
 	public Player getPlayer(FactionType factionType) {
 		return this.players.values().stream()
-		                   .filter(p -> p.hasFaction(factionType))
-		                   .findFirst()
-		                   .orElse(null);
+				.filter(p -> p.hasFaction(factionType))
+				.findFirst()
+				.orElse(null);
 	}
 
 	public Collection<Player> getPlayers() {
@@ -162,10 +166,6 @@ public class GameBoard {
 		} while (chosenPlayer >= 0);
 
 		return p;
-	}
-
-	public List<Player> getPlayersInOrder() { // todo : possibly useless (cf line 42, players hashmap)
-		return Collections.unmodifiableList(this.playersInOrder);
 	}
 
 	public Player getFirstPlayer() {

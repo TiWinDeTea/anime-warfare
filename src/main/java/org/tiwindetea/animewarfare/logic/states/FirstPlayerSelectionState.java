@@ -62,6 +62,7 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 
 		registerEventListeners();
 
+		this.gameBoard.initializeLastFirstPlayer();
 		selectionFirstPlayer();
 	}
 
@@ -114,7 +115,7 @@ class FirstPlayerSelectionState extends GameState implements FirstPlayerChoiceEv
 			this.firstPlayer = this.drawPlayers.get(0);
 			LogicEventDispatcher.getInstance().fire(new FirstPlayerSelectedEvent(this.firstPlayer.getID()));
 		} else {
-			LogicEventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayerID(),
+			LogicEventDispatcher.getInstance().fire(new AskFirstPlayerEvent(this.gameBoard.getLastFirstPlayer().getID(),
 					GameBoard.getPlayersIndex(this.drawPlayers)));
 		}
 	}
