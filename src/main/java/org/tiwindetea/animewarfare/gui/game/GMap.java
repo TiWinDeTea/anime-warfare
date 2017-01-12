@@ -152,36 +152,35 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
      * Removes any highlightig of a given zone
      */
     public void unHighlight(int zoneID) {
-        setDefaultBehavior(this.ZONES.get(zoneID).getKey());
+        Polygon p = this.ZONES.get(zoneID).getKey();
+        p.setEffect(null);
+        setStyle(p);
     }
 
     /**
      * Highlights a given zone in a given color, using JavaFX's thread
      */
-    public void highLightFxThread(int zone, Color color) {
-        Platform.runLater(() -> highlight(zone, color));
+    public void highLightFxThread(int zone, Color defaultColor, Color selectColor) {
+        Platform.runLater(() -> highlight(zone, defaultColor, selectColor));
     }
 
     /**
      * Highlights a given zone in a given color
      */
-    public void highlight(int zone, Color color) {
+    public void highlight(int zone, Color defaultColor, Color selectColor) {
         Polygon poly = this.ZONES.get(zone).getKey();
-        poly.setOnMouseEntered(e -> {
-        });
-        poly.setOnMouseExited(e -> {
-        });
-        poly.setFill(color);
+        poly.setOnMouseEntered(e -> poly.setFill(selectColor));
+        poly.setOnMouseExited(e -> poly.setFill(defaultColor));
+        poly.setOpacity(1);
+        poly.setFill(defaultColor);
     }
 
     /**
      * Highlights any zone at at most {@code distance} distance from a given zone, appart from the zone itself
      */
-    public void highlightNeighbour(int zoneID, int distance) {
+    public void highlightNeighbour(int zoneID, int distance, Color defaultColor, Color selectColor) {
         for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
-            Polygon p = this.ZONES.get(integer.intValue()).getKey();
-            p.setOpacity(.3);
-            p.setFill(Color.ORANGE);
+            highlight(integer.intValue(), defaultColor, selectColor);
         }
     }
 
@@ -190,9 +189,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
      */
     public void unHighlightNeigbour(int zoneID, int distance) {
         for (Integer integer : GameMap.getZonesAtAtMostExcept(zoneID, distance)) {
-            Polygon p = this.ZONES.get(integer.intValue()).getKey();
-            p.setFill(Color.WHITE);
-            p.setOpacity(0);
+            unHighlight(integer.intValue());
         }
     }
 
@@ -202,13 +199,13 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     public void displayComponentsGrids(boolean b) {
         if (b) {
             if (!this.isDisplayinGComponentsGrids) {
-                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.showGrid());
                 this.isDisplayinGComponentsGrids = true;
+                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.showGrid());
             }
         } else {
             if (this.isDisplayinGComponentsGrids) {
-                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.hideGrid());
                 this.isDisplayinGComponentsGrids = false;
+                this.MAP.getRectangles().stream().forEach(rectangle -> rectangle.hideGrid());
             }
         }
     }
@@ -219,18 +216,13 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     public void displayZonesGrids(boolean b) {
         if (b) {
             if (!this.isDisplayingZonesGrids) {
-                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> {
-                    poly.setFill(Color.TRANSPARENT);
-                    poly.setOpacity(1);
-                    poly.setOnMouseEntered(e -> poly.setFill(Color.rgb(255, 255, 255, 0.3)));
-                    poly.setOnMouseExited(e -> poly.setFill(Color.TRANSPARENT));
-                });
                 this.isDisplayingZonesGrids = true;
+                this.ZONES.stream().map(Pair::getKey).forEach(this::setStyle);
             }
         } else {
             if (this.isDisplayingZonesGrids) {
-                this.ZONES.stream().map(e -> e.getKey()).forEach(poly -> setDefaultBehavior(poly));
                 this.isDisplayingZonesGrids = false;
+                this.ZONES.stream().map(Pair::getKey).forEach(this::setStyle);
             }
         }
     }
@@ -488,14 +480,23 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         return "Number of things in zone " + zoneID + ": " + this.MAP.getNumberOfComponents(zoneID);
     }
 
-    private static void setDefaultBehavior(Polygon polygon) {
-        polygon.setFill(Color.WHITE);
+    private void setStyle(Polygon polygon) {
+
         polygon.setStroke(Color.BLACK);
         polygon.setStrokeWidth(3);
-        polygon.setOpacity(0);
         polygon.setPickOnBounds(false);
-        polygon.setOnMouseEntered(e -> polygon.setOpacity(0.3));
-        polygon.setOnMouseExited(e -> polygon.setOpacity(0));
+
+        if (this.isDisplayingZonesGrids) {
+            polygon.setFill(Color.TRANSPARENT);
+            polygon.setOpacity(1);
+            polygon.setOnMouseEntered(e -> polygon.setFill(Color.rgb(255, 255, 255, 0.3)));
+            polygon.setOnMouseExited(e -> polygon.setFill(Color.TRANSPARENT));
+        } else {
+            polygon.setFill(Color.WHITE);
+            polygon.setOpacity(0);
+            polygon.setOnMouseEntered(e -> polygon.setOpacity(0.3));
+            polygon.setOnMouseExited(e -> polygon.setOpacity(0));
+        }
     }
 
     private void updateDescription(int zoneID) {
@@ -508,7 +509,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         for (int i = 0; i < polygons.size(); i++) {
             int magic_i = i;
             Polygon polygon = polygons.get(i);
-            setDefaultBehavior(polygon);
+            setStyle(polygon);
             polygon.setOnMouseClicked(e -> EventDispatcher.send(new ZoneClickedEvent(magic_i, e)));
             Tooltip tooltip = new Tooltip(getDescription(i));
             Tooltip.install(polygon, tooltip);
@@ -823,7 +824,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
     @Override
     public void handlePreBattle(BattleNetevent event) {
-        this.highLightFxThread(event.getZone(), Color.color(1.0f, 0.64705884f, 0.0f, 0.3));
+        // todo
     }
 
     @Override
