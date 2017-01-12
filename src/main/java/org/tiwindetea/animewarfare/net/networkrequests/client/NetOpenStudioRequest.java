@@ -33,6 +33,13 @@ public class NetOpenStudioRequest implements NetSendable {
     private final int zoneID;
 
     /**
+     * Default constructor, required by kryonet
+     */
+    public NetOpenStudioRequest() {
+        this.zoneID = 0;
+    }
+
+    /**
      * @param zoneID Zone where you want to open a studio
      */
     public NetOpenStudioRequest(int zoneID) {
