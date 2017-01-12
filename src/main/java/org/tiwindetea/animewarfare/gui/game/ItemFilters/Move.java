@@ -40,6 +40,7 @@ import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
 import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitsRequest;
@@ -54,13 +55,15 @@ import java.util.Map;
 
 /**
  * @author Lucas Lazare
+ * @author Benoît CORTIER
  * @since 0.1.0
  */
 public class Move extends AbstractUnitFilter {
 
     private final List<MoveUnitsEvent.Movement> movements = new ArrayList<>();
+    private final List<GUnit> selectedUnits = new ArrayList<>();
     private final Map<Integer, Integer> linksID = new HashMap<>();
-    private ZoneClickedEventListener lastListener;
+    private List<ZoneClickedEventListener> clickedEventListeners = new ArrayList<>();
 
     private static Button cancel;
     private static Button done;
@@ -76,9 +79,9 @@ public class Move extends AbstractUnitFilter {
 
         if (actionMenuState == GCAMState.NOTHING || actionMenuState == GCAMState.MOVING_UNITS) {
             if (factionType == unit.getFaction()) {
-                if (!this.movements.stream().anyMatch(m -> m.getUnitID() == unit.gameID())) {
+                if (!this.movements.stream().anyMatch(m -> m.getUnitID() == unit.gameID()) && !this.selectedUnits.contains(unit)) {
                     MenuItem item = new MenuItem("Move " + unit.getType() + " (1 SP)"); // todo externalize
-                    if (this.movements.size() + 1 > GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue()) {
+                    if (this.movements.size() + this.selectedUnits.size() + 1 > GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue()) {
                         item.setDisable(true);
                     }
 
@@ -87,6 +90,8 @@ public class Move extends AbstractUnitFilter {
 
                         @Override
                         public void handle(ActionEvent event) {
+                            unit.setOpacity(0.5);
+                            Move.this.selectedUnits.add(unit);
                             map.highlightNeighbour(unit.getZone(), 1); // todo don't use 1 but unit move capacity instead
 
                             if (actionMenuState != GCAMState.MOVING_UNITS) {
@@ -103,15 +108,17 @@ public class Move extends AbstractUnitFilter {
 
                             actionMenuState = GCAMState.MOVING_UNITS;
                             this.listener = zoneClickedEvent -> {
-                                deregister();
-                                unit.setOpacity(0.5);
-                                MouseEvent mE = zoneClickedEvent.getMouseEvent();
-                                Move.this.linksID.put(new Integer(unit.gameID()), new Integer(map.linkTo(unit, mE.getX(), mE.getY())));
-                                map.unHighlightNeigbour(unit.gameID(), 1); // todo don't use 1 but unit move capacity instead
-                                Move.this.movements.add(new MoveUnitsEvent.Movement(unit.gameID(), unit.getZone(), zoneClickedEvent.getZoneID()));
+                                if (GameMap.getDistanceBetween(unit.getZone(), zoneClickedEvent.getZoneID()) == 1) { // FIXME: take into account the unit speed.
+                                    Move.this.selectedUnits.clear();
+                                    deregister();
+                                    MouseEvent mE = zoneClickedEvent.getMouseEvent();
+                                    Move.this.linksID.put(new Integer(unit.gameID()), new Integer(map.linkTo(unit, mE.getX(), mE.getY())));
+                                    map.unHighlightNeigbour(unit.gameID(), 1); // todo don't use 1 but unit move capacity instead
+                                    Move.this.movements.add(new MoveUnitsEvent.Movement(unit.gameID(), unit.getZone(), zoneClickedEvent.getZoneID()));
+                                }
                             };
                             EventDispatcher.registerListener(ZoneClickedEvent.class, this.listener);
-                            Move.this.lastListener = this.listener;
+                            Move.this.clickedEventListeners.add(this.listener);
                         }
 
                         public void deregister() {
@@ -124,8 +131,14 @@ public class Move extends AbstractUnitFilter {
                             for (MoveUnitsEvent.Movement movement : Move.this.movements) {
                                 GUnit.get(movement.getUnitID()).setOpacity(1);
                             }
-                            deregister();
+                            for (GUnit selectedUnit : Move.this.selectedUnits) {
+                                selectedUnit.setOpacity(1);
+                            }
+                            for (ZoneClickedEventListener clickedEventListener : Move.this.clickedEventListeners) {
+                                EventDispatcher.unregisterListener(ZoneClickedEvent.class, clickedEventListener);
+                            }
                             map.unHighlightNeigbour(unit.gameID(), 1); // todo don't use 1 but unit move capacity instead
+                            Move.this.selectedUnits.clear();
                             Move.this.movements.clear();
                             Move.this.linksID.clear();
                             remove(cancel, done);
@@ -137,16 +150,23 @@ public class Move extends AbstractUnitFilter {
                 } else {
                     MenuItem item = new MenuItem("Cancel " + unit.getType() + "'s move");
                     item.setOnAction(e -> {
-                        map.removeLink(this.linksID.remove(new Integer(unit.gameID())).intValue()); // null pointer exception
-                        this.movements.stream()
-                                .filter(movement -> movement.getUnitID() == unit.gameID())
-                                .findAny()
-                                .ifPresent(k -> this.movements.remove(k));
-                        unit.setOpacity(1);
-                        if (this.linksID.isEmpty() && this.movements.isEmpty()) {
-                            remove(cancel, done);
-                            actionMenuState = GCAMState.NOTHING;
+                        Integer linkId = this.linksID.remove(new Integer(unit.gameID()));
+                        if (linkId != null) {
+                            map.removeLink(linkId.intValue());
+                            this.movements.stream()
+                                    .filter(movement -> movement.getUnitID() == unit.gameID())
+                                    .findAny()
+                                    .ifPresent(k -> this.movements.remove(k));
+                            if (this.linksID.isEmpty() && this.movements.isEmpty()) {
+                                remove(cancel, done);
+                                actionMenuState = GCAMState.NOTHING;
+                            }
+                        } else {
+                            int index = this.selectedUnits.indexOf(unit);
+                            EventDispatcher.unregisterListener(ZoneClickedEvent.class, this.clickedEventListeners.remove(index));
+                            this.selectedUnits.remove(index);
                         }
+                        unit.setOpacity(1);
                     });
                     return Arrays.asList(item);
                 }
