@@ -24,15 +24,15 @@
 
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 public class CaptureUnitRequestEvent extends ActionEvent<CaptureUnitRequestEventListener> {
 	private final int huntedPlayerID;
 	private final int zone;
-	private final UnitType unitType;
+	private final UnitLevel unitType;
 	private final boolean steelFans;
 
-	public CaptureUnitRequestEvent(int playerID, int huntedPlayerID, int zone, UnitType unitType, boolean steelFans) {
+	public CaptureUnitRequestEvent(int playerID, int huntedPlayerID, int zone, UnitLevel unitType, boolean steelFans) {
 		super(playerID);
 
 		if (playerID == huntedPlayerID) {
@@ -58,7 +58,7 @@ public class CaptureUnitRequestEvent extends ActionEvent<CaptureUnitRequestEvent
 		return this.zone;
 	}
 
-	public UnitType getUnitType() {
+	public UnitLevel getUnitLevel() {
 		return this.unitType;
 	}
 

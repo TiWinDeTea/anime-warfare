@@ -24,7 +24,7 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.client;
 
-import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
@@ -34,32 +34,39 @@ import org.tiwindetea.animewarfare.net.GameClientInfo;
 public class NetUnitCaptureRequest implements NetSendable {
     private final int targetPlayer;
     private final int zoneID;
-    private final UnitType unitType;
+    private final UnitLevel unitLevel;
     private final boolean steelFans;
 
+    // Kryo
+    public NetUnitCaptureRequest() {
+        this.targetPlayer = -1;
+        this.zoneID = -1;
+        this.unitLevel = null;
+        this.steelFans = false;
+    }
     /**
      * @param targetPlayer Player you want to assault
      * @param zoneID       ID of the zone where you want to attack
-     * @param unitType
+     * @param unitLevel
      * @param steelFans
      */
-    public NetUnitCaptureRequest(int targetPlayer, int zoneID, UnitType unitType, boolean steelFans) {
+    public NetUnitCaptureRequest(int targetPlayer, int zoneID, UnitLevel unitLevel, boolean steelFans) {
         this.targetPlayer = targetPlayer;
         this.zoneID = zoneID;
-        this.unitType = unitType;
+        this.unitLevel = unitLevel;
         this.steelFans = steelFans;
     }
 
     /**
      * @param targetPlayer Player you want to assault
      * @param zoneID       ID of the zone where you want to attack
-     * @param unitType
+     * @param unitLevel
      * @param steelFans
      */
-    public NetUnitCaptureRequest(GameClientInfo targetPlayer, int zoneID, UnitType unitType, boolean steelFans) {
+    public NetUnitCaptureRequest(GameClientInfo targetPlayer, int zoneID, UnitLevel unitLevel, boolean steelFans) {
         this.targetPlayer = targetPlayer.getId();
         this.zoneID = zoneID;
-        this.unitType = unitType;
+        this.unitLevel = unitLevel;
         this.steelFans = steelFans;
     }
 
@@ -71,8 +78,8 @@ public class NetUnitCaptureRequest implements NetSendable {
         return this.zoneID;
     }
 
-    public UnitType getUnitType() {
-        return this.unitType;
+    public UnitLevel getUnitLevel() {
+        return this.unitLevel;
     }
 
     public boolean wantToSteelFans() {

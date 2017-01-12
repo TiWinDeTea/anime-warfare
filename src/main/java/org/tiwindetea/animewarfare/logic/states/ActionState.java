@@ -384,22 +384,22 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 				return;
 			}
 
-			if (!event.getUnitType().isLevel(UnitLevel.MASCOT)) {
+			if (event.getUnitLevel() != UnitLevel.MASCOT) {
 				Log.debug(getClass().getName(), "Unit should be a mascot.");
 				return;
 			}
 
 			if (this.currentPlayer.hasRequiredStaffPoints(CapacityName.MORE_FANS.getStaffCost())) {
-				Log.debug(getClass().getName(), "Not enough staff points.");
+				Log.debug(getClass().getName(), "Not enough staff points. (More Fans)");
 				return;
 			}
 
-		} else if (this.currentPlayer.hasRequiredStaffPoints(1)) {
-			Log.debug(getClass().getName(), "Not enough staff points.");
+		} else if (!this.currentPlayer.hasRequiredStaffPoints(1)) {
+			Log.debug(getClass().getName(), "Not enough staff points. (Capture)");
 			return;
 		}
 
-		if (!event.getUnitType().isLevel(UnitLevel.MASCOT)
+		if (event.getUnitLevel() != UnitLevel.MASCOT
 				&& !this.currentPlayer.hasCapacity(CapacityName.GENIUS_KIDNAPPER)) {
 			Log.debug(getClass().getName(), "Can't hunt monster without Genius Kidnapper capacity.");
 			return;
@@ -420,7 +420,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		List<Unit> huntedUnits = this.huntingZone.getUnits()
 		                                         .stream()
-		                                         .filter(u -> u.getType() == event.getUnitType()
+		                                         .filter(u -> u.isLevel(event.getUnitLevel())
 				                                         && u.hasFaction(this.huntedPlayer.getFaction()))
 		                                         .collect(Collectors.toList());
 
@@ -457,7 +457,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			LogicEventDispatcher.getInstance()
 			                    .fire(new AskUnitToCaptureEvent(event.getHuntedPlayerID(),
 					                    event.getZone(),
-					                    event.getUnitType()));
+					                    event.getUnitLevel()));
 		}
 	}
 

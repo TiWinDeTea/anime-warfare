@@ -43,8 +43,8 @@ import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.game.dialog.OverlayMessageDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GFanCounter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GMap;
-import org.tiwindetea.animewarfare.logic.GFanCounter;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
@@ -97,6 +97,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private VBox mainVBox;
 
 	private VBox overlay;
+
+	GFanCounter gfc = new GFanCounter();
 
 	public void initStart(GContextActionMenu gContextActionMenu) {
 		MainApp.getMainRoot().getChildren().add(this.overlay);
@@ -152,13 +154,13 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			this.rootBorderPane.setAlignment(node, Pos.CENTER);
 		}
 
-		GFanCounter gfc = new GFanCounter();
-		gfc.init();
-		this.hBox.getChildren().add(gfc);
+		this.gfc.init();
+		this.hBox.getChildren().add(this.gfc);
 	}
 
 	public void clearEnd() {
 		this.overlay.getChildren().clear();
+		this.gfc.clear();
 		MainApp.getMainRoot().getChildren().remove(this.overlay);
 
 		this.rootBorderPane.setBottom(null);
@@ -178,6 +180,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
 		EventDispatcher.registerListener(FirstPlayerSelectedNetevent.class, this);
 		EventDispatcher.registerListener(NextPlayerNetevent.class, this);
+		EventDispatcher.registerListener(SelectUnitToCaptureRequestNetevent.class, this);
 
 		GamePhaseMonitor.init();
 		PlayerTurnMonitor.init();
@@ -223,6 +226,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
 		EventDispatcher.unregisterListener(FirstPlayerSelectedNetevent.class, this);
 		EventDispatcher.unregisterListener(NextPlayerNetevent.class, this);
+		EventDispatcher.unregisterListener(SelectUnitToCaptureRequestNetevent.class, this);
 	}
 
 	@Override
@@ -290,7 +294,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	public void handleMascotSelectionRequest(SelectUnitToCaptureRequestNetevent event) {
 		Platform.runLater(() -> {
 			new OverlayMessageDialog(this.overlay,
-					"Select a " + event.getUnitType() + " which will be captured."); // TODO: externalize.
+					"Select a " + event.getUnitLevel() + " which will be captured."); // TODO: externalize.
 			this.finishTurnButton.setDisable(true);
 			this.skipAllButton.setDisable(true);
 		});

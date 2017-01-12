@@ -43,10 +43,12 @@ import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractFilter
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractStudioFilter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractUnitFilter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractZoneFilter;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawMascot;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToCapture;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
@@ -223,6 +225,9 @@ public class GContextActionMenu extends ContextMenu
             AbstractUnitFilter openStudio = new OpenStudio();
             this.filteredUnitItems.put(openStudio.getName(), openStudio);
 
+            AbstractUnitFilter selectUnitToCapture = new SelectUnitToCapture();
+            this.filteredUnitItems.put(selectUnitToCapture.getName(), selectUnitToCapture);
+
             // == studio filters ==
             AbstractStudioFilter drawUnit = new DrawUnit();
             this.filteredStudioItems.put(drawUnit.getName(), drawUnit);
@@ -230,6 +235,9 @@ public class GContextActionMenu extends ContextMenu
             // == zone filters ==
             AbstractZoneFilter drawMascot = new DrawMascot();
             this.filteredZoneItems.put(drawMascot.getName(), drawMascot);
+
+            AbstractZoneFilter captureUnit = new CaptureUnit();
+            this.filteredZoneItems.put(captureUnit.getName(), captureUnit);
         }
     }
 

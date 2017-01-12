@@ -32,6 +32,12 @@ public class NetCapturedUnitSelection implements NetSendable {
 
     private final int unitID;
 
+
+    // Kryo
+    public NetCapturedUnitSelection() {
+        this.unitID = -1;
+    }
+
     /**
      * @param unitID Unit that you selected. It will be the one that will be removed from the gameboard.
      */

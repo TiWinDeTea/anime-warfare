@@ -25,7 +25,7 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCapture;
 
 /**
@@ -33,11 +33,11 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCap
  * @since 0.1.0
  */
 public class SelectUnitToCaptureRequestNetevent implements Event<SelectUnitToCaptureRequestNeteventListener> {
-    private final UnitType unitType;
+    private final UnitLevel unitLevel;
     private final int zoneId;
 
     public SelectUnitToCaptureRequestNetevent(NetSelectUnitToCapture selectMascotToCapture) {
-        this.unitType = selectMascotToCapture.getUnitType();
+        this.unitLevel = selectMascotToCapture.getUnitLevel();
         this.zoneId = selectMascotToCapture.getZoneId();
     }
 
@@ -46,8 +46,8 @@ public class SelectUnitToCaptureRequestNetevent implements Event<SelectUnitToCap
         listener.handleMascotSelectionRequest(this);
     }
 
-    public UnitType getUnitType() {
-        return this.unitType;
+    public UnitLevel getUnitLevel() {
+        return this.unitLevel;
     }
 
     public int getZoneId() {

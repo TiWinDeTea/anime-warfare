@@ -25,17 +25,17 @@
 package org.tiwindetea.animewarfare.logic.states.events;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 public class AskUnitToCaptureEvent implements Event<AskUnitToCaptureEventListener> {
 	private final int player;
 	private final int zoneID;
-	private final UnitType type;
+	private final UnitLevel level;
 
-	public AskUnitToCaptureEvent(int player, int zoneID, UnitType type) {
+	public AskUnitToCaptureEvent(int player, int zoneID, UnitLevel level) {
 		this.player = player;
 		this.zoneID = zoneID;
-		this.type = type;
+		this.level = level;
 	}
 
 	@Override
@@ -47,8 +47,8 @@ public class AskUnitToCaptureEvent implements Event<AskUnitToCaptureEventListene
 		return this.zoneID;
 	}
 
-	public UnitType getType() {
-		return this.type;
+	public UnitLevel getLevel() {
+		return this.level;
 	}
 
 	public int getPlayer() {

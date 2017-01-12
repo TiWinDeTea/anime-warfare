@@ -46,6 +46,7 @@ import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
@@ -219,6 +220,7 @@ class Utils {
 		kryo.register(PhaseChangedEvent.Phase.class);
 		kryo.register(MoveUnitsEvent.Movement.class);
 		kryo.register(UnitType.class);
+		kryo.register(UnitLevel.class);
 		kryo.register(StudioEvent.Type.class);
 	}
 

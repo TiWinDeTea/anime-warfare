@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.logic;
+package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
@@ -6,6 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
+import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
@@ -19,6 +20,11 @@ public class GFanCounter extends AnchorPane implements FanNumberUpdatedNeteventL
 	private final Map<Integer, IntegerProperty> playerPosition = new HashMap<>();
 
 	public GFanCounter() {
+		EventDispatcher.registerListener(FanNumberUpdatedNetevent.class, this);
+	}
+
+	public void clear() {
+		EventDispatcher.unregisterListener(FanNumberUpdatedNetevent.class, this);
 	}
 
 	public void init() {

@@ -619,7 +619,7 @@ public class GameServer {
                         connection.getID(),
                         mascotRequest.getTargetPlayer(),
                         mascotRequest.getZoneID(),
-                        mascotRequest.getUnitType(), mascotRequest.wantToSteelFans()));
+                        mascotRequest.getUnitLevel(), mascotRequest.wantToSteelFans()));
             }
         }
 
