@@ -32,17 +32,17 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCap
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class SelectMascotToCaptureRequestNetevent implements Event<SelectMascotToCaptureRequestNeteventListener> {
+public class SelectUnitToCaptureRequestNetevent implements Event<SelectUnitToCaptureRequestNeteventListener> {
     private final UnitType unitType;
     private final int zoneId;
 
-    public SelectMascotToCaptureRequestNetevent(NetSelectUnitToCapture selectMascotToCapture) {
+    public SelectUnitToCaptureRequestNetevent(NetSelectUnitToCapture selectMascotToCapture) {
         this.unitType = selectMascotToCapture.getUnitType();
         this.zoneId = selectMascotToCapture.getZoneId();
     }
 
     @Override
-    public void notify(SelectMascotToCaptureRequestNeteventListener listener) {
+    public void notify(SelectUnitToCaptureRequestNeteventListener listener) {
         listener.handleMascotSelectionRequest(this);
     }
 

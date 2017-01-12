@@ -82,7 +82,9 @@ public class Move extends AbstractUnitFilter {
 
         if (actionMenuState == GCAMState.NOTHING || actionMenuState == GCAMState.MOVING_UNITS) {
             if (factionType == unit.getFaction()) {
-                if (!this.movements.stream().anyMatch(m -> m.getUnitID() == unit.gameID()) && !this.selectedUnits.contains(unit)) {
+                if (!this.movements.stream()
+                                   .anyMatch(m -> m.getUnitID() == unit.getGameID()) && !this.selectedUnits.contains(
+                        unit)) {
                     if (actionMenuState == GCAMState.MOVING_UNITS) {
                         select(unit);
                         return Collections.emptyList();
@@ -142,13 +144,13 @@ public class Move extends AbstractUnitFilter {
     }
 
     private void deselect(GUnit unit) {
-        Integer linkId = this.linksID.remove(new Integer(unit.gameID()));
+        Integer linkId = this.linksID.remove(new Integer(unit.getGameID()));
         if (linkId != null) {
             this.map.removeLink(linkId.intValue());
             this.movements.stream()
-                    .filter(movement -> movement.getUnitID() == unit.gameID())
-                    .findAny()
-                    .ifPresent(k -> this.movements.remove(k));
+                          .filter(movement -> movement.getUnitID() == unit.getGameID())
+                          .findAny()
+                          .ifPresent(k -> this.movements.remove(k));
             if (this.linksID.isEmpty() && this.movements.isEmpty()) {
                 remove(cancel, done);
                 actionMenuState = GCAMState.NOTHING;
@@ -176,9 +178,12 @@ public class Move extends AbstractUnitFilter {
                     Move.this.selectedUnits.clear();
                     deregister(this);
                     MouseEvent mE = zoneClickedEvent.getMouseEvent();
-                    Move.this.linksID.put(new Integer(unit.gameID()), new Integer(Move.this.map.linkTo(unit, mE.getX(), mE.getY())));
+                    Move.this.linksID.put(new Integer(unit.getGameID()),
+                            new Integer(Move.this.map.linkTo(unit, mE.getX(), mE.getY())));
                     Move.this.map.unHighlightNeigbour(unit.getZone(), 1); // todo don't use 1 but unit move capacity instead
-                    Move.this.movements.add(new MoveUnitsEvent.Movement(unit.gameID(), unit.getZone(), zoneClickedEvent.getZoneID()));
+                    Move.this.movements.add(new MoveUnitsEvent.Movement(unit.getGameID(),
+                            unit.getZone(),
+                            zoneClickedEvent.getZoneID()));
                 }
             }
         };

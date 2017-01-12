@@ -263,6 +263,14 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                 .collect(Collectors.toList());
     }
 
+    public List<GUnit> getUnits(int zonedID) {
+        return this.MAP.getRectanglesOf(zonedID)
+                       .stream()
+                       .map(r -> r.getGComponent())
+                       .filter(c -> c != null && c.isUnit()).map(c -> (GUnit) c)
+                       .collect(Collectors.toList());
+    }
+
     public int linkTo(GComponent component, double x, double y) {
         GComponentRectangle rectangle = this.MAP.getRectangleOf(component);
 

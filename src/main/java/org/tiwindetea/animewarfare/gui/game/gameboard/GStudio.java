@@ -159,4 +159,9 @@ public class GStudio extends GComponent {
     public boolean equals(Object o) {
         return (o instanceof GStudio) && ((GStudio) o).zoneID == this.zoneID;
     }
+
+    @Override
+    public boolean isUnit() {
+        return false;
+    }
 }

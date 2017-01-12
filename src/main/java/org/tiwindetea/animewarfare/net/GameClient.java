@@ -51,7 +51,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.SelectMascotToCaptureRequestNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
@@ -466,7 +466,7 @@ public class GameClient {
 
         public void received(Connection connection, NetSelectUnitToCapture selectMascotToCapture) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + selectMascotToCapture);
-            EventDispatcher.send(new SelectMascotToCaptureRequestNetevent(selectMascotToCapture));
+            EventDispatcher.send(new SelectUnitToCaptureRequestNetevent(selectMascotToCapture));
         }
 
         public void received(Connection connection, NetUnitMoveEvent unitEvent) {

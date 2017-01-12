@@ -54,7 +54,7 @@ import java.util.TreeSet;
 public class GUnit extends GComponent {
 
     private static final Map<UnitType, Image> PICTURES = new HashMap<>();
-    private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::gameID));
+    private static final TreeSet<GUnit> units = new TreeSet<>(Comparator.comparingInt(GUnit::getGameID));
     private static boolean initialized = false;
 
     private final UnitType type;
@@ -154,7 +154,7 @@ public class GUnit extends GComponent {
         this.type = null;
     }
 
-    public int gameID() {
+    public int getGameID() {
         return this.ID;
     }
 
@@ -168,7 +168,7 @@ public class GUnit extends GComponent {
      */
     public static GUnit get(int id) {
         GUnit unit = units.floor(new GUnit(id));
-        if (unit != null && unit.gameID() == id) {
+        if (unit != null && unit.getGameID() == id) {
             return unit;
         } else {
             return null;
@@ -242,5 +242,10 @@ public class GUnit extends GComponent {
             return this.ID == u.ID;
         }
         return false;
+    }
+
+    @Override
+    public boolean isUnit() {
+        return true;
     }
 }

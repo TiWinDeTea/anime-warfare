@@ -22,15 +22,24 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkevent;
-
-import java.util.EventListener;
+package org.tiwindetea.animewarfare.net.networkrequests.client;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface SelectMascotToCaptureRequestNeteventListener extends EventListener {
+public class NetCapturedUnitSelection implements NetSendable {
 
-    void handleMascotSelectionRequest(SelectMascotToCaptureRequestNetevent event);
+    private final int unitID;
+
+    /**
+     * @param unitID Unit that you selected. It will be the one that will be removed from the gameboard.
+     */
+    public NetCapturedUnitSelection(int unitID) {
+        this.unitID = unitID;
+    }
+
+    public int getUnitID() {
+        return this.unitID;
+    }
 }

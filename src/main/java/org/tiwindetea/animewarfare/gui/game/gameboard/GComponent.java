@@ -70,4 +70,6 @@ public abstract class GComponent extends StackPane {
     protected void setFactionType(FactionType f) {
         this.factionType = f;
     }
+
+	public abstract boolean isUnit();
 }

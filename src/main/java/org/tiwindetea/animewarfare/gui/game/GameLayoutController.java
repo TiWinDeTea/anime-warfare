@@ -53,6 +53,8 @@ import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNeteventListener;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
@@ -66,7 +68,8 @@ import java.util.ResourceBundle;
  * @author Benoît CORTIER
  */
 public class GameLayoutController implements Initializable, QuitApplicationEventListener,
-		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener, NextPlayerNeteventListener {
+		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener, NextPlayerNeteventListener,
+		SelectUnitToCaptureRequestNeteventListener {
 	private static GMap map;
 
 	private static List<PlayerInfoPane> playerInfoPaneList = new ArrayList<>();
@@ -281,5 +284,15 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	public static PlayerInfoPane getLocalPlayerInfoPane() {
 		return GameLayoutController.localPlayerInfoPane;
+	}
+
+	@Override
+	public void handleMascotSelectionRequest(SelectUnitToCaptureRequestNetevent event) {
+		Platform.runLater(() -> {
+			new OverlayMessageDialog(this.overlay,
+					"Select a " + event.getUnitType() + " which will be captured."); // TODO: externalize.
+			this.finishTurnButton.setDisable(true);
+			this.skipAllButton.setDisable(true);
+		});
 	}
 }

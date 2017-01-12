@@ -51,7 +51,7 @@ import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEve
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
@@ -165,7 +165,7 @@ class Utils {
 
 		// client, alphabetical order
 		kryo.register(NetBattlePhaseReadyRequest.class);
-		kryo.register(NetCapturedMascotSelection.class);
+		kryo.register(NetCapturedUnitSelection.class);
 		kryo.register(NetConventionRequest.class);
 		kryo.register(NetFinishTurnRequest.class);
 		kryo.register(NetFirstPlayerSelection.class);

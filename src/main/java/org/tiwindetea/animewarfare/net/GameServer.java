@@ -82,7 +82,7 @@ import org.tiwindetea.animewarfare.net.logicevent.UnitToCaptureEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
@@ -550,7 +550,7 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetCapturedMascotSelection selection) {
+        public void received(Connection connection, NetCapturedUnitSelection selection) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new UnitToCaptureEvent(connection.getID(), selection.getUnitID()));
             }
