@@ -34,6 +34,11 @@ public class NetFirstPlayerSelection implements NetSendable {
 
     private final int playerID;
 
+    /* required by kryo */
+    public NetFirstPlayerSelection() {
+        this.playerID = 0;
+    }
+
     /**
      * @param playerID Selected player
      */

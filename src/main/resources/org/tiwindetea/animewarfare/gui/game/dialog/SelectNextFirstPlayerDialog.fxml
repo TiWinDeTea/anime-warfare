@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import org.tiwindetea.animewarfare.gui.PaperGridPane?>
+
+<PaperGridPane fx:id="paperGridPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="750.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="50.0" />
+        <RowConstraints minHeight="10.0" prefHeight="50.0" />
+    </rowConstraints>
+    <columnConstraints>
+        <ColumnConstraints minWidth="10.0" prefWidth="400.0" />
+        <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
+        <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
+    </columnConstraints>
+    <children>
+        <Label text="%label.message">
+            <padding>
+                <Insets left="10.0" />
+            </padding>
+        </Label>
+    </children>
+</PaperGridPane>
