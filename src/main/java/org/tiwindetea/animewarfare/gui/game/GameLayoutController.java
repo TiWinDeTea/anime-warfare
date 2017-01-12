@@ -42,11 +42,14 @@ import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.game.dialog.OverlayMessageDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
+import org.tiwindetea.animewarfare.gui.game.dialog.SelectNextFirstPlayerDialog;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GFanCounter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GMap;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
+import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetvent;
+import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetventListener;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNetevent;
@@ -69,7 +72,7 @@ import java.util.ResourceBundle;
  */
 public class GameLayoutController implements Initializable, QuitApplicationEventListener,
 		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener, NextPlayerNeteventListener,
-		SelectUnitToCaptureRequestNeteventListener {
+		SelectUnitToCaptureRequestNeteventListener, AskFirstPlayerSelectionNetventListener {
 	private static GMap map;
 
 	private static List<PlayerInfoPane> playerInfoPaneList = new ArrayList<>();
@@ -181,6 +184,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(FirstPlayerSelectedNetevent.class, this);
 		EventDispatcher.registerListener(NextPlayerNetevent.class, this);
 		EventDispatcher.registerListener(SelectUnitToCaptureRequestNetevent.class, this);
+		EventDispatcher.registerListener(AskFirstPlayerSelectionNetvent.class, this);
 
 		GamePhaseMonitor.init();
 		PlayerTurnMonitor.init();
@@ -227,6 +231,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.unregisterListener(FirstPlayerSelectedNetevent.class, this);
 		EventDispatcher.unregisterListener(NextPlayerNetevent.class, this);
 		EventDispatcher.unregisterListener(SelectUnitToCaptureRequestNetevent.class, this);
+		EventDispatcher.unregisterListener(AskFirstPlayerSelectionNetvent.class, this);
 	}
 
 	@Override
@@ -282,6 +287,28 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			}
 		});
 	}
+
+	@Override
+	public void handleFirstPlayerSelectionAsked(AskFirstPlayerSelectionNetvent event) {
+		Platform.runLater(() -> {
+			GameClientInfo info = event.getPlayerThatSelects();
+			if (MainApp.getGameClient().getClientInfo().equals(info)) {
+				new SelectNextFirstPlayerDialog(this.overlay, event.getSelectablePlayers());
+			} else {
+				String[] playerNames = new String[event.getSelectablePlayers().size()];
+				final int[] i = {0};
+				event.getSelectablePlayers().forEach(p -> {
+					playerNames[i[0]] = p.getGameClientName();
+					++i[0];
+				});
+				String selectablesPlayers = String.join(", ", playerNames);
+				new OverlayMessageDialog(this.overlay, info.getGameClientName()
+						+ " is deciding who plays first between: "
+						+ selectablesPlayers); // TODO: externalize.
+			}
+		});
+	}
+
 	public static GMap getMap() {
 		return map;
 	}
