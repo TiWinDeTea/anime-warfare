@@ -22,39 +22,19 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.server;
+package org.tiwindetea.animewarfare.net.networkevent;
 
-import org.tiwindetea.animewarfare.net.GameClientInfo;
-
-import java.util.Collections;
-import java.util.List;
+import java.util.EventListener;
 
 /**
- * Created by Lucas on 23/11/2016.
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
-public class NetFirstPlayerSelectionRequest implements NetReceivable {
-
-    private final GameClientInfo selector;
-    private final List<GameClientInfo> selectables;
+public interface AskFirstPlayerSelectionNetventListener extends EventListener {
 
     /**
-     * Default constructor, required by Kryo.net
+     * A call to this method indicates that the server wants you to
+     * decide who will be the first player for the next turn.
      */
-    public NetFirstPlayerSelectionRequest() {
-        this.selector = null;
-        this.selectables = null;
-    }
-
-    public NetFirstPlayerSelectionRequest(GameClientInfo selector, List<GameClientInfo> selectable) {
-        this.selector = selector;
-        this.selectables = selectable;
-    }
-
-    public GameClientInfo getSelector() {
-        return this.selector;
-    }
-
-    public List<GameClientInfo> getSelectables() {
-        return Collections.unmodifiableList(this.selectables);
-    }
+    void handleFirstPlayerSelectionAsked(AskFirstPlayerSelectionNetvent event);
 }

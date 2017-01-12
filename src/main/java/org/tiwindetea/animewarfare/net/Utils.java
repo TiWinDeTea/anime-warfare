@@ -70,6 +70,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnitCaptureRequ
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetAskFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetCostModified;
@@ -79,7 +80,6 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
@@ -185,6 +185,7 @@ class Utils {
 		kryo.register(NetUseCapacityRequest.class);
 
 		// server, alphabetical order
+		kryo.register(NetAskFirstPlayerSelection.class);
 		kryo.register(NetBadPassword.class);
 		kryo.register(NetBattle.class);
 		kryo.register(NetCostModified.class);
@@ -194,7 +195,6 @@ class Utils {
 		kryo.register(NetFactionUnselected.class);
 		kryo.register(NetFanNumberUpdated.class);
 		kryo.register(NetFirstPlayerSelected.class);
-		kryo.register(NetFirstPlayerSelectionRequest.class);
 		kryo.register(NetGameEndConditionsReached.class);
 		kryo.register(NetGameEnded.class);
 		kryo.register(NetGameStarted.class);

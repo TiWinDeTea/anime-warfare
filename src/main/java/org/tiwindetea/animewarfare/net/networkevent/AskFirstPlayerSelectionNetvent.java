@@ -26,7 +26,7 @@ package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetAskFirstPlayerSelection;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,19 +35,19 @@ import java.util.List;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class FirstPlayerSelectionRequestNetvent implements Event<FirstPlayerSelectionRequestNetventListener> {
+public class AskFirstPlayerSelectionNetvent implements Event<AskFirstPlayerSelectionNetventListener> {
 
     private final List<GameClientInfo> selectablePlayers;
     private final GameClientInfo playerThatSelects;
 
-    public FirstPlayerSelectionRequestNetvent(NetFirstPlayerSelectionRequest firstPlayerSelectionRequest) {
+    public AskFirstPlayerSelectionNetvent(NetAskFirstPlayerSelection firstPlayerSelectionRequest) {
         this.selectablePlayers = Collections.unmodifiableList(firstPlayerSelectionRequest.getSelectables());
         this.playerThatSelects = firstPlayerSelectionRequest.getSelector();
     }
 
     @Override
-    public void notify(FirstPlayerSelectionRequestNetventListener listener) {
-        listener.handleFirstPlayerSelectionRequest(this);
+    public void notify(AskFirstPlayerSelectionNetventListener listener) {
+        listener.handleFirstPlayerSelectionAsked(this);
     }
 
     public GameClientInfo getPlayerThatSelects() {

@@ -30,6 +30,7 @@ import com.esotericsoftware.minlog.Log;
 import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
+import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetvent;
 import org.tiwindetea.animewarfare.net.networkevent.BadPasswordNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.ConnectedNetevent;
@@ -38,7 +39,6 @@ import org.tiwindetea.animewarfare.net.networkevent.FactionUnlockedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FactionUnselectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FanNumberUpdatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectionRequestNetvent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndConditionsReachedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameStartedNetevent;
@@ -61,6 +61,7 @@ import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetAskFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetCostModified;
@@ -70,7 +71,6 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
@@ -345,6 +345,11 @@ public class GameClient {
         }
 
         // network requests, alphabetical order on second argument type
+        public void received(Connection connection, NetAskFirstPlayerSelection firstPlayerSelectionRequest) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + firstPlayerSelectionRequest);
+            EventDispatcher.send(new AskFirstPlayerSelectionNetvent(firstPlayerSelectionRequest));
+        }
+
         public void received(Connection connection, NetBadPassword bpw) {
             EventDispatcher.send(new BadPasswordNetevent());
         }
@@ -388,11 +393,6 @@ public class GameClient {
         public void received(Connection connection, NetFirstPlayerSelected playerSelected) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + playerSelected);
             EventDispatcher.send(new FirstPlayerSelectedNetevent(playerSelected.getFirstPlayer()));
-        }
-
-        public void received(Connection connection, NetFirstPlayerSelectionRequest firstPlayerSelectionRequest) {
-            Log.trace(GameClient.Listener.class.toString(), "Received " + firstPlayerSelectionRequest);
-            EventDispatcher.send(new FirstPlayerSelectionRequestNetvent(firstPlayerSelectionRequest));
         }
 
         public void received(Connection connection, NetGameEndConditionsReached gameEndConditionsReached) {

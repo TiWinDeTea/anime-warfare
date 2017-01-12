@@ -101,6 +101,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnitCaptureRequ
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetAskFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetCostModified;
@@ -110,7 +111,6 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
@@ -757,7 +757,7 @@ public class GameServer {
         // logic.states.events, alphabetical order on argument type
         @Override
         public void askFirstPlayerEvent(AskFirstPlayerEvent event) {
-            this.server.sendToAllTCP(new NetFirstPlayerSelectionRequest(GameServer.this.room.find(event.getLastPlayer()),
+            this.server.sendToAllTCP(new NetAskFirstPlayerSelection(GameServer.this.room.find(event.getLastPlayer()),
                     GameServer.this.room.findAll(event.getDrawPlayers())));
         }
 
