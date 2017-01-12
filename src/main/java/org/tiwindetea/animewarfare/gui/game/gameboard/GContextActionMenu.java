@@ -243,6 +243,8 @@ public class GContextActionMenu extends ContextMenu
 
     private Button addButton(String text) {
         Button button = new PaperButton(text);
+        button.setPrefWidth(150);
+        button.setPrefHeight(30);
         this.ownerNode.getChildren().add(button);
         return button;
     }

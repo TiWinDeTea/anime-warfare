@@ -29,11 +29,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
-import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GUIState;
-import org.tiwindetea.animewarfare.gui.GlobalChat;
-import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 import java.io.IOException;
@@ -69,8 +66,6 @@ public class GameState extends GUIState {
 	public static void initStaticFields() {
 	}
 
-	private GContextActionMenu gContextActionMenu;
-
 	public GameState(BorderPane rootLayout) {
 		super(rootLayout);
 	}
@@ -84,20 +79,14 @@ public class GameState extends GUIState {
 
 		// play the fade transition
 		AnimationsManager.conditionalPlay(GameState.fadeTransition);
-		this.gContextActionMenu = new GContextActionMenu(
-				GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()),
-				this.rootLayout
-		);
 
-		GameState.gameLayoutController.initStart(this.gContextActionMenu);
+		GameState.gameLayoutController.initStart();
 
 		// listen events.
 	}
 
 	@Override
 	public void onExit() {
-		this.gContextActionMenu.destroy();
-
 		GameState.gameLayoutController.clearEnd();
 
 		// stop listening events.

@@ -37,6 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.PaperButton;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
@@ -99,11 +100,16 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@FXML
 	private VBox mainVBox;
 
+	@FXML
+	private VBox dynamicCommandVBox;
+
 	private VBox overlay;
 
-	GFanCounter gfc = new GFanCounter();
+	private GFanCounter gfc = new GFanCounter();
 
-	public void initStart(GContextActionMenu gContextActionMenu) {
+	private GContextActionMenu gContextActionMenu;
+
+	public void initStart() {
 		MainApp.getMainRoot().getChildren().add(this.overlay);
 
 		// === dispose players info at the right place.
@@ -150,12 +156,16 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 				++counter;
 			}
 		}
-		/// / === END: dispose players info at the right place.
 
-		gContextActionMenu.setOwnerNode(this.mainVBox);
 		for (Node node : this.rootBorderPane.getChildren()) { // center everyone!
 			this.rootBorderPane.setAlignment(node, Pos.CENTER);
 		}
+		/// / === END: dispose players info at the right place.
+
+		this.gContextActionMenu = new GContextActionMenu(
+				GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()),
+				this.dynamicCommandVBox
+		);
 
 		this.gfc.init();
 		this.hBox.getChildren().add(this.gfc);
@@ -173,6 +183,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 		GameLayoutController.playerInfoPaneList.clear();
 		GameLayoutController.localPlayerInfoPane = null;
+
+		this.gContextActionMenu.destroy();
 	}
 
 	@Override
