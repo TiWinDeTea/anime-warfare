@@ -353,7 +353,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	@Override
 	public void handlePreBattle(BattleNetevent event) {
-		this.map.highLightFxThread(event.getZone(), Color.rgb(255, 153, 51, 30), Color.rgb(255, 153, 51, 20));
+		this.map.highLightFxThread(event.getZone(), Color.rgb(255, 153, 51, 0.3), Color.rgb(255, 153, 51, 0.2));
 
 		this.battleReadyButton = new PaperButton("Battle ready"); // TODO: externalize
 		this.battleReadyButton.setPrefWidth(150);
