@@ -28,11 +28,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.MainApp;
-import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.PaperButton;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.GStudioClickedEventListener;
@@ -40,19 +39,16 @@ import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.GUnitClickedEventListener;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractStudioFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractUnitFilter;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractZoneFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.DrawUnit;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.Move;
 import org.tiwindetea.animewarfare.logic.FactionType;
-import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
-import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,17 +89,23 @@ public class GContextActionMenu extends ContextMenu
 
     @Override
     public void handleClick(ZoneClickedEvent event) {
-        setAndShow(this.items.getItems(event.getZoneID()), event.getMouseEvent());
+        if (event.getMouseEvent().getButton() == MouseButton.SECONDARY) {
+            setAndShow(this.items.getItems(event.getZoneID()), event.getMouseEvent());
+        }
     }
 
     @Override
     public void handleClick(GUnitClickedEvent event) {
-        setAndShow(this.items.getItems(event.getUnit()), event.getMouseEvent());
+        if (event.getMouseEvent().getButton() == MouseButton.SECONDARY) {
+            setAndShow(this.items.getItems(event.getUnit()), event.getMouseEvent());
+        }
     }
 
     @Override
     public void handleClick(GStudioClickedEvent event) {
-        setAndShow(this.items.getItems(event.getStudio()), event.getMouseEvent());
+        if (event.getMouseEvent().getButton() == MouseButton.SECONDARY) {
+            setAndShow(this.items.getItems(event.getStudio()), event.getMouseEvent());
+        }
     }
 
     @Override
@@ -136,39 +138,22 @@ public class GContextActionMenu extends ContextMenu
         }
     }
 
-    private class DynamicItemList implements PhaseChangedNeteventListener {
+    private class DynamicItemList {
         private final FactionType playerFaction;
-
-        private final List<MenuItem> unitsItems = new ArrayList<>(); // for all units
-        private final List<MenuItem> ennemyUnitsItems = new ArrayList<>(); // for all ennemy units
-        private final List<MenuItem> friendlyUnitsItems = new ArrayList<>(); // for all friendly units
-        private final Map<UnitType, List<MenuItem>> itemsPerUnitType = new HashMap<>(); // for all units given their types
-        private final Map<Integer, List<MenuItem>> itemsPerUnit = new HashMap<>(); // for a particular unit
-        //never set a list to null (you can clearit or remove it though)
-
-        private final List<MenuItem> studioItems = new ArrayList<>();
-        private final List<MenuItem> friendlyStudioItems = new ArrayList<>();
-        private final Map<Integer, List<MenuItem>> studioItemsPerStudio = new HashMap<>();
-        private final Map<Integer, List<MenuItem>> zoneItems = new HashMap<>();
-        //same apply here
 
         private final Map<String, AbstractUnitFilter> filteredUnitItems = new HashMap<>();
         private final Map<String, AbstractStudioFilter> filteredStudioItems = new HashMap<>();
+        private final Map<String, AbstractZoneFilter> filteredZoneItems = new HashMap<>();
         // The biFunction should never return null. Use Collections.emptyList() instead.
         // Keys should be written in lower case
 
         DynamicItemList(FactionType playerFaction) {
             this.playerFaction = playerFaction;
             initFilters();
-
-            //register events
-            EventDispatcher.registerListener(PhaseChangeNetevent.class, this);
         }
 
         void destroy() {
             clearAll();
-            // unregister events
-            EventDispatcher.unregisterListener(PhaseChangeNetevent.class, this);
         }
 
         public void addUnitContextManager(String id, AbstractUnitFilter handler) {
@@ -188,87 +173,40 @@ public class GContextActionMenu extends ContextMenu
         }
 
         Stream<MenuItem> getItems(GUnit unit) {
-            List<MenuItem> perUnitTypeItems = this.itemsPerUnitType.get(unit);
-            if (perUnitTypeItems == null) {
-                perUnitTypeItems = new ArrayList<>(0);
-            }
-
-            List<MenuItem> perUnitItems = this.itemsPerUnit.get(new Integer(unit.gameID()));
-            if (perUnitItems == null) {
-                perUnitItems = new ArrayList<>(0);
-            }
-
-            Stream<MenuItem> stream = Stream.concat(
-                    Stream.concat(this.unitsItems.stream(), perUnitItems.stream()),
-                    perUnitTypeItems.stream()
-            );
-
+            Stream<MenuItem> stream = Stream.empty();
             for (BiFunction<FactionType, GUnit, List<MenuItem>> biFunction : this.filteredUnitItems.values()) {
                 stream = Stream.concat(stream, biFunction.apply(this.playerFaction, unit).stream());
             }
-
-            if (unit.getFaction().equals(this.playerFaction)) {
-                return Stream.concat(stream, this.friendlyUnitsItems.stream());
-            } else {
-                return Stream.concat(stream, this.ennemyUnitsItems.stream());
-            }
+            return stream;
         }
 
         Stream<MenuItem> getItems(GStudio studio) {
-            Collection<MenuItem> items = this.studioItemsPerStudio.get(new Integer(studio.getZoneID()));
-
-            Stream<MenuItem> stream = Stream.concat(
-                    (items == null
-                            ? Stream.empty()
-                            : items.stream())
-                    , this.studioItems.stream());
-
-            if (GlobalChat.getClientFaction(MainApp.getGameClient().getClientInfo()).equals(studio.getFaction())) {
-                stream = Stream.concat(stream, this.friendlyUnitsItems.stream());
-            }
-
+            Stream<MenuItem> stream = Stream.empty();
             for (BiFunction<FactionType, GStudio, List<MenuItem>> biFunction : this.filteredStudioItems.values()) {
                 stream = Stream.concat(stream, biFunction.apply(this.playerFaction, studio).stream());
             }
-
             return stream;
         }
 
         Stream<MenuItem> getItems(int zoneID) {
-            Collection<MenuItem> items = this.zoneItems.get(new Integer(zoneID));
-            return items == null ? new ArrayList<MenuItem>(0).stream() : items.stream();
-        }
-
-        @Override
-        public void handlePhaseChanged(PhaseChangeNetevent event) {
-            /*clearAll();
-
-            if (event.getPhase().equals(PhaseChangedEvent.Phase.ACTION)) {
-                MenuItem unitInfos = new MenuItem("Unit infos");
-                unitInfos.setOnAction(e -> System.out.println("TODO: Open unit infos!"));
-                this.unitsItems.add(unitInfos);
-
-                MenuItem moveUnit = new MenuItem("Move unit");
-                moveUnit.setOnAction(e -> System.out.println("TODO: move unit context."));
-                this.friendlyUnitsItems.add(moveUnit);
-
-                MenuItem drawUnit = new MenuItem("Draw unit");
-                drawUnit.setOnAction(e -> System.out.println("TODO: Open a menu to select the unit to draw."));
-                this.friendlyStudioItems.add(drawUnit);
-            }*/
+            Integer id = new Integer(zoneID);
+            Stream<MenuItem> stream = Stream.empty();
+            for (BiFunction<FactionType, Integer, List<MenuItem>> biFunction : this.filteredZoneItems.values()) {
+                stream = Stream.concat(stream, biFunction.apply(this.playerFaction, id).stream());
+            }
+            return stream;
         }
 
         // helper
         private void clearAll() {
-            this.unitsItems.clear();
-            this.ennemyUnitsItems.clear();
-            this.friendlyUnitsItems.clear();
-            this.itemsPerUnitType.clear();
-            this.itemsPerUnit.clear();
-            this.studioItemsPerStudio.clear();
-            this.zoneItems.clear();
-            //this.filteredStudioItems.clear();
-            //this.filteredUnitItems.clear();
+            this.filteredStudioItems.values().forEach(AbstractFilter::destroy);
+            this.filteredStudioItems.clear();
+
+            this.filteredUnitItems.values().forEach(AbstractFilter::destroy);
+            this.filteredUnitItems.clear();
+
+            this.filteredZoneItems.values().forEach(AbstractFilter::destroy);
+            this.filteredZoneItems.clear();
         }
 
 

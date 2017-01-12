@@ -90,4 +90,9 @@ public class DrawUnit extends AbstractStudioFilter {
 	public String getName() {
 		return "draw_unit";
 	}
+
+	@Override
+	public void destroy() {
+		// nothing to do
+	}
 }

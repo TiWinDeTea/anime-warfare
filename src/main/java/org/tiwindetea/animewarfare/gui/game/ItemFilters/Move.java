@@ -162,4 +162,9 @@ public class Move extends AbstractUnitFilter {
     public String getName() {
         return "move";
     }
+
+    @Override
+    public void destroy() {
+        // nothing to do
+    }
 }
