@@ -30,8 +30,9 @@ public class CaptureUnitRequestEvent extends ActionEvent<CaptureUnitRequestEvent
 	private final int huntedPlayerID;
 	private final int zone;
 	private final UnitType unitType;
+	private final boolean steelFans;
 
-	public CaptureUnitRequestEvent(int playerID, int huntedPlayerID, int zone, UnitType unitType) {
+	public CaptureUnitRequestEvent(int playerID, int huntedPlayerID, int zone, UnitType unitType, boolean steelFans) {
 		super(playerID);
 
 		if (playerID == huntedPlayerID) {
@@ -41,6 +42,7 @@ public class CaptureUnitRequestEvent extends ActionEvent<CaptureUnitRequestEvent
 		this.huntedPlayerID = huntedPlayerID;
 		this.zone = zone;
 		this.unitType = unitType;
+		this.steelFans = steelFans;
 	}
 
 	@Override
@@ -58,5 +60,9 @@ public class CaptureUnitRequestEvent extends ActionEvent<CaptureUnitRequestEvent
 
 	public UnitType getUnitType() {
 		return this.unitType;
+	}
+
+	public boolean wantToSteelFans() {
+		return this.steelFans;
 	}
 }

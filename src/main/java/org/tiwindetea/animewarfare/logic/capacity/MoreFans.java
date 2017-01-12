@@ -56,10 +56,10 @@ public class MoreFans extends PlayerCapacity implements UnitCapturedEventListene
 				this.numberOfProductions.put(Integer.valueOf(event.getPlayerID()),
 						Integer.valueOf(this.numberOfProductions.getOrDefault(Integer.valueOf(event.getPlayerID()),
 								new Integer(0)).intValue() + 1));
-			}
 
-			if (this.numberOfProductions.get(Integer.valueOf(event.getPlayerID())).intValue() == 6) {
-				activateAndDestroy(new MoreFans(getPlayer()));
+				if (this.numberOfProductions.get(Integer.valueOf(event.getPlayerID())).intValue() == 6) {
+					activateAndDestroy(new MoreFans(getPlayer()));
+				}
 			}
 		}
 
@@ -79,23 +79,14 @@ public class MoreFans extends PlayerCapacity implements UnitCapturedEventListene
 
 	@Override
 	public void use() {
-		if (getPlayer().hasRequiredStaffPoints(getName().getStaffCost()))
-			LogicEventDispatcher.registerListener(UnitCapturedEvent.class, this);
 	}
 
 	@Override
 	public void destroy() {
-		LogicEventDispatcher.unregisterListener(UnitCapturedEvent.class, this);
 	}
 
 	@Override
 	public void onUnitCaptured(UnitCapturedEvent event) {
-		if (event.getHunter().getID() == getPlayer().getID()) {
-			LogicEventDispatcher.unregisterListener(UnitCapturedEvent.class, this);
-			getPlayer().decrementStaffPoints(getName().getStaffCost());
-			event.getHuntedPlayer().decrementFans(1);
-			getPlayer().incrementFans(1);
-		}
 	}
 
 	@Override

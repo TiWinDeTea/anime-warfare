@@ -378,6 +378,27 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
+		if (event.wantToSteelFans()) {
+			if (!this.currentPlayer.hasCapacity(CapacityName.MORE_FANS)) {
+				Log.debug(getClass().getName(), "Player can't steel fans without the capacity.");
+				return;
+			}
+
+			if (!event.getUnitType().isLevel(UnitLevel.MASCOT)) {
+				Log.debug(getClass().getName(), "Unit should be a mascot.");
+				return;
+			}
+
+			if (this.currentPlayer.hasRequiredStaffPoints(CapacityName.MORE_FANS.getStaffCost())) {
+				Log.debug(getClass().getName(), "Not enough staff points.");
+				return;
+			}
+
+		} else if (this.currentPlayer.hasRequiredStaffPoints(1)) {
+			Log.debug(getClass().getName(), "Not enough staff points.");
+			return;
+		}
+
 		if (!event.getUnitType().isLevel(UnitLevel.MASCOT)
 				&& !this.currentPlayer.hasCapacity(CapacityName.GENIUS_KIDNAPPER)) {
 			Log.debug(getClass().getName(), "Can't hunt monster without Genius Kidnapper capacity.");
@@ -420,6 +441,12 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		}
 
 		this.nonUnlimitedActionDone = true;
+
+		if (event.wantToSteelFans()) {
+			this.currentPlayer.decrementStaffPoints(CapacityName.MORE_FANS.getStaffCost());
+		} else {
+			this.currentPlayer.decrementStaffPoints(1);
+		}
 
 		if (huntedUnits.size() == 1) {
 			handleUnitToCaptureEvent(new UnitToCaptureEvent(event.getHuntedPlayerID(),

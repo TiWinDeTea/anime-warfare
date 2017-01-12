@@ -35,27 +35,32 @@ public class NetUnitCaptureRequest implements NetSendable {
     private final int targetPlayer;
     private final int zoneID;
     private final UnitType unitType;
+    private final boolean steelFans;
 
     /**
      * @param targetPlayer Player you want to assault
      * @param zoneID       ID of the zone where you want to attack
      * @param unitType
+     * @param steelFans
      */
-    public NetUnitCaptureRequest(int targetPlayer, int zoneID, UnitType unitType) {
+    public NetUnitCaptureRequest(int targetPlayer, int zoneID, UnitType unitType, boolean steelFans) {
         this.targetPlayer = targetPlayer;
         this.zoneID = zoneID;
         this.unitType = unitType;
+        this.steelFans = steelFans;
     }
 
     /**
      * @param targetPlayer Player you want to assault
      * @param zoneID       ID of the zone where you want to attack
      * @param unitType
+     * @param steelFans
      */
-    public NetUnitCaptureRequest(GameClientInfo targetPlayer, int zoneID, UnitType unitType) {
+    public NetUnitCaptureRequest(GameClientInfo targetPlayer, int zoneID, UnitType unitType, boolean steelFans) {
         this.targetPlayer = targetPlayer.getId();
         this.zoneID = zoneID;
         this.unitType = unitType;
+        this.steelFans = steelFans;
     }
 
     public int getTargetPlayer() {
@@ -68,5 +73,9 @@ public class NetUnitCaptureRequest implements NetSendable {
 
     public UnitType getUnitType() {
         return this.unitType;
+    }
+
+    public boolean wantToSteelFans() {
+        return this.steelFans;
     }
 }
