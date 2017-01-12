@@ -37,6 +37,8 @@ public abstract class GameDialog {
 	private final VBox overlay;
 	private final Group dialogElements;
 
+	private boolean alreadyClosed = false;
+
 	GameDialog(VBox overlay) {
 		++GameDialog.numberOfDialog;
 
@@ -57,6 +59,10 @@ public abstract class GameDialog {
 	}
 
 	public void close() {
+		if (this.alreadyClosed) {
+			return;
+		}
+
 		--GameDialog.numberOfDialog;
 
 		this.dialogElements.getChildren().clear();
@@ -64,5 +70,7 @@ public abstract class GameDialog {
 		if (GameDialog.numberOfDialog == 0) {
 			this.overlay.setMouseTransparent(true);
 		}
+
+		this.alreadyClosed = true;
 	}
 }
