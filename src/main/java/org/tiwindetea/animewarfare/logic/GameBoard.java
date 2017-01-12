@@ -113,7 +113,6 @@ public class GameBoard {
 
 			Studio studio = new Studio(playerZone.getID(), player);
 			playerZone.setStudio(studio);
-			studio.setController(unit);
 
 			for (int i = 0; i < 5; i++) {
 				unit = new Unit(unit.getType());
@@ -127,6 +126,7 @@ public class GameBoard {
 			                                                       .map(p -> new WeakReference<>(p))
 			                                                       .collect(Collectors.toList());
 			createActivable(player, otherPlayers);
+			studio.setController(unit);
 		}
 	}
 

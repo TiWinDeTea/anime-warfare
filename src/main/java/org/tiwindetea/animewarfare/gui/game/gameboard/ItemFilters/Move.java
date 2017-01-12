@@ -86,12 +86,14 @@ public class Move extends AbstractUnitFilter {
                                    .anyMatch(m -> m.getUnitID() == unit.getGameID()) && !this.selectedUnits.contains(
                         unit)) {
                     if (actionMenuState == GCAMState.MOVING_UNITS) {
-                        select(unit);
+                        if (aMoveIsPossible()) {
+                            select(unit);
+                        }
                         return Collections.emptyList();
                     } else {
 
                         MenuItem item = new MenuItem("Move " + unit.getType() + " (1 SP)"); // todo externalize
-                        if (this.movements.size() + this.selectedUnits.size() + 1 > GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue()) {
+                        if (!aMoveIsPossible()) {
                             item.setDisable(true);
                         }
 
@@ -141,6 +143,11 @@ public class Move extends AbstractUnitFilter {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private boolean aMoveIsPossible() {
+        return this.movements.size() + this.selectedUnits.size()
+                < GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue();
     }
 
     private void deselect(GUnit unit) {

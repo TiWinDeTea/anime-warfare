@@ -28,6 +28,7 @@ import com.esotericsoftware.minlog.Log;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -39,6 +40,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
@@ -74,6 +76,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     private final ZoneComponentsMap MAP = new ZoneComponentsMap();
     private final List<Pair<Polygon, Tooltip>> ZONES = new ArrayList<>(17);
     private final Map<Integer, Line> LINKS = new HashMap<>();
+    private final Map<Integer, Line> STUDIOLINKS = new HashMap<>();
     private boolean isDisplayingZonesGrids = false;
     private boolean isDisplayinGComponentsGrids = false;
 
@@ -106,6 +109,12 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         EventDispatcher.unregisterListener(BattleNetevent.class, this);
         EventDispatcher.unregisterListener(StudioControllerChangedNetevent.class, this);
         EventDispatcher.unregisterListener(GameEndedNetevent.class, this);
+        this.POLYGONES.getChildren().clear();
+        this.MAP.clear();
+        this.ZONES.clear();
+        this.LINKS.clear();
+        this.STUDIOLINKS.clear();
+        getChildren().clear();
     }
 
     /**
@@ -271,16 +280,18 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                        .collect(Collectors.toList());
     }
 
+    /**
+     * Creates a line from the component to the given coordinates
+     *
+     * @return an ID for the link, to be used with "removeLinks"
+     */
     public int linkTo(GComponent component, double x, double y) {
-        GComponentRectangle rectangle = this.MAP.getRectangleOf(component);
 
-        Bounds b = component.getBoundsInParent();
-        double xUnitCenter = (b.getMaxX() + b.getMinX()) / 2,
-                yUnitCenter = (b.getMaxY() + b.getMinY()) / 2;
+        Coordinates c = centerOf(component);
 
         Line line = new Line(
-                xUnitCenter,
-                yUnitCenter,
+                c.x,
+                c.y,
                 x,
                 y
         );
@@ -358,6 +369,12 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         @Override
         public int hashCode() {
             return (int) (this.x + this.y);
+        }
+
+        public void clear() {
+            getChildren().clear();
+            this.gComponent.getChildren().clear();
+            this.gComponent = null;
         }
     }
 
@@ -495,6 +512,26 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
         public GComponentRectangle getRectangleOf(GComponent component) {
             return this.map.get(new Integer(component.getZone())).stream().filter(r -> component.equals(r.getGComponent())).findAny().orElse(null);
+        }
+
+        public void clear() {
+            this.map.values().forEach(r -> r.clear());
+            this.map.clear();
+            this.orphans.clear();
+            getChildren().clear();
+        }
+    }
+
+    private static class Coordinates {
+        public double x, y;
+
+        public Coordinates(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public Coordinates() {
+
         }
     }
 
@@ -809,6 +846,11 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         return polygons;
     }
 
+    private static Coordinates centerOf(Node n) {
+        Bounds b = n.getBoundsInParent();
+        return new Coordinates((b.getMaxX() + b.getMinX()) / 2, (b.getMaxY() + b.getMinY()) / 2);
+    }
+
 
     @Override
     public void handleUnitMovedNetevent(UnitMovedNetevent event) {
@@ -866,11 +908,34 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
     @Override
     public void handleStudioControllerChanged(StudioControllerChangedNetevent event) {
+        Platform.runLater(() -> {
+            if (event.getControllerFaction() == null) {
+                Line l = this.STUDIOLINKS.remove(new Integer(event.getZoneID()));
+                getChildren().remove(l);
+            } else {
+                Coordinates centerOfStudio = centerOf(GStudio.get(event.getZoneID()));
+                Coordinates centerOfUnit = centerOf(GUnit.get(event.getControllerID()));
 
+                Line line = new Line(
+                        centerOfStudio.x,
+                        centerOfStudio.y,
+                        centerOfUnit.x,
+                        centerOfUnit.y
+                );
+                line.setStrokeWidth(2.);
+                line.setOpacity(0.4);
+                line.setStroke(GlobalChat.getClientColor(GlobalChat.getFactionClient(event.getControllerFaction())));
+                line.getStrokeDashArray().addAll(4.);
+                line.setMouseTransparent(true);
+                getChildren().add(line);
+                line.toFront();
+                this.STUDIOLINKS.put(new Integer(event.getZoneID()), line);
+            }
+        });
     }
 
     @Override
     public void handleGameEnd(GameEndedNetevent gameEndedEvent) {
-
+        Platform.runLater(this::clear);
     }
 }

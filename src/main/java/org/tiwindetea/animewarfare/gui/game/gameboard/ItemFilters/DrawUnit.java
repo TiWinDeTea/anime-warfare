@@ -61,7 +61,7 @@ public class DrawUnit extends AbstractStudioFilter {
 				int cost = unitType.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(unitType);
 
 				MenuItem item = new MenuItem("Draw " + unitType.toString() + " (" + cost + " SP)"); // todo: externalie
-				item.setOnAction(e -> MainApp.getGameClient().send(new NetInvokeUnitRequest(unitType, studio.getZoneID())));
+				item.setOnAction(e -> MainApp.getGameClient().send(new NetInvokeUnitRequest(unitType, studio.getZone())));
 				items.add(item);
 
 				if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {

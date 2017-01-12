@@ -50,16 +50,15 @@ import java.util.TreeSet;
 
 public class GStudio extends GComponent {
 
-    private static final TreeSet<GStudio> STUDIOS = new TreeSet<>(Comparator.comparingInt(GStudio::getZoneID));
+    private static final TreeSet<GStudio> STUDIOS = new TreeSet<>(Comparator.comparingInt(GStudio::getZone));
     private static final Image STUDIO_IMAGE = null; // todo
     private static boolean initialized = false;
 
-    private Rectangle ownerRectangle;
-    private int zoneID;
+    private final Rectangle ownerRectangle;
 
     private GStudio(int zoneID) {
         super(STUDIO_IMAGE);
-        this.zoneID = zoneID;
+        super.setZone(zoneID);
         this.ownerRectangle = new Rectangle(10, 10, Color.TRANSPARENT);
         this.ownerRectangle.setStrokeWidth(2);
         this.ownerRectangle.setStroke(GlobalChat.getDefaultColor());
@@ -68,13 +67,6 @@ public class GStudio extends GComponent {
         setOnMouseClicked(e -> EventDispatcher.send(new GStudioClickedEvent(e, this)));
     }
 
-    public void setZoneID(int zoneID) {
-        this.zoneID = zoneID;
-    }
-
-    public int getZoneID() {
-        return this.zoneID;
-    }
 
     private void setTeam(GameClientInfo client) {
         if (client == null) {
@@ -86,10 +78,9 @@ public class GStudio extends GComponent {
         }
     }
 
-
     public static GStudio get(int zoneID) {
         GStudio studio = STUDIOS.floor(new GStudio(zoneID));
-        if (studio != null && studio.getZoneID() == zoneID) {
+        if (studio != null && studio.getZone() == zoneID) {
             return studio;
         } else {
             return null;
@@ -135,12 +126,12 @@ public class GStudio extends GComponent {
 
                 @Override
                 public void handleStudioPlayered(StudioNetevent studioNetevent) {
-                    //get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
+                    //get(studioNetevent.getZone()).setTeam(studioNetevent.getPlayerInfo());
                 }
 
                 @Override
                 public void handleStudioMapped(StudioNetevent studioNetevent) {
-                    //get(studioNetevent.getZoneID()).setTeam(studioNetevent.getPlayerInfo());
+                    //get(studioNetevent.getZone()).setTeam(studioNetevent.getPlayerInfo());
                 }
             });
             EventDispatcher.registerListener(GameEndedNetevent.class, e -> STUDIOS.clear());
@@ -152,12 +143,12 @@ public class GStudio extends GComponent {
 
     @Override
     public int hashCode() {
-        return this.zoneID;
+        return getZone();
     }
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof GStudio) && ((GStudio) o).zoneID == this.zoneID;
+        return (o instanceof GStudio) && ((GStudio) o).getZone() == this.getZone();
     }
 
     @Override
