@@ -33,22 +33,20 @@ import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.states.events.ConventionOrganizedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
+import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEvent;
+import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.SkipAllEvent;
-import org.tiwindetea.animewarfare.net.logicevent.SkipAllEventListener;
-
-import java.util.Iterator;
 
 /**
  * Marketing phase of the game
  * @author Benoît CORTIER
  */
 class MarketingState extends GameState
-		implements OrganizeConventionRequestEventListener, SkipAllEventListener,
+		implements OrganizeConventionRequestEventListener, FinishTurnRequestEventListener,
 		GameEndedEventListener {
-	private Iterator<Player> playerIterator;
 	private Player currentPlayer;
 
 	private State nextState = this;
@@ -70,16 +68,17 @@ class MarketingState extends GameState
 			);
 		}
 
-		this.playerIterator = this.gameBoard.getPlayersInOrder().iterator();
-		this.currentPlayer = this.playerIterator.next();
+		this.currentPlayer = this.gameBoard.getFirstPlayer();
+		LogicEventDispatcher.send(new NextPlayerEvent(this.currentPlayer.getID()));
 
 		registerEventListeners();
 	}
 
 	@Override
 	public void update() {
-		if (this.playerIterator.hasNext()) {
-			this.currentPlayer = this.playerIterator.next();
+		if (this.currentPlayer != this.gameBoard.getFirstPlayer()) {
+			this.currentPlayer = this.currentPlayer.getNextPlayerInGameOrder();
+			LogicEventDispatcher.send(new NextPlayerEvent(this.currentPlayer.getID()));
 		} else {
 			this.nextState = new ActionState(this.gameBoard);
 		}
@@ -97,13 +96,13 @@ class MarketingState extends GameState
 
 	private void registerEventListeners() {
 		LogicEventDispatcher.getInstance().addListener(OrganizeConventionRequestEvent.class, this);
-		LogicEventDispatcher.getInstance().addListener(SkipAllEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(FinishTurnRequestEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 	}
 
 	private void unregisterEventListeners() {
 		LogicEventDispatcher.getInstance().removeListener(OrganizeConventionRequestEvent.class, this);
-		LogicEventDispatcher.getInstance().removeListener(SkipAllEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(FinishTurnRequestEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 	}
 
@@ -131,7 +130,7 @@ class MarketingState extends GameState
 	}
 
 	@Override
-	public void handleSkipAllEvent(SkipAllEvent event) {
+	public void handleFinishTurnRequest(FinishTurnRequestEvent event) {
 		this.machine.get().update();
 	}
 
