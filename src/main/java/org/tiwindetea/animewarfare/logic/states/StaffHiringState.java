@@ -36,7 +36,6 @@ import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 class StaffHiringState extends GameState {
 	private final List<Player> drawPlayers = new LinkedList<>();
@@ -124,7 +123,7 @@ class StaffHiringState extends GameState {
 	}
 
 	private static int getNumberOfNonControlledPortal(List<Studio> studios) {
-		return (int) studios.stream().filter(Objects::isNull).count();
+		return (int) studios.stream().filter(s -> s.getCurrentFaction() == null).count();
 	}
 
 	private static int getNumberOfControlledPortal(List<Studio> studios, Player player) {
