@@ -3,6 +3,7 @@ package org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters;
 import javafx.scene.control.MenuItem;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GUnit;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
@@ -31,6 +32,7 @@ public class SelectUnitToCapture extends AbstractUnitFilter implements SelectUni
 				this.zoneID = -1;
 				this.unitLevel = null;
 				MainApp.getGameClient().send(new NetCapturedUnitSelection(gUnit.getGameID()));
+				GameLayoutController.getMap().unHighlightFxThread(gUnit.getZone());
 			});
 
 			return Arrays.asList(menuItem);

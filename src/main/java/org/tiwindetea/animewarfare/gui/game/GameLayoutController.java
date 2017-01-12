@@ -347,6 +347,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 					"Select a " + event.getUnitLevel() + " which will be captured."); // TODO: externalize.
 			this.finishTurnButton.setDisable(true);
 			this.skipAllButton.setDisable(true);
+			GameLayoutController.map.highlight(event.getZoneId(), Color.rgb(0, 0, 0, 0.4), Color.rgb(0, 0, 0, 0.6));
 		});
 	}
 
