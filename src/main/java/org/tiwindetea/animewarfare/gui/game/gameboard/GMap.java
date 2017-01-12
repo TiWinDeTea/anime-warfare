@@ -42,6 +42,7 @@ import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
@@ -314,6 +315,13 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         getChildren().remove(this.LINKS.remove(id));
     }
 
+    public List<GUnit> getUnitsOf(FactionType factionType) {
+        return this.MAP.getComponents().stream().filter(GComponent::isUnit)
+                .map(gc -> (GUnit) gc)
+                .filter(unit -> unit.getType().getDefaultFaction() == factionType)
+                .collect(Collectors.toList());
+    }
+
     private class GComponentRectangle extends Parent {
 
         final double x, y;
@@ -506,6 +514,16 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             List<GComponentRectangle> ans = new ArrayList<>(200);
             for (List<GComponentRectangle> gcomponentRectangles : this.map.values()) {
                 ans.addAll(gcomponentRectangles);
+            }
+            return ans;
+        }
+
+        public List<GComponent> getComponents() {
+            List<GComponent> ans = new ArrayList<>(50);
+            for (List<GComponentRectangle> gComponentRectangles : this.map.values()) {
+                gComponentRectangles.stream().map(r -> r.getGComponent())
+                        .filter(gc -> gc != null)
+                        .anyMatch(gc -> ans.add(gc));
             }
             return ans;
         }

@@ -37,6 +37,7 @@ import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,30 +47,36 @@ import java.util.List;
  * @since 0.1.0
  */
 public class DrawMascot extends AbstractZoneFilter {
+
+	private UnitType cachedFactionMascot;
+
 	@Override
 	public List<MenuItem> apply(FactionType factionType, Integer zoneId) {
 		if (GamePhaseMonitor.getCurrentPhase() != PhaseChangedEvent.Phase.ACTION
 				|| GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPlayer()) != factionType
 				|| actionMenuState != GCAMState.NOTHING
-				|| GameLayoutController.getMap().getComponents(zoneId).stream().noneMatch(c -> c.getFaction() == factionType)) {
-			// FIXME: can be drawn anywhere if the player has none units.
+				|| GameLayoutController.getMap().getComponents(zoneId).stream().noneMatch(c -> c.getFaction() == factionType)
+				&& !GameLayoutController.getMap().getUnitsOf(factionType).isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		List<MenuItem> items = new LinkedList<>();
-		for (UnitType unitType : UnitType.values()) {
-			if (factionType == unitType.getDefaultFaction() && unitType.getUnitLevel() == UnitLevel.MASCOT) {
-				int cost = unitType.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(unitType);
+		if (this.cachedFactionMascot == null || this.cachedFactionMascot.getDefaultFaction() != factionType) {
+			this.cachedFactionMascot = Arrays.stream(UnitType.values())
+					.filter(u -> u.getDefaultFaction() == factionType && u.getUnitLevel() == UnitLevel.MASCOT)
+					.findFirst()
+					.orElse(null);
+		}
 
-				MenuItem item = new MenuItem("Draw " + unitType.toString() + " (" + cost + " SP)"); // todo: externalie
-				item.setOnAction(e -> MainApp.getGameClient().send(new NetInvokeUnitRequest(unitType, zoneId)));
+		List<MenuItem> items = new LinkedList<>();
+		int cost = this.cachedFactionMascot.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(this.cachedFactionMascot);
+
+		MenuItem item = new MenuItem("Draw " + this.cachedFactionMascot.toString() + " (" + cost + " SP)"); // todo: externalie
+		item.setOnAction(e -> MainApp.getGameClient().send(new NetInvokeUnitRequest(this.cachedFactionMascot, zoneId)));
 				items.add(item);
 
 				if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {
 					item.setDisable(true);
 				}
-			}
-		}
 		return items;
 	}
 
