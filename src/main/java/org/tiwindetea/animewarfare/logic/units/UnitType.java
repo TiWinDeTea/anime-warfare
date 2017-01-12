@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.logic.units;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.util.PrettyFormat;
 
 // TODO: Fill field
 public enum UnitType {
@@ -135,16 +136,7 @@ public enum UnitType {
 		this.unitBasicCharacteristics = unitBasicCharacteristics;
 		this.defaultCost = defaultCost;
 		this.maxNumber = maxNumber;
-		String tmp = super.toString();
-		String tmp2 = "";
-
-		if (tmp.contains("_")) {
-			tmp2 = tmp.substring(tmp.indexOf('_') + 1);
-			tmp2 = " " + tmp2.substring(0, 1).toUpperCase() + tmp2.substring(1).toLowerCase();
-			tmp = tmp.substring(0, tmp.indexOf('_'));
-		}
-
-		this.name = tmp.substring(0, 1).toUpperCase() + tmp.substring(1).toLowerCase() + tmp2;
+		this.name = PrettyFormat.enumToPretty(super.toString());
 	}
 
 	public int getDefaultCost() {

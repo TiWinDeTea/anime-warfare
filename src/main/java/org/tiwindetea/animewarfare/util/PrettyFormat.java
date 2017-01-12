@@ -22,25 +22,24 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic;
+package org.tiwindetea.animewarfare.util;
 
-import org.tiwindetea.animewarfare.util.PrettyFormat;
+/**
+ * @author Lucas Lazare
+ * @since 0.1.0
+ */
+public class PrettyFormat {
+    public static String enumToPretty(String original) {
 
-public enum FactionType {
-	NO_NAME,
-	THE_BLACK_KNIGHTS,
-	HAIYORE,
-	F_CLASS_NO_BAKA;
+        String treated = "";
+        String untreated = original;
 
+        while (untreated.contains("_")) {
+            String firstPart = untreated.substring(0, untreated.indexOf("_"));
+            treated = treated + firstPart.substring(0, 1).toUpperCase() + firstPart.substring(1).toLowerCase() + " ";
+            untreated = untreated.substring(untreated.indexOf('_') + 1);
+        }
 
-	private final String name;
-
-	FactionType() {
-		this.name = PrettyFormat.enumToPretty(super.toString());
-	}
-
-	@Override
-	public String toString() {
-		return this.name;
-	}
+        return treated + untreated.substring(0, 1).toUpperCase() + untreated.substring(1).toLowerCase();
+    }
 }

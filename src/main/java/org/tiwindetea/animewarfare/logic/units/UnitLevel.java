@@ -24,10 +24,23 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
+import org.tiwindetea.animewarfare.util.PrettyFormat;
+
 public enum UnitLevel {
 	MASCOT,
 	LVL0,
 	LVL1,
 	LVL2,
-	HERO
+	HERO;
+
+	private final String name;
+
+	UnitLevel() {
+		this.name = PrettyFormat.enumToPretty(super.toString());
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

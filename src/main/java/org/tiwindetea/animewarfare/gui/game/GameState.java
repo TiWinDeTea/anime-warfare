@@ -34,6 +34,7 @@ import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 import java.io.IOException;
 
@@ -76,6 +77,8 @@ public class GameState extends GUIState {
 
 	@Override
 	public void onEnter() {
+
+		UnitType t;
 		// place the node in the root layout.
 		this.rootLayout.setCenter(GameState.gameLayout);
 

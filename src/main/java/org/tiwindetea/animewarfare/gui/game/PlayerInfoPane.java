@@ -190,7 +190,7 @@ public class PlayerInfoPane extends Group implements StaffPointUpdatedNeteventLi
 		logo.setAlignment(Pos.CENTER);
 		Label playerName = new Label(this.playerInfo.getGameClientName());
 		playerName.setTextFill(GlobalChat.getClientColor(this.playerInfo));
-		Label playerFaction = new Label(GlobalChat.getClientFaction(this.playerInfo).name());
+		Label playerFaction = new Label(GlobalChat.getClientFaction(this.playerInfo).toString());
 		playerFaction.setTextFill(GlobalChat.getClientColor(this.playerInfo));
 		logo.getChildren().addAll(playerName, playerFaction);
 		return logo;

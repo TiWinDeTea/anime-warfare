@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.logic.capacity;
 
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.util.PrettyFormat;
 
 /*
  * @author Jérôme BOULMIER
@@ -80,11 +81,13 @@ public enum CapacityName {
 	private final FactionType faction;
 	private final CapacityType type;
 	private final CapacityCost cost;
+	private final String name;
 
 	CapacityName(FactionType faction, CapacityType type, CapacityCost cost) {
 		this.faction = faction;
 		this.type = type;
 		this.cost = cost;
+		this.name = PrettyFormat.enumToPretty(super.toString());
 	}
 
 	public FactionType getFaction() {
@@ -105,5 +108,10 @@ public enum CapacityName {
 
 	public String getCostDescription() {
 		return this.cost.getCostDescription();
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
 	}
 }

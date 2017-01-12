@@ -130,7 +130,7 @@ public class ChatController implements MessageReceivedNeteventListener {
 	private String formatMessage(GameClientInfo info, String message) {
 		FactionType faction = GlobalChat.getClientFaction(info);
 		if (faction != null) {
-			return info.getGameClientName() + " (" + faction.name() + "): " + message;
+			return info.getGameClientName() + " (" + faction + "): " + message;
 		}
 		return info.getGameClientName() + ": " + message;
 	}

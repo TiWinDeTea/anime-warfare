@@ -25,13 +25,25 @@
 package org.tiwindetea.animewarfare.logic.states.events;
 
 import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.util.PrettyFormat;
 
 public class PhaseChangedEvent implements Event<PhaseChangedEventListener> {
 	public enum Phase {
 		ACTION,
 		PLAYER_SELECTION,
 		STAFF_HIRING,
-		MARKETING
+		MARKETING;
+
+		private final String name;
+
+		Phase() {
+			this.name = PrettyFormat.enumToPretty(super.toString());
+		}
+
+		@Override
+		public String toString() {
+			return this.name;
+		}
 	}
 
 	private final Phase newPhase;

@@ -251,7 +251,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		}
 
 		Platform.runLater(() -> {
-			new OverlayMessageDialog(this.overlay, event.getPhase().name() + " phase started"); // TODO: externalize.
+			new OverlayMessageDialog(this.overlay, event.getPhase() + " phase started"); // TODO: externalize.
 		});
 	}
 
