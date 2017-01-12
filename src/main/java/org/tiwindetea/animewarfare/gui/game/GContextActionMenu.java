@@ -43,6 +43,7 @@ import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractStudioFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractUnitFilter;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractZoneFilter;
+import org.tiwindetea.animewarfare.gui.game.ItemFilters.DrawMascot;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.DrawUnit;
 import org.tiwindetea.animewarfare.gui.game.ItemFilters.Move;
 import org.tiwindetea.animewarfare.logic.FactionType;
@@ -211,6 +212,7 @@ public class GContextActionMenu extends ContextMenu
 
 
         private void initFilters() {
+            // == unit filters ==
             AbstractUnitFilter.buttonAdder = GContextActionMenu.this::addButton;
             AbstractUnitFilter.buttonRemover = GContextActionMenu.this::remove;
 
@@ -219,6 +221,10 @@ public class GContextActionMenu extends ContextMenu
 
             AbstractStudioFilter drawUnit = new DrawUnit();
             this.filteredStudioItems.put(drawUnit.getName(), drawUnit);
+
+            // == zone filters ==
+            AbstractZoneFilter drawMascot = new DrawMascot();
+            this.filteredZoneItems.put(drawMascot.getName(), drawMascot);
         }
     }
 
