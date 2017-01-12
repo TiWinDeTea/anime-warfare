@@ -154,7 +154,7 @@ public class Player {
 	}
 
 	public void incrementFans(int numberOfFans) {
-		if (numberOfFans <= 0) {
+		if (numberOfFans < 0) {
 			throw new IllegalArgumentException();
 		}
 
@@ -163,7 +163,7 @@ public class Player {
 	}
 
 	public void decrementFans(int numberOfFans) {
-		if (numberOfFans >= 0) {
+		if (numberOfFans > 0) {
 			throw new IllegalArgumentException();
 		}
 
