@@ -73,7 +73,6 @@ public class GameState extends GUIState {
 	@Override
 	public void onEnter() {
 
-		UnitType t;
 		// place the node in the root layout.
 		this.rootLayout.setCenter(GameState.gameLayout);
 

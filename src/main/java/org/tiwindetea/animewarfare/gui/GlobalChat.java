@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.gui;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.util.ResourceBundleHelper;
@@ -47,6 +48,7 @@ public class GlobalChat {
 	private static final Map<GameClientInfo, Color> colorsByClient = new HashMap<>();
 	private static final Map<GameClientInfo, FactionType> factionsByClient = new HashMap<>();
 	private static final Map<FactionType, GameClientInfo> clientsByFactions = new HashMap<>();
+	private static FactionType localPlayerFaction;
 
 	private static final Color DEFAULT_COLOR = Color.BLACK;
 
@@ -84,6 +86,9 @@ public class GlobalChat {
 	}
 
 	public static void registerClientFaction(GameClientInfo gameClientInfo, FactionType factionType) {
+		if (gameClientInfo.equals(MainApp.getGameClient().getClientInfo())) {
+			localPlayerFaction = factionType;
+		}
 		GlobalChat.factionsByClient.put(gameClientInfo, factionType);
 		GlobalChat.clientsByFactions.put(factionType, gameClientInfo);
 	}
@@ -105,5 +110,9 @@ public class GlobalChat {
 
 	public static Color getDefaultColor() {
 		return DEFAULT_COLOR;
+	}
+
+	public static FactionType getLocalPlayerFaction() {
+		return localPlayerFaction;
 	}
 }

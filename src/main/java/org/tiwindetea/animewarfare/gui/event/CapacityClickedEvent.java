@@ -22,40 +22,42 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.event;
 
-import javafx.scene.control.Tooltip;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.gui.event.CapacityClickedEvent;
+import javafx.scene.input.MouseEvent;
+import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.gui.game.Production;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 
 /**
- * @author Benoit Cortier
- * @author Lucas Lazare
- * @since 0.1.0
+ * Created by maliafo on 13/01/17.
  */
-public class Production extends Rectangle {
+public class CapacityClickedEvent implements Event<CapacityClickedEventListener> {
 
-	private final Tooltip tooltip = new Tooltip();
+    private final MouseEvent mouseEvent;
+    private final CapacityName capacity;
+    private final Production production;
 
-	public Production() {
-		super(60., 60.);
-		lock();
-		Tooltip.install(this, this.tooltip);
-	}
+    public CapacityClickedEvent(MouseEvent e, CapacityName capacity, Production production) {
+        this.mouseEvent = e;
+        this.capacity = capacity;
+        this.production = production;
+    }
 
-	public void unlock() {
-		setFill(Color.RED);
-	}
+    @Override
+    public void notify(CapacityClickedEventListener listener) {
+        listener.handleCapacityClicked(this);
+    }
 
-	public void lock() {
-		setFill(Color.DARKRED);
-	}
+    public MouseEvent getMouseEvent() {
+        return this.mouseEvent;
+    }
 
-	public void setCapacity(CapacityName capacity) {
-		setOnMouseClicked(e -> EventDispatcher.send(new CapacityClickedEvent(e, capacity, this)));
-		this.tooltip.setText(capacity.toString());
-	}
+    public CapacityName getCapacity() {
+        return this.capacity;
+    }
+
+    public Production getProduction() {
+        return this.production;
+    }
 }

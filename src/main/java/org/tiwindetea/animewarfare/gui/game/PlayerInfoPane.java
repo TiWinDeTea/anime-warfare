@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNeteventListener;
@@ -116,6 +117,16 @@ public class PlayerInfoPane extends Group implements StaffPointUpdatedNeteventLi
 				this.campaignRights.add(new CampaignRightToken("2K"));
 				this.campaignRights.add(new CampaignRightToken("3K"));
 				this.isForLocalPlayer = true;
+
+				List<CapacityName> capacities = new ArrayList<>(6);
+				for (CapacityName capacity : CapacityName.values()) {
+					if (capacity.getFaction() == GlobalChat.getLocalPlayerFaction()) {
+						capacities.add(capacity);
+					}
+				}
+				for (int i = 0; i < this.productions.size(); i++) {
+					this.productions.get(i).setCapacity(capacities.get(i));
+				}
 			} else {
 				rootVBox.getChildren().add(productionsHBox);
 				rootVBox.getChildren().add(infoHBox);

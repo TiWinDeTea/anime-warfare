@@ -22,40 +22,15 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.event;
 
-import javafx.scene.control.Tooltip;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.gui.event.CapacityClickedEvent;
-import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import java.util.EventListener;
 
 /**
- * @author Benoit Cortier
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class Production extends Rectangle {
+public interface CapacityClickedEventListener extends EventListener {
 
-	private final Tooltip tooltip = new Tooltip();
-
-	public Production() {
-		super(60., 60.);
-		lock();
-		Tooltip.install(this, this.tooltip);
-	}
-
-	public void unlock() {
-		setFill(Color.RED);
-	}
-
-	public void lock() {
-		setFill(Color.DARKRED);
-	}
-
-	public void setCapacity(CapacityName capacity) {
-		setOnMouseClicked(e -> EventDispatcher.send(new CapacityClickedEvent(e, capacity, this)));
-		this.tooltip.setText(capacity.toString());
-	}
+    void handleCapacityClicked(CapacityClickedEvent event);
 }
