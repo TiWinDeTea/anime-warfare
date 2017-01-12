@@ -45,8 +45,6 @@ import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
-import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
-import org.tiwindetea.animewarfare.net.networkevent.BattleNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNetevent;
@@ -62,13 +60,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static javafx.scene.paint.Color.rgb;
+
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
 public class GMap extends Pane implements UnitMovedNeteventListener, StudioNeteventListener,
-        BattleNeteventListener, StudioControllerChangedNeteventListener, GameEndedNeteventListener {
+        StudioControllerChangedNeteventListener, GameEndedNeteventListener {
 
     // TODO: rework this class
 
@@ -99,7 +99,6 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
         EventDispatcher.registerListener(UnitMovedNetevent.class, this);
         EventDispatcher.registerListener(StudioNetevent.class, this);
-        EventDispatcher.registerListener(BattleNetevent.class, this);
         EventDispatcher.registerListener(StudioControllerChangedNetevent.class, this);
         EventDispatcher.registerListener(GameEndedNetevent.class, this);
     }
@@ -107,7 +106,6 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     public void clear() {
         EventDispatcher.unregisterListener(UnitMovedNetevent.class, this);
         EventDispatcher.unregisterListener(StudioNetevent.class, this);
-        EventDispatcher.unregisterListener(BattleNetevent.class, this);
         EventDispatcher.unregisterListener(StudioControllerChangedNetevent.class, this);
         EventDispatcher.unregisterListener(GameEndedNetevent.class, this);
         this.POLYGONES.getChildren().clear();
@@ -566,7 +564,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         if (this.isDisplayingZonesGrids) {
             polygon.setFill(Color.TRANSPARENT);
             polygon.setOpacity(1);
-            polygon.setOnMouseEntered(e -> polygon.setFill(Color.rgb(255, 255, 255, 0.3)));
+            polygon.setOnMouseEntered(e -> polygon.setFill(rgb(255, 255, 255, 0.3)));
             polygon.setOnMouseExited(e -> polygon.setFill(Color.TRANSPARENT));
         } else {
             polygon.setFill(Color.WHITE);
@@ -902,26 +900,6 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
         } else if (studioNetevent.getType() == StudioEvent.Type.REMOVED_FROM_MAP) {
             this.removeGComponentFxThread(GStudio.get(studioNetevent.getZoneID()), studioNetevent.getZoneID());
         }
-    }
-
-    @Override
-    public void handlePreBattle(BattleNetevent event) {
-        // todo
-    }
-
-    @Override
-    public void handleDuringBattle(BattleNetevent event) {
-        // todo
-    }
-
-    @Override
-    public void handlePostBattle(BattleNetevent event) {
-        // todo
-    }
-
-    @Override
-    public void handleBattleFinished(BattleNetevent event) {
-        this.unHighlightFxThread(event.getZone());
     }
 
     @Override

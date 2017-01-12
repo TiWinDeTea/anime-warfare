@@ -51,6 +51,7 @@ import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
@@ -212,6 +213,7 @@ class Utils {
 		kryo.register(NetUnitMoveEvent.class);
 
 		// inner
+		kryo.register(BattleNetevent.Type.class);
 		kryo.register(CapacityName.class);
 		kryo.register(CapacityType.class);
 		kryo.register(FactionType.class);

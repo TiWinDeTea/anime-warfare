@@ -35,6 +35,12 @@ public class NetStartBattleRequest implements NetSendable {
     private final int targetPlayerID;
     private final int zoneID;
 
+    /* required by kryo */
+    public NetStartBattleRequest() {
+        this.targetPlayerID = 0;
+        this.zoneID = 0;
+    }
+
     /**
      * @param targetPlayerID ID of the player you want to fight
      * @param zoneID         Zone where you want to fight

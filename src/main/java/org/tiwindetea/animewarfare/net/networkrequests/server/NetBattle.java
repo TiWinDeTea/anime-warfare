@@ -28,8 +28,12 @@ import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Lucas Lazare
+ * @author Benoît CORTIER
  * @since 0.1.0
  */
 public class NetBattle implements NetReceivable {
@@ -37,6 +41,9 @@ public class NetBattle implements NetReceivable {
     private final GameClientInfo defender;
     private final int zone;
     private final BattleNetevent.Type type;
+
+    private final Map<GameClientInfo, Integer> numberOfWoundeds = new HashMap<>();
+    private final Map<GameClientInfo, Integer> numberOfDeads = new HashMap<>();
 
     /**
      * Default constructor, required by Kryo.net
@@ -52,6 +59,11 @@ public class NetBattle implements NetReceivable {
         this.defender = defender;
         this.zone = event.getBattleContext().getZone().getID();
         this.type = type;
+
+        this.numberOfWoundeds.put(this.attacker, event.getBattleContext().getAttacker().getNumberOfWoundeds());
+        this.numberOfWoundeds.put(this.defender, event.getBattleContext().getDefender().getNumberOfWoundeds());
+        this.numberOfDeads.put(this.attacker, event.getBattleContext().getAttacker().getNumberOfDeads());
+        this.numberOfDeads.put(this.defender, event.getBattleContext().getDefender().getNumberOfDeads());
     }
 
     public GameClientInfo getAttacker() {
@@ -68,5 +80,13 @@ public class NetBattle implements NetReceivable {
 
     public BattleNetevent.Type getType() {
         return this.type;
+    }
+
+    public Map<GameClientInfo, Integer> getNumberOfWoundeds() {
+        return this.numberOfWoundeds;
+    }
+
+    public Map<GameClientInfo, Integer> getNumberOfDeads() {
+        return this.numberOfDeads;
     }
 }

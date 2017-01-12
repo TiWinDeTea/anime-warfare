@@ -46,6 +46,7 @@ import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractZoneFi
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawMascot;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.EngageBattle;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToCapture;
@@ -238,6 +239,9 @@ public class GContextActionMenu extends ContextMenu
 
             AbstractZoneFilter captureUnit = new CaptureUnit();
             this.filteredZoneItems.put(captureUnit.getName(), captureUnit);
+
+            AbstractZoneFilter engageBattle = new EngageBattle();
+            this.filteredZoneItems.put(engageBattle.getName(), engageBattle);
         }
     }
 

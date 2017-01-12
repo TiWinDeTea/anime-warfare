@@ -28,6 +28,8 @@ import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 
+import java.util.Map;
+
 /**
  * @author Lucas Lazare
  * @author Benoît CORTIER
@@ -68,11 +70,16 @@ public class BattleNetevent implements Event<BattleNeteventListener> {
     private final int zone;
     private final Type type;
 
+    private final Map<GameClientInfo, Integer> numberOfWoundeds;
+    private final Map<GameClientInfo, Integer> numberOfDeads;
+
     public BattleNetevent(NetBattle netBattle) {
         this.attacker = netBattle.getAttacker();
         this.defender = netBattle.getDefender();
         this.zone = netBattle.getZone();
         this.type = netBattle.getType();
+        this.numberOfWoundeds = netBattle.getNumberOfWoundeds();
+        this.numberOfDeads = netBattle.getNumberOfDeads();
     }
 
     @Override
@@ -90,6 +97,14 @@ public class BattleNetevent implements Event<BattleNeteventListener> {
 
     public int getZone() {
         return this.zone;
+    }
+
+    public Map<GameClientInfo, Integer> getNumberOfWoundeds() {
+        return this.numberOfWoundeds;
+    }
+
+    public Map<GameClientInfo, Integer> getNumberOfDeads() {
+        return this.numberOfDeads;
     }
 }
 

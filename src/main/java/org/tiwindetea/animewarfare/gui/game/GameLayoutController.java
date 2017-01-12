@@ -35,6 +35,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
@@ -51,6 +52,8 @@ import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetvent;
 import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetventListener;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.BattleNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.FirstPlayerSelectedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.NextPlayerNetevent;
@@ -59,6 +62,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PhaseChangeNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNeteventListener;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
@@ -73,7 +77,8 @@ import java.util.ResourceBundle;
  */
 public class GameLayoutController implements Initializable, QuitApplicationEventListener,
 		PhaseChangedNeteventListener, FirstPlayerSelectedNeteventListener, NextPlayerNeteventListener,
-		SelectUnitToCaptureRequestNeteventListener, AskFirstPlayerSelectionNetventListener {
+		SelectUnitToCaptureRequestNeteventListener, AskFirstPlayerSelectionNetventListener,
+		BattleNeteventListener {
 	private static GMap map;
 
 	private static List<PlayerInfoPane> playerInfoPaneList = new ArrayList<>();
@@ -108,6 +113,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private GFanCounter gfc = new GFanCounter();
 
 	private GContextActionMenu gContextActionMenu;
+
+	private PaperButton battleReadyButton;
 
 	public void initStart() {
 		MainApp.getMainRoot().getChildren().add(this.overlay);
@@ -197,6 +204,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(NextPlayerNetevent.class, this);
 		EventDispatcher.registerListener(SelectUnitToCaptureRequestNetevent.class, this);
 		EventDispatcher.registerListener(AskFirstPlayerSelectionNetvent.class, this);
+		EventDispatcher.registerListener(BattleNetevent.class, this);
 
 		GamePhaseMonitor.init();
 		PlayerTurnMonitor.init();
@@ -244,6 +252,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.unregisterListener(NextPlayerNetevent.class, this);
 		EventDispatcher.unregisterListener(SelectUnitToCaptureRequestNetevent.class, this);
 		EventDispatcher.unregisterListener(AskFirstPlayerSelectionNetvent.class, this);
+		EventDispatcher.unregisterListener(BattleNetevent.class, this);
 	}
 
 	@Override
@@ -339,5 +348,49 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			this.finishTurnButton.setDisable(true);
 			this.skipAllButton.setDisable(true);
 		});
+	}
+
+	@Override
+	public void handlePreBattle(BattleNetevent event) {
+		this.map.highLightFxThread(event.getZone(), Color.rgb(255, 153, 51, 30), Color.rgb(255, 153, 51, 20));
+
+		this.battleReadyButton = new PaperButton("Battle ready"); // TODO: externalize
+		this.battleReadyButton.setPrefWidth(150);
+		this.battleReadyButton.setPrefHeight(30);
+		this.battleReadyButton.setOnAction(a -> MainApp.getGameClient().send(new NetBattlePhaseReadyRequest()));
+
+		this.dynamicCommandVBox.getChildren().add(this.battleReadyButton);
+
+		if (event.getDefender().equals(MainApp.getGameClient().getClientInfo())) {
+			new OverlayMessageDialog(this.overlay, event.getAttacker().getGameClientName() + " started a battle with you.");
+		} else if (!event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
+			new OverlayMessageDialog(this.overlay, event.getAttacker().getGameClientName()
+					+ " started a battle with " + event.getDefender().getGameClientName());
+		}
+	}
+
+	@Override
+	public void handleDuringBattle(BattleNetevent event) {
+		if (!event.getDefender().equals(MainApp.getGameClient().getClientInfo())
+				&& !event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
+			this.battleReadyButton.setDisable(true);
+		}
+
+		// todo
+	}
+
+	@Override
+	public void handlePostBattle(BattleNetevent event) {
+		this.battleReadyButton.setDisable(false);
+
+		// todo
+	}
+
+	@Override
+	public void handleBattleFinished(BattleNetevent event) {
+		this.map.unHighlightFxThread(event.getZone());
+
+		this.battleReadyButton = null;
+		this.dynamicCommandVBox.getChildren().remove(this.battleReadyButton);
 	}
 }

@@ -32,6 +32,7 @@ public abstract class AbstractFilter {
 	protected enum GCAMState {
 		NOTHING,
 		MOVING_UNITS,
+		BATTLE,
 	}
 
 	protected static GCAMState actionMenuState = GCAMState.NOTHING;
