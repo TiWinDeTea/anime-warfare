@@ -240,11 +240,13 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			return;
 		}
 
-		if (event.getPhase().equals(PhaseChangedEvent.Phase.MARKETING)) {
+		if (PlayerTurnMonitor.getCurrentPlayer() != null && PlayerTurnMonitor.getCurrentPlayer().equals(MainApp.getGameClient().getClientInfo())) {
 			this.finishTurnButton.setDisable(false);
-		} else if (PlayerTurnMonitor.getCurrentPlayer() != null && PlayerTurnMonitor.getCurrentPlayer().equals(MainApp.getGameClient().getClientInfo())) {
-			this.finishTurnButton.setDisable(false);
-			this.skipAllButton.setDisable(false);
+			if (event.getPhase().equals(PhaseChangedEvent.Phase.MARKETING)) {
+				this.skipAllButton.setDisable(true);
+			} else {
+				this.skipAllButton.setDisable(false);
+			}
 		} else {
 			this.finishTurnButton.setDisable(true);
 			this.skipAllButton.setDisable(true);

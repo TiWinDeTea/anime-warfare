@@ -76,8 +76,8 @@ class MarketingState extends GameState
 
 	@Override
 	public void update() {
+		this.currentPlayer = this.currentPlayer.getNextPlayerInGameOrder();
 		if (this.currentPlayer != this.gameBoard.getFirstPlayer()) {
-			this.currentPlayer = this.currentPlayer.getNextPlayerInGameOrder();
 			LogicEventDispatcher.send(new NextPlayerEvent(this.currentPlayer.getID()));
 		} else {
 			this.nextState = new ActionState(this.gameBoard);
