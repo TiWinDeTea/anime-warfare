@@ -251,7 +251,10 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     }
 
     public List<GComponent> getComponents(int zoneId) {
-        return this.MAP.getRectanglesOf(zoneId).stream().map(r -> r.getGComponent()).collect(Collectors.toList());
+        return this.MAP.getRectanglesOf(zoneId).stream()
+                .map(r -> r.getGComponent())
+                .filter(c -> c != null)
+                .collect(Collectors.toList());
     }
 
     public int linkTo(GComponent component, double x, double y) {
