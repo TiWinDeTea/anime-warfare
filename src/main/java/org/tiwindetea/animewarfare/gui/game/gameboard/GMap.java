@@ -81,8 +81,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
     public GMap() {
         super();
-        Image pic = new Image(this.getClass().getClassLoader().getResource("org/tiwindetea/animewarfare/gui/game/pictures/map.png").toString());
-        this.MAP_PICT = new ImageView(pic);
+        this.MAP_PICT = new ImageView(new Image(GUnit.class.getResourceAsStream("pictures/map.png")));
         initZones();
         getChildren().addAll(this.MAP_PICT, this.POLYGONES, this.MAP);
         this.MAP_PICT.autosize();
