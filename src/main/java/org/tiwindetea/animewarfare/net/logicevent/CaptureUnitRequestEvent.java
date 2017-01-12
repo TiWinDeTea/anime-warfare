@@ -22,23 +22,41 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.networkrequests.server;
+package org.tiwindetea.animewarfare.net.logicevent;
 
-import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
-/**
- * @author Lucas Lazare
- * @since 0.1.0
- */
-public class NetSelectMascotToCapture implements NetReceivable {
+public class CaptureUnitRequestEvent extends ActionEvent<CaptureUnitRequestEventListener> {
+	private final int huntedPlayerID;
+	private final int zone;
+	private final UnitType unitType;
 
-    /**
-     * Default constructor, required by Kryo.net
-     */
-    public NetSelectMascotToCapture() {
+	public CaptureUnitRequestEvent(int playerID, int huntedPlayerID, int zone, UnitType unitType) {
+		super(playerID);
 
-    }
+		if (playerID == huntedPlayerID) {
+			throw new IllegalArgumentException("The hunter can't be the hunted player.");
+		}
 
-    public NetSelectMascotToCapture(AskMascotToCaptureEvent event) {
-    }
+		this.huntedPlayerID = huntedPlayerID;
+		this.zone = zone;
+		this.unitType = unitType;
+	}
+
+	@Override
+	public void notify(CaptureUnitRequestEventListener listener) {
+		listener.handleCaptureUnitRequestEvent(this);
+	}
+
+	public int getHuntedPlayerID() {
+		return this.huntedPlayerID;
+	}
+
+	public int getZone() {
+		return this.zone;
+	}
+
+	public UnitType getUnitType() {
+		return this.unitType;
+	}
 }

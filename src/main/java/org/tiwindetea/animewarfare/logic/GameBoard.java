@@ -234,7 +234,7 @@ public class GameBoard {
 			case NO_NAME:
 				player.activables.add(new Clemency.ClemencyActivable(player, getAdvertisingCampaignRightsPool()));
 				player.activables.add(new Loan.LoanActivable(player));
-				player.activables.add(new GeniusKidnapper.GeniusKidnapperActivable(player, this));
+				player.activables.add(new GeniusKidnapper.GeniusKidnapperActivable(player));
 				player.activables.add(new ColdBlood.ColdBloodActivable(player));
 				break;
 			case THE_BLACK_KNIGHTS:

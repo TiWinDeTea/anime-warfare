@@ -51,7 +51,7 @@ import org.tiwindetea.animewarfare.logic.events.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.states.FirstTurnStaffHiringState;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEventListener;
-import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEventListener;
@@ -66,11 +66,10 @@ import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEve
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureUnitRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
 import org.tiwindetea.animewarfare.net.logicevent.OrganizeConventionRequestEvent;
@@ -79,6 +78,7 @@ import org.tiwindetea.animewarfare.net.logicevent.SelectUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SelectWoundedsUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipAllEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
+import org.tiwindetea.animewarfare.net.logicevent.UnitToCaptureEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
@@ -88,7 +88,6 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnReque
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
-import org.tiwindetea.animewarfare.net.networkrequests.client.NetMascotCaptureRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitsRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
@@ -98,6 +97,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectUnitsRequ
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectWoundedUnitsRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnitCaptureRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
@@ -119,7 +119,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadder
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetNextPlayer;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCapture;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudioControllerChanged;
@@ -552,7 +552,7 @@ public class GameServer {
 
         public void received(Connection connection, NetCapturedMascotSelection selection) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new MascotToCaptureChoiceEvent(connection.getID(), selection.getUnitID()));
+                GameServer.this.eventDispatcher.fire(new UnitToCaptureEvent(connection.getID(), selection.getUnitID()));
             }
         }
 
@@ -613,13 +613,13 @@ public class GameServer {
             }
         }
 
-        public void received(Connection connection, NetMascotCaptureRequest mascotRequest) {
+        public void received(Connection connection, NetUnitCaptureRequest mascotRequest) {
             if (isLegit(connection)) {
-                GameServer.this.eventDispatcher.fire(new CaptureMascotEvent(
+                GameServer.this.eventDispatcher.fire(new CaptureUnitRequestEvent(
                         connection.getID(),
                         mascotRequest.getTargetPlayer(),
-                        mascotRequest.getZoneID()
-                ));
+                        mascotRequest.getZoneID(),
+                        mascotRequest.getUnitType()));
             }
         }
 
@@ -762,8 +762,8 @@ public class GameServer {
         }
 
         @Override
-        public void askUnitToCaptureEvent(AskMascotToCaptureEvent event) {
-            this.server.sendToTCP(event.getPlayer(), new NetSelectMascotToCapture(event));
+        public void askUnitToCaptureEvent(AskUnitToCaptureEvent event) {
+            this.server.sendToTCP(event.getPlayer(), new NetSelectUnitToCapture(event));
         }
 
         @Override

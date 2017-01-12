@@ -39,7 +39,7 @@ import org.tiwindetea.animewarfare.logic.battle.PreBattleState;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEvent;
 import org.tiwindetea.animewarfare.logic.battle.event.BattleEventListener;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
-import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEventListener;
 import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
@@ -49,14 +49,12 @@ import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEvent;
-import org.tiwindetea.animewarfare.net.logicevent.CaptureMascotEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureUnitRequestEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureUnitRequestEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEvent;
 import org.tiwindetea.animewarfare.net.logicevent.InvokeUnitEventListener;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.MascotToCaptureChoiceEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.OpenStudioEvent;
@@ -65,6 +63,8 @@ import org.tiwindetea.animewarfare.net.logicevent.SkipAllEvent;
 import org.tiwindetea.animewarfare.net.logicevent.SkipAllEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
 import org.tiwindetea.animewarfare.net.logicevent.StartBattleEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.UnitToCaptureEvent;
+import org.tiwindetea.animewarfare.net.logicevent.UnitToCaptureEventListener;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,7 +80,7 @@ import java.util.stream.Collectors;
  */
 class ActionState extends GameState implements MoveUnitsEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipAllEventListener, StartBattleEventListener,
-		CaptureMascotEventListener, MascotToCaptureChoiceEventListener, GameEndedEventListener,
+		CaptureUnitRequestEventListener, UnitToCaptureEventListener, GameEndedEventListener,
 		BattleEventListener, FinishTurnRequestEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
@@ -96,9 +96,9 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	private Player huntedPlayer;
 	private Zone huntingZone;
 
-	private StateMachine currentBattleStateMachine = null;
+	private StateMachine currentBattleStateMachine;
 
-	private boolean nonUlimitedActionDone = false;
+	private boolean nonUnlimitedActionDone;
 
 	ActionState(GameBoard gameBoard) {
 		super(gameBoard);
@@ -117,8 +117,8 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().addListener(InvokeUnitEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(SkipAllEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(StartBattleEvent.class, this);
-		LogicEventDispatcher.getInstance().addListener(CaptureMascotEvent.class, this);
-		LogicEventDispatcher.getInstance().addListener(MascotToCaptureChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(CaptureUnitRequestEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(UnitToCaptureEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(BattleEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(FinishTurnRequestEvent.class, this);
@@ -128,7 +128,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	public void update() {
 		this.zonesThatHadABattle.clear();
 		this.alreadyMovedUnit.clear();
-		this.nonUlimitedActionDone = false;
+		this.nonUnlimitedActionDone = false;
 
 		setNextPlayer();
 	}
@@ -159,8 +159,8 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().removeListener(InvokeUnitEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(SkipAllEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(StartBattleEvent.class, this);
-		LogicEventDispatcher.getInstance().removeListener(CaptureMascotEvent.class, this);
-		LogicEventDispatcher.getInstance().removeListener(MascotToCaptureChoiceEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(CaptureUnitRequestEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(UnitToCaptureEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(BattleEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(FinishTurnRequestEvent.class, this);
@@ -188,7 +188,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.nonUlimitedActionDone) {
+		if (this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
@@ -222,7 +222,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 				for (Pair<Unit, MoveUnitsEvent.Movement> movement : validMovements) {
 					movement.getKey().move(this.gameBoard.getMap().getZone(movement.getValue().getDestinationZone()));
 					this.alreadyMovedUnit.add(Integer.valueOf(movement.getKey().getID()));
-					this.nonUlimitedActionDone = true;
+					this.nonUnlimitedActionDone = true;
 				}
 			}
 		}
@@ -235,7 +235,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.nonUlimitedActionDone) {
+		if (this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
@@ -252,7 +252,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 						Studio newStudio = new Studio(event.getZone(), this.currentPlayer);
 						this.gameBoard.getMap().getZone(event.getZone()).setStudio(newStudio);
 						newStudio.setController(mascot);
-						this.nonUlimitedActionDone = true;
+						this.nonUnlimitedActionDone = true;
 					}
 				}
 			}
@@ -266,7 +266,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.nonUlimitedActionDone) {
+		if (this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
@@ -290,7 +290,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 						) {
 					invokeUnit(invocationZone, event.getUnitType());
 
-					this.nonUlimitedActionDone = true;
+					this.nonUnlimitedActionDone = true;
 				}
 			}
 		}
@@ -310,7 +310,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.nonUlimitedActionDone) {
+		if (this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
@@ -337,7 +337,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.nonUlimitedActionDone && this.currentPlayer.getNumberOfProduction() != 6) {
+		if (this.nonUnlimitedActionDone && this.currentPlayer.getNumberOfProduction() != 6) {
 			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
@@ -353,17 +353,17 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext, this.gameBoard.getMap()));
 
-		this.nonUlimitedActionDone = true;
+		this.nonUnlimitedActionDone = true;
 	}
 
 	@Override
-	public void handleCaptureMascotEvent(CaptureMascotEvent event) {
+	public void handleCaptureUnitRequestEvent(CaptureUnitRequestEvent event) {
 		if (isInvalidPlayer(event)) {
 			Log.debug(getClass().getName(), "Invalid player.");
 			return;
 		}
 
-		if (this.nonUlimitedActionDone) {
+		if (this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non unlimited action already done.");
 			return;
 		}
@@ -375,6 +375,12 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		if (this.currentPlayer.getID() == event.getHuntedPlayerID()) {
 			Log.debug(getClass().getName(), "Cannot hunt himself.");
+			return;
+		}
+
+		if (!event.getUnitType().isLevel(UnitLevel.MASCOT)
+				&& !this.currentPlayer.hasCapacity(CapacityName.GENIUS_KIDNAPPER)) {
+			Log.debug(getClass().getName(), "Can't hunt monster without Genius Kidnapper capacity.");
 			return;
 		}
 
@@ -392,10 +398,10 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		}
 
 		List<Unit> huntedUnits = this.huntingZone.getUnits()
-				.stream()
-				.filter(u -> u.isLevel(UnitLevel.MASCOT)
-						&& u.hasFaction(this.huntedPlayer.getFaction()))
-				.collect(Collectors.toList());
+		                                         .stream()
+		                                         .filter(u -> u.getType() == event.getUnitType()
+				                                         && u.hasFaction(this.huntedPlayer.getFaction()))
+		                                         .collect(Collectors.toList());
 
 		if (huntedUnits.isEmpty()) {
 			Log.debug(getClass().getName(), "No hunted unit present.");
@@ -404,43 +410,52 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		Optional<Unit> mascotProtector =
 				this.huntingZone.getUnits()
-						.stream()
-						.filter(u -> isMascotProtector(hunter.get(), u))
-						.findFirst();
+				                .stream()
+				                .filter(u -> isUnitProtector(hunter.get(), u))
+				                .findFirst();
 
 		if (mascotProtector.isPresent()) {
-			Log.debug(getClass().getName(), "Mascot protector present.");
+			Log.debug(getClass().getName(), "Unit protector present.");
 			return;
 		}
 
-		this.nonUlimitedActionDone = true;
+		this.nonUnlimitedActionDone = true;
 
 		if (huntedUnits.size() == 1) {
-			handleMascotToCaptureChoiceEvent(new MascotToCaptureChoiceEvent(event.getHuntedPlayerID(),
+			handleUnitToCaptureEvent(new UnitToCaptureEvent(event.getHuntedPlayerID(),
 					huntedUnits.get(0).getID()));
 		} else {
-			LogicEventDispatcher.getInstance().fire(new AskMascotToCaptureEvent(event.getHuntedPlayerID(), event.getZone()));
+			LogicEventDispatcher.getInstance()
+			                    .fire(new AskUnitToCaptureEvent(event.getHuntedPlayerID(),
+					                    event.getZone(),
+					                    event.getUnitType()));
 		}
 	}
 
-	private boolean isMascotProtector(Unit hunter, Unit unit) {
+	private boolean isUnitProtector(Unit hunter, Unit unit) {
 		return unit.hasFaction(this.huntedPlayer.getFaction())
 				&& Unit.bestUnitComparator(hunter, unit) <= 0;
 	}
 
 	@Override
-	public void handleMascotToCaptureChoiceEvent(MascotToCaptureChoiceEvent event) {
+	public void handleUnitToCaptureEvent(UnitToCaptureEvent event) {
 		if (this.huntedPlayer.getID() != event.getPlayerID()) {
 			return;
 		}
 
-		Unit mascot = this.huntingZone.getUnit(event.getMascotID());
-		if (mascot == null || !mascot.isLevel(UnitLevel.MASCOT)) {
+		Unit unit = this.huntingZone.getUnit(event.getUnitID());
+		if (unit == null) {
+			Log.debug(getClass().getName(), "No such unit.");
 			return;
 		}
 
-		mascot.removeFromMap();
-		this.currentPlayer.addUnitCaptured(mascot, this.huntedPlayer);
+		if (!unit.isLevel(UnitLevel.MASCOT) && !this.currentPlayer.hasCapacity(CapacityName.GENIUS_KIDNAPPER)) {
+			Log.debug(getClass().getName(), "Can't hunt monster without Genius Kidnapper capacity.");
+			return;
+		}
+
+		unit.removeFromMap();
+		this.currentPlayer.addUnitCaptured(unit, this.huntedPlayer);
 
 		this.huntingZone = null;
 		this.huntedPlayer = null;
@@ -478,7 +493,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (!this.nonUlimitedActionDone) {
+		if (!this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non ulimited action not done.");
 			return;
 		}

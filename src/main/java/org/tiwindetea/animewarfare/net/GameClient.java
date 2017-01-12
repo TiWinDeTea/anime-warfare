@@ -79,7 +79,7 @@ import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadder
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetNextPlayer;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCapture;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudioControllerChanged;
@@ -464,7 +464,7 @@ public class GameClient {
             }
         }
 
-        public void received(Connection connection, NetSelectMascotToCapture selectMascotToCapture) {
+        public void received(Connection connection, NetSelectUnitToCapture selectMascotToCapture) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + selectMascotToCapture);
             EventDispatcher.send(new SelectMascotToCaptureRequestNetevent(selectMascotToCapture));
         }

@@ -22,33 +22,36 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.net.logicevent;
+package org.tiwindetea.animewarfare.logic.states.events;
 
-public class CaptureMascotEvent extends ActionEvent<CaptureMascotEventListener> {
-	private final int huntedPlayerID;
-	private final int zone;
+import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
-	public CaptureMascotEvent(int playerID, int huntedPlayerID, int zone) {
-		super(playerID);
+public class AskUnitToCaptureEvent implements Event<AskUnitToCaptureEventListener> {
+	private final int player;
+	private final int zoneID;
+	private final UnitType type;
 
-		if (playerID == huntedPlayerID) {
-			throw new IllegalArgumentException("The hunter can't be the hunted player.");
-		}
-
-		this.huntedPlayerID = huntedPlayerID;
-		this.zone = zone;
+	public AskUnitToCaptureEvent(int player, int zoneID, UnitType type) {
+		this.player = player;
+		this.zoneID = zoneID;
+		this.type = type;
 	}
 
 	@Override
-	public void notify(CaptureMascotEventListener listener) {
-		listener.handleCaptureMascotEvent(this);
+	public void notify(AskUnitToCaptureEventListener listener) {
+		listener.askUnitToCaptureEvent(this);
 	}
 
-	public int getHuntedPlayerID() {
-		return this.huntedPlayerID;
+	public int getZoneID() {
+		return this.zoneID;
 	}
 
-	public int getZone() {
-		return this.zone;
+	public UnitType getType() {
+		return this.type;
+	}
+
+	public int getPlayer() {
+		return this.player;
 	}
 }

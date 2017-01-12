@@ -24,8 +24,27 @@
 
 package org.tiwindetea.animewarfare.net.logicevent;
 
-import java.util.EventListener;
+import org.lomadriel.lfc.event.Event;
 
-public interface MascotToCaptureChoiceEventListener extends EventListener {
-	void handleMascotToCaptureChoiceEvent(MascotToCaptureChoiceEvent event);
+public class UnitToCaptureEvent implements Event<UnitToCaptureEventListener> {
+	private final int playerID;
+	private final int unitID;
+
+	public UnitToCaptureEvent(int playerID, int unitID) {
+		this.playerID = playerID;
+		this.unitID = unitID;
+	}
+
+	@Override
+	public void notify(UnitToCaptureEventListener listener) {
+		listener.handleUnitToCaptureEvent(this);
+	}
+
+	public int getPlayerID() {
+		return this.playerID;
+	}
+
+	public int getUnitID() {
+		return this.unitID;
+	}
 }

@@ -22,23 +22,10 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.net.logicevent;
 
-public class AskMascotToCaptureEvent extends RemoveUnitEvent<AskUnitToCaptureEventListener> {
-	private final int zoneID;
+import java.util.EventListener;
 
-	public AskMascotToCaptureEvent(int player, int zoneID) {
-		super(player, 1);
-
-		this.zoneID = zoneID;
-	}
-
-	@Override
-	public void notify(AskUnitToCaptureEventListener listener) {
-		listener.askUnitToCaptureEvent(this);
-	}
-
-	public int getZoneID() {
-		return this.zoneID;
-	}
+public interface CaptureUnitRequestEventListener extends EventListener {
+	void handleCaptureUnitRequestEvent(CaptureUnitRequestEvent event);
 }

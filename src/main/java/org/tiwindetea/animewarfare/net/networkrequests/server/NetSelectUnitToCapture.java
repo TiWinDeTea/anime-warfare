@@ -22,26 +22,37 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.logic.states.events;
+package org.tiwindetea.animewarfare.net.networkrequests.server;
 
-import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 
-import java.util.EventListener;
+/**
+ * @author Lucas Lazare
+ * @since 0.1.0
+ */
+public class NetSelectUnitToCapture implements NetReceivable {
+    private final UnitType unitType;
+    private final int zoneId;
 
-public abstract class RemoveUnitEvent<T extends EventListener> implements Event<T> {
-	private final int player;
-	private final int numberOfUnits;
+    /**
+     * Default constructor, required by Kryo.net
+     */
+    public NetSelectUnitToCapture() {
+        this.unitType = null;
+        this.zoneId = -1;
+    }
 
-	public RemoveUnitEvent(int player, int numberOfUnits) {
-		this.player = player;
-		this.numberOfUnits = numberOfUnits;
-	}
+    public NetSelectUnitToCapture(AskUnitToCaptureEvent event) {
+        this.unitType = event.getType();
+        this.zoneId = event.getZoneID();
+    }
 
-	public int getPlayer() {
-		return this.player;
-	}
+    public UnitType getUnitType() {
+        return this.unitType;
+    }
 
-	public int getNumberOfUnits() {
-		return this.numberOfUnits;
-	}
+    public int getZoneId() {
+        return this.zoneId;
+    }
 }

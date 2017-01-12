@@ -41,7 +41,7 @@ import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.logic.states.events.AskFirstPlayerEvent;
-import org.tiwindetea.animewarfare.logic.states.events.AskMascotToCaptureEvent;
+import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.states.events.FirstPlayerSelectedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.GameEndedEvent;
 import org.tiwindetea.animewarfare.logic.states.events.NextPlayerEvent;
@@ -50,8 +50,50 @@ import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
-import org.tiwindetea.animewarfare.net.networkrequests.client.*;
-import org.tiwindetea.animewarfare.net.networkrequests.server.*;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedMascotSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetFirstPlayerSelection;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetLockFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetMoveUnitsRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetOpenStudioRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectUnitsRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSelectWoundedUnitsRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetStartBattleRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnitCaptureRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnlockFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnselectFactionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetUseCapacityRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBadPassword;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetCostModified;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionLocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnlocked;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFactionUnselected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFanNumberUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelected;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetFirstPlayerSelectionRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEndConditionsReached;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameEnded;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetGameStarted;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetHandlePlayerDisconnection;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMarketingLadderUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetMessage;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetNextPlayer;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetPhaseChanged;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCapture;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStaffPointsUpdated;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudio;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetStudioControllerChanged;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitCountChange;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetUnitMoveEvent;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -129,7 +171,7 @@ class Utils {
 		kryo.register(NetFirstPlayerSelection.class);
 		kryo.register(NetInvokeUnitRequest.class);
 		kryo.register(NetLockFactionRequest.class);
-		kryo.register(NetMascotCaptureRequest.class);
+		kryo.register(NetUnitCaptureRequest.class);
 		kryo.register(NetMoveUnitsRequest.class);
 		kryo.register(NetOpenStudioRequest.class);
 		kryo.register(NetPassword.class);
@@ -164,7 +206,7 @@ class Utils {
 		kryo.register(NetStudio.class);
 		kryo.register(NetStudioControllerChanged.class);
 		kryo.register(NetPhaseChanged.class);
-		kryo.register(NetSelectMascotToCapture.class);
+		kryo.register(NetSelectUnitToCapture.class);
 		kryo.register(NetUnitCountChange.class);
 		kryo.register(NetUnitMoveEvent.class);
 
@@ -192,7 +234,7 @@ class Utils {
 
 		//logic.states.events, alphabetical order
 		ed.addListener(AskFirstPlayerEvent.class, logicListener);
-		ed.addListener(AskMascotToCaptureEvent.class, logicListener);
+		ed.addListener(AskUnitToCaptureEvent.class, logicListener);
 		ed.addListener(BattleEvent.class, logicListener);
 		ed.addListener(CostModifiedEvent.class, logicListener);
 		ed.addListener(FirstPlayerSelectedEvent.class, logicListener);
@@ -223,7 +265,7 @@ class Utils {
 
 		//logic.states.events, alphabetical order
 		ed.removeListener(AskFirstPlayerEvent.class, logicListener);
-		ed.removeListener(AskMascotToCaptureEvent.class, logicListener);
+		ed.removeListener(AskUnitToCaptureEvent.class, logicListener);
 		ed.removeListener(BattleEvent.class, logicListener);
 		ed.removeListener(CostModifiedEvent.class, logicListener);
 		ed.removeListener(FirstPlayerSelectedEvent.class, logicListener);

@@ -25,19 +25,32 @@
 package org.tiwindetea.animewarfare.net.networkevent;
 
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectMascotToCapture;
+import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.net.networkrequests.server.NetSelectUnitToCapture;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
 public class SelectMascotToCaptureRequestNetevent implements Event<SelectMascotToCaptureRequestNeteventListener> {
+    private final UnitType unitType;
+    private final int zoneId;
 
-    public SelectMascotToCaptureRequestNetevent(NetSelectMascotToCapture selectMascotToCapture) {
+    public SelectMascotToCaptureRequestNetevent(NetSelectUnitToCapture selectMascotToCapture) {
+        this.unitType = selectMascotToCapture.getUnitType();
+        this.zoneId = selectMascotToCapture.getZoneId();
     }
 
     @Override
     public void notify(SelectMascotToCaptureRequestNeteventListener listener) {
         listener.handleMascotSelectionRequest(this);
+    }
+
+    public UnitType getUnitType() {
+        return this.unitType;
+    }
+
+    public int getZoneId() {
+        return this.zoneId;
     }
 }

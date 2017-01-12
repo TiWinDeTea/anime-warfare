@@ -24,27 +24,18 @@
 
 package org.tiwindetea.animewarfare.logic.capacity;
 
-import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
 import org.tiwindetea.animewarfare.logic.Player;
-import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.events.UnitCapturedEvent;
 import org.tiwindetea.animewarfare.logic.events.UnitCapturedEventListener;
-import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
-import org.tiwindetea.animewarfare.net.logicevent.GeniusKidnapperMonsterChoiceEvent;
-import org.tiwindetea.animewarfare.net.logicevent.GeniusKidnapperMonsterChoiceEventListener;
 
-import java.util.Optional;
-
-public class GeniusKidnapper extends PlayerCapacity implements GeniusKidnapperMonsterChoiceEventListener {
+public class GeniusKidnapper implements Capacity {
 	public static class GeniusKidnapperActivable extends PlayerActivable implements UnitCapturedEventListener {
-		private final GameBoard gameBoard;
 		private int counter;
 
-		public GeniusKidnapperActivable(Player player, GameBoard gameBoard) {
+		public GeniusKidnapperActivable(Player player) {
 			super(player);
-			this.gameBoard = gameBoard;
 
 			LogicEventDispatcher.registerListener(UnitCapturedEvent.class, this);
 		}
@@ -60,71 +51,21 @@ public class GeniusKidnapper extends PlayerCapacity implements GeniusKidnapperMo
 				++this.counter;
 
 				if (this.counter == 2) {
-					activateAndDestroy(new GeniusKidnapper(getPlayer(), this.gameBoard));
+					activateAndDestroy(new GeniusKidnapper());
 				}
 			}
 		}
 	}
 
-	private final GameBoard gameBoard;
-
-	private Unit victim;
-
-	GeniusKidnapper(Player player, GameBoard gameBoard) {
-		super(player);
-		this.gameBoard = gameBoard;
-
-		LogicEventDispatcher.registerListener(GeniusKidnapperMonsterChoiceEvent.class, this);
+	GeniusKidnapper() {
 	}
 
 	@Override
 	public void use() {
-		if (this.victim != null) {
-			this.victim.removeFromMap();
-			getPlayer().addUnitCaptured(this.victim, this.gameBoard.getPlayer(this.victim.getFaction()));
-
-			this.victim = null;
-		}
-	}
-
-	@Override
-	public void handleGeniusKidnapperMonsterChoiceEvent(GeniusKidnapperMonsterChoiceEvent event) {
-		if (!getPlayer().hasRequiredStaffPoints(getName().getStaffCost())) {
-			return;
-		}
-
-		if (!this.gameBoard.getMap().isValid(event.getZoneID())) {
-			return;
-		}
-
-		Zone actionZone = this.gameBoard.getMap().getZone(event.getZoneID());
-		Unit victim = actionZone.getUnit(event.getUnitID());
-
-		Optional<Unit> hunter = actionZone.getUnits()
-				.stream()
-				.filter(u -> u.hasFaction(getPlayer().getFaction()))
-				.max(Unit::bestUnitComparator);
-
-		if (!hunter.isPresent()) {
-			return;
-		}
-
-		Optional<Unit> victimProtect = actionZone.getUnits()
-				.stream()
-				.filter(u -> u.hasFaction(victim.getFaction())
-						&& Unit.bestUnitComparator(hunter.get(), u) <= 0)
-				.findFirst();
-
-		if (victimProtect.isPresent()) {
-			return;
-		}
-
-		this.victim = victim;
 	}
 
 	@Override
 	public void destroy() {
-		LogicEventDispatcher.unregisterListener(GeniusKidnapperMonsterChoiceEvent.class, this);
 	}
 
 	@Override

@@ -24,33 +24,38 @@
 
 package org.tiwindetea.animewarfare.net.networkrequests.client;
 
+import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class NetMascotCaptureRequest implements NetSendable {
-
+public class NetUnitCaptureRequest implements NetSendable {
     private final int targetPlayer;
     private final int zoneID;
+    private final UnitType unitType;
 
     /**
      * @param targetPlayer Player you want to assault
      * @param zoneID       ID of the zone where you want to attack
+     * @param unitType
      */
-    public NetMascotCaptureRequest(int targetPlayer, int zoneID) {
+    public NetUnitCaptureRequest(int targetPlayer, int zoneID, UnitType unitType) {
         this.targetPlayer = targetPlayer;
         this.zoneID = zoneID;
+        this.unitType = unitType;
     }
 
     /**
      * @param targetPlayer Player you want to assault
      * @param zoneID       ID of the zone where you want to attack
+     * @param unitType
      */
-    public NetMascotCaptureRequest(GameClientInfo targetPlayer, int zoneID) {
+    public NetUnitCaptureRequest(GameClientInfo targetPlayer, int zoneID, UnitType unitType) {
         this.targetPlayer = targetPlayer.getId();
         this.zoneID = zoneID;
+        this.unitType = unitType;
     }
 
     public int getTargetPlayer() {
@@ -59,5 +64,9 @@ public class NetMascotCaptureRequest implements NetSendable {
 
     public int getZoneID() {
         return this.zoneID;
+    }
+
+    public UnitType getUnitType() {
+        return this.unitType;
     }
 }
