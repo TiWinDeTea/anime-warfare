@@ -22,33 +22,21 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game.ItemFilters;
-
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import org.tiwindetea.animewarfare.gui.game.GUnit;
-import org.tiwindetea.animewarfare.logic.FactionType;
-
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+package org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters;
 
 /**
- * @author Lucas Lazare
+ * @author Benoît CORTIER
  * @since 0.1.0
  */
-public abstract class AbstractUnitFilter extends AbstractFilter implements BiFunction<FactionType, GUnit, List<MenuItem>> {
-    public static Function<String, Button> buttonAdder;
-    public static Consumer<Button> buttonRemover;
+public abstract class AbstractFilter {
+	protected enum GCAMState {
+		NOTHING,
+		MOVING_UNITS,
+	}
 
-    protected final Button addButton(String text) {
-        return buttonAdder.apply(text);
-    }
+	protected static GCAMState actionMenuState = GCAMState.NOTHING;
 
-    protected final void remove(Button... buttons) {
-        for (Button button : buttons) {
-            buttonRemover.accept(button);
-        }
-    }
+	public abstract String getName();
+
+	public abstract void destroy();
 }

@@ -22,21 +22,18 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game.ItemFilters;
+package org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters;
+
+import javafx.scene.control.MenuItem;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GStudio;
+import org.tiwindetea.animewarfare.logic.FactionType;
+
+import java.util.List;
+import java.util.function.BiFunction;
 
 /**
- * @author Benoît CORTIER
+ * @author Lucas Lazare
  * @since 0.1.0
  */
-public abstract class AbstractFilter {
-	protected enum GCAMState {
-		NOTHING,
-		MOVING_UNITS,
-	}
-
-	protected static GCAMState actionMenuState = GCAMState.NOTHING;
-
-	public abstract String getName();
-
-	public abstract void destroy();
+public abstract class AbstractStudioFilter extends AbstractFilter implements BiFunction<FactionType, GStudio, List<MenuItem>> {
 }

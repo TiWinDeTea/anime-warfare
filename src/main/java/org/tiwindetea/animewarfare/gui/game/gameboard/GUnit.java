@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import com.esotericsoftware.minlog.Log;
 import javafx.beans.binding.Bindings;

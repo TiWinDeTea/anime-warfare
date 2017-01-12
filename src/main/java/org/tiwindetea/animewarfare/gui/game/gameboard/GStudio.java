@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import com.esotericsoftware.minlog.Log;
 import javafx.scene.image.Image;
@@ -47,6 +47,7 @@ import java.util.TreeSet;
  * @author Lucas Lazare
  * @since 0.1.0
  */
+
 public class GStudio extends GComponent {
 
     private static final TreeSet<GStudio> STUDIOS = new TreeSet<>(Comparator.comparingInt(GStudio::getZoneID));
@@ -120,11 +121,7 @@ public class GStudio extends GComponent {
 
         if (!initialized) {
             EventDispatcher.registerListener(StudioControllerChangedNetevent.class,
-                    event -> {
-                        get(event.getZoneID()).setTeam(GlobalChat.getFactionClient(event.getControllerFaction()));
-
-                        // TODO: Adds link between controller and studio.
-                    });
+                    event -> get(event.getZoneID()).setTeam(GlobalChat.getFactionClient(event.getControllerFaction())));
             EventDispatcher.registerListener(StudioNetevent.class, new StudioNeteventListener() {
 
                 @Override

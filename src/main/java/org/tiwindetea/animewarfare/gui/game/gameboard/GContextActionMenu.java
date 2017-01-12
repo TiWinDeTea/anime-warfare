@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -39,14 +39,14 @@ import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.GUnitClickedEventListener;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractFilter;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractStudioFilter;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractUnitFilter;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.AbstractZoneFilter;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.DrawMascot;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.DrawUnit;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.Move;
-import org.tiwindetea.animewarfare.gui.game.ItemFilters.OpenStudio;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractFilter;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractStudioFilter;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractUnitFilter;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractZoneFilter;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawMascot;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;

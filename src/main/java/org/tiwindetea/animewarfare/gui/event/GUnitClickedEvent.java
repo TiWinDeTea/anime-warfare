@@ -26,7 +26,7 @@ package org.tiwindetea.animewarfare.gui.event;
 
 import javafx.scene.input.MouseEvent;
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.gui.game.GUnit;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GUnit;
 
 /**
  * @author Lucas Lazare

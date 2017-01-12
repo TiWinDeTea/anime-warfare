@@ -33,6 +33,7 @@ import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GUIState;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
 
 import java.io.IOException;
 

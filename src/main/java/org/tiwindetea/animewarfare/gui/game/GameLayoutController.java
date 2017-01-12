@@ -42,6 +42,8 @@ import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
 import org.tiwindetea.animewarfare.gui.game.dialog.OverlayMessageDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GMap;
 import org.tiwindetea.animewarfare.logic.GFanCounter;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;

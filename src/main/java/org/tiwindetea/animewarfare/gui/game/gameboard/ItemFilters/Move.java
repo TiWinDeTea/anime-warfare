@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game.ItemFilters;
+package org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,11 +35,11 @@ import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.event.ZoneClickedEventListener;
-import org.tiwindetea.animewarfare.gui.game.GMap;
-import org.tiwindetea.animewarfare.gui.game.GUnit;
 import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
 import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GMap;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GUnit;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;

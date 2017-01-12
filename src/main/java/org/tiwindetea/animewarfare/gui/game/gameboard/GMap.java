@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.game;
+package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import com.esotericsoftware.minlog.Log;
 import javafx.application.Platform;
@@ -44,6 +44,10 @@ import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
+import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioNeteventListener;
 import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNetevent;
@@ -60,7 +64,8 @@ import java.util.stream.Collectors;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GMap extends Pane implements UnitMovedNeteventListener, StudioNeteventListener, BattleNeteventListener {
+public class GMap extends Pane implements UnitMovedNeteventListener, StudioNeteventListener,
+        BattleNeteventListener, StudioControllerChangedNeteventListener, GameEndedNeteventListener {
 
     // TODO: rework this class
 
@@ -88,10 +93,20 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             setScaleX(getScaleX() + getScaleX() * e.getDeltaY() / 1000.0); // TODO externalize & settings
             setScaleY(getScaleY() + getScaleY() * e.getDeltaY() / 1000.0); // TODO externalize & settings
         });
-        // todo : unregister
+
         EventDispatcher.registerListener(UnitMovedNetevent.class, this);
         EventDispatcher.registerListener(StudioNetevent.class, this);
         EventDispatcher.registerListener(BattleNetevent.class, this);
+        EventDispatcher.registerListener(StudioControllerChangedNetevent.class, this);
+        EventDispatcher.registerListener(GameEndedNetevent.class, this);
+    }
+
+    public void clear() {
+        EventDispatcher.unregisterListener(UnitMovedNetevent.class, this);
+        EventDispatcher.unregisterListener(StudioNetevent.class, this);
+        EventDispatcher.unregisterListener(BattleNetevent.class, this);
+        EventDispatcher.unregisterListener(StudioControllerChangedNetevent.class, this);
+        EventDispatcher.unregisterListener(GameEndedNetevent.class, this);
     }
 
     /**
@@ -840,5 +855,15 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     @Override
     public void handleBattleFinished(BattleNetevent event) {
         this.unHighlightFxThread(event.getZone());
+    }
+
+    @Override
+    public void handleStudioControllerChanged(StudioControllerChangedNetevent event) {
+
+    }
+
+    @Override
+    public void handleGameEnd(GameEndedNetevent gameEndedEvent) {
+
     }
 }
