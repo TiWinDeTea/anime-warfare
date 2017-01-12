@@ -81,7 +81,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
     public GMap() {
         super();
-        this.MAP_PICT = new ImageView(new Image(GUnit.class.getResourceAsStream("pictures/map.png")));
+        this.MAP_PICT = new ImageView(new Image(GMap.class.getResourceAsStream("pictures/map.png")));
         initZones();
         getChildren().addAll(this.MAP_PICT, this.POLYGONES, this.MAP);
         this.MAP_PICT.autosize();
