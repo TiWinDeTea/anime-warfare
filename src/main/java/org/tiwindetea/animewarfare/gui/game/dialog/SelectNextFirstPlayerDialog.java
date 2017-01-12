@@ -30,6 +30,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.tiwindetea.animewarfare.MainApp;
+import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.PaperButton;
 import org.tiwindetea.animewarfare.gui.PaperGridPane;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
@@ -69,7 +70,7 @@ public class SelectNextFirstPlayerDialog extends GameDialog {
 					if (MainApp.getGameClient().getClientInfo().equals(clientInfo)) {
 						button.setText("You"); // TODO: extenalize
 					} else {
-						button.setText(clientInfo.getGameClientName());
+						button.setText(GlobalChat.getClientFaction(clientInfo).toString());
 					}
 					button.setPrefHeight(30);
 					button.setPrefWidth(150);
