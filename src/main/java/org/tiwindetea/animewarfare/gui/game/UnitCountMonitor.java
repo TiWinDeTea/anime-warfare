@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.gui.game;
 
 import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.networkevent.UnitCreatedNetevent;
@@ -34,6 +35,7 @@ import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNeteventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class UnitCountMonitor implements UnitCreatedNeteventListener, UnitDeletedNeteventListener {
 	private static final UnitCountMonitor MONITOR = new UnitCountMonitor();
@@ -45,6 +47,9 @@ public class UnitCountMonitor implements UnitCreatedNeteventListener, UnitDelete
 
 	public static UnitCountMonitor getInstance() {
 		return MONITOR;
+	}
+
+	public static void init() {
 	}
 
 	private final int[] numberOfUnitsByType = new int[UnitType.values().length];
@@ -62,6 +67,20 @@ public class UnitCountMonitor implements UnitCreatedNeteventListener, UnitDelete
 
 	public boolean aHeroWasInvoked() {
 		return !this.heroesAlreadyInvoked.isEmpty();
+	}
+
+	public int getNumberOfUnits() {
+		return IntStream.of(this.numberOfUnitsByType).sum();
+	}
+
+	public int getNumberOfUnitsByFaction(FactionType factionType) {
+		int sum = 0;
+		for (UnitType unitType : UnitType.values()) {
+			if (unitType.getDefaultFaction() == factionType) {
+				sum += getNumberOfUnits(unitType);
+			}
+		}
+		return sum;
 	}
 
 	@Override

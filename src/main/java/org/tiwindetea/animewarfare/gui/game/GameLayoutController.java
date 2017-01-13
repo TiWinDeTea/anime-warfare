@@ -223,6 +223,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 		GamePhaseMonitor.init();
 		PlayerTurnMonitor.init();
+		UnitCountMonitor.init();
+		CostModifierMonitor.init();
 
 		this.overlay = new VBox(10);
 		this.overlay.setAlignment(Pos.CENTER);
