@@ -68,7 +68,7 @@ public class SelectNextFirstPlayerDialog extends GameDialog {
 					GameClientInfo clientInfo = selectablePlayers.get(index);
 					PaperButton button = new PaperButton();
 					if (MainApp.getGameClient().getClientInfo().equals(clientInfo)) {
-						button.setText("You"); // TODO: extenalize
+						button.setText("Me"); // TODO: extenalize
 					} else {
 						button.setText(GlobalChat.getClientFaction(clientInfo).toString());
 					}
