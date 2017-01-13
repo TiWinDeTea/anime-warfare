@@ -52,6 +52,7 @@ import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.LelouchInvocat
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToCapture;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToDie;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
@@ -230,6 +231,9 @@ public class GContextActionMenu extends ContextMenu
 
             AbstractUnitFilter selectUnitToCapture = new SelectUnitToCapture();
             this.filteredUnitItems.put(selectUnitToCapture.getName(), selectUnitToCapture);
+
+            AbstractUnitFilter selectUnitToDie = new SelectUnitToDie();
+            this.filteredUnitItems.put(selectUnitToDie.getName(), selectUnitToDie);
 
             AbstractUnitFilter lelouchInvocation = new LelouchInvocation();
             this.filteredUnitItems.put(lelouchInvocation.getName(), lelouchInvocation);

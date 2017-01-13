@@ -44,6 +44,7 @@ import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.PaperButton;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEvent;
 import org.tiwindetea.animewarfare.gui.event.QuitApplicationEventListener;
+import org.tiwindetea.animewarfare.gui.game.dialog.BattleResultDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.OverlayMessageDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.PlayingOrderDialog;
 import org.tiwindetea.animewarfare.gui.game.dialog.SelectNextFirstPlayerDialog;
@@ -392,12 +393,9 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@Override
 	public void handleDuringBattle(BattleNetevent event) {
 		Platform.runLater(() -> {
-			if (!event.getDefender().equals(MainApp.getGameClient().getClientInfo())
-					&& !event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
-				this.battleReadyButton.setDisable(true);
-			}
+			this.battleReadyButton.setDisable(true);
 
-			// todo
+			new BattleResultDialog(this.overlay, event);
 		});
 	}
 
