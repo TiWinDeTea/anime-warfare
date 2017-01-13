@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import com.esotericsoftware.minlog.Log;
 import javafx.beans.binding.Bindings;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -115,6 +116,9 @@ public class GUnit extends GComponent {
         setOnMouseClicked(e -> EventDispatcher.send(new GUnitClickedEvent(e, this)));
         setFactionType(faction);
         getImageView().setOnMouseClicked(getOnMouseClicked());
+
+        Tooltip.install(this, new Tooltip(type.toString() + " (" + type.getUnitBasicCharacteristics().getGender() + ")\n" +
+                "Insult power: " + type.getUnitBasicCharacteristics().getBaseAttackPoints())); // Fixme : consider using the real stats
     }
 
     private void initializeImage(GameClientInfo owner) {
