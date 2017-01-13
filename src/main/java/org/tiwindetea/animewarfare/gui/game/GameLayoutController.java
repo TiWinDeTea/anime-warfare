@@ -435,8 +435,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		Platform.runLater(() -> {
 			this.map.unHighlightFxThread(event.getZone());
 
-			this.battleReadyButton = null;
 			this.dynamicCommandVBox.getChildren().remove(this.battleReadyButton);
+			this.battleReadyButton = null;
 		});
 	}
 }
