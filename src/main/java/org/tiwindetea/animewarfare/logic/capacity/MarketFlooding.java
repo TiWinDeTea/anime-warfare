@@ -39,6 +39,7 @@ public class MarketFlooding implements Capacity {
 		public MarketFloodingActivable(Player player) {
 			super(player);
 
+			activateAndDestroy(new MarketFlooding());
 			LogicEventDispatcher.registerListener(UnitMovedEvent.class, this);
 		}
 

@@ -9,6 +9,13 @@ public class NetProduction {
 	private final GameClientInfo gameClientInfo;
 	private final CapacityName name;
 
+	// Kryo
+	public NetProduction() {
+		this.type = null;
+		this.gameClientInfo = null;
+		this.name = null;
+	}
+
 	public NetProduction(ProductionEvent event, GameClientInfo gameClientInfo) {
 		this.type = event.getType();
 		this.gameClientInfo = gameClientInfo;
