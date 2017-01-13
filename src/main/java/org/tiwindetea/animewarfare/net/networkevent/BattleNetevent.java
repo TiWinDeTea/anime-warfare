@@ -36,75 +36,81 @@ import java.util.Map;
  * @since 0.1.0
  */
 public class BattleNetevent implements Event<BattleNeteventListener> {
-    public enum Type {
-        PRE_BATTLE {
-            @Override
-            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
-                battleEventListener.handlePreBattle(event);
-            }
-        },
-        DURING_BATTLE {
-            @Override
-            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
-                battleEventListener.handleDuringBattle(event);
-            }
-        },
-        POST_BATTLE {
-            @Override
-            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
-                battleEventListener.handlePostBattle(event);
-            }
-        },
-        BATTLE_FINISHED {
-            @Override
-            void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
-                battleEventListener.handleBattleFinished(event);
-            }
-        };
+	public enum Type {
+		PRE_BATTLE {
+			@Override
+			void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+				battleEventListener.handlePreBattle(event);
+			}
+		},
+		DURING_BATTLE {
+			@Override
+			void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+				battleEventListener.handleDuringBattle(event);
+			}
+		},
+		POST_BATTLE {
+			@Override
+			void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+				battleEventListener.handlePostBattle(event);
+			}
+		},
+		BATTLE_FINISHED {
+			@Override
+			void handle(BattleNetevent event, BattleNeteventListener battleEventListener) {
+				battleEventListener.handleBattleFinished(event);
+			}
+		};
 
-        abstract void handle(BattleNetevent event, BattleNeteventListener battleEventListener);
-    }
+		abstract void handle(BattleNetevent event, BattleNeteventListener battleEventListener);
+	}
 
-    private final GameClientInfo attacker;
-    private final GameClientInfo defender;
-    private final int zone;
-    private final Type type;
+	private final GameClientInfo attacker;
+	private final GameClientInfo defender;
+	private final int zone;
+	private final Type type;
 
-    private final Map<GameClientInfo, Integer> numberOfWoundeds;
-    private final Map<GameClientInfo, Integer> numberOfDeads;
+	private final Map<GameClientInfo, Integer> attack;
+	private final Map<GameClientInfo, Integer> numberOfWoundeds;
+	private final Map<GameClientInfo, Integer> numberOfDeads;
 
-    public BattleNetevent(NetBattle netBattle) {
-        this.attacker = netBattle.getAttacker();
-        this.defender = netBattle.getDefender();
-        this.zone = netBattle.getZone();
-        this.type = netBattle.getType();
-        this.numberOfWoundeds = netBattle.getNumberOfWoundeds();
-        this.numberOfDeads = netBattle.getNumberOfDeads();
-    }
+	public BattleNetevent(NetBattle netBattle) {
+		this.attacker = netBattle.getAttacker();
+		this.defender = netBattle.getDefender();
+		this.zone = netBattle.getZone();
+		this.type = netBattle.getType();
+		this.attack = netBattle.getAttack();
+		this.numberOfWoundeds = netBattle.getNumberOfWoundeds();
+		this.numberOfDeads = netBattle.getNumberOfDeads();
+	}
 
-    @Override
-    public void notify(BattleNeteventListener listener) {
-        this.type.handle(this, listener);
-    }
+	@Override
+	public void notify(BattleNeteventListener listener) {
+		this.type.handle(this, listener);
+	}
 
-    public GameClientInfo getAttacker() {
-        return this.attacker;
-    }
+	public GameClientInfo getAttacker() {
+		return this.attacker;
+	}
 
-    public GameClientInfo getDefender() {
-        return this.defender;
-    }
+	public GameClientInfo getDefender() {
+		return this.defender;
+	}
 
-    public int getZone() {
-        return this.zone;
-    }
+	public int getZone() {
+		return this.zone;
+	}
 
-    public Map<GameClientInfo, Integer> getNumberOfWoundeds() {
-        return this.numberOfWoundeds;
-    }
+	public Map<GameClientInfo, Integer> getAttack() {
+		return this.attack;
+	}
 
-    public Map<GameClientInfo, Integer> getNumberOfDeads() {
-        return this.numberOfDeads;
-    }
+	public Map<GameClientInfo, Integer> getNumberOfWoundeds() {
+		return this.numberOfWoundeds;
+	}
+
+	public Map<GameClientInfo, Integer> getNumberOfDeads() {
+		return this.numberOfDeads;
+	}
 }
 

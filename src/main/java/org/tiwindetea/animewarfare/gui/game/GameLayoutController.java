@@ -353,45 +353,53 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	@Override
 	public void handlePreBattle(BattleNetevent event) {
-		this.map.highLightFxThread(event.getZone(), Color.rgb(255, 153, 51, 0.3), Color.rgb(255, 153, 51, 0.2));
+		Platform.runLater(() -> {
+			this.map.highlight(event.getZone(), Color.rgb(255, 153, 51, 0.4), Color.rgb(255, 153, 51, 0.6));
 
-		this.battleReadyButton = new PaperButton("Battle ready"); // TODO: externalize
-		this.battleReadyButton.setPrefWidth(150);
-		this.battleReadyButton.setPrefHeight(30);
-		this.battleReadyButton.setOnAction(a -> MainApp.getGameClient().send(new NetBattlePhaseReadyRequest()));
+			this.battleReadyButton = new PaperButton("Battle ready"); // TODO: externalize
+			this.battleReadyButton.setPrefWidth(150);
+			this.battleReadyButton.setPrefHeight(30);
+			this.battleReadyButton.setOnAction(a -> MainApp.getGameClient().send(new NetBattlePhaseReadyRequest()));
 
-		this.dynamicCommandVBox.getChildren().add(this.battleReadyButton);
+			this.dynamicCommandVBox.getChildren().add(this.battleReadyButton);
 
-		if (event.getDefender().equals(MainApp.getGameClient().getClientInfo())) {
-			new OverlayMessageDialog(this.overlay, event.getAttacker().getGameClientName() + " started a battle with you.");
-		} else if (!event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
-			new OverlayMessageDialog(this.overlay, event.getAttacker().getGameClientName()
-					+ " started a battle with " + event.getDefender().getGameClientName());
-		}
+			if (event.getDefender().equals(MainApp.getGameClient().getClientInfo())) {
+				new OverlayMessageDialog(this.overlay, event.getAttacker().getGameClientName() + " started a battle with you.");
+			} else if (!event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
+				new OverlayMessageDialog(this.overlay, event.getAttacker().getGameClientName()
+						+ " started a battle with " + event.getDefender().getGameClientName());
+			}
+		});
 	}
 
 	@Override
 	public void handleDuringBattle(BattleNetevent event) {
-		if (!event.getDefender().equals(MainApp.getGameClient().getClientInfo())
-				&& !event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
-			this.battleReadyButton.setDisable(true);
-		}
+		Platform.runLater(() -> {
+			if (!event.getDefender().equals(MainApp.getGameClient().getClientInfo())
+					&& !event.getAttacker().equals(MainApp.getGameClient().getClientInfo())) {
+				this.battleReadyButton.setDisable(true);
+			}
 
-		// todo
+			// todo
+		});
 	}
 
 	@Override
 	public void handlePostBattle(BattleNetevent event) {
-		this.battleReadyButton.setDisable(false);
+		Platform.runLater(() -> {
+			this.battleReadyButton.setDisable(false);
 
-		// todo
+			// todo
+		});
 	}
 
 	@Override
 	public void handleBattleFinished(BattleNetevent event) {
-		this.map.unHighlightFxThread(event.getZone());
+		Platform.runLater(() -> {
+			this.map.unHighlightFxThread(event.getZone());
 
-		this.battleReadyButton = null;
-		this.dynamicCommandVBox.getChildren().remove(this.battleReadyButton);
+			this.battleReadyButton = null;
+			this.dynamicCommandVBox.getChildren().remove(this.battleReadyButton);
+		});
 	}
 }

@@ -42,6 +42,7 @@ public class NetBattle implements NetReceivable {
     private final int zone;
     private final BattleNetevent.Type type;
 
+    private final Map<GameClientInfo, Integer> attack = new HashMap<>();
     private final Map<GameClientInfo, Integer> numberOfWoundeds = new HashMap<>();
     private final Map<GameClientInfo, Integer> numberOfDeads = new HashMap<>();
 
@@ -60,6 +61,8 @@ public class NetBattle implements NetReceivable {
         this.zone = event.getBattleContext().getZone().getID();
         this.type = type;
 
+        this.attack.put(this.attacker, event.getBattleContext().getAttacker().getAttack());
+        this.attack.put(this.defender, event.getBattleContext().getDefender().getAttack());
         this.numberOfWoundeds.put(this.attacker, event.getBattleContext().getAttacker().getNumberOfWoundeds());
         this.numberOfWoundeds.put(this.defender, event.getBattleContext().getDefender().getNumberOfWoundeds());
         this.numberOfDeads.put(this.attacker, event.getBattleContext().getAttacker().getNumberOfDeads());
@@ -80,6 +83,10 @@ public class NetBattle implements NetReceivable {
 
     public BattleNetevent.Type getType() {
         return this.type;
+    }
+
+    public Map<GameClientInfo, Integer> getAttack() {
+        return this.attack;
     }
 
     public Map<GameClientInfo, Integer> getNumberOfWoundeds() {
