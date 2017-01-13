@@ -57,6 +57,12 @@ public class DrawUnit extends AbstractStudioFilter {
 		}
 
 		List<MenuItem> items = new LinkedList<>();
+		generateDrawUnitMenu(factionType, studio, items);
+
+		return items;
+	}
+
+	protected void generateDrawUnitMenu(FactionType factionType, GStudio studio, List<MenuItem> items) {
 		for (UnitType unitType : UnitType.values()) {
 			if (factionType == unitType.getDefaultFaction()) {
 				int cost = unitType.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(unitType);
@@ -69,19 +75,17 @@ public class DrawUnit extends AbstractStudioFilter {
 					item.setDisable(true);
 				} else if (unitType == UnitType.CTHUKO
 						&& !UnitCountMonitor.getInstance()
-						.hasBeenInvoked(UnitType.CTHUKO)
+						                    .hasBeenInvoked(UnitType.CTHUKO)
 						&& UnitCountMonitor.getInstance()
-						.getNumberOfUnits(UnitType.NYARUKO) == 0 || unitType == UnitType.LELOUCH
+						                   .getNumberOfUnits(UnitType.NYARUKO) == 0 || unitType == UnitType.LELOUCH
 						&& !UnitCountMonitor.getInstance()
-						.hasBeenInvoked(UnitType.LELOUCH) || unitType == UnitType.SAKAMAKI_IZAYOI
+						                    .hasBeenInvoked(UnitType.LELOUCH) || unitType == UnitType.SAKAMAKI_IZAYOI
 						&& UnitCountMonitor.getInstance().aHeroWasInvoked() || unitType == UnitType.HIMEJI_MIZUKI
 						&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.HIMEJI_MIZUKI)) {
 					item.setDisable(true);
 				}
 			}
 		}
-
-		return items;
 	}
 
 	@Override

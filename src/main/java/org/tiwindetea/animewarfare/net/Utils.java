@@ -37,6 +37,7 @@ import org.tiwindetea.animewarfare.logic.events.CostModifiedEvent;
 import org.tiwindetea.animewarfare.logic.events.GameEndConditionsReachedEvent;
 import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
+import org.tiwindetea.animewarfare.logic.events.ProductionEvent;
 import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
@@ -52,6 +53,7 @@ import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEve
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
+import org.tiwindetea.animewarfare.net.networkrequests.NetProduction;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
@@ -204,6 +206,7 @@ class Utils {
 		kryo.register(NetNextPlayer.class);
 		kryo.register(NetMarketingLadderUpdated.class);
 		kryo.register(NetMessage.class);
+		kryo.register(NetProduction.class);
 		kryo.register(NetStaffPointsUpdated.class);
 		kryo.register(NetStudio.class);
 		kryo.register(NetStudioControllerChanged.class);
@@ -214,6 +217,7 @@ class Utils {
 
 		// inner
 		kryo.register(BattleNetevent.Type.class);
+		kryo.register(ProductionEvent.Type.class);
 		kryo.register(CapacityName.class);
 		kryo.register(CapacityType.class);
 		kryo.register(FactionType.class);
@@ -255,6 +259,7 @@ class Utils {
 		ed.addListener(StudioEvent.class, logicListener);
 		ed.addListener(UnitCounterEvent.class, logicListener);
 		ed.addListener(UnitMovedEvent.class, logicListener);
+		ed.addListener(ProductionEvent.class, logicListener);
 	}
 
 	static void deregisterLogicListener(GameServer.LogicListener logicListener) {
@@ -286,5 +291,6 @@ class Utils {
 		ed.removeListener(StudioEvent.class, logicListener);
 		ed.removeListener(UnitCounterEvent.class, logicListener);
 		ed.removeListener(UnitMovedEvent.class, logicListener);
+		ed.removeListener(ProductionEvent.class, logicListener);
 	}
 }

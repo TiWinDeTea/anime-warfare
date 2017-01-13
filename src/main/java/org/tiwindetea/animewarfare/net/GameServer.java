@@ -42,6 +42,8 @@ import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEventListener;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEvent;
 import org.tiwindetea.animewarfare.logic.events.NumberOfFansChangedEventListener;
+import org.tiwindetea.animewarfare.logic.events.ProductionEvent;
+import org.tiwindetea.animewarfare.logic.events.ProductionEventListener;
 import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEvent;
 import org.tiwindetea.animewarfare.logic.events.StaffPointUpdatedEventListener;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
@@ -81,6 +83,7 @@ import org.tiwindetea.animewarfare.net.logicevent.StartBattleEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UnitToCaptureEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
+import org.tiwindetea.animewarfare.net.networkrequests.NetProduction;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
@@ -732,6 +735,7 @@ public class GameServer {
             PhaseChangedEventListener,
 
             UnitMovedEventListener,
+            ProductionEventListener,
 
             GameEndConditionsReachedEventListener,
             MarketingLadderUpdatedEventListener,
@@ -890,6 +894,16 @@ public class GameServer {
         @Override
         public void handleStudioController(StudioControllerChangedEvent event) {
             this.server.sendToAllTCP(new NetStudioControllerChanged(event));
+        }
+
+        @Override
+        public void onProductionActivated(ProductionEvent event) {
+            this.server.sendToAllTCP(new NetProduction(event, GameServer.this.room.find(event.getPlayerID())));
+        }
+
+        @Override
+        public void onProductionDisabled(ProductionEvent event) {
+            this.server.sendToAllTCP(new NetProduction(event, GameServer.this.room.find(event.getPlayerID())));
         }
     }
 

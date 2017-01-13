@@ -51,6 +51,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PlayerConnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerDisconnectionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerLockedFactionNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.PlayerSelectedFactionNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.ProductionNetEvent;
 import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StaffPointUpdatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.StudioControllerChangedNetevent;
@@ -58,6 +59,7 @@ import org.tiwindetea.animewarfare.net.networkevent.StudioNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitCreatedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitDeletedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.UnitMovedNetevent;
+import org.tiwindetea.animewarfare.net.networkrequests.NetProduction;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPassword;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSendable;
@@ -439,6 +441,11 @@ public class GameClient {
         public void received(Connection connection, NetPlayingOrderChosen playingOrderChosen) {
             Log.trace(GameClient.Listener.class.toString(), "Received " + playingOrderChosen);
             EventDispatcher.send(new PlayOrderChosenNetevent(playingOrderChosen));
+        }
+
+        public void received(Connection connection, NetProduction netProduction) {
+            Log.trace(GameClient.Listener.class.toString(), "Received " + netProduction);
+            EventDispatcher.send(new ProductionNetEvent(netProduction));
         }
 
         public void received(Connection connection, NetStaffPointsUpdated staffPointsUpdated) {

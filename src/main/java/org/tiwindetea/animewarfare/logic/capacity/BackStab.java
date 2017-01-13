@@ -82,6 +82,7 @@ public class BackStab extends PlayerCapacity implements BattleEventListener {
 
 	@Override
 	public void destroy() {
+		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
 	}
 
 	@Override
@@ -95,8 +96,6 @@ public class BackStab extends PlayerCapacity implements BattleEventListener {
 
 	@Override
 	public void handlePostBattle(BattleEvent event) {
-		LogicEventDispatcher.unregisterListener(BattleEvent.class, this);
-
 		if (event.getBattleContext().getAttacker().getPlayer().equals(getPlayer())) {
 			this.me = event.getBattleContext().getAttacker();
 			this.enemy = event.getBattleContext().getDefender();
