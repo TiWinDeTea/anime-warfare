@@ -49,7 +49,7 @@ public enum UnitType {
 	SAKAMAKI_IZAYOI(FactionType.NO_NAME,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, 6),
-			10, 1), // FIXME: Don't forget to reduce the cost after the first invocation.
+			10, 1),
 
 	// F-class no Baka
 	YOSHII_AKIHISA(FactionType.F_CLASS_NO_BAKA,
@@ -85,7 +85,8 @@ public enum UnitType {
 			1, 4),
 	HASUTA(FactionType.HAIYORE,
 			UnitLevel.LVL2,
-			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, 3),
+			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE,
+					UnitBasicCharacteristics.MAGIC_NBR_NBR_HASUTA_NOT_IN_GAME),
 			4, 4),
 	CTHUKO(FactionType.HAIYORE,
 			UnitLevel.HERO,
@@ -117,7 +118,7 @@ public enum UnitType {
 	LELOUCH(FactionType.THE_BLACK_KNIGHTS,
 			UnitLevel.HERO,
 			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE,
-					UnitBasicCharacteristics.MAGIC_NBR_NBR_ENEMY_HEROES),
+					UnitBasicCharacteristics.MAGIC_NBR_NBR_ENEMY_HEROES_IN_GAME),
 			6, 1);
 
 	private final FactionType defaultFaction;

@@ -64,6 +64,8 @@ public class GameBoard {
 	// /!\ They are however using WeakReferences, so they need to be stored somewhere
 	private final List<Player> playersInOrder = new ArrayList<>(); // Used to cache. [Same for this one]
 
+	private final List<UnitType> heroesInvoked = new ArrayList<>();
+
 	private Player lastFirstPlayer;
 	private Player firstPlayer;
 	private int firstPlayerID;
@@ -259,5 +261,9 @@ public class GameBoard {
 				player.activables.add(new DeafEar.DeafEarActivable(player));
 				break;
 		}
+	}
+
+	public List<UnitType> getHeroesInvoked() {
+		return this.heroesInvoked;
 	}
 }

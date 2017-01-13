@@ -32,6 +32,7 @@ import org.lomadriel.lfc.statemachine.StateMachine;
 import org.tiwindetea.animewarfare.logic.GameBoard;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.Mask;
 import org.tiwindetea.animewarfare.logic.Player;
 import org.tiwindetea.animewarfare.logic.Zone;
 import org.tiwindetea.animewarfare.logic.battle.BattleContext;
@@ -278,21 +279,109 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		if (this.currentPlayer.hasRequiredStaffPoints(this.currentPlayer.getUnitCost(event.getUnitType()))) {
 			if (this.currentPlayer.getUnitCounter().getNumberOfUnits(event.getUnitType()) < event.getUnitType()
-					.getMaxNumber()) {
+			                                                                                     .getMaxNumber()) {
 				Zone invocationZone = this.gameBoard.getMap().getZone(event.getZone());
 
-				if (invocationZone.hasStudio()
-						&& (this.currentPlayer.hasFaction(invocationZone.getStudio().getCurrentFaction())
-						|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
-						|| (event.getUnitType().isLevel(UnitLevel.MASCOT)
-						&& (!this.currentPlayer.getUnitCounter().hasUnits()
-						|| invocationZone.getUnits().stream().anyMatch(unit -> this.currentPlayer.hasFaction(unit.getFaction()))))
-						) {
+				if (event.getUnitType().isLevel(UnitLevel.HERO) &&
+						!this.gameBoard.getHeroesInvoked().contains(event.getUnitType())) {
+					switch (event.getUnitType()) {
+						case SAKAMAKI_IZAYOI:
+							izayoiInvocation(invocationZone);
+							break;
+						case CTHUKO:
+							cthukoInvocation(invocationZone);
+							break;
+						case HIMEJI_MIZUKI:
+							himejiInvocation(invocationZone);
+							break;
+						case LELOUCH:
+							lelouchInvocation(invocationZone);
+							break;
+						case NYARUKO:
+							if (checkInvocationConditions(event, invocationZone)) {
+								this.gameBoard.getHeroesInvoked().add(UnitType.NYARUKO);
+								invokeUnit(invocationZone, UnitType.NYARUKO);
+								this.nonUnlimitedActionDone = true;
+							}
+							break;
+					}
+				} else if (checkInvocationConditions(event, invocationZone)) {
 					invokeUnit(invocationZone, event.getUnitType());
-
 					this.nonUnlimitedActionDone = true;
 				}
 			}
+		}
+
+	}
+
+	private boolean checkInvocationConditions(InvokeUnitEvent event, Zone invocationZone) {
+		return invocationZone.hasStudio()
+				&& (this.currentPlayer.hasFaction(invocationZone.getStudio().getCurrentFaction())
+				|| this.currentPlayer.hasCapacity(CapacityName.MARKET_FLOODING))
+				|| (event.getUnitType().isLevel(UnitLevel.MASCOT)
+				&& (!this.currentPlayer.getUnitCounter().hasUnits()
+				|| invocationZone.getUnits()
+				                 .stream()
+				                 .anyMatch(unit -> this.currentPlayer.hasFaction(unit.getFaction()))));
+	}
+
+	private void lelouchInvocation(Zone invocationZone) {
+		Unit cc = invocationZone.getUnits()
+		                        .stream()
+		                        .filter(u -> u.getType() == UnitType.CC)
+		                        .findFirst()
+		                        .orElse(null);
+
+		if (cc != null) {
+			cc.removeFromMap();
+			this.currentPlayer.getUnitCounter().removeUnit(cc.getType(), cc.getID());
+			invokeUnit(invocationZone, UnitType.LELOUCH);
+			this.nonUnlimitedActionDone = true;
+		}
+	}
+
+	private void cthukoInvocation(Zone invocationZone) {
+		if (this.currentPlayer.getUnitCounter().getNumberOfUnits(UnitType.NYARUKO) > 0) {
+			this.gameBoard.getHeroesInvoked().add(UnitType.CTHUKO);
+
+			invokeUnit(invocationZone, UnitType.CTHUKO);
+			this.nonUnlimitedActionDone = true;
+		}
+	}
+
+	private void himejiInvocation(Zone invocationZone) {
+		if (this.gameBoard.getMap()
+		                  .getStudios()
+		                  .stream()
+		                  .anyMatch(s -> this.currentPlayer.hasFaction(s.getCurrentFaction()))) {
+			List<Unit> mascots = invocationZone.getUnits()
+			                                   .stream()
+			                                   .filter(u -> u.hasFaction(this.currentPlayer.getFaction())
+					                                   && u.isLevel(UnitLevel.MASCOT))
+			                                   .collect(Collectors.toList());
+
+			if (mascots.size() >= 2) {
+				this.gameBoard.getHeroesInvoked().add(UnitType.HIMEJI_MIZUKI);
+
+				for (int i = 0; i < 2; i++) {
+					mascots.get(i).removeFromMap();
+					this.currentPlayer.getUnitCounter().removeUnit(mascots.get(i).getType(), mascots.get(i).getID());
+				}
+
+				invokeUnit(invocationZone, UnitType.HIMEJI_MIZUKI);
+				this.nonUnlimitedActionDone = true;
+			}
+		}
+	}
+
+	private void izayoiInvocation(Zone invocationZone) {
+		if (!this.gameBoard.getHeroesInvoked().isEmpty()) {
+			this.gameBoard.getHeroesInvoked().add(UnitType.SAKAMAKI_IZAYOI);
+
+			this.currentPlayer.getCostModifier().addUnitCost(UnitType.SAKAMAKI_IZAYOI, new Mask(-6));
+
+			invokeUnit(invocationZone, UnitType.SAKAMAKI_IZAYOI);
+			this.nonUnlimitedActionDone = true;
 		}
 	}
 

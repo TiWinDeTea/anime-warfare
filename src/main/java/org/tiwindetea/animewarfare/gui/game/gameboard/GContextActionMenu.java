@@ -47,6 +47,8 @@ import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawMascot;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.EngageBattle;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.HimejiInvocation;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.LelouchInvocation;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToCapture;
@@ -229,6 +231,9 @@ public class GContextActionMenu extends ContextMenu
             AbstractUnitFilter selectUnitToCapture = new SelectUnitToCapture();
             this.filteredUnitItems.put(selectUnitToCapture.getName(), selectUnitToCapture);
 
+            AbstractUnitFilter lelouchInvocation = new LelouchInvocation();
+            this.filteredUnitItems.put(lelouchInvocation.getName(), lelouchInvocation);
+
             // == studio filters ==
             AbstractStudioFilter drawUnit = new DrawUnit();
             this.filteredStudioItems.put(drawUnit.getName(), drawUnit);
@@ -242,6 +247,9 @@ public class GContextActionMenu extends ContextMenu
 
             AbstractZoneFilter engageBattle = new EngageBattle();
             this.filteredZoneItems.put(engageBattle.getName(), engageBattle);
+
+            AbstractZoneFilter himejiInvocation = new HimejiInvocation();
+            this.filteredZoneItems.put(himejiInvocation.getName(), himejiInvocation);
         }
     }
 

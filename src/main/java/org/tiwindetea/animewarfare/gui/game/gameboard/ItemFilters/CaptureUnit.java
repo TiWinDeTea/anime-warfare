@@ -46,7 +46,7 @@ public class CaptureUnit extends AbstractZoneFilter {
 						                             .orElse(null);
 						if (Objects.compare(hunter, protector, this.levelComparator) > 0) {
 							MenuItem menuItem = new MenuItem("Capture mascot of "
-									+ GlobalChat.getFactionClient(possibleFaction));
+									+ possibleFaction.toString());
 							menuItem.setOnAction(event -> MainApp.getGameClient()
 							                                     .send(new NetUnitCaptureRequest(
 									                                     GlobalChat.getFactionClient(possibleFaction)

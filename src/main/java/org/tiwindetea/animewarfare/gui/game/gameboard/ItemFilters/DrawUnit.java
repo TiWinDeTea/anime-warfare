@@ -31,6 +31,7 @@ import org.tiwindetea.animewarfare.gui.game.CostModifierMonitor;
 import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
 import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
+import org.tiwindetea.animewarfare.gui.game.UnitCountMonitor;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GStudio;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
@@ -66,11 +67,27 @@ public class DrawUnit extends AbstractStudioFilter {
 
 				if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {
 					item.setDisable(true);
+				} else if (unitType == UnitType.CTHUKO
+						&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.CTHUKO)) {
+					if (UnitCountMonitor.getInstance().getNumberOfUnits(UnitType.NYARUKO) == 0) {
+						item.setDisable(true);
+					}
+				} else if (unitType == UnitType.LELOUCH
+						&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.LELOUCH)) {
+					item.setDisable(true);
+				} else if (unitType == UnitType.SAKAMAKI_IZAYOI
+						&& UnitCountMonitor.getInstance().aHeroWasInvoked()) {
+					item.setDisable(true);
+				} else if (unitType == UnitType.HIMEJI_MIZUKI
+						&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.HIMEJI_MIZUKI)) {
+					item.setDisable(true);
 				}
 			}
 		}
+
 		return items;
 	}
+
 
 	@Override
 	public String getName() {

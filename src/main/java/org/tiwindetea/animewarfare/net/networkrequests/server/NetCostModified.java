@@ -34,6 +34,14 @@ public class NetCostModified {
 	private final int cost;
 	private final CostModifiedEvent.Type type;
 
+	// Kryo
+	public NetCostModified() {
+		this.gcf = null;
+		this.unitType = null;
+		this.cost = -1;
+		this.type = null;
+	}
+
 	public NetCostModified(CostModifiedEvent event, GameClientInfo gameClientInfo) {
 		this.gcf = gameClientInfo;
 		this.unitType = event.getUnitType();

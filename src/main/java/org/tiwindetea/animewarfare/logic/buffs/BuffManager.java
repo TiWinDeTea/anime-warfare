@@ -59,7 +59,10 @@ public class BuffManager {
 	// helper to update remaining turns of all buffs in the given collection.
 	private static void updateTurn(List<Buff> buffList) {
 		List<Buff> buffToRemove = buffList.stream().filter(b -> {
-			--b.remainingTurns;
+			if (b.remainingTurns > 0) {
+				--b.remainingTurns;
+			}
+
 			return b.remainingTurns == 0;
 		}).collect(Collectors.toList());
 

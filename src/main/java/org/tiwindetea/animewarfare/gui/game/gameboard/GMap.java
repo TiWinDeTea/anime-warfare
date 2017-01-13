@@ -320,6 +320,13 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                 .collect(Collectors.toList());
     }
 
+    public List<GStudio> getStudiosOf(FactionType factionType) {
+        return this.MAP.getComponents().stream().filter(c -> !c.isUnit())
+                       .map(gc -> (GStudio) gc)
+                       .filter(studio -> studio.getFaction() == factionType)
+                       .collect(Collectors.toList());
+    }
+
     private class GComponentRectangle extends Parent {
 
         final double x, y;
@@ -520,8 +527,8 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
             List<GComponent> ans = new ArrayList<>(50);
             for (List<GComponentRectangle> gComponentRectangles : this.map.values()) {
                 gComponentRectangles.stream().map(r -> r.getGComponent())
-                        .filter(gc -> gc != null)
-                        .anyMatch(gc -> ans.add(gc));
+                                    .filter(gc -> gc != null)
+                                    .forEach(gc -> ans.add(gc));
             }
             return ans;
         }

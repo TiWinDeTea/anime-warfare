@@ -40,7 +40,9 @@ public class UnitBasicCharacteristics {
 	 */
 	public static final float MAGIC_NBR_ENEMY_FANS = -2.f;
 
-	public static final float MAGIC_NBR_NBR_ENEMY_HEROES = -3.f;
+	public static final float MAGIC_NBR_NBR_ENEMY_HEROES_IN_GAME = -3.f;
+
+	public static final float MAGIC_NBR_NBR_HASUTA_NOT_IN_GAME = -4.f;
 
 	private final Gender gender;
 	private final float baseAttackPoints;
