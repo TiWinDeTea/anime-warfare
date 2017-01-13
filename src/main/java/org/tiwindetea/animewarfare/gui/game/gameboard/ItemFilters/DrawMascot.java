@@ -31,6 +31,7 @@ import org.tiwindetea.animewarfare.gui.game.CostModifierMonitor;
 import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
 import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
+import org.tiwindetea.animewarfare.gui.game.UnitCountMonitor;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
@@ -54,9 +55,13 @@ public class DrawMascot extends AbstractZoneFilter {
 	public List<MenuItem> apply(FactionType factionType, Integer zoneId) {
 		if (GamePhaseMonitor.getCurrentPhase() != PhaseChangedEvent.Phase.ACTION
 				|| GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPlayer()) != factionType
-				|| actionMenuState != GCAMState.NOTHING
-				|| GameLayoutController.getMap().getComponents(zoneId).stream().noneMatch(c -> c.getFaction() == factionType)
-				&& !GameLayoutController.getMap().getUnitsOf(factionType).isEmpty()) {
+				|| actionMenuState != GCAMState.NOTHING) {
+			return Collections.emptyList();
+		}
+
+		System.out.println(UnitCountMonitor.getInstance().getNumberOfUnitsByFaction(factionType));
+		if (GameLayoutController.getMap().getComponents(zoneId).stream().noneMatch(c -> c.getFaction() == factionType)
+				&& UnitCountMonitor.getInstance().getNumberOfUnitsByFaction(factionType) != 0) {
 			return Collections.emptyList();
 		}
 
@@ -72,11 +77,11 @@ public class DrawMascot extends AbstractZoneFilter {
 
 		MenuItem item = new MenuItem("Draw " + this.cachedFactionMascot.toString() + " (" + cost + " SP)"); // todo: externalie
 		item.setOnAction(e -> MainApp.getGameClient().send(new NetInvokeUnitRequest(this.cachedFactionMascot, zoneId)));
-				items.add(item);
+		items.add(item);
 
-				if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {
-					item.setDisable(true);
-				}
+		if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {
+			item.setDisable(true);
+		}
 		return items;
 	}
 
