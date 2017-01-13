@@ -30,16 +30,29 @@ import org.tiwindetea.animewarfare.logic.events.MarketingLadderUpdatedEvent;
  * @author Benoît CORTIER
  */
 public class MarketingLadder {
-	private final int[] costs;
+	public static final int[] COSTS;
+
+	static {
+		COSTS = new int[8];
+		for (int i = 0; i < 2; ++i) {
+			COSTS[i] = 6;
+		}
+
+		for (int i = 2; i < 4; ++i) {
+			COSTS[i] = 7;
+		}
+
+		for (int i = 4; i < 6; ++i) {
+			COSTS[i] = 8;
+		}
+
+		COSTS[6] = 9;
+		COSTS[7] = 10;
+	}
 
 	private int currentPosition;
 
-	public MarketingLadder(int numberOfPlayers) {
-		// TODO: check rules about that:
-		this.costs = new int[7 * numberOfPlayers];
-		for (int i = 0; i < this.costs.length; i++) {
-			this.costs[i] = 1 + (i / 2);
-		}
+	public MarketingLadder() {
 	}
 
 	public int getCurrentCost() {
@@ -47,7 +60,7 @@ public class MarketingLadder {
 			throw new IllegalStateException("Cannot return the cost, ladder already at max.");
 		}
 
-		return this.costs[this.currentPosition];
+		return this.COSTS[this.currentPosition];
 	}
 
 	public int getCurrentPosition() {
@@ -56,10 +69,13 @@ public class MarketingLadder {
 
 	public void incrementPosition() {
 		this.currentPosition++;
-		LogicEventDispatcher.getInstance().fire(new MarketingLadderUpdatedEvent(this.currentPosition, this.costs.length));
+		LogicEventDispatcher.getInstance()
+		                    .fire(new MarketingLadderUpdatedEvent(this.currentPosition,
+				                    this.COSTS.length,
+				                    this.COSTS[this.currentPosition]));
 	}
 
 	public boolean isAtMax() {
-		return this.currentPosition >= this.costs.length;
+		return this.currentPosition >= this.COSTS.length;
 	}
 }

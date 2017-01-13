@@ -31,12 +31,13 @@ import org.lomadriel.lfc.event.Event;
  */
 public class MarketingLadderUpdatedEvent implements Event<MarketingLadderUpdatedEventListener> {
 	private final int newPosition;
-
+	private final int cost;
 	private final int endPosition;
 
-	public MarketingLadderUpdatedEvent(int newPosition, int endPosition) {
+	public MarketingLadderUpdatedEvent(int newPosition, int endPosition, int cost) {
 		this.newPosition = newPosition;
 		this.endPosition = endPosition;
+		this.cost = cost;
 	}
 
 	@Override
@@ -50,5 +51,9 @@ public class MarketingLadderUpdatedEvent implements Event<MarketingLadderUpdated
 
 	public int getEndPosition() {
 		return this.endPosition;
+	}
+
+	public int getCost() {
+		return this.cost;
 	}
 }

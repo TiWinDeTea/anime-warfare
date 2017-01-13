@@ -34,18 +34,19 @@ public class NetMarketingLadderUpdated implements NetReceivable {
 
     private final int newPosition;
     private final int endPosition;
-
+    private final int cost;
 
     /**
      * Default constructor, required by Kryo.net
      */
     public NetMarketingLadderUpdated() {
-        this.newPosition = this.endPosition = -1;
+        this.newPosition = this.endPosition = this.cost = -1;
     }
 
     public NetMarketingLadderUpdated(MarketingLadderUpdatedEvent event) {
         this.newPosition = event.getNewPosition();
         this.endPosition = event.getEndPosition();
+        this.cost = event.getCost();
     }
 
     public int getNewPosition() {
@@ -54,5 +55,9 @@ public class NetMarketingLadderUpdated implements NetReceivable {
 
     public int getEndPosition() {
         return this.endPosition;
+    }
+
+    public int getCost() {
+        return this.cost;
     }
 }

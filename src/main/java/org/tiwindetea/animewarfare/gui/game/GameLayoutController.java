@@ -48,6 +48,7 @@ import org.tiwindetea.animewarfare.gui.game.dialog.SelectNextFirstPlayerDialog;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GContextActionMenu;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GFanCounter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GMap;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GMarketingLadder;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetvent;
@@ -111,6 +112,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private VBox overlay;
 
 	private GFanCounter gfc = new GFanCounter();
+
+	private GMarketingLadder gMarketingLadder = new GMarketingLadder();
 
 	private GContextActionMenu gContextActionMenu;
 
@@ -215,6 +218,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 		map = new GMap();
 		map.autosize();
+		this.hBox.getChildren().add(this.gMarketingLadder);
 		this.hBox.autosize();
 		this.initScroll();
 		map.displayZonesGrids(true);

@@ -86,7 +86,7 @@ public class GameBoard {
 
 		initializePlayers(players);
 		this.gameMap = new GameMap(this.players.size());
-		this.marketingLadder = new MarketingLadder(this.players.size());
+		this.marketingLadder = new MarketingLadder();
 
 		List<Zone> zones = new ArrayList<>(this.gameMap.getZones());
 		Random r = new Random();

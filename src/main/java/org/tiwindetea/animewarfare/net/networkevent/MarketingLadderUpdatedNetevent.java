@@ -35,10 +35,12 @@ public class MarketingLadderUpdatedNetevent implements Event<MarketingLadderUpda
 
     private final int newPosition;
     private final int endPosition;
+    private final int cost;
 
     public MarketingLadderUpdatedNetevent(NetMarketingLadderUpdated marketingLadderUpdated) {
         this.newPosition = marketingLadderUpdated.getNewPosition();
         this.endPosition = marketingLadderUpdated.getEndPosition();
+        this.cost = marketingLadderUpdated.getCost();
     }
 
     @Override
@@ -52,5 +54,9 @@ public class MarketingLadderUpdatedNetevent implements Event<MarketingLadderUpda
 
     public int getEndPosition() {
         return this.endPosition;
+    }
+
+    public int getCost() {
+        return this.cost;
     }
 }
