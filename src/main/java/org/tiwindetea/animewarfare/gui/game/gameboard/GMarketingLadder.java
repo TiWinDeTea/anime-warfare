@@ -23,6 +23,10 @@ public class GMarketingLadder extends AnchorPane implements MarketingLadderUpdat
 	private final StringProperty nextCost;
 
 	public GMarketingLadder() {
+		setPrefWidth(40);
+		setMaxWidth(40);
+		setMinWidth(40);
+		setTranslateX(20);
 		this.position = new SimpleIntegerProperty(0);
 		this.nextCost = new SimpleStringProperty(String.valueOf(MarketingLadder.COSTS[0]));
 

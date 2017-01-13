@@ -236,6 +236,10 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private void initScroll() {
 		ScrollPane scrollPane = new ScrollPane();
 
+		this.gMarketingLadder.maxHeightProperty().bind(scrollPane.heightProperty());
+		this.gMarketingLadder.prefHeightProperty().bind(scrollPane.heightProperty());
+		this.gMarketingLadder.minHeightProperty().bind(scrollPane.heightProperty());
+
 		scrollPane.setContent(new Group(this.map));
 		this.hBox.getChildren().add(scrollPane);
 		scrollPane.getStyleClass().add("MagicPane");
