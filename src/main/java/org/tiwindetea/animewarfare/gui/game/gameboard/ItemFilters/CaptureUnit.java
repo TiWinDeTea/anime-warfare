@@ -67,11 +67,6 @@ public class CaptureUnit extends AbstractZoneFilter {
 	}
 
 	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
 	public void destroy() {
 
 	}

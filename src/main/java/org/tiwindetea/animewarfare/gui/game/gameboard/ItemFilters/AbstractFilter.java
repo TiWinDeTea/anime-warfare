@@ -45,8 +45,6 @@ public abstract class AbstractFilter {
 
 	protected static GCAMState actionMenuState = GCAMState.NOTHING;
 
-	public abstract String getName();
-
 	public abstract void destroy();
 
 	protected final Button addButton(String text) {

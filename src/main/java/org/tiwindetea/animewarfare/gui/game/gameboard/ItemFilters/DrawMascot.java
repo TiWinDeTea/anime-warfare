@@ -86,11 +86,6 @@ public class DrawMascot extends AbstractZoneFilter {
 	}
 
 	@Override
-	public String getName() {
-		return "draw_mascot";
-	}
-
-	@Override
 	public void destroy() {
 		// nothing to do
 	}

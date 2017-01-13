@@ -121,7 +121,7 @@ public class GContextActionMenu extends ContextMenu
         this.destroy();
     }
 
-    public void addUnitContextManager(String id, AbstractUnitFilter handler) {
+    public void addUnitContextManager(Class<? extends AbstractUnitFilter> id, AbstractUnitFilter handler) {
         this.items.addUnitContextManager(id, handler);
     }
 
@@ -129,7 +129,7 @@ public class GContextActionMenu extends ContextMenu
         return this.items.removeUnitContextManager(id);
     }
 
-    public void addStudioContextManager(String id, AbstractStudioFilter handler) {
+    public void addStudioContextManager(Class<? extends AbstractStudioFilter> id, AbstractStudioFilter handler) {
         this.items.addStudioContextManager(id, handler);
     }
 
@@ -149,9 +149,9 @@ public class GContextActionMenu extends ContextMenu
     private class DynamicItemList {
         private final FactionType playerFaction;
 
-        private final Map<String, AbstractUnitFilter> filteredUnitItems = new HashMap<>();
-        private final Map<String, AbstractStudioFilter> filteredStudioItems = new HashMap<>();
-        private final Map<String, AbstractZoneFilter> filteredZoneItems = new HashMap<>();
+        private final Map<Class<? extends AbstractUnitFilter>, AbstractUnitFilter> filteredUnitItems = new HashMap<>();
+        private final Map<Class<? extends AbstractStudioFilter>, AbstractStudioFilter> filteredStudioItems = new HashMap<>();
+        private final Map<Class<? extends AbstractZoneFilter>, AbstractZoneFilter> filteredZoneItems = new HashMap<>();
         // The biFunction should never return null. Use Collections.emptyList() instead.
         // Keys should be written in lower case
 
@@ -164,7 +164,7 @@ public class GContextActionMenu extends ContextMenu
             clearAll();
         }
 
-        public void addUnitContextManager(String id, AbstractUnitFilter handler) {
+        public void addUnitContextManager(Class<? extends AbstractUnitFilter> id, AbstractUnitFilter handler) {
             this.filteredUnitItems.put(id, handler);
         }
 
@@ -172,7 +172,7 @@ public class GContextActionMenu extends ContextMenu
             return this.filteredUnitItems.remove(id);
         }
 
-        public void addStudioContextManager(String id, AbstractStudioFilter handler) {
+        public void addStudioContextManager(Class<? extends AbstractStudioFilter> id, AbstractStudioFilter handler) {
             this.filteredStudioItems.put(id, handler);
         }
 
@@ -224,36 +224,36 @@ public class GContextActionMenu extends ContextMenu
 
             // == unit filters ==
             AbstractUnitFilter move = new Move();
-            this.filteredUnitItems.put(move.getName(), move);
+            this.filteredUnitItems.put(move.getClass(), move);
 
             AbstractUnitFilter openStudio = new OpenStudio();
-            this.filteredUnitItems.put(openStudio.getName(), openStudio);
+            this.filteredUnitItems.put(openStudio.getClass(), openStudio);
 
             AbstractUnitFilter selectUnitToCapture = new SelectUnitToCapture();
-            this.filteredUnitItems.put(selectUnitToCapture.getName(), selectUnitToCapture);
+            this.filteredUnitItems.put(selectUnitToCapture.getClass(), selectUnitToCapture);
 
             AbstractUnitFilter selectUnitToDie = new SelectUnitToDie();
-            this.filteredUnitItems.put(selectUnitToDie.getName(), selectUnitToDie);
+            this.filteredUnitItems.put(selectUnitToDie.getClass(), selectUnitToDie);
 
             AbstractUnitFilter lelouchInvocation = new LelouchInvocation();
-            this.filteredUnitItems.put(lelouchInvocation.getName(), lelouchInvocation);
+            this.filteredUnitItems.put(lelouchInvocation.getClass(), lelouchInvocation);
 
             // == studio filters ==
             AbstractStudioFilter drawUnit = new DrawUnit();
-            this.filteredStudioItems.put(drawUnit.getName(), drawUnit);
+            this.filteredStudioItems.put(drawUnit.getClass(), drawUnit);
 
             // == zone filters ==
             AbstractZoneFilter drawMascot = new DrawMascot();
-            this.filteredZoneItems.put(drawMascot.getName(), drawMascot);
+            this.filteredZoneItems.put(drawMascot.getClass(), drawMascot);
 
             AbstractZoneFilter captureUnit = new CaptureUnit();
-            this.filteredZoneItems.put(captureUnit.getName(), captureUnit);
+            this.filteredZoneItems.put(captureUnit.getClass(), captureUnit);
 
             AbstractZoneFilter engageBattle = new EngageBattle();
-            this.filteredZoneItems.put(engageBattle.getName(), engageBattle);
+            this.filteredZoneItems.put(engageBattle.getClass(), engageBattle);
 
             AbstractZoneFilter himejiInvocation = new HimejiInvocation();
-            this.filteredZoneItems.put(himejiInvocation.getName(), himejiInvocation);
+            this.filteredZoneItems.put(himejiInvocation.getClass(), himejiInvocation);
         }
     }
 

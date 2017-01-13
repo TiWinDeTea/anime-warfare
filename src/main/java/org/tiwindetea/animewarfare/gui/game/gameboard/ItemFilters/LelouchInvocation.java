@@ -30,11 +30,11 @@ public class LelouchInvocation extends AbstractUnitFilter {
 				int cost = UnitType.LELOUCH.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(UnitType.LELOUCH);
 				MenuItem menuItem = new MenuItem("Replace by Lelouch (" + cost + " SP).");
 				menuItem.setOnAction(e -> MainApp.getGameClient()
-				                                 .send(new NetInvokeUnitRequest(UnitType.LELOUCH,
-						                                 gUnit.getZone())));
+						.send(new NetInvokeUnitRequest(UnitType.LELOUCH,
+								gUnit.getZone())));
 				if (GameLayoutController.getLocalPlayerInfoPane()
-				                        .getStaffCounter()
-				                        .getValue() < cost) {
+						.getStaffCounter()
+						.getValue() < cost) {
 					menuItem.setDisable(true);
 				}
 
@@ -43,11 +43,6 @@ public class LelouchInvocation extends AbstractUnitFilter {
 		}
 
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getName() {
-		return "lelouch invocation";
 	}
 
 	@Override

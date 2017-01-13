@@ -71,11 +71,6 @@ public class OpenStudio extends AbstractUnitFilter {
 	}
 
 	@Override
-	public String getName() {
-		return "draw_mascot";
-	}
-
-	@Override
 	public void destroy() {
 		// nothing to do
 	}

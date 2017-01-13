@@ -69,11 +69,11 @@ public class DrawUnit extends AbstractStudioFilter {
 					item.setDisable(true);
 				} else if (unitType == UnitType.CTHUKO
 						&& !UnitCountMonitor.getInstance()
-						                    .hasBeenInvoked(UnitType.CTHUKO)
+						.hasBeenInvoked(UnitType.CTHUKO)
 						&& UnitCountMonitor.getInstance()
-						                   .getNumberOfUnits(UnitType.NYARUKO) == 0 || unitType == UnitType.LELOUCH
+						.getNumberOfUnits(UnitType.NYARUKO) == 0 || unitType == UnitType.LELOUCH
 						&& !UnitCountMonitor.getInstance()
-						                    .hasBeenInvoked(UnitType.LELOUCH) || unitType == UnitType.SAKAMAKI_IZAYOI
+						.hasBeenInvoked(UnitType.LELOUCH) || unitType == UnitType.SAKAMAKI_IZAYOI
 						&& UnitCountMonitor.getInstance().aHeroWasInvoked() || unitType == UnitType.HIMEJI_MIZUKI
 						&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.HIMEJI_MIZUKI)) {
 					item.setDisable(true);
@@ -82,12 +82,6 @@ public class DrawUnit extends AbstractStudioFilter {
 		}
 
 		return items;
-	}
-
-
-	@Override
-	public String getName() {
-		return "draw_unit";
 	}
 
 	@Override

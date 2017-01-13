@@ -31,11 +31,11 @@ public class HimejiInvocation extends AbstractZoneFilter {
 
 			MenuItem menuItem = new MenuItem("Invoke Himeji (" + cost + " SP)");
 			menuItem.setOnAction(e -> MainApp.getGameClient()
-			                                 .send(new NetInvokeUnitRequest(UnitType.HIMEJI_MIZUKI,
-					                                 zone)));
+					.send(new NetInvokeUnitRequest(UnitType.HIMEJI_MIZUKI,
+							zone)));
 			if (GameLayoutController.getLocalPlayerInfoPane()
-			                        .getStaffCounter()
-			                        .getValue() < cost) {
+					.getStaffCounter()
+					.getValue() < cost) {
 				menuItem.setDisable(true);
 			}
 			return Collections.singletonList(menuItem);
@@ -46,20 +46,14 @@ public class HimejiInvocation extends AbstractZoneFilter {
 
 	private boolean checkHimejiInvocationConditions(FactionType factionType, Integer zone) {
 		return GameLayoutController.getMap().getUnits(zone)
-		                           .stream()
-		                           .filter(u -> u.getFaction() == factionType && u
-				                           .getType()
-				                           .isLevel(UnitLevel.MASCOT))
-		                           .count() >= 2;
-	}
-
-	@Override
-	public String getName() {
-		return "himeji invocation";
+				.stream()
+				.filter(u -> u.getFaction() == factionType && u
+						.getType()
+						.isLevel(UnitLevel.MASCOT))
+				.count() >= 2;
 	}
 
 	@Override
 	public void destroy() {
-
 	}
 }

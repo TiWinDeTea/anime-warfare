@@ -99,11 +99,6 @@ public class EngageBattle extends AbstractZoneFilter implements BattleNeteventLi
 	}
 
 	@Override
-	public String getName() {
-		return "draw_mascot";
-	}
-
-	@Override
 	public void destroy() {
 		EventDispatcher.unregisterListener(BattleNetevent.class, this);
 	}
