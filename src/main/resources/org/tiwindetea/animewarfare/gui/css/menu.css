@@ -17,10 +17,14 @@ PaperButton:pressed {
     -fx-effect: dropshadow(gaussian, #1d1f1d, 20, 0, 5, 5);
 }
 
-GFanCounter {
+GFanCounter, GMarketingLadder {
     -fx-background-image: url("../pictures/ui/slider-track-vertical.png");
     -fx-background-repeat: no-repeat;
     -fx-background-size: 100% 102%;
+}
+
+GMarketingLadder {
+    -fx-background-position: -20, 0;
 }
 .vBoxMainMenu {
     -fx-spacing: 30;

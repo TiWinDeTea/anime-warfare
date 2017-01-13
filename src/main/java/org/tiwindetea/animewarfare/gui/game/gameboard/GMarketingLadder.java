@@ -33,7 +33,7 @@ public class GMarketingLadder extends AnchorPane implements MarketingLadderUpdat
 		EventDispatcher.registerListener(MarketingLadderUpdatedNetevent.class, this);
 
 		this.circle.setRadius(20);
-		this.circle.setFill(Color.TRANSPARENT);
+		this.circle.setFill(Color.BLANCHEDALMOND);
 		this.circle.setStroke(Color.BLACK);
 		NumberBinding binding = Bindings.subtract(heightProperty(),
 				Bindings.multiply(Bindings.divide(heightProperty(), 8), this.position));
