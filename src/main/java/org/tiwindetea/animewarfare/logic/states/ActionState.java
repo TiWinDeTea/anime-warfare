@@ -49,7 +49,11 @@ import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
+import org.tiwindetea.animewarfare.net.logicevent.AbandonStudioEvent;
+import org.tiwindetea.animewarfare.net.logicevent.AbandonStudioEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.ActionEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureStudioEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureStudioEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureUnitRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureUnitRequestEventListener;
 import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEvent;
@@ -82,7 +86,8 @@ import java.util.stream.Collectors;
 class ActionState extends GameState implements MoveUnitsEventListener, OpenStudioEventListener,
 		InvokeUnitEventListener, SkipAllEventListener, StartBattleEventListener,
 		CaptureUnitRequestEventListener, UnitToCaptureEventListener, GameEndedEventListener,
-		BattleEventListener, FinishTurnRequestEventListener {
+		BattleEventListener, FinishTurnRequestEventListener, CaptureStudioEventListener,
+		AbandonStudioEventListener {
 	private static final int MOVE_COST = 1; // TODO: Externalize
 	private static final int OPEN_STUDIO_COST = 3; // TODO: Externalize
 
@@ -91,7 +96,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 	private boolean gameEnded;
 	private boolean phaseEnded;
-	private boolean unitBeingCaptured;
+	private boolean longActionBeingPerformed;
 
 	private Player currentPlayer;
 
@@ -124,6 +129,8 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().addListener(GameEndedEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(BattleEvent.class, this);
 		LogicEventDispatcher.getInstance().addListener(FinishTurnRequestEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(AbandonStudioEvent.class, this);
+		LogicEventDispatcher.getInstance().addListener(CaptureStudioEvent.class, this);
 	}
 
 	@Override
@@ -166,6 +173,8 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		LogicEventDispatcher.getInstance().removeListener(GameEndedEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(BattleEvent.class, this);
 		LogicEventDispatcher.getInstance().removeListener(FinishTurnRequestEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(AbandonStudioEvent.class, this);
+		LogicEventDispatcher.getInstance().removeListener(CaptureStudioEvent.class, this);
 	}
 
 	@Override
@@ -544,7 +553,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			handleUnitToCaptureEvent(new UnitToCaptureEvent(event.getHuntedPlayerID(),
 					huntedUnits.get(0).getID()));
 		} else {
-			this.unitBeingCaptured = true;
+			this.longActionBeingPerformed = true;
 			LogicEventDispatcher.getInstance()
 			                    .fire(new AskUnitToCaptureEvent(event.getHuntedPlayerID(),
 					                    event.getZone(),
@@ -579,7 +588,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		this.huntingZone = null;
 		this.huntedPlayer = null;
-		this.unitBeingCaptured = false;
+		this.longActionBeingPerformed = false;
 	}
 
 	@Override
@@ -605,6 +614,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	@Override
 	public void handleBattleFinished(BattleEvent event) {
 		this.currentBattleStateMachine = null;
+		this.longActionBeingPerformed = false;
 	}
 
 	@Override
@@ -619,11 +629,82 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.unitBeingCaptured) {
+		if (this.longActionBeingPerformed) {
 			Log.debug(getClass().getName(), "A unit is being captured.");
 			return;
 		}
 
 		this.machine.get().update();
+	}
+
+	@Override
+	public void handleAbandonStudioEvent(AbandonStudioEvent event) {
+		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		// unlimited action !!
+
+		if (!this.gameBoard.getMap().isValid(event.getZone())) {
+			Log.debug(getClass().getName(), "Invalid zone.");
+			return;
+		}
+
+		Zone zone = this.gameBoard.getMap().getZone(event.getZone());
+		if (!zone.hasStudio()) {
+			Log.debug(getClass().getName(), "No studio in the zone.");
+			return;
+		}
+
+		if (zone.getStudio().getController() == null) {
+			Log.debug(getClass().getName(), "Studio not controlled.");
+			return;
+		}
+
+		if (this.currentPlayer.getFaction() != zone.getStudio().getController().getFaction()) {
+			Log.debug(getClass().getName(), "Not controlled by the current player studio...");
+			return;
+		}
+
+		zone.getStudio().setController(null);
+	}
+
+	@Override
+	public void handleCaptureStudioEvent(CaptureStudioEvent event) {
+		if (isInvalidPlayer(event)) {
+			Log.debug(getClass().getName(), "Invalid player.");
+			return;
+		}
+
+		// unlimited action !!
+
+		if (!this.gameBoard.getMap().isValid(event.getZone())) {
+			Log.debug(getClass().getName(), "Invalid zone.");
+			return;
+		}
+
+		Zone zone = this.gameBoard.getMap().getZone(event.getZone());
+		if (!zone.hasStudio()) {
+			Log.debug(getClass().getName(), "No studio in the zone.");
+			return;
+		}
+
+		if (zone.getStudio().getController() != null) {
+			Log.debug(getClass().getName(), "Studio already controlled.");
+			return;
+		}
+
+		Unit unit = this.gameBoard.getMap()
+				.getZone(event.getZone())
+				.getUnit(event.getMascotId());
+
+		if (unit == null || unit.getFaction() != this.currentPlayer.getFaction()
+				|| unit.getType().getUnitLevel() != UnitLevel.MASCOT) {
+			Log.debug(getClass().getName(), "No current player mascot in zone.");
+			return;
+		}
+
+		zone.getStudio().setController(unit);
 	}
 }

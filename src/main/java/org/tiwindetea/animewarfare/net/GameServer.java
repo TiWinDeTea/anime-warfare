@@ -67,7 +67,9 @@ import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEve
 import org.tiwindetea.animewarfare.logic.units.events.StudioControllerChangedEventListener;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
+import org.tiwindetea.animewarfare.net.logicevent.AbandonStudioEvent;
 import org.tiwindetea.animewarfare.net.logicevent.BattlePhaseReadyEvent;
+import org.tiwindetea.animewarfare.net.logicevent.CaptureStudioEvent;
 import org.tiwindetea.animewarfare.net.logicevent.CaptureUnitRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FinishTurnRequestEvent;
 import org.tiwindetea.animewarfare.net.logicevent.FirstPlayerChoiceEvent;
@@ -84,7 +86,9 @@ import org.tiwindetea.animewarfare.net.logicevent.UnitToCaptureEvent;
 import org.tiwindetea.animewarfare.net.logicevent.UseCapacityEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetProduction;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetAbandonStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCaptureStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
@@ -547,6 +551,14 @@ public class GameServer {
         }
 
         // NetSendable classes, alphabetical order on second argument type
+        public void received(Connection connection, NetAbandonStudioRequest request) {
+            if (isLegit(connection)) {
+                GameServer.this.eventDispatcher.fire(
+                        new AbandonStudioEvent(connection.getID(), request.getZoneID())
+                );
+            }
+        }
+
         public void received(Connection connection, NetBattlePhaseReadyRequest ignored) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new BattlePhaseReadyEvent(connection.getID()));
@@ -556,6 +568,14 @@ public class GameServer {
         public void received(Connection connection, NetCapturedUnitSelection selection) {
             if (isLegit(connection)) {
                 GameServer.this.eventDispatcher.fire(new UnitToCaptureEvent(connection.getID(), selection.getUnitID()));
+            }
+        }
+
+        public void received(Connection connection, NetCaptureStudioRequest request) {
+            if (isLegit(connection)) {
+                GameServer.this.eventDispatcher.fire(
+                        new CaptureStudioEvent(connection.getID(), request.getMascotId(), request.getZoneID())
+                );
             }
         }
 

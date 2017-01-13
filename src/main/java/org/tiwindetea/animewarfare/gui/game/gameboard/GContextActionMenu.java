@@ -39,10 +39,12 @@ import org.tiwindetea.animewarfare.gui.game.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.gui.game.event.GUnitClickedEventListener;
 import org.tiwindetea.animewarfare.gui.game.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.game.event.ZoneClickedEventListener;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbandonStudio;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractFilter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractStudioFilter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractUnitFilter;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractZoneFilter;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureStudio;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawMascot;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
@@ -238,9 +240,15 @@ public class GContextActionMenu extends ContextMenu
             AbstractUnitFilter lelouchInvocation = new LelouchInvocation();
             this.filteredUnitItems.put(lelouchInvocation.getClass(), lelouchInvocation);
 
+            AbstractUnitFilter captureStudio = new CaptureStudio();
+            this.filteredUnitItems.put(captureStudio.getClass(), captureStudio);
+
             // == studio filters ==
             AbstractStudioFilter drawUnit = new DrawUnit();
             this.filteredStudioItems.put(drawUnit.getClass(), drawUnit);
+
+            AbstractStudioFilter abandonStudio = new AbandonStudio();
+            this.filteredStudioItems.put(abandonStudio.getClass(), abandonStudio);
 
             // == zone filters ==
             AbstractZoneFilter drawMascot = new DrawMascot();

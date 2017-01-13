@@ -54,7 +54,9 @@ import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
 import org.tiwindetea.animewarfare.net.logicevent.MoveUnitsEvent;
 import org.tiwindetea.animewarfare.net.networkevent.BattleNetevent;
 import org.tiwindetea.animewarfare.net.networkrequests.NetProduction;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetAbandonStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetCaptureStudioRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetCapturedUnitSelection;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
@@ -168,8 +170,10 @@ class Utils {
 		kryo.register(HashSet.class);
 
 		// client, alphabetical order
+		kryo.register(NetAbandonStudioRequest.class);
 		kryo.register(NetBattlePhaseReadyRequest.class);
 		kryo.register(NetCapturedUnitSelection.class);
+		kryo.register(NetCaptureStudioRequest.class);
 		kryo.register(NetConventionRequest.class);
 		kryo.register(NetFinishTurnRequest.class);
 		kryo.register(NetFirstPlayerSelection.class);
