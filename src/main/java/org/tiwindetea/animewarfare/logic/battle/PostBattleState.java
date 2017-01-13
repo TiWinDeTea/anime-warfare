@@ -69,6 +69,12 @@ public class PostBattleState extends BattleState
 	protected void onEnter() {
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.POST_BATTLE, this.battleContext));
 
+		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
+			if (battleSide.getNumberOfWoundeds() == 0) {
+				this.playersReady.add(battleSide.getPlayer().getID());
+			}
+		}
+
 		LogicEventDispatcher.registerListener(SelectWoundedsUnitsEvent.class, this);
 	}
 

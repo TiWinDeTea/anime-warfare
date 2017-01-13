@@ -62,6 +62,12 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 
 		LogicEventDispatcher.getInstance().fire(new BattleEvent(BattleEvent.Type.DURING_BATTLE, this.battleContext));
 
+		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
+			if (battleSide.getNumberOfDeads() == 0) {
+				this.playersReady.add(battleSide.getPlayer().getID());
+			}
+		}
+
 		// register events.
 		LogicEventDispatcher.registerListener(SelectUnitsEvent.class, this);
 	}
