@@ -55,7 +55,7 @@ public class PaperButton extends Button {
 				return;
 			}
 
-			if (!newValue.getImages().isEmpty()) {
+			if (newValue != null && !newValue.getImages().isEmpty()) {
 				this.mask.setScaleX(getPrefWidth() / this.mask.getImage().getWidth());
 				this.mask.setScaleY(getPrefHeight() / this.mask.getImage().getHeight());
 				BackgroundImage old = newValue.getImages().get(0);

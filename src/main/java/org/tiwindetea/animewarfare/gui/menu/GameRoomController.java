@@ -273,7 +273,7 @@ public class GameRoomController
 	public void handlePlayerConnection(PlayerConnectionNetevent event) {
 		Platform.runLater(() -> {
 			addPlayer(event.getClient());
-			GlobalChat.getChatController().addMessage(event.getClient().getGameClientName()
+			GlobalChat.getChatController().addSystemMessage(event.getClient().getGameClientName()
 					+ " "
 					+ this.resourceBundle.getString("chat.connectmessage"), Color.GRAY);
 		});
@@ -298,7 +298,7 @@ public class GameRoomController
 			} else {
 				this.usersList.getChildren().remove(this.userNamesLabels.get(event.getPlayer().getId()));
 				this.userNamesLabels.remove(event.getPlayer().getId());
-				GlobalChat.getChatController().addMessage(event.getPlayer().getGameClientName()
+				GlobalChat.getChatController().addSystemMessage(event.getPlayer().getGameClientName()
 						+ " " +
 						this.resourceBundle.getString("chat.disconnectmessage"), Color.GRAY);
 			}

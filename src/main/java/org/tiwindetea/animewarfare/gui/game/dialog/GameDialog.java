@@ -32,7 +32,6 @@ import javafx.scene.layout.VBox;
  * @author Benoît CORTIER
  */
 public abstract class GameDialog {
-	private static int numberOfDialog = 0;
 
 	private final VBox overlay;
 	private final Group dialogElements;
@@ -40,7 +39,6 @@ public abstract class GameDialog {
 	private boolean alreadyClosed = false;
 
 	GameDialog(VBox overlay) {
-		++GameDialog.numberOfDialog;
 
 		this.overlay = overlay;
 
@@ -63,13 +61,8 @@ public abstract class GameDialog {
 			return;
 		}
 
-		--GameDialog.numberOfDialog;
-
 		this.dialogElements.getChildren().clear();
 		this.overlay.getChildren().remove(this.dialogElements);
-		if (GameDialog.numberOfDialog == 0) {
-			this.overlay.setMouseTransparent(true);
-		}
 
 		this.alreadyClosed = true;
 	}

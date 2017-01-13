@@ -32,8 +32,10 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.lomadriel.lfc.event.EventDispatcher;
@@ -82,7 +84,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		BattleNeteventListener {
 	private static GMap map;
 
-	private static List<PlayerInfoPane> playerInfoPaneList = new ArrayList<>();
+	private static final List<PlayerInfoPane> playerInfoPaneList = new ArrayList<>();
 
 	private static PlayerInfoPane localPlayerInfoPane = null;
 
@@ -121,6 +123,12 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 
 	public void initStart() {
 		MainApp.getMainRoot().getChildren().add(this.overlay);
+		GameChat chat = new GameChat();
+		AnchorPane anchorPane = new AnchorPane();
+		anchorPane.setPickOnBounds(false);
+		((StackPane) this.overlay.getScene().getRoot()).getChildren().add(anchorPane);
+		anchorPane.getChildren().add(chat);
+		this.overlay.setPickOnBounds(false);
 
 		// === dispose players info at the right place.
 		List<GameClientInfo> players = MainApp.getGameClient().getRoom().getMembers();

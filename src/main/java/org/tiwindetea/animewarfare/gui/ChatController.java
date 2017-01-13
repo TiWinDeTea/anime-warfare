@@ -34,6 +34,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
@@ -98,13 +100,37 @@ public class ChatController implements MessageReceivedNeteventListener {
 	private void handleSend() {
 		if (!this.answerTextArea.getText().isEmpty()) {
 			MainApp.getGameClient().send(this.answerTextArea.getText());
-			addMessage(formatMessage(MainApp.getGameClient().getClientInfo(), this.answerTextArea.getText()),
+			addMessage(this.answerTextArea.getText(), fromattedGCName(MainApp.getGameClient().getClientInfo()),
 					GlobalChat.getClientColor(MainApp.getGameClient().getClientInfo()));
 			this.answerTextArea.setText("");
 		}
 	}
 
-	public void addMessage(String message, Color color) {
+	public void addMessage(String text, String senderName, Color color) {
+		Text name = new Text(senderName);
+		name.setStyle("-fx-font-weight: bold");
+		name.setFill(color);
+
+		TextFlow textFlow = new TextFlow(name);
+
+		while (text.contains("**")) {
+			textFlow.getChildren().add(new Text(text.substring(0, text.indexOf("**"))));
+			text = text.substring(text.indexOf("**") + 2);
+			if (text.contains("**")) {
+				Text GText = new Text(text.substring(0, text.indexOf("**")));
+				GText.setStyle("-fx-font-weight: bold");
+				text = text.substring(text.indexOf("**") + 2);
+				textFlow.getChildren().addAll(GText);
+			}
+		}
+		textFlow.getChildren().add(new Text(text));
+		this.chatMessages.getChildren().addAll(textFlow);
+		if (this.chatContent.size() > MAX_MESSAGES) {
+			this.chatMessages.getChildren().remove(this.chatContent.pop());
+		}
+	}
+
+	public void addSystemMessage(String message, Color color) {
 		Label newMessage = new Label(message);
 		newMessage.setTextFill(color);
 
@@ -120,19 +146,19 @@ public class ChatController implements MessageReceivedNeteventListener {
 
 	@Override
 	public void handleMessage(MessageReceivedNetevent message) {
-		Platform.runLater(() ->
-				addMessage(formatMessage(message.getSenderInfos(), message.getMessage()),
-						GlobalChat.getClientColor(message.getSenderInfos()))
-		);
+		Platform.runLater(() -> addMessage(
+				message.getMessage(), fromattedGCName(message.getSenderInfos()),
+				GlobalChat.getClientColor(message.getSenderInfos())
+		));
 	}
 
 	// helper
-	private String formatMessage(GameClientInfo info, String message) {
+	private String fromattedGCName(GameClientInfo info) {
 		FactionType faction = GlobalChat.getClientFaction(info);
 		if (faction != null) {
-			return info.getGameClientName() + " (" + faction + "): " + message;
+			return info.getGameClientName() + " (" + faction + "): ";
 		}
-		return info.getGameClientName() + ": " + message;
+		return info.getGameClientName() + ": ";
 	}
 }
 

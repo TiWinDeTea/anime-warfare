@@ -24,10 +24,23 @@
 
 package org.tiwindetea.animewarfare.logic.units;
 
+import org.tiwindetea.animewarfare.util.PrettyFormat;
+
 public class UnitBasicCharacteristics {
 	public enum Gender {
 		MALE,
-		FEMALE
+		FEMALE;
+
+		private final String name;
+
+		Gender() {
+			this.name = PrettyFormat.enumToPretty(super.toString());
+		}
+
+		@Override
+		public String toString() {
+			return this.name;
+		}
 	}
 
 	/**
