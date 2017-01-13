@@ -59,7 +59,6 @@ public class DrawMascot extends AbstractZoneFilter {
 			return Collections.emptyList();
 		}
 
-		System.out.println(UnitCountMonitor.getInstance().getNumberOfUnitsByFaction(factionType));
 		if (GameLayoutController.getMap().getComponents(zoneId).stream().noneMatch(c -> c.getFaction() == factionType)
 				&& UnitCountMonitor.getInstance().getNumberOfUnitsByFaction(factionType) != 0) {
 			return Collections.emptyList();
