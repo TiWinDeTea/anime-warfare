@@ -24,11 +24,19 @@
 
 package org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters;
 
+import javafx.scene.control.Button;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 /**
  * @author Benoît CORTIER
  * @since 0.1.0
  */
 public abstract class AbstractFilter {
+	public static Function<String, Button> buttonAdder;
+	public static Consumer<Button> buttonRemover;
+
 	protected enum GCAMState {
 		NOTHING,
 		MOVING_UNITS,
@@ -40,4 +48,14 @@ public abstract class AbstractFilter {
 	public abstract String getName();
 
 	public abstract void destroy();
+
+	protected final Button addButton(String text) {
+		return AbstractFilter.buttonAdder.apply(text);
+	}
+
+	protected final void remove(Button... buttons) {
+		for (Button button : buttons) {
+			AbstractFilter.buttonRemover.accept(button);
+		}
+	}
 }

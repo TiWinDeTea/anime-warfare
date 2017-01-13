@@ -218,10 +218,10 @@ public class GContextActionMenu extends ContextMenu
 
 
         private void initFilters() {
-            // == unit filters ==
-            AbstractUnitFilter.buttonAdder = GContextActionMenu.this::addButton;
-            AbstractUnitFilter.buttonRemover = GContextActionMenu.this::remove;
+            AbstractFilter.buttonAdder = GContextActionMenu.this::addButton;
+            AbstractFilter.buttonRemover = GContextActionMenu.this::remove;
 
+            // == unit filters ==
             AbstractUnitFilter move = new Move();
             this.filteredUnitItems.put(move.getName(), move);
 
