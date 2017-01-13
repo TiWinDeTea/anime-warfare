@@ -91,6 +91,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 	private boolean gameEnded;
 	private boolean phaseEnded;
+	private boolean unitBeingCaptured;
 
 	private Player currentPlayer;
 
@@ -543,6 +544,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			handleUnitToCaptureEvent(new UnitToCaptureEvent(event.getHuntedPlayerID(),
 					huntedUnits.get(0).getID()));
 		} else {
+			this.unitBeingCaptured = true;
 			LogicEventDispatcher.getInstance()
 			                    .fire(new AskUnitToCaptureEvent(event.getHuntedPlayerID(),
 					                    event.getZone(),
@@ -577,6 +579,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		this.huntingZone = null;
 		this.huntedPlayer = null;
+		this.unitBeingCaptured = false;
 	}
 
 	@Override
@@ -613,6 +616,11 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		if (!this.nonUnlimitedActionDone) {
 			Log.debug(getClass().getName(), "Non ulimited action not done.");
+			return;
+		}
+
+		if (this.unitBeingCaptured) {
+			Log.debug(getClass().getName(), "A unit is being captured.");
 			return;
 		}
 

@@ -763,7 +763,7 @@ public class GameServer {
 
         @Override
         public void askUnitToCaptureEvent(AskUnitToCaptureEvent event) {
-            this.server.sendToTCP(event.getPlayer(), new NetSelectUnitToCapture(event));
+            this.server.sendToAllTCP(new NetSelectUnitToCapture(event, GameServer.this.room.find(event.getPlayer())));
         }
 
         @Override

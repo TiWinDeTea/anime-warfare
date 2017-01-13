@@ -343,11 +343,16 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	@Override
 	public void handleMascotSelectionRequest(SelectUnitToCaptureRequestNetevent event) {
 		Platform.runLater(() -> {
-			new OverlayMessageDialog(this.overlay,
-					"Select a " + event.getUnitLevel() + " which will be captured."); // TODO: externalize.
-			this.finishTurnButton.setDisable(true);
-			this.skipAllButton.setDisable(true);
-			GameLayoutController.map.highlight(event.getZoneId(), Color.rgb(0, 0, 0, 0.4), Color.rgb(0, 0, 0, 0.6));
+			if (event.getPlayer().equals(MainApp.getGameClient().getClientInfo())) {
+				new OverlayMessageDialog(this.overlay,
+						"Select a " + event.getUnitLevel() + " which will be captured."); // TODO: externalize.
+				this.finishTurnButton.setDisable(true);
+				this.skipAllButton.setDisable(true);
+				GameLayoutController.map.highlight(event.getZoneId(), Color.rgb(0, 0, 0, 0.4), Color.rgb(0, 0, 0, 0.6));
+			} else {
+				new OverlayMessageDialog(this.overlay, "Player " + event.getPlayer().getGameClientName() + "'s mascot is being captured\n" +
+						"(in zone " + event.getZoneId() + ")"); // TODO: externalize
+			}
 		});
 	}
 

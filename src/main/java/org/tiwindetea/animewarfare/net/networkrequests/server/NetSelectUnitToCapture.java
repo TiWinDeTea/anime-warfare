@@ -26,6 +26,7 @@ package org.tiwindetea.animewarfare.net.networkrequests.server;
 
 import org.tiwindetea.animewarfare.logic.states.events.AskUnitToCaptureEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
+import org.tiwindetea.animewarfare.net.GameClientInfo;
 
 /**
  * @author Lucas Lazare
@@ -34,6 +35,7 @@ import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 public class NetSelectUnitToCapture implements NetReceivable {
     private final UnitLevel unitLevel;
     private final int zoneId;
+    private final GameClientInfo player;
 
     /**
      * Default constructor, required by Kryo.net
@@ -41,11 +43,13 @@ public class NetSelectUnitToCapture implements NetReceivable {
     public NetSelectUnitToCapture() {
         this.unitLevel = null;
         this.zoneId = -1;
+        this.player = null;
     }
 
-    public NetSelectUnitToCapture(AskUnitToCaptureEvent event) {
+    public NetSelectUnitToCapture(AskUnitToCaptureEvent event, GameClientInfo info) {
         this.unitLevel = event.getLevel();
         this.zoneId = event.getZoneID();
+        this.player = info;
     }
 
     public UnitLevel getUnitLevel() {
@@ -54,5 +58,9 @@ public class NetSelectUnitToCapture implements NetReceivable {
 
     public int getZoneId() {
         return this.zoneId;
+    }
+
+    public GameClientInfo getPlayer() {
+        return this.player;
     }
 }
