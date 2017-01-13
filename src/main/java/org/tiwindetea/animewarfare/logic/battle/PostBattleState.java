@@ -75,7 +75,9 @@ public class PostBattleState extends BattleState
 			}
 		}
 
-		LogicEventDispatcher.registerListener(SelectWoundedsUnitsEvent.class, this);
+		//LogicEventDispatcher.registerListener(SelectWoundedsUnitsEvent.class, this); // FIXME
+		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
+		LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
 	}
 
 	@Override
