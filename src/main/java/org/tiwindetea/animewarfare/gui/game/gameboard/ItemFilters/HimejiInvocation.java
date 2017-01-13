@@ -21,7 +21,8 @@ public class HimejiInvocation extends AbstractZoneFilter {
 	public List<MenuItem> apply(FactionType factionType, Integer zone) {
 		if (GamePhaseMonitor.getCurrentPhase() != PhaseChangedEvent.Phase.ACTION
 				|| GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPlayer()) != factionType
-				|| GameLayoutController.getMap().getStudiosOf(UnitType.HIMEJI_MIZUKI.getDefaultFaction()).isEmpty()) {
+				|| GameLayoutController.getMap().getStudiosOf(UnitType.HIMEJI_MIZUKI.getDefaultFaction()).isEmpty()
+				|| actionMenuState != GCAMState.NOTHING) {
 			return Collections.emptyList();
 		}
 

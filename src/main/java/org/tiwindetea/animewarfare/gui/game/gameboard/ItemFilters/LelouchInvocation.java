@@ -20,6 +20,10 @@ import java.util.List;
 public class LelouchInvocation extends AbstractUnitFilter {
 	@Override
 	public List<MenuItem> apply(FactionType factionType, GUnit gUnit) {
+		if (actionMenuState != GCAMState.NOTHING) {
+			return Collections.emptyList();
+		}
+
 		if (GamePhaseMonitor.getCurrentPhase() == PhaseChangedEvent.Phase.ACTION
 				&& GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPlayer()) == factionType) {
 			if (!UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.LELOUCH) && gUnit.getType() == UnitType.CC) {
