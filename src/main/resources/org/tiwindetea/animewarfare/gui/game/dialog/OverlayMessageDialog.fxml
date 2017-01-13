@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tiwindetea.animewarfare.gui.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -7,22 +12,21 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import org.tiwindetea.animewarfare.gui.PaperButton?>
 <?import org.tiwindetea.animewarfare.gui.PaperGridPane?>
-<PaperGridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0"
-               prefWidth="600.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+<PaperGridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="600.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="40.0"/>
-        <RowConstraints minHeight="10.0" prefHeight="40.0"/>
+        <RowConstraints minHeight="10.0" prefHeight="60.0" />
+        <RowConstraints minHeight="10.0" prefHeight="40.0" />
     </rowConstraints>
     <columnConstraints>
-        <ColumnConstraints minWidth="10.0" prefWidth="420.0"/>
-        <ColumnConstraints minWidth="10.0" prefWidth="150.0"/>
+        <ColumnConstraints minWidth="10.0" prefWidth="420.0" />
+        <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
     </columnConstraints>
     <children>
-        <PaperButton onAction="#handleClose" prefHeight="30.0" prefWidth="150.0" text="%button.close"
-                     GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <PaperButton onAction="#handleClose" prefHeight="30.0" prefWidth="150.0" text="%button.close" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Label fx:id="messageLabel">
             <padding>
-                <Insets left="10.0"/>
+                <Insets left="10.0" />
             </padding>
         </Label>
     </children>
