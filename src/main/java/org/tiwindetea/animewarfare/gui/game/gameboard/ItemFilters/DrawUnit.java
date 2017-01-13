@@ -31,9 +31,11 @@ import org.tiwindetea.animewarfare.gui.game.CostModifierMonitor;
 import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.GamePhaseMonitor;
 import org.tiwindetea.animewarfare.gui.game.PlayerTurnMonitor;
+import org.tiwindetea.animewarfare.gui.game.ProductionMonitor;
 import org.tiwindetea.animewarfare.gui.game.UnitCountMonitor;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GStudio;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.states.events.PhaseChangedEvent;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetInvokeUnitRequest;
@@ -51,15 +53,20 @@ public class DrawUnit extends AbstractStudioFilter {
 	public List<MenuItem> apply(FactionType factionType, GStudio studio) {
 		if (GamePhaseMonitor.getCurrentPhase() != PhaseChangedEvent.Phase.ACTION
 				|| GlobalChat.getClientFaction(PlayerTurnMonitor.getCurrentPlayer()) != factionType
-				|| actionMenuState != GCAMState.NOTHING
-				|| factionType != studio.getFaction()) {
+				|| actionMenuState != GCAMState.NOTHING) {
 			return Collections.emptyList();
 		}
 
-		List<MenuItem> items = new LinkedList<>();
-		generateDrawUnitMenu(factionType, studio, items);
+		if (factionType == FactionType.THE_BLACK_KNIGHTS
+				&& ProductionMonitor.getProductionMonitor().hasCapacity(CapacityName.MARKET_FLOODING)
+				|| factionType == studio.getFaction()) {
+			List<MenuItem> items = new LinkedList<>();
+			generateDrawUnitMenu(factionType, studio, items);
 
-		return items;
+			return items;
+		}
+
+		return Collections.emptyList();
 	}
 
 	protected void generateDrawUnitMenu(FactionType factionType, GStudio studio, List<MenuItem> items) {

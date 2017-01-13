@@ -49,7 +49,6 @@ import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.EngageBattle;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.HimejiInvocation;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.LelouchInvocation;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.MarketFlooding;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
 import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToCapture;
@@ -242,9 +241,6 @@ public class GContextActionMenu extends ContextMenu
             // == studio filters ==
             AbstractStudioFilter drawUnit = new DrawUnit();
             this.filteredStudioItems.put(drawUnit.getClass(), drawUnit);
-
-            AbstractStudioFilter marketFlooding = new MarketFlooding();
-            this.filteredStudioItems.put(marketFlooding.getClass(), marketFlooding);
 
             // == zone filters ==
             AbstractZoneFilter drawMascot = new DrawMascot();

@@ -221,6 +221,7 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		EventDispatcher.registerListener(AskFirstPlayerSelectionNetvent.class, this);
 		EventDispatcher.registerListener(BattleNetevent.class, this);
 
+		ProductionMonitor.init();
 		GamePhaseMonitor.init();
 		PlayerTurnMonitor.init();
 		UnitCountMonitor.init();
