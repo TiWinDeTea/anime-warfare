@@ -1,5 +1,6 @@
 package org.tiwindetea.animewarfare.gui.game.gameboard;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
@@ -57,6 +58,6 @@ public class GMarketingLadder extends AnchorPane implements MarketingLadderUpdat
 	@Override
 	public void handleMarketingLadderUpdate(MarketingLadderUpdatedNetevent event) {
 		this.position.set(event.getNewPosition());
-		this.nextCost.setValue(String.valueOf(event.getCost()));
+		Platform.runLater(() -> this.nextCost.setValue(String.valueOf(event.getCost())));
 	}
 }

@@ -108,8 +108,6 @@ class StaffHiringState extends GameState {
 		}
 
 		player.getUnitCaptured().clear();
-
-		// TODO: Units released event
 	}
 
 	private void adjusteAndSetStaffPoint(List<Pair<Integer, Integer>> playerStaff, int minStaffPoints) {

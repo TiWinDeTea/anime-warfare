@@ -67,6 +67,7 @@ import org.tiwindetea.animewarfare.net.networkevent.PhaseChangedNeteventListener
 import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.SelectUnitToCaptureRequestNeteventListener;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetBattlePhaseReadyRequest;
+import org.tiwindetea.animewarfare.net.networkrequests.client.NetConventionRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetFinishTurnRequest;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetPlayingOrderChosen;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetSkipAllRequest;
@@ -121,6 +122,8 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 	private GContextActionMenu gContextActionMenu;
 
 	private PaperButton battleReadyButton;
+
+	private PaperButton conventionButton = new PaperButton("Make a convention.");
 
 	public void initStart() {
 		MainApp.getMainRoot().getChildren().add(this.overlay);
@@ -231,6 +234,10 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 		this.hBox.autosize();
 		this.initScroll();
 		map.displayZonesGrids(true);
+
+		this.conventionButton.setPrefWidth(150);
+		this.conventionButton.setPrefHeight(30);
+		this.conventionButton.setOnAction(a -> MainApp.getGameClient().send(new NetConventionRequest()));
 	}
 
 	private void initScroll() {
@@ -278,12 +285,20 @@ public class GameLayoutController implements Initializable, QuitApplicationEvent
 			return;
 		}
 
-		if (PlayerTurnMonitor.getCurrentPlayer() != null && PlayerTurnMonitor.getCurrentPlayer().equals(MainApp.getGameClient().getClientInfo())) {
+		if (event.getPhase().equals(PhaseChangedEvent.Phase.MARKETING)) {
+			Platform.runLater(() -> this.dynamicCommandVBox.getChildren().add(this.conventionButton));
+		} else {
+			Platform.runLater(() -> this.dynamicCommandVBox.getChildren().remove(this.conventionButton));
+		}
+
+		if (PlayerTurnMonitor.getCurrentPlayer() != null && PlayerTurnMonitor.getCurrentPlayer()
+		                                                                     .equals(MainApp.getGameClient()
+		                                                                                    .getClientInfo())) {
 			this.finishTurnButton.setDisable(false);
 			if (event.getPhase().equals(PhaseChangedEvent.Phase.MARKETING)) {
-				this.skipAllButton.setDisable(true);
+				Platform.runLater(() -> this.skipAllButton.setDisable(true));
 			} else {
-				this.skipAllButton.setDisable(false);
+				Platform.runLater(() -> this.skipAllButton.setDisable(false));
 			}
 		} else {
 			this.finishTurnButton.setDisable(true);
