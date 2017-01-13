@@ -45,10 +45,10 @@ public class NetSelectUnitsRequest implements NetSendable {
 	 * @param units list of units to select.
 	 */
 	public NetSelectUnitsRequest(Set<Integer> units) {
-		this.units = Collections.unmodifiableSet(units);
+		this.units = units;
 	}
 
 	public Set<Integer> getUnits() {
-		return this.units;
+		return Collections.unmodifiableSet(this.units);
 	}
 }
