@@ -28,7 +28,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.lomadriel.lfc.event.EventDispatcher;
-import org.tiwindetea.animewarfare.gui.event.CapacityClickedEvent;
+import org.tiwindetea.animewarfare.gui.game.event.CapacityClickedEvent;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 
 /**

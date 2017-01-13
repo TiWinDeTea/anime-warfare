@@ -27,7 +27,7 @@ public class SelectUnitToCapture extends AbstractUnitFilter implements SelectUni
 	public List<MenuItem> apply(FactionType factionType, GUnit gUnit) {
 		if (gUnit.getType()
 		         .isLevel(this.unitLevel) && gUnit.getFaction() == factionType && gUnit.getZone() == this.zoneID) {
-			MenuItem menuItem = new MenuItem("Select this unit.");
+			MenuItem menuItem = new MenuItem("Select this unit");
 			menuItem.setOnAction(e -> {
 				this.zoneID = -1;
 				this.unitLevel = null;
@@ -43,7 +43,7 @@ public class SelectUnitToCapture extends AbstractUnitFilter implements SelectUni
 
 	@Override
 	public String getName() {
-		return "select unit to capture";
+		return "select_unit_to_capture";
 	}
 
 	@Override

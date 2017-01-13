@@ -22,7 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.event;
+package org.tiwindetea.animewarfare.gui.game.event;
 
 import java.util.EventListener;
 
@@ -30,7 +30,7 @@ import java.util.EventListener;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface GStudioClickedEventListener extends EventListener {
+public interface GUnitClickedEventListener extends EventListener {
 
-    void handleClick(GStudioClickedEvent event);
+    void handleClick(GUnitClickedEvent event);
 }

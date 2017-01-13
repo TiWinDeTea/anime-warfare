@@ -22,15 +22,36 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.event;
+package org.tiwindetea.animewarfare.gui.game.event;
 
-import java.util.EventListener;
+import javafx.scene.input.MouseEvent;
+import org.lomadriel.lfc.event.Event;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GUnit;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public interface GUnitClickedEventListener extends EventListener {
+public class GUnitClickedEvent implements Event<GUnitClickedEventListener> {
 
-    void handleClick(GUnitClickedEvent event);
+    private final MouseEvent mouseEvent;
+    private final GUnit unit;
+
+    public GUnitClickedEvent(MouseEvent mouseEvent, GUnit unit) {
+        this.mouseEvent = mouseEvent;
+        this.unit = unit;
+    }
+
+    @Override
+    public void notify(GUnitClickedEventListener listener) {
+        listener.handleClick(this);
+    }
+
+    public MouseEvent getMouseEvent() {
+        return this.mouseEvent;
+    }
+
+    public GUnit getUnit() {
+        return this.unit;
+    }
 }

@@ -41,7 +41,7 @@ import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
-import org.tiwindetea.animewarfare.gui.event.ZoneClickedEvent;
+import org.tiwindetea.animewarfare.gui.game.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.GameMap;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;

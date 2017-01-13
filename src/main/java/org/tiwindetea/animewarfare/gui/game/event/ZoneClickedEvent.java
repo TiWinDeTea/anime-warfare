@@ -1,4 +1,4 @@
-package org.tiwindetea.animewarfare.gui.event;
+package org.tiwindetea.animewarfare.gui.game.event;
 
 import javafx.scene.input.MouseEvent;
 import org.lomadriel.lfc.event.Event;

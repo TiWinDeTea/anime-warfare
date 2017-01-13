@@ -22,42 +22,36 @@
 //
 ////////////////////////////////////////////////////////////
 
-package org.tiwindetea.animewarfare.gui.event;
+package org.tiwindetea.animewarfare.gui.game.event;
 
 import javafx.scene.input.MouseEvent;
 import org.lomadriel.lfc.event.Event;
-import org.tiwindetea.animewarfare.gui.game.Production;
-import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
+import org.tiwindetea.animewarfare.gui.game.gameboard.GStudio;
 
 /**
- * Created by maliafo on 13/01/17.
+ * @author Lucas Lazare
+ * @since 0.1.0
  */
-public class CapacityClickedEvent implements Event<CapacityClickedEventListener> {
+public class GStudioClickedEvent implements Event<GStudioClickedEventListener> {
 
     private final MouseEvent mouseEvent;
-    private final CapacityName capacity;
-    private final Production production;
+    private final GStudio studio;
 
-    public CapacityClickedEvent(MouseEvent e, CapacityName capacity, Production production) {
-        this.mouseEvent = e;
-        this.capacity = capacity;
-        this.production = production;
+    public GStudioClickedEvent(MouseEvent mouseEvent, GStudio studio) {
+        this.mouseEvent = mouseEvent;
+        this.studio = studio;
     }
 
     @Override
-    public void notify(CapacityClickedEventListener listener) {
-        listener.handleCapacityClicked(this);
+    public void notify(GStudioClickedEventListener listener) {
+        listener.handleClick(this);
     }
 
     public MouseEvent getMouseEvent() {
         return this.mouseEvent;
     }
 
-    public CapacityName getCapacity() {
-        return this.capacity;
-    }
-
-    public Production getProduction() {
-        return this.production;
+    public GStudio getStudio() {
+        return this.studio;
     }
 }

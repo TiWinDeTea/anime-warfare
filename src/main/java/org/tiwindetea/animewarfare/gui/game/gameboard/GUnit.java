@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
-import org.tiwindetea.animewarfare.gui.event.GUnitClickedEvent;
+import org.tiwindetea.animewarfare.gui.game.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;

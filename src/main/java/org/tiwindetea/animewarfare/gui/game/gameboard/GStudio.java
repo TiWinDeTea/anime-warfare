@@ -30,7 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
-import org.tiwindetea.animewarfare.gui.event.GStudioClickedEvent;
+import org.tiwindetea.animewarfare.gui.game.event.GStudioClickedEvent;
 import org.tiwindetea.animewarfare.logic.events.StudioEvent;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
