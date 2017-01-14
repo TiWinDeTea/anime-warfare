@@ -265,18 +265,23 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
     }
 
     public List<GComponent> getComponents(int zoneId) {
-        return this.MAP.getRectanglesOf(zoneId).stream()
+        List<GComponent> l = this.MAP.getRectanglesOf(zoneId).stream()
                 .map(r -> r.getGComponent())
                 .filter(c -> c != null)
                 .collect(Collectors.toList());
+        l.addAll(
+            this.MAP.getOrphansOf(zoneId).stream()
+                .filter(c -> c != null)
+               .collect(Collectors.toList())
+        );
+        return l;
     }
 
     public List<GUnit> getUnits(int zonedID) {
-        return this.MAP.getRectanglesOf(zonedID)
-                       .stream()
-                       .map(r -> r.getGComponent())
-                       .filter(c -> c != null && c.isUnit()).map(c -> (GUnit) c)
-                       .collect(Collectors.toList());
+        return this.getComponents(zonedID).stream()
+                    .filter(GComponent::isUnit)
+                    .map(c -> (GUnit) c)
+                    .collect(Collectors.toList());
     }
 
     /**
@@ -446,6 +451,7 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
                 getChildren().addAll(rectList);
 
                 this.map.put(new Integer(i), rectList);
+                this.orphans.put(new Integer(i), new ArrayList<>());
                 ++i;
             }
         }
@@ -513,6 +519,10 @@ public class GMap extends Pane implements UnitMovedNeteventListener, StudioNetev
 
         public List<GComponentRectangle> getRectanglesOf(int zoneId) {
             return this.map.get(new Integer(zoneId));
+        }
+
+        public List<GComponent> getOrphansOf(int zoneId) {
+            return this.orphans.get(new Integer(zoneId));
         }
 
         public List<GComponentRectangle> getRectangles() {
