@@ -1,14 +1,22 @@
 \chapter{Fonctionnalités}
 
-Nous avons implémenté les fonctionnalités suivante:
+Nous avons implémenté, entre autre, les fonctionnalités suivante :
 \begin{itemize}
     \item Menu des options
-    \item Activations automatique des capacités.
+    \begin{itemize}
+        \item Nom du joueur
+        \item Activation ou non des animations
+        \item Langue (français, anglais)
+        \item Sauvegarde de la configuration
+        \item …
+    \end{itemize}
+    \item Activation automatique des capacités.
     \item Capacités
     \begin{itemize}
         \item Clémence
+        \item Retraite forcée
         \item Mes fans, mes fans, mes fans
-        \item ...
+        \item …
     \end{itemize}
     \item Actions
     \begin{itemize}
@@ -17,18 +25,22 @@ Nous avons implémenté les fonctionnalités suivante:
         \begin{itemize}
             \item Multiselection des unités
             \item Plusieurs déplacements possible en une fois
+            \item Zones accessibles mises en surbrillance
         \end{itemize}
         \item Capturer des studios
         \item Abandonner des studios
+        \item ...
     \end{itemize}
     \item Les buffs
     \begin{itemize}
         \item Gestions des points d'attaques
-        \item Invinsibilité
+        \item Invincibilité
         \item ...
     \end{itemize}
+    \item Deck global avec buffs aléatoires tirés
+        en début de tour.
     \item Gestion des conditions d'arrêts du jeu.
-    \item Popup d'informations
+    \item Popup d'informations diverses (général, résumé de bataille, …)
     \item Batailles
     \begin{itemize}
         \item Capacités pré-bataille
@@ -36,24 +48,32 @@ Nous avons implémenté les fonctionnalités suivante:
         \item Sélection des morts
         \item Sélection des blessés.
     \end{itemize}
-    \item Ajout d'un chat
+    \item Système de salon où les joueurs peuvent patienter et sélectionner leur faction.
+    \item Création d'unités
     \begin{itemize}
-        \item Formattage du chat (gras, couleur)
-        \item Intégré au jeu
-        \item Minimisable
+        \item Conditions de création variées sur les héros
+        \item Gestion dynamique des coûts des unités.
     \end{itemize}
-    \item Invocation des unités
-    \begin{itemize}
-        \item Conditions d'invocations sur les héros
-        \item Gestion dynamiques des coups des unités.
-    \end{itemize}
+    \item Système de « map » constituée de zones interconnectées.
     \item Jeu en réseau
     \begin{itemize}
+        \item Thread séparé.
         \item Entre 2 et 4 joueurs
         \item Possibilité de se connecter à distance
         \item Découverte des serveurs
         \item Gestion des mots de passes
-        \item Chat dans le salon
+        \item Systeme de chat instantané
+        \begin{itemize}
+            \item Formattage du chat (gras, couleurs, ...)
+            \item Intégré au salon et au jeu en lui-même
+            \item Minimisable
+        \end{itemize}
     \end{itemize}
+    \item Système extensible de buffs et de capacités (extensible via des événements)
+    \item Interface graphique (dans un thread séparé)
+    \item Les éléments d'interface graphiques sont stockées au format \textbf{fxml} (dérivé du \emph{xml}) et chargés au lancement du
+        programme (les menus, les popups, …).
+    \item Fichiers de configuration \emph{.properties} pour définir les constantes et les chaînes de caractères
+        dans les différentes langues.
 \end{itemize}
 

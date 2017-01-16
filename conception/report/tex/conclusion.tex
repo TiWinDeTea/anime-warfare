@@ -1,0 +1,17 @@
+\chapter{Conclusion}
+
+Nous avons réussi à implémenter toutes les fonctionnalités majeures du projet.
+Nous sommes satisfaits de notre conception au niveau de la logique, mais s'il fallait refaire certaines parties du
+projet, ça serait au niveau du GUI (tout ce qui est in game). Le GUI a été implémenté tardivement dans le projet
+et n'a pas bénéficié d'autant de réflexion que le reste du projet (très peu d'UML à ce sujet, …).
+D'autre part, au niveau du réseau, la procédure de mise en place des événements est très lourde :
+il faut souvent créer un ou deux événements (et les listeners associés) : un côté serveur et un côté client.
+Puis, il faut créer une classe intermédiaire qui doit contenir les informations nécessaires vis à vis de l'événement
+(le tout serializable). Cette classe doit être enregistrée au près du serveur et du client.
+Puis il faut implémenter les listeners côté client ou côté serveur. On peut enfin utiliser l'événement pour
+implémenter des fonctionnalités concrètes. Nous trouvons cette procédure assez contraignante. C'est aussi
+dû à la librairie tierce utilisée (Kryonet).
+Enfin, même si nous avons eu le temps d'implémenter une bonne partie des buffs et des capacités spéciales,
+elles ne sont pas encore toutes implémentées. Mais le système est suffisament extensible grâce à un jeu
+conséquent d'événements internes.
+
