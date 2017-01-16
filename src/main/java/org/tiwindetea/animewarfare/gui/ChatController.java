@@ -114,7 +114,9 @@ public class ChatController implements MessageReceivedNeteventListener {
 		TextFlow textFlow = new TextFlow(name);
 
 		while (text.contains("**")) {
-			textFlow.getChildren().add(new Text(text.substring(0, text.indexOf("**"))));
+			if (!text.startsWith("**")) {
+				textFlow.getChildren().add(new Text(text.substring(0, text.indexOf("**"))));
+			}
 			text = text.substring(text.indexOf("**") + 2);
 			if (text.contains("**")) {
 				Text GText = new Text(text.substring(0, text.indexOf("**")));

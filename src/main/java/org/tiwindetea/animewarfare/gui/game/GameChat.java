@@ -24,19 +24,28 @@
 
 package org.tiwindetea.animewarfare.gui.game;
 
-import javafx.event.ActionEvent;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
+import org.lomadriel.lfc.event.EventDispatcher;
+import org.tiwindetea.animewarfare.gui.AnimationsManager;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.PaperButton;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNetevent;
+import org.tiwindetea.animewarfare.net.networkevent.MessageReceivedNeteventListener;
 
 /**
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GameChat extends BorderPane {
+public class GameChat extends BorderPane implements MessageReceivedNeteventListener {
 
     private final BorderPane topBP;
 
@@ -45,44 +54,74 @@ public class GameChat extends BorderPane {
     private boolean resizeBottom;
     private boolean resizeRight;
     private boolean minimized;
+    private final FadeTransition ft;
 
     public GameChat() {
+
+        this.ft = new FadeTransition(Duration.millis(2500), this);
+        this.ft.setFromValue(1);
+        this.ft.setToValue(0.4);
+        this.ft.setCycleCount(Animation.INDEFINITE);
 
         setMaxHeight(160);
         setMaxWidth(200);
 
         this.topBP = new BorderPane();
         this.topBP.setPrefHeight(30);
-        this.topBP.setStyle("-fx-background-color: burlywood; -fx-padding: 3");
+        this.topBP.setStyle("-fx-background-color: peru; -fx-padding: 3"); // todo externalize
 
-        setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: burlywood; -fx-padding: 3");
+        setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: peru; -fx-padding: 3"); // todo externalize
 
+        setOpacity(0.5);
+        setOnMouseExited(e -> setOpacity(0.5));
+        setOnMouseEntered(e -> setOpacity(1));
+        setOnMousePressed(e -> {
+            this.topBP.setStyle("-fx-background-color: peru; -fx-padding: 3"); // todo externalize
+            setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: peru; -fx-padding: 3"); // todo externalize
+            this.ft.stop();
+        });
         setTop(this.topBP);
         setCenter(GlobalChat.getChat());
+        setMargin(GlobalChat.getChat(), new Insets(3, 10, 7, 0));
 
         this.minimize = new PaperButton("-");
         this.minimize.setEllipsisString("-");
-        this.minimize.setPrefHeight(50);
-        this.minimize.setPrefWidth(50);
+        this.minimize.setPrefHeight(40);
+        this.minimize.setPrefWidth(40);
 
         makeDragable(this.topBP);
-        this.topBP.setRight(this.minimize);
-        this.setOnMouseClicked(mouseEvent -> toFront());
-        this.minimize.setOnAction(this::minimizeClicked);
+        makeDragable(this.minimize);
 
-        makeResizable(50);
+        this.topBP.setLeft(this.minimize);
+        this.setOnMouseClicked(mouseEvent -> toFront());
+        this.minimize.setOnMouseReleased(e -> {
+            if (e.isStillSincePress()) {
+                minimizeClicked();
+            }
+        });
+
+        makeResizable(10);
+        EventDispatcher.registerListener(MessageReceivedNetevent.class, this);
     }
 
-    private void minimizeClicked(ActionEvent actionEvent) {
+    private void minimizeClicked() {
         if (this.minimized) {
             setCenter(GlobalChat.getChat());
-            this.minimize.setText("+");
-            this.minimize.setEllipsisString("+");
-            this.minimized = false;
-        } else {
-            setCenter(null);
             this.minimize.setText("-");
             this.minimize.setEllipsisString("-");
+            this.minimized = false;
+
+            Scene s = getScene();
+            if (getLayoutX() + getWidth() > s.getWidth()) {
+                setLayoutY(s.getWidth() - getWidth());
+            }
+            if (getLayoutY() + getHeight() > s.getHeight()) {
+                setLayoutY(s.getHeight() - getHeight());
+            }
+        } else {
+            setCenter(null);
+            this.minimize.setText("+");
+            this.minimize.setEllipsisString("+");
             this.minimized = true;
         }
     }
@@ -90,13 +129,31 @@ public class GameChat extends BorderPane {
     private void makeDragable(Node what) {
         final double deltas[] = new double[2];
         what.setOnMousePressed(mouseEvent -> {
-            deltas[0] = getLayoutX() - mouseEvent.getScreenX();
-            deltas[1] = getLayoutY() - mouseEvent.getScreenY();
+            deltas[0] = getLayoutX() - mouseEvent.getSceneX();
+            deltas[1] = getLayoutY() - mouseEvent.getSceneY();
             toFront();
         });
         what.setOnMouseDragged(mouseEvent -> {
-            this.setLayoutX(mouseEvent.getScreenX() + deltas[0]);
-            this.setLayoutY(mouseEvent.getScreenY() + deltas[1]);
+
+            double newX = mouseEvent.getSceneX() + deltas[0];
+            double newY = mouseEvent.getSceneY() + deltas[1];
+            Scene s = getScene();
+            if (newX + getWidth() > s.getWidth()) {
+                newX = s.getWidth() - getWidth();
+            } else if (newX < 0) {
+                System.out.println("getX: " + mouseEvent.getX() + "\tgetSX:" + mouseEvent.getSceneX() + "\tgetScrX:" + mouseEvent.getScreenX());
+                System.out.println("Delta: " + deltas[0] + "\n  ");
+                newX = 0;
+            }
+
+            if (newY + getHeight() > s.getHeight()) {
+                newY = s.getHeight() - getHeight();
+            } else if (newY < 0) {
+                newY = 0;
+            }
+
+            setLayoutX(newX);
+            setLayoutY(newY);
         });
     }
 
@@ -138,6 +195,21 @@ public class GameChat extends BorderPane {
             } else if (this.resizeBottom) {
                 setMaxHeight(mouseEvent.getY());
             }
+        });
+    }
+
+    public void destroy() {
+        //todo : call
+        EventDispatcher.unregisterListener(MessageReceivedNetevent.class, this);
+    }
+
+    @Override
+    public void handleMessage(MessageReceivedNetevent message) {
+        Platform.runLater(() -> {
+            setOpacity(1);
+            this.topBP.setStyle("-fx-background-color: red; -fx-padding: 3"); // todo externalize
+            setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: red; -fx-padding: 3"); // todo externalize
+            AnimationsManager.conditionalPlay(this.ft);
         });
     }
 }
