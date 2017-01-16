@@ -34,7 +34,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -67,7 +66,7 @@ import static javafx.scene.paint.Color.rgb;
  * @author Lucas Lazare
  * @since 0.1.0
  */
-public class GMap extends Pane implements UnitMovedNeteventListener, StudioNeteventListener,
+public class GMap extends Group implements UnitMovedNeteventListener, StudioNeteventListener,
         StudioControllerChangedNeteventListener, GameEndedNeteventListener {
 
     // TODO: rework this class
