@@ -28,7 +28,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.statemachine.DefaultStateMachine;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
@@ -190,7 +189,7 @@ public class GameServer {
      * @param gameName Name of the game Room
      * @see GameServer#start()
      */
-    public GameServer(@Nullable String gameName) {
+    public GameServer(String gameName) {
         this(-1, gameName, null);
     }
 
@@ -201,7 +200,7 @@ public class GameServer {
      * @param gamePassword Password of the game
      * @see GameServer#start()
      */
-    public GameServer(@Nullable String gameName, @Nullable String gamePassword) {
+    public GameServer(String gameName, String gamePassword) {
         this(-1, gameName, gamePassword);
     }
 
@@ -213,7 +212,7 @@ public class GameServer {
      * @param gamePassword            Password of the Room
      * @see GameServer#start()
      */
-    public GameServer(int numberOfExpectedPlayers, @Nullable String gameName, @Nullable String gamePassword) {
+    public GameServer(int numberOfExpectedPlayers, String gameName, String gamePassword) {
         if (gameName == null) {
             gameName = generateName();
             Log.trace(GameServer.class.toString(), "Server name randomly created: " + gameName);
@@ -362,11 +361,6 @@ public class GameServer {
                 this.udpListener.stop();
             }
             this.server.stop();
-            try {
-                this.server.dispose();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             this.server.removeListener(this.networkNetworkListener);
             this.room.clear();
             Utils.deregisterLogicListener(this.logicListener);
@@ -451,8 +445,16 @@ public class GameServer {
         Map<Integer, FactionType> shadow = new TreeMap<>();
         this.room.modifiableLocks().forEach((gc, faction) -> shadow.put(new Integer(gc.id), faction));
         this.server.sendToAllTCP(new NetGameStarted());
-        this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(shadow));
-        Log.info(GameServer.class.toString(), this.room + ": game started");
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.stateMachine = new DefaultStateMachine(new FirstTurnStaffHiringState(shadow));
+            Log.info(GameServer.class.toString(), this.room + ": game started");
+        }).start();
     }
 
     @SuppressWarnings("unused")

@@ -27,7 +27,6 @@ package org.tiwindetea.animewarfare.net;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.minlog.Log;
-import com.sun.istack.internal.Nullable;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
 import org.tiwindetea.animewarfare.net.networkevent.AskFirstPlayerSelectionNetvent;
@@ -122,7 +121,7 @@ public class GameClient {
      * @param name client name
      * @see GameClient#GameClient()
      */
-    public GameClient(@Nullable String name) {
+    public GameClient(String name) {
         this.me.gameClientName = name;
         Utils.registerClasses(this.client);
     }
@@ -174,7 +173,7 @@ public class GameClient {
      * @see GameClient#connectAt(InetSocketAddress)
      * @see GameClient#connectAt(InetSocketAddress, NetPassword)
      */
-    public void connect(Room room, @Nullable NetPassword password) throws IOException {
+    public void connect(Room room, NetPassword password) throws IOException {
         if (room.isLocked()
                 ? password == null || password.getPassword() == null
                 : password != null && password.getPassword() != null) {
@@ -234,7 +233,7 @@ public class GameClient {
      * @see GameClient#connect(Room, NetPassword)
      * @see GameClient#connect(Room)
      */
-    public void connectAt(InetSocketAddress TCPAddress, @Nullable NetPassword password) throws IOException {
+    public void connectAt(InetSocketAddress TCPAddress, NetPassword password) throws IOException {
         if (this.me.gameClientName == null) {
             throw new IllegalStateException();
         }

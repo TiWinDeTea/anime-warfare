@@ -54,6 +54,7 @@ public class GameRoomState extends GUIState implements GameRoomEventListener {
 	static {
 		FXMLLoader gameRoomLoader = new FXMLLoader();
 		gameRoomLoader.setLocation(GameRoomController.class.getResource("GameRoom.fxml"));
+		gameRoomLoader.setController(new GameRoomController());
 		gameRoomLoader.setResources(ResourceBundleHelper.getBundle(
 				"org.tiwindetea.animewarfare.gui.menu.GameRoomController"));
 

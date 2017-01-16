@@ -52,6 +52,7 @@ public class ServersListState extends GUIState implements ServersListEventListen
 	static {
 		FXMLLoader serversListLoader = new FXMLLoader();
 		serversListLoader.setLocation(ServersListController.class.getResource("ServersList.fxml"));
+		serversListLoader.setController(new ServersListController());
 		serversListLoader.setResources(
 				ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.menu.ServersListController")
 		);

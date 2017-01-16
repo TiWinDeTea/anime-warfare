@@ -53,8 +53,8 @@ public class GlobalChat {
 	private static final Color DEFAULT_COLOR = Color.BLACK;
 
 	static {
-		FXMLLoader chatLoader = new FXMLLoader();
-		chatLoader.setLocation(ChatController.class.getResource("Chat.fxml"));
+		FXMLLoader chatLoader = new FXMLLoader(GlobalChat.class.getResource("Chat.fxml"));
+		chatLoader.setController(new ChatController());
 		chatLoader.setResources(ResourceBundleHelper.getBundle("org.tiwindetea.animewarfare.gui.ChatController"));
 
 		try {

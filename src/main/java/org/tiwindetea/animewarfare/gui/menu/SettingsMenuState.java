@@ -65,6 +65,7 @@ public class SettingsMenuState extends GUIState implements SettingsMenuEventList
 
 	static {
 		FXMLLoader settingsMenuLoader = new FXMLLoader();
+		settingsMenuLoader.setController(new SettingsMenuController());
 		settingsMenuLoader.setLocation(MainMenuController.class.getResource("SettingsMenu.fxml"));
 		settingsMenuLoader.setResources(ResourceBundleHelper.getBundle(
 				"org.tiwindetea.animewarfare.gui.menu.SettingsMenuController"));

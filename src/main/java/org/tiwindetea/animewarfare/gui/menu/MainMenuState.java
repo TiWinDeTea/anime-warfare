@@ -54,6 +54,7 @@ public class MainMenuState extends GUIState implements MainMenuEventListener {
 	static {
 		FXMLLoader mainMenuLoader = new FXMLLoader();
 		mainMenuLoader.setLocation(MainMenuController.class.getResource("MainMenu.fxml"));
+		mainMenuLoader.setController(new MainMenuController());
 		mainMenuLoader.setResources(ResourceBundleHelper.getBundle(
 				"org.tiwindetea.animewarfare.gui.menu.MainMenuController"));
 		try {

@@ -86,7 +86,7 @@ public class MainApp extends Application implements AskMenuStateUpdateEventListe
 		EventDispatcher.getInstance().addListener(QuitApplicationEvent.class, this);
 		EventDispatcher.getInstance().addListener(SettingsUpdatedEvent.class, this);
 
-		Font.loadFont(MainApp.class.getResource("gui/fonts/LadylikeBB.ttf").toExternalForm(), 13);
+		Font.loadFont(MainApp.class.getResourceAsStream("gui/fonts/LadylikeBB.ttf"), 13);
 
 		Settings.initStaticFields();
 		Locale.setDefault(Locale.forLanguageTag(Settings.getLanguageTag()));
