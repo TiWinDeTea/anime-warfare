@@ -6,6 +6,7 @@ import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.game.GameLayoutController;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GUnit;
 import org.tiwindetea.animewarfare.logic.FactionType;
+import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.net.networkrequests.client.NetUnitCaptureRequest;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CaptureUnit extends AbstractZoneFilter {
-	private Comparator<GUnit> levelComparator = Comparator.comparingInt(u2 -> u2.getType().getUnitLevel().ordinal());
+	private Comparator<GUnit> levelComparator = (u1, u2) -> Unit.bestUnitComparatorByType(u1.getType(), u2.getType());
 
 	@Override
 	public List<MenuItem> apply(FactionType factionType, Integer zoneID) {
@@ -30,8 +31,8 @@ public class CaptureUnit extends AbstractZoneFilter {
 		if (!possibleFactions.isEmpty()) {
 
 			GUnit hunter = units.stream().filter(u -> u.getFaction() == factionType)
-			                    .max(this.levelComparator)
-			                    .orElse(null);
+					.max(this.levelComparator)
+					.orElse(null);
 
 			if (hunter != null) {
 				List<MenuItem> items = new ArrayList<>();

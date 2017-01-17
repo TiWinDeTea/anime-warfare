@@ -117,13 +117,41 @@ public class Unit {
 		return this.faction == faction;
 	}
 
-	public static int bestUnitComparator(Unit o1, Unit o2) {
-		if (o1.getType().isLevel(o2.getType().getUnitLevel())) {
-			return 0;
-		} else if (o1.getType().getUnitLevel().ordinal() < o2.getType().getUnitLevel().ordinal()) {
-			return -1;
+	/**
+	 * mascots < common characters < heroes
+	 *
+	 * @param u1 unit 1
+	 * @param u2 unit 2
+	 *
+	 * @return -1 if u2 is better, 0 if they have same strength and 1 if u1 is better.
+	 */
+	public static int bestUnitComparator(Unit u1, Unit u2) {
+		return bestUnitComparatorByType(u1.getType(), u2.getType());
+	}
+
+	/**
+	 * mascots < common characters < heroes
+	 *
+	 * @param u1 unit type 1
+	 * @param u2 unit type 2
+	 *
+	 * @return -1 if u2 is better, 0 if they have same strength and 1 if u1 is better.
+	 */
+	public static int bestUnitComparatorByType(UnitType u1, UnitType u2) {
+		if (u1.getUnitLevel() == UnitLevel.HERO) {
+			if (u2.getUnitLevel() == UnitLevel.HERO) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else if (u1.getUnitLevel() == UnitLevel.MASCOT) {
+			if (u2.getUnitLevel() == UnitLevel.MASCOT) {
+				return 0;
+			} else {
+				return -1;
+			}
 		} else {
-			return 1;
+			return 0;
 		}
 	}
 
