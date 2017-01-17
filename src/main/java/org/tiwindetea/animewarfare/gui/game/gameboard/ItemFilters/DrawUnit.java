@@ -81,14 +81,14 @@ public class DrawUnit extends AbstractStudioFilter {
 				if (GameLayoutController.getLocalPlayerInfoPane().getStaffCounter().getValue() < cost) {
 					item.setDisable(true);
 				} else if (unitType == UnitType.CTHUKO
-						&& !UnitCountMonitor.getInstance()
-						                    .hasBeenInvoked(UnitType.CTHUKO)
-						&& UnitCountMonitor.getInstance()
-						                   .getNumberOfUnits(UnitType.NYARUKO) == 0 || unitType == UnitType.LELOUCH
-						&& !UnitCountMonitor.getInstance()
-						                    .hasBeenInvoked(UnitType.LELOUCH) || unitType == UnitType.SAKAMAKI_IZAYOI
-						&& UnitCountMonitor.getInstance().aHeroWasInvoked() || unitType == UnitType.HIMEJI_MIZUKI
-						&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.HIMEJI_MIZUKI)) {
+							&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.CTHUKO)
+							&& UnitCountMonitor.getInstance().getNumberOfUnits(UnitType.NYARUKO) == 0
+						|| unitType == UnitType.LELOUCH
+							&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.LELOUCH)
+						|| unitType == UnitType.SAKAMAKI_IZAYOI
+							&& !UnitCountMonitor.getInstance().aHeroWasInvoked()
+						|| unitType == UnitType.HIMEJI_MIZUKI
+							&& !UnitCountMonitor.getInstance().hasBeenInvoked(UnitType.HIMEJI_MIZUKI)) {
 					item.setDisable(true);
 				}
 			}

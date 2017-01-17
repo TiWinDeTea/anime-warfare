@@ -29,7 +29,7 @@ public class HimejiInvocation extends AbstractZoneFilter {
 		if (checkHimejiInvocationConditions(factionType, zone)) {
 			int cost = UnitType.HIMEJI_MIZUKI.getDefaultCost() + CostModifierMonitor.getUnitCostModifier(UnitType.HIMEJI_MIZUKI);
 
-			MenuItem menuItem = new MenuItem("Invoke Himeji (" + cost + " SP)");
+			MenuItem menuItem = new MenuItem("Draw Himeji (" + cost + " SP)");
 			menuItem.setOnAction(e -> MainApp.getGameClient()
 					.send(new NetInvokeUnitRequest(UnitType.HIMEJI_MIZUKI,
 							zone)));
