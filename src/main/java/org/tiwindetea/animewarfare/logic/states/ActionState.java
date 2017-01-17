@@ -448,6 +448,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext, this.gameBoard.getMap()));
 
 		this.nonUnlimitedActionDone = true;
+		this.currentPlayer.decrementStaffPoints(this.currentPlayer.getBattleCost());
 	}
 
 	@Override
