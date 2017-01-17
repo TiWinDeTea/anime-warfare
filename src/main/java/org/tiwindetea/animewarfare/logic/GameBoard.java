@@ -24,6 +24,10 @@
 
 package org.tiwindetea.animewarfare.logic;
 
+import org.tiwindetea.animewarfare.logic.buffs.HasutaCostBuff;
+import org.tiwindetea.animewarfare.logic.buffs.HimejiAttackBuff;
+import org.tiwindetea.animewarfare.logic.buffs.LelouchAttackBuff;
+import org.tiwindetea.animewarfare.logic.buffs.NyarukoAttackBuff;
 import org.tiwindetea.animewarfare.logic.capacity.BackStab;
 import org.tiwindetea.animewarfare.logic.capacity.BadBook;
 import org.tiwindetea.animewarfare.logic.capacity.BadLuck;
@@ -122,12 +126,8 @@ public class GameBoard {
 				unit.addInZone(playerZone);
 			}
 
-			List<WeakReference<Player>> otherPlayers = this.players.values()
-					.stream()
-					.filter(player1 -> player.getID() != player1.getID())
-					.map(p -> new WeakReference<>(p))
-					.collect(Collectors.toList());
-			createActivable(player, otherPlayers);
+			createActivable(player);
+			createSpecialBuffs(player);
 			studio.setController(unit);
 		}
 	}
@@ -231,7 +231,7 @@ public class GameBoard {
 		this.endGameMonitor.destroy();
 	}
 
-	private void createActivable(Player player, List<WeakReference<Player>> otherPlayers) {
+	private void createActivable(Player player) {
 		switch (player.getFaction()) {
 			case NO_NAME:
 				player.activables.add(new Clemency.ClemencyActivable(player, getAdvertisingCampaignRightsPool()));
@@ -251,6 +251,12 @@ public class GameBoard {
 				player.activables.add(new HidingInTheBush.HidingInTheBushActivable(player, this.gameMap));
 				break;
 			case F_CLASS_NO_BAKA:
+				List<WeakReference<Player>> otherPlayers = this.players.values()
+						.stream()
+						.filter(other -> player.getID() != other.getID())
+						.map(p -> new WeakReference<>(p))
+						.collect(Collectors.toList());
+
 				player.activables.add(new BadBook.BadBookActivable(player));
 				player.activables.add(new ForcedRetreat.ForcedRetreatActivable(player));
 				player.activables.add(new BackStab.BackStabActivable(player, this.gameMap));
@@ -259,6 +265,21 @@ public class GameBoard {
 						getAdvertisingCampaignRightsPool(),
 						this.gameMap));
 				player.activables.add(new DeafEar.DeafEarActivable(player));
+				break;
+		}
+	}
+
+	private void createSpecialBuffs(Player player) {
+		switch (player.getFaction()) {
+			case THE_BLACK_KNIGHTS:
+				player.getBuffManager().addBuff(new LelouchAttackBuff());
+				break;
+			case HAIYORE:
+				player.getBuffManager().addBuff(new NyarukoAttackBuff());
+				player.getBuffManager().addBuff(new HasutaCostBuff(player.getCostModifier()));
+				break;
+			case F_CLASS_NO_BAKA:
+				player.getBuffManager().addBuff(new HimejiAttackBuff());
 				break;
 		}
 	}

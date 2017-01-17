@@ -25,9 +25,6 @@
 package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.buffs.BuffManager;
-import org.tiwindetea.animewarfare.logic.buffs.HimejiAttackBuff;
-import org.tiwindetea.animewarfare.logic.buffs.LelouchAttackBuff;
-import org.tiwindetea.animewarfare.logic.buffs.NyarukoAttackBuff;
 import org.tiwindetea.animewarfare.logic.capacity.Capacity;
 import org.tiwindetea.animewarfare.logic.capacity.CapacityName;
 import org.tiwindetea.animewarfare.logic.capacity.SelfActivable;
@@ -82,18 +79,6 @@ public class Player {
 		this.ID = id;
 		this.faction = faction;
 		this.costModifier = new CostModifier(this.ID);
-
-		switch (this.faction) {
-			case THE_BLACK_KNIGHTS:
-				this.buffManager.addBuff(new LelouchAttackBuff());
-				break;
-			case HAIYORE:
-				this.buffManager.addBuff(new NyarukoAttackBuff());
-				break;
-			case F_CLASS_NO_BAKA:
-				this.buffManager.addBuff(new HimejiAttackBuff());
-				break;
-		}
 	}
 
 	public void setClockwiseNextPlayer(Player p) {
