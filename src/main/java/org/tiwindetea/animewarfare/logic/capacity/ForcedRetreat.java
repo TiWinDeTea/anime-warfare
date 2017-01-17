@@ -63,9 +63,12 @@ public class ForcedRetreat extends PlayerCapacity implements BattleEventListener
 		}
 
 		private boolean isHeroInTheSameZoneThanAnEnnemyHero(UnitMovedEvent event) {
+			if (event.getDestination() == null) {
+				return false;
+			}
+
 			boolean ennemyPresent = false;
 			boolean heroPresent = false;
-
 			for (Unit unit : event.getDestination().getUnits()) {
 				if (unit.isLevel(UnitLevel.HERO)) {
 					if (unit.hasFaction(getPlayer().getFaction())) {
