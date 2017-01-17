@@ -32,7 +32,9 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.AnimationsManager;
@@ -50,10 +52,13 @@ public class GameChat extends BorderPane implements MessageReceivedNeteventListe
     private final BorderPane topBP;
 
     private final Button minimize;
+    private final Button stick;
 
     private boolean resizeBottom;
     private boolean resizeRight;
     private boolean minimized;
+    private boolean containsMouse;
+    private boolean sticky;
     private final FadeTransition ft;
 
     public GameChat() {
@@ -73,9 +78,15 @@ public class GameChat extends BorderPane implements MessageReceivedNeteventListe
         setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: peru; -fx-padding: 3"); // todo externalize
 
         setOpacity(0.5);
-        setOnMouseExited(e -> setOpacity(0.5));
-        setOnMouseEntered(e -> setOpacity(1));
-        setOnMousePressed(e -> {
+        setOnMouseExited(e -> {
+            if (!this.sticky) {
+                setOpacity(0.5);
+            }
+            this.containsMouse = false;
+        });
+        setOnMouseEntered(e -> {
+            setOpacity(1);
+            this.containsMouse = true;
             this.topBP.setStyle("-fx-background-color: peru; -fx-padding: 3"); // todo externalize
             setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: peru; -fx-padding: 3"); // todo externalize
             this.ft.stop();
@@ -89,10 +100,35 @@ public class GameChat extends BorderPane implements MessageReceivedNeteventListe
         this.minimize.setPrefHeight(40);
         this.minimize.setPrefWidth(40);
 
+        this.stick = new PaperButton("◇");
+        this.stick.setEllipsisString("◇");
+        this.stick.setPrefHeight(40);
+        this.stick.setPrefWidth(40);
+        this.stick.setOnMouseClicked(e -> {
+            if (e.isStillSincePress()) {
+                this.sticky = !this.sticky;
+                if (this.sticky) {
+                    this.stick.setEllipsisString("◆");
+                    this.stick.setText("◆");
+                } else {
+                    this.stick.setEllipsisString("◇");
+                    this.stick.setText("◇");
+                }
+            }
+
+        });
+        Tooltip t = new Tooltip("Transparency on/off");
+        Tooltip.install(this.stick, t);
+
         makeDragable(this.topBP);
         makeDragable(this.minimize);
+        makeDragable(this.stick);
 
-        this.topBP.setLeft(this.minimize);
+        HBox b = new HBox(this.minimize, this.stick);
+        b.setSpacing(15);
+        b.setPadding(new Insets(3, 10, 3, 10));
+
+        this.topBP.setLeft(b);
         this.setOnMouseClicked(mouseEvent -> toFront());
         this.minimize.setOnMouseReleased(e -> {
             if (e.isStillSincePress()) {
@@ -209,7 +245,9 @@ public class GameChat extends BorderPane implements MessageReceivedNeteventListe
             setOpacity(1);
             this.topBP.setStyle("-fx-background-color: red; -fx-padding: 3"); // todo externalize
             setStyle("-fx-border-width: 1; -fx-border-color: black; -fx-background-color: red; -fx-padding: 3"); // todo externalize
-            AnimationsManager.conditionalPlay(this.ft);
+            if (!this.containsMouse) {
+                AnimationsManager.conditionalPlay(this.ft);
+            }
         });
     }
 }

@@ -130,6 +130,8 @@ public class ChatController implements MessageReceivedNeteventListener {
 		if (this.chatContent.size() > MAX_MESSAGES) {
 			this.chatMessages.getChildren().remove(this.chatContent.pop());
 		}
+
+		this.needScrollBarUpdate = true;
 	}
 
 	public void addSystemMessage(String message, Color color) {
