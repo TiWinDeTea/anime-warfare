@@ -409,11 +409,6 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 			return;
 		}
 
-		if (this.nonUnlimitedActionDone) {
-			Log.debug(getClass().getName(), "Non unlimited action already done.");
-			return;
-		}
-
 		this.currentPlayer.setStaffAvailable(0);
 
 		this.machine.get().update();
