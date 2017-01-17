@@ -28,22 +28,7 @@ import org.tiwindetea.animewarfare.logic.buffs.HasutaCostBuff;
 import org.tiwindetea.animewarfare.logic.buffs.HimejiAttackBuff;
 import org.tiwindetea.animewarfare.logic.buffs.LelouchAttackBuff;
 import org.tiwindetea.animewarfare.logic.buffs.NyarukoAttackBuff;
-import org.tiwindetea.animewarfare.logic.capacity.BackStab;
-import org.tiwindetea.animewarfare.logic.capacity.BadBook;
-import org.tiwindetea.animewarfare.logic.capacity.BadLuck;
-import org.tiwindetea.animewarfare.logic.capacity.Clemency;
-import org.tiwindetea.animewarfare.logic.capacity.ColdBlood;
-import org.tiwindetea.animewarfare.logic.capacity.DeafEar;
-import org.tiwindetea.animewarfare.logic.capacity.FlyingStudio;
-import org.tiwindetea.animewarfare.logic.capacity.ForcedRetreat;
-import org.tiwindetea.animewarfare.logic.capacity.GeniusKidnapper;
-import org.tiwindetea.animewarfare.logic.capacity.HidingInTheBush;
-import org.tiwindetea.animewarfare.logic.capacity.Holocaust;
-import org.tiwindetea.animewarfare.logic.capacity.Loan;
-import org.tiwindetea.animewarfare.logic.capacity.MagicMovement;
-import org.tiwindetea.animewarfare.logic.capacity.MarketFlooding;
-import org.tiwindetea.animewarfare.logic.capacity.MoreFans;
-import org.tiwindetea.animewarfare.logic.capacity.UndercoverAgent;
+import org.tiwindetea.animewarfare.logic.capacity.*;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
@@ -54,7 +39,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -73,6 +57,7 @@ public class GameBoard {
 	private Player lastFirstPlayer;
 	private Player firstPlayer;
 	private int firstPlayerID;
+	private final int numberOfPlayers;
 	private boolean clockWiseRotationTurn;
 
 	private AdvertisingCampaignRightsPool advertisingCampaignRightsPool = new AdvertisingCampaignRightsPool();
@@ -88,6 +73,7 @@ public class GameBoard {
 					+ " player(s) requested, should be between 2 and 4");
 		}
 
+		numberOfPlayers = players.size();
 		initializePlayers(players);
 		this.gameMap = new GameMap(this.players.size());
 		this.marketingLadder = new MarketingLadder();
@@ -155,17 +141,14 @@ public class GameBoard {
 		return Collections.unmodifiableCollection(this.players.values());
 	}
 
-	public Player selectRandomPlayer() {
+	public Player selectRandomPlayer() { // FIXME : potentially useless (firstPlayer is random at GameBoard instanciation)
 
-		Player p;
-		int chosenPlayer = new Random().nextInt(this.players.size());
-
-		Collection<Player> localPlayers = this.players.values();
-		Iterator<Player> playerIterator = localPlayers.iterator();
-		do {
-			p = playerIterator.next();
+		Player p = firstPlayer;
+		int chosenPlayer = new Random().nextInt(numberOfPlayers);
+		while (chosenPlayer > 0) {
+			p = p.getClockwiseNextPlayer();
 			--chosenPlayer;
-		} while (chosenPlayer >= 0);
+		}
 
 		return p;
 	}
@@ -195,6 +178,8 @@ public class GameBoard {
 
 		Player previous = null;
 		Player first = null;
+		int firstPlayerIdx = new Random().nextInt(players.size());
+		int currentIteration = 0;
 
 		for (Player current : playersInOrder) {
 			this.players.put(new Integer(current.getID()), current);
@@ -205,6 +190,13 @@ public class GameBoard {
 				first = current;
 			}
 			previous = current;
+
+			if (firstPlayer == null) {
+				if (currentIteration == firstPlayerIdx) {
+					this.firstPlayer = current;
+				}
+			}
+			++currentIteration;
 		}
 		previous.setClockwiseNextPlayer(first);
 		first.setClockwisePreviousPlayer(previous);
