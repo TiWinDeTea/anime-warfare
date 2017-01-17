@@ -8,11 +8,12 @@ import org.tiwindetea.animewarfare.logic.events.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
 public class HasutaCostBuff extends Buff implements UnitCounterEventListener {
-	private final Mask costModifier = new Mask(0);
+	private final Mask costMask = new Mask(0);
+	private final CostModifier modifier;
 
 	public HasutaCostBuff(CostModifier modifier) {
 		super(-1);
-		modifier.addUnitCost(UnitType.HASUTA, this.costModifier);
+		this.modifier = modifier;
 
 		LogicEventDispatcher.registerListener(UnitCounterEvent.class, this);
 	}
@@ -30,11 +31,13 @@ public class HasutaCostBuff extends Buff implements UnitCounterEventListener {
 	@Override
 	public void handleUnitEvent(UnitCounterEvent event) {
 		if (event.getUnitType() == UnitType.HASUTA) {
+			this.modifier.removeUnitCost(UnitType.HASUTA, this.costMask);
 			if (event.getType() == UnitCounterEvent.Type.ADDED) {
-				--(this.costModifier.value);
+				--(this.costMask.value);
 			} else {
-				++(this.costModifier.value);
+				++(this.costMask.value);
 			}
+			this.modifier.addUnitCost(UnitType.HASUTA, this.costMask);
 		}
 	}
 }

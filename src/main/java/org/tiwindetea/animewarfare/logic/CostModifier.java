@@ -51,7 +51,8 @@ public class CostModifier {
 	}
 
 	public void addUnitCost(UnitType unitType, Mask costMask) {
-		this.unitCost.getOrDefault(unitType, new ArrayList<>()).add(costMask);
+		this.unitCost.putIfAbsent(unitType, new ArrayList<>());
+		this.unitCost.get(unitType).add(costMask);
 
 		LogicEventDispatcher.send(new CostModifiedEvent(this.playerID, unitType, getUnitCostModifier(unitType)));
 	}

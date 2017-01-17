@@ -396,9 +396,9 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	}
 
 	private void invokeUnit(Zone zone, UnitType unitType) {
+		this.currentPlayer.decrementStaffPoints(this.currentPlayer.getUnitCost(unitType));
 		Unit unit = new Unit(unitType);
 		this.currentPlayer.getUnitCounter().addUnit(unitType, unit.getID());
-		this.currentPlayer.decrementStaffPoints(this.currentPlayer.getUnitCost(unitType));
 		unit.addInZone(zone);
 	}
 
