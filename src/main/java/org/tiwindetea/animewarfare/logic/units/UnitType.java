@@ -70,8 +70,7 @@ public enum UnitType {
 			3, 3),
 	HIMEJI_MIZUKI(FactionType.F_CLASS_NO_BAKA,
 			UnitLevel.HERO,
-			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE,
-					UnitBasicCharacteristics.MAGIC_NBR_STUDIO_MASCOT),
+			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, 0),
 			8, 1),
 
 	// Haiyore
@@ -93,8 +92,7 @@ public enum UnitType {
 			6, 1),
 	NYARUKO(FactionType.HAIYORE,
 			UnitLevel.HERO,
-			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE,
-					UnitBasicCharacteristics.MAGIC_NBR_ENEMY_FANS),
+			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.FEMALE, 0),
 			6, 1),
 
 	// The Black Knights

@@ -43,16 +43,6 @@ public class UnitBasicCharacteristics {
 		}
 	}
 
-	/**
-	 * MAGIC_NBR_STUDIO_MASCOT = Number of studio of player and number of mascots of the player
-	 */
-	public static final float MAGIC_NBR_STUDIO_MASCOT = -1.f;
-
-	/**
-	 * MAGIC_NBR_ENEMY_FANS = (Number of enemy fans + 1) /2
-	 */
-	public static final float MAGIC_NBR_ENEMY_FANS = -2.f;
-
 	private final Gender gender;
 	private final float baseAttackPoints;
 

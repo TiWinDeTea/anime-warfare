@@ -50,8 +50,8 @@ public class HimejiAttackBuff extends Buff implements StudioControllerChangedEve
 
 	@Override
 	public void handleUnitEvent(UnitCounterEvent event) {
-		if (event.getFaction() == UnitType.HIMEJI_MIZUKI.getDefaultFaction() && event.getUnitType()
-		                                                                             .isLevel(UnitLevel.MASCOT)) {
+		if (event.getFaction() == UnitType.HIMEJI_MIZUKI.getDefaultFaction()
+				&& event.getUnitType().isLevel(UnitLevel.MASCOT)) {
 			if (event.getType() == UnitCounterEvent.Type.ADDED) {
 				++(this.himejiAttackBuff.attackPoints);
 			} else {
