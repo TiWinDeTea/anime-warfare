@@ -279,7 +279,7 @@ public class GameBoard {
 	private void createSpecialBuffs(Player player) {
 		switch (player.getFaction()) {
 			case THE_BLACK_KNIGHTS:
-				player.getBuffManager().addBuff(new LelouchAttackBuff());
+				player.getBuffManager().addBuff(new LelouchAttackBuff(this.players.size()));
 				break;
 			case HAIYORE:
 				player.getBuffManager().addBuff(new NyarukoAttackBuff());

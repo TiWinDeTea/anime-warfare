@@ -1,18 +1,21 @@
 package org.tiwindetea.animewarfare.logic.buffs;
 
 import org.tiwindetea.animewarfare.logic.LogicEventDispatcher;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.events.UnitCounterEventListener;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
-import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEvent;
-import org.tiwindetea.animewarfare.logic.units.events.UnitMovedEventListener;
 
-public class LelouchAttackBuff extends Buff implements UnitMovedEventListener {
+public class LelouchAttackBuff extends Buff implements UnitCounterEventListener {
 	private final BuffMask lelouchBuffMask = new BuffMask();
 
-	public LelouchAttackBuff() {
-		super(-1);
+	private final int nbOfPlayers;
 
-		LogicEventDispatcher.registerListener(UnitMovedEvent.class, this);
+	public LelouchAttackBuff(int nbOfPlayers) {
+		super(-1);
+		this.nbOfPlayers = nbOfPlayers;
+
+		LogicEventDispatcher.registerListener(UnitCounterEvent.class, this);
 	}
 
 	@Override
@@ -22,19 +25,19 @@ public class LelouchAttackBuff extends Buff implements UnitMovedEventListener {
 
 	@Override
 	void destroy() {
-		LogicEventDispatcher.unregisterListener(UnitMovedEvent.class, this);
+		LogicEventDispatcher.unregisterListener(UnitCounterEvent.class, this);
 	}
 
 	@Override
-	public void handleUnitMoved(UnitMovedEvent event) {
-		if (event.getSource() == null) {
-			if (event.getUnit().getType() == UnitType.LELOUCH) {
+	public void handleUnitEvent(UnitCounterEvent event) {
+		if (event.getType() == UnitCounterEvent.Type.ADDED) {
+			if (event.getUnitType() == UnitType.LELOUCH) {
 				event.getUnit().getUnitBuffedCharacteristics().addBuffMask(this.lelouchBuffMask);
-			} else if (event.getUnit().isLevel(UnitLevel.HERO)) {
-				this.lelouchBuffMask.attackPoints += 2;
+			} else if (event.getUnitType().isLevel(UnitLevel.HERO)) {
+				this.lelouchBuffMask.attackPoints += Math.ceil(8 / this.nbOfPlayers);
 			}
-		} else if (event.getDestination() == null && event.getUnit().isLevel(UnitLevel.HERO)) {
-			this.lelouchBuffMask.attackPoints -= 2;
+		} else if (event.getUnitType().isLevel(UnitLevel.HERO) && event.getUnitType() != UnitType.LELOUCH) {
+			this.lelouchBuffMask.attackPoints -= Math.ceil(8 / this.nbOfPlayers);
 		}
 	}
 }
