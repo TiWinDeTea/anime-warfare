@@ -116,8 +116,7 @@ public enum UnitType {
 			4, 2),
 	LELOUCH(FactionType.THE_BLACK_KNIGHTS,
 			UnitLevel.HERO,
-			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE,
-					UnitBasicCharacteristics.MAGIC_NBR_NBR_ENEMY_HEROES_IN_GAME),
+			new UnitBasicCharacteristics(UnitBasicCharacteristics.Gender.MALE, 0),
 			6, 1);
 
 	private final FactionType defaultFaction;
