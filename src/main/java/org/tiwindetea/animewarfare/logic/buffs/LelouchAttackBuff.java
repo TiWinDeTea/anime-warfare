@@ -33,7 +33,7 @@ public class LelouchAttackBuff extends Buff implements UnitMovedEventListener {
 			} else if (event.getUnit().isLevel(UnitLevel.HERO)) {
 				this.lelouchBuffMask.attackPoints += 2;
 			}
-		} else if (event.getUnit().isLevel(UnitLevel.HERO)) {
+		} else if (event.getDestination() == null && event.getUnit().isLevel(UnitLevel.HERO)) {
 			this.lelouchBuffMask.attackPoints -= 2;
 		}
 	}
