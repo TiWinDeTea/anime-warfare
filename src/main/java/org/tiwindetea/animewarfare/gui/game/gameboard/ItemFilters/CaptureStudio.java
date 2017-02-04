@@ -53,6 +53,7 @@ public class CaptureStudio extends AbstractUnitFilter {
 				|| actionMenuState != GCAMState.NOTHING
 				|| unit.getFaction() != factionType
 				|| unit.getType().getUnitLevel() != UnitLevel.MASCOT
+				|| GameLayoutController.getMap().getComponents(unit.getZone()).stream().noneMatch(c -> c instanceof GStudio)
 				|| GameLayoutController.getMap().getComponents(unit.getZone()).stream().anyMatch(c -> c instanceof GStudio && c.getFaction() != null)) {
 			return Collections.emptyList();
 		}
