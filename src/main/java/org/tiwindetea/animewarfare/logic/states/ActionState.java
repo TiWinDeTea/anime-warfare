@@ -448,6 +448,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		this.currentBattleStateMachine = new DefaultStateMachine(new PreBattleState(battleContext, this.gameBoard.getMap()));
 
 		this.nonUnlimitedActionDone = true;
+		this.longActionBeingPerformed = true;
 		this.currentPlayer.decrementStaffPoints(this.currentPlayer.getBattleCost());
 	}
 
@@ -626,7 +627,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 		}
 
 		if (this.longActionBeingPerformed) {
-			Log.debug(getClass().getName(), "A unit is being captured.");
+			Log.debug(getClass().getName(), "A long action is being performed.");
 			return;
 		}
 
