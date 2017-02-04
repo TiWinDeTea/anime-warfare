@@ -41,6 +41,8 @@ public abstract class AbstractFilter {
 		NOTHING,
 		MOVING_UNITS,
 		BATTLE,
+		SELECTING_DEADS,
+		SELECTING_WOUNDEDS,
 	}
 
 	protected static GCAMState actionMenuState = GCAMState.NOTHING;

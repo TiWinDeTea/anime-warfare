@@ -28,6 +28,7 @@ import org.lomadriel.lfc.event.Event;
 import org.tiwindetea.animewarfare.net.GameClientInfo;
 import org.tiwindetea.animewarfare.net.networkrequests.server.NetBattle;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -71,8 +72,8 @@ public class BattleNetevent implements Event<BattleNeteventListener> {
 	private final Type type;
 
 	private final Map<GameClientInfo, Integer> attack;
-	private final Map<GameClientInfo, Integer> numberOfWoundeds;
-	private final Map<GameClientInfo, Integer> numberOfDeads;
+	private final Map<GameClientInfo, Integer> numberOfWoundeds = new HashMap<>();
+	private final Map<GameClientInfo, Integer> numberOfDeads = new HashMap<>();
 
 	public BattleNetevent(NetBattle netBattle) {
 		this.attacker = netBattle.getAttacker();
@@ -80,8 +81,8 @@ public class BattleNetevent implements Event<BattleNeteventListener> {
 		this.zone = netBattle.getZone();
 		this.type = netBattle.getType();
 		this.attack = netBattle.getAttack();
-		this.numberOfWoundeds = netBattle.getNumberOfWoundeds();
-		this.numberOfDeads = netBattle.getNumberOfDeads();
+		netBattle.getNumberOfWoundeds().forEach((key, value) -> this.numberOfWoundeds.put(key, value));
+		netBattle.getNumberOfDeads().forEach((key, value) -> this.numberOfDeads.put(key, value));
 	}
 
 	@Override

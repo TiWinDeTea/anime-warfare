@@ -26,10 +26,12 @@ package org.tiwindetea.animewarfare.gui.game.gameboard;
 
 import com.esotericsoftware.minlog.Log;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.gui.GlobalChat;
 import org.tiwindetea.animewarfare.gui.game.event.GUnitClickedEvent;
@@ -60,6 +62,8 @@ public class GUnit extends GComponent {
 
     private final UnitType type;
     private final int ID;
+    private Line NE_SW;
+    private Line NW_SE;
 
     static {
         PICTURES.put(UnitType.KUDOU_ASUKA,
@@ -117,8 +121,10 @@ public class GUnit extends GComponent {
         setFactionType(faction);
         getImageView().setOnMouseClicked(getOnMouseClicked());
 
+
         Tooltip.install(this, new Tooltip(type.toString() + " (" + type.getUnitBasicCharacteristics().getGender() + ")\n" +
                 "Insult power: " + type.getUnitBasicCharacteristics().getBaseAttackPoints())); // Fixme : consider using the real stats
+        // todo externalize
     }
 
     private void initializeImage(GameClientInfo owner) {
@@ -156,6 +162,8 @@ public class GUnit extends GComponent {
     private GUnit(int ID) {
         this.ID = ID;
         this.type = null;
+        this.NW_SE = null;
+        this.NE_SW = null;
     }
 
     public int getGameID() {
@@ -164,6 +172,24 @@ public class GUnit extends GComponent {
 
     public UnitType getType() {
         return this.type;
+    }
+
+    public void cross(Color crossColor) {
+        Bounds b = this.getBoundsInParent();
+        if (this.NW_SE == null) {
+            this.NW_SE = new Line(b.getMinX() + 3, b.getMaxY() - 3, b.getMaxX() - 3, b.getMinY() + 3);
+        }
+
+        if (this.NE_SW == null) {
+            this.NE_SW = new Line(b.getMaxX() - 3, b.getMaxY() - 3, b.getMinX() + 3, b.getMinY() + 3);
+        }
+        this.NW_SE.setStroke(crossColor);
+        this.NE_SW.setStroke(crossColor);
+        getChildren().addAll(this.NE_SW, this.NW_SE);
+    }
+
+    public void uncross() {
+        getChildren().removeAll(this.NE_SW, this.NW_SE);
     }
 
     /**

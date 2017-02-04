@@ -47,10 +47,10 @@ public class NetSelectWoundedUnitsRequest implements NetSendable {
 	 * @param woundedsToMove list of wounded units to move
 	 */
 	public NetSelectWoundedUnitsRequest(Set<MoveUnitsEvent.Movement> woundedsToMove) {
-		this.woundedsToMove = Collections.unmodifiableSet(woundedsToMove);
+		this.woundedsToMove = woundedsToMove;
 	}
 
 	public Set<MoveUnitsEvent.Movement> getWoundedsToMove() {
-		return this.woundedsToMove;
+		return Collections.unmodifiableSet(this.woundedsToMove);
 	}
 }

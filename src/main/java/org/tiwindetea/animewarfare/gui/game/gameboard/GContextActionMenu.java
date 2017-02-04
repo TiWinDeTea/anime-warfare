@@ -39,22 +39,7 @@ import org.tiwindetea.animewarfare.gui.game.event.GUnitClickedEvent;
 import org.tiwindetea.animewarfare.gui.game.event.GUnitClickedEventListener;
 import org.tiwindetea.animewarfare.gui.game.event.ZoneClickedEvent;
 import org.tiwindetea.animewarfare.gui.game.event.ZoneClickedEventListener;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbandonStudio;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractFilter;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractStudioFilter;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractUnitFilter;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.AbstractZoneFilter;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureStudio;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.CaptureUnit;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawMascot;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.DrawUnit;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.EngageBattle;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.HimejiInvocation;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.LelouchInvocation;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.Move;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.OpenStudio;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToCapture;
-import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.SelectUnitToDie;
+import org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters.*;
 import org.tiwindetea.animewarfare.logic.FactionType;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNetevent;
 import org.tiwindetea.animewarfare.net.networkevent.GameEndedNeteventListener;
@@ -234,7 +219,7 @@ public class GContextActionMenu extends ContextMenu
             AbstractUnitFilter selectUnitToCapture = new SelectUnitToCapture();
             this.filteredUnitItems.put(selectUnitToCapture.getClass(), selectUnitToCapture);
 
-            AbstractUnitFilter selectUnitToDie = new SelectUnitToDie();
+            AbstractUnitFilter selectUnitToDie = new SelectUnitToKill();
             this.filteredUnitItems.put(selectUnitToDie.getClass(), selectUnitToDie);
 
             AbstractUnitFilter lelouchInvocation = new LelouchInvocation();
@@ -242,6 +227,9 @@ public class GContextActionMenu extends ContextMenu
 
             AbstractUnitFilter captureStudio = new CaptureStudio();
             this.filteredUnitItems.put(captureStudio.getClass(), captureStudio);
+
+            AbstractUnitFilter selectUnitsToWound = new SelectUnitsToWound();
+            this.filteredUnitItems.put(selectUnitsToWound.getClass(), selectUnitsToWound);
 
             // == studio filters ==
             AbstractStudioFilter drawUnit = new DrawUnit();

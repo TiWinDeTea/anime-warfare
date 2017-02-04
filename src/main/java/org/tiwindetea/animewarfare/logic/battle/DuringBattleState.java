@@ -140,7 +140,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 				if (roll == 5) { // dead
 					target.incrementDeads(1);
 				} else { // wounded
-					//target.incrementWoundeds(1); // FIXME
+					target.incrementWoundeds(1);
 				}
 			}
 		}

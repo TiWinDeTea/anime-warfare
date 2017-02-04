@@ -27,6 +27,7 @@ package org.tiwindetea.animewarfare.gui.game.gameboard.ItemFilters;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.paint.Color;
 import org.lomadriel.lfc.event.EventDispatcher;
 import org.tiwindetea.animewarfare.MainApp;
 import org.tiwindetea.animewarfare.gui.game.gameboard.GUnit;
@@ -43,14 +44,15 @@ import java.util.stream.Collectors;
 
 /**
  * @author Benoît CORTIER
+ * @since 0.1.0
  */
-public class SelectUnitToDie extends AbstractUnitFilter implements BattleNeteventListener {
+public class SelectUnitToKill extends AbstractUnitFilter implements BattleNeteventListener {
 	private int zoneID = -1;
 	private int numberOfDeads;
-	private List<GUnit> selectedToDie = new ArrayList<>();
+	private final List<GUnit> selectedToDie = new ArrayList<>();
 	private Button validadeDeathButton;
 
-	public SelectUnitToDie() {
+	public SelectUnitToKill() {
 		EventDispatcher.registerListener(BattleNetevent.class, this);
 	}
 
@@ -58,19 +60,15 @@ public class SelectUnitToDie extends AbstractUnitFilter implements BattleNeteven
 	public List<MenuItem> apply(FactionType factionType, GUnit unit) {
 		if (unit.getZone() == this.zoneID && unit.getFaction() == factionType) {
 			if (this.selectedToDie.contains(unit)) {
-				MenuItem menuItem = new MenuItem("Unselect"); // TODO: externalize
-				menuItem.setOnAction(e -> {
-					this.selectedToDie.remove(unit);
-					unit.setOpacity(1);
-				});
-				return Arrays.asList(menuItem);
+				this.selectedToDie.remove(unit);
+				unit.uncross();
 			} else {
-				MenuItem menuItem = new MenuItem("Select to die");
+				MenuItem menuItem = new MenuItem("Kill"); // todo externalize
 				menuItem.setOnAction(e -> {
 					this.selectedToDie.add(unit);
-					unit.setOpacity(0.5);
+					unit.cross(Color.RED);
 				});
-				if (this.selectedToDie.size() + 1 > this.numberOfDeads) {
+				if (this.selectedToDie.size() == this.numberOfDeads) {
 					menuItem.setDisable(true);
 				}
 				return Arrays.asList(menuItem);
@@ -102,12 +100,16 @@ public class SelectUnitToDie extends AbstractUnitFilter implements BattleNeteven
 					this.selectedToDie.stream().map(gu -> gu.getGameID()).collect(Collectors.toSet())
 			)));
 		});
+		if (this.numberOfDeads >= 1) {
+			AbstractUnitFilter.actionMenuState = GCAMState.SELECTING_DEADS;
+		}
 	}
 
 	@Override
 	public void handlePostBattle(BattleNetevent event) {
 		this.selectedToDie.clear(); // just to be safe
 		this.zoneID = -1;
+		actionMenuState = GCAMState.NOTHING;
 		Platform.runLater(() -> {
 			remove(this.validadeDeathButton);
 		});

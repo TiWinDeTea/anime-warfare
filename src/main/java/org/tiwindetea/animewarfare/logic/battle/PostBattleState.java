@@ -59,7 +59,7 @@ public class PostBattleState extends BattleState
 	private final List<CapacityName> defenderCapacities = new ArrayList<>();
 	private final Map<Player, CapacityName> thirdPartiesCapacities = new HashMap<>();
 
-	private Set<Integer> playersReady = new LinkedHashSet<>();
+	private final Set<Integer> playersReady = new LinkedHashSet<>();
 
 	public PostBattleState(BattleContext battleContext, GameMap map) {
 		super(battleContext, map);
@@ -75,9 +75,9 @@ public class PostBattleState extends BattleState
 			}
 		}
 
-		//LogicEventDispatcher.registerListener(SelectWoundedsUnitsEvent.class, this); // FIXME
 		LogicEventDispatcher.registerListener(UseCapacityEvent.class, this);
 		LogicEventDispatcher.registerListener(BattlePhaseReadyEvent.class, this);
+		LogicEventDispatcher.registerListener(SelectWoundedsUnitsEvent.class, this);
 	}
 
 	@Override

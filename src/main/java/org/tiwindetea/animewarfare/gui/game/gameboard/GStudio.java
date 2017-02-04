@@ -59,7 +59,7 @@ public class GStudio extends GComponent {
     private GStudio(int zoneID) {
         super(STUDIO_IMAGE);
         super.setZone(zoneID);
-        this.ownerRectangle = new Rectangle(10, 10, Color.TRANSPARENT);
+        this.ownerRectangle = new Rectangle(20, 20, Color.TRANSPARENT);
         this.ownerRectangle.setStrokeWidth(2);
         this.ownerRectangle.setStroke(GlobalChat.getDefaultColor());
         getChildren().add(this.ownerRectangle);
