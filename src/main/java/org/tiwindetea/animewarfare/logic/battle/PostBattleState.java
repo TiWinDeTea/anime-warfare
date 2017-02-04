@@ -92,7 +92,7 @@ public class PostBattleState extends BattleState
 			for (Unit unit : battleSide.getWoundeds()) {
 				if (unit.getZone().equals(this.battleContext.getZone())) {
 					unit.removeFromMap();
-					battleSide.getPlayer().getUnitCounter().removeUnit(unit.getType(), unit.getID());
+					battleSide.getPlayer().getUnitCounter().removeUnit(unit.getType(), unit);
 				}
 			}
 		}

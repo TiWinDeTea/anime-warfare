@@ -25,6 +25,7 @@
 package org.tiwindetea.animewarfare.logic;
 
 import org.tiwindetea.animewarfare.logic.events.UnitCounterEvent;
+import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitLevel;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
 
@@ -40,18 +41,18 @@ public class UnitCounter {
 		return this.numberOfUnitsByLevel[level.ordinal()];
 	}
 
-	public void addUnit(UnitType type, int unitID) {
+	public void addUnit(UnitType type, Unit unit) {
 		++this.numberOfUnitsByType[type.ordinal()];
 		++this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
 
-		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.ADDED, type.getDefaultFaction(), type, unitID));
+		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.ADDED, type.getDefaultFaction(), type, unit));
 	}
 
-	public void removeUnit(UnitType type, int unitID) {
+	public void removeUnit(UnitType type, Unit unit) {
 		--this.numberOfUnitsByType[type.ordinal()];
 		--this.numberOfUnitsByLevel[type.getUnitLevel().ordinal()];
 
-		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.REMOVED, type.getDefaultFaction(), type, unitID));
+		LogicEventDispatcher.send(new UnitCounterEvent(UnitCounterEvent.Type.REMOVED, type.getDefaultFaction(), type, unit));
 	}
 
 	public boolean hasUnits() {

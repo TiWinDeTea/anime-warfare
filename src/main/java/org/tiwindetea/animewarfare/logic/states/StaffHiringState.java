@@ -104,7 +104,7 @@ class StaffHiringState extends GameState {
 
 	private void releaseCapturedUnits(Player player) {
 		for (Unit unit : player.getUnitCaptured()) {
-			this.gameBoard.getPlayer(unit.getFaction()).getUnitCounter().removeUnit(unit.getType(), unit.getID());
+			this.gameBoard.getPlayer(unit.getFaction()).getUnitCounter().removeUnit(unit.getType(), unit);
 		}
 
 		player.getUnitCaptured().clear();

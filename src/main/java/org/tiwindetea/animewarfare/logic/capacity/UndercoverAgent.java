@@ -141,7 +141,7 @@ public class UndercoverAgent extends PlayerCapacity implements UndercoverAgentCa
 			boolean isController = this.targetZone.getStudio().getController().equals(mascot);
 			mascot.removeFromMap();
 
-			this.gameBoard.getPlayer(event.getPlayerID()).getUnitCounter().removeUnit(mascot.getType(), mascot.getID());
+			this.gameBoard.getPlayer(event.getPlayerID()).getUnitCounter().removeUnit(mascot.getType(), mascot);
 
 			UnitType casterMascotType = Arrays.stream(UnitType.values())
 					.filter(t -> t.isLevel(UnitLevel.MASCOT) && getPlayer().hasFaction(t.getDefaultFaction()))

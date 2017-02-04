@@ -28,7 +28,22 @@ import org.tiwindetea.animewarfare.logic.buffs.HasutaCostBuff;
 import org.tiwindetea.animewarfare.logic.buffs.HimejiAttackBuff;
 import org.tiwindetea.animewarfare.logic.buffs.LelouchAttackBuff;
 import org.tiwindetea.animewarfare.logic.buffs.NyarukoAttackBuff;
-import org.tiwindetea.animewarfare.logic.capacity.*;
+import org.tiwindetea.animewarfare.logic.capacity.BackStab;
+import org.tiwindetea.animewarfare.logic.capacity.BadBook;
+import org.tiwindetea.animewarfare.logic.capacity.BadLuck;
+import org.tiwindetea.animewarfare.logic.capacity.Clemency;
+import org.tiwindetea.animewarfare.logic.capacity.ColdBlood;
+import org.tiwindetea.animewarfare.logic.capacity.DeafEar;
+import org.tiwindetea.animewarfare.logic.capacity.FlyingStudio;
+import org.tiwindetea.animewarfare.logic.capacity.ForcedRetreat;
+import org.tiwindetea.animewarfare.logic.capacity.GeniusKidnapper;
+import org.tiwindetea.animewarfare.logic.capacity.HidingInTheBush;
+import org.tiwindetea.animewarfare.logic.capacity.Holocaust;
+import org.tiwindetea.animewarfare.logic.capacity.Loan;
+import org.tiwindetea.animewarfare.logic.capacity.MagicMovement;
+import org.tiwindetea.animewarfare.logic.capacity.MarketFlooding;
+import org.tiwindetea.animewarfare.logic.capacity.MoreFans;
+import org.tiwindetea.animewarfare.logic.capacity.UndercoverAgent;
 import org.tiwindetea.animewarfare.logic.units.Studio;
 import org.tiwindetea.animewarfare.logic.units.Unit;
 import org.tiwindetea.animewarfare.logic.units.UnitType;
@@ -73,7 +88,7 @@ public class GameBoard {
 					+ " player(s) requested, should be between 2 and 4");
 		}
 
-		numberOfPlayers = players.size();
+		this.numberOfPlayers = players.size();
 		initializePlayers(players);
 		this.gameMap = new GameMap(this.players.size());
 		this.marketingLadder = new MarketingLadder();
@@ -100,7 +115,7 @@ public class GameBoard {
 					break;
 			}
 
-			player.getUnitCounter().addUnit(unit.getType(), unit.getID());
+			player.getUnitCounter().addUnit(unit.getType(), unit);
 			unit.addInZone(playerZone);
 
 			Studio studio = new Studio(playerZone.getID(), player);
@@ -108,7 +123,7 @@ public class GameBoard {
 
 			for (int i = 0; i < 5; i++) {
 				unit = new Unit(unit.getType());
-				player.getUnitCounter().addUnit(unit.getType(), unit.getID());
+				player.getUnitCounter().addUnit(unit.getType(), unit);
 				unit.addInZone(playerZone);
 			}
 
@@ -143,8 +158,8 @@ public class GameBoard {
 
 	public Player selectRandomPlayer() { // FIXME : potentially useless (firstPlayer is random at GameBoard instanciation)
 
-		Player p = firstPlayer;
-		int chosenPlayer = new Random().nextInt(numberOfPlayers);
+		Player p = this.firstPlayer;
+		int chosenPlayer = new Random().nextInt(this.numberOfPlayers);
 		while (chosenPlayer > 0) {
 			p = p.getClockwiseNextPlayer();
 			--chosenPlayer;
@@ -191,7 +206,7 @@ public class GameBoard {
 			}
 			previous = current;
 
-			if (firstPlayer == null) {
+			if (this.firstPlayer == null) {
 				if (currentIteration == firstPlayerIdx) {
 					this.firstPlayer = current;
 				}

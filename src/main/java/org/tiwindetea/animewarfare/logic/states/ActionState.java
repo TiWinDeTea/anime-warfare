@@ -344,7 +344,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 		if (cc != null) {
 			cc.removeFromMap();
-			this.currentPlayer.getUnitCounter().removeUnit(cc.getType(), cc.getID());
+			this.currentPlayer.getUnitCounter().removeUnit(cc.getType(), cc);
 			invokeUnit(invocationZone, UnitType.LELOUCH);
 			this.nonUnlimitedActionDone = true;
 		}
@@ -375,7 +375,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 
 				for (int i = 0; i < 2; i++) {
 					mascots.get(i).removeFromMap();
-					this.currentPlayer.getUnitCounter().removeUnit(mascots.get(i).getType(), mascots.get(i).getID());
+					this.currentPlayer.getUnitCounter().removeUnit(mascots.get(i).getType(), mascots.get(i));
 				}
 
 				invokeUnit(invocationZone, UnitType.HIMEJI_MIZUKI);
@@ -398,7 +398,7 @@ class ActionState extends GameState implements MoveUnitsEventListener, OpenStudi
 	private void invokeUnit(Zone zone, UnitType unitType) {
 		this.currentPlayer.decrementStaffPoints(this.currentPlayer.getUnitCost(unitType));
 		Unit unit = new Unit(unitType);
-		this.currentPlayer.getUnitCounter().addUnit(unitType, unit.getID());
+		this.currentPlayer.getUnitCounter().addUnit(unitType, unit);
 		unit.addInZone(zone);
 	}
 

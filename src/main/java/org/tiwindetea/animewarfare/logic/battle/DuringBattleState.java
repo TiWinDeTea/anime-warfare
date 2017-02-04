@@ -71,7 +71,7 @@ public class DuringBattleState extends BattleState implements SelectUnitsEventLi
 		for (BattleSide battleSide : this.battleContext.getBattleSides()) {
 			for (Unit unit : battleSide.getDeads()) {
 				unit.removeFromMap();
-				battleSide.getPlayer().getUnitCounter().removeUnit(unit.getType(), unit.getID());
+				battleSide.getPlayer().getUnitCounter().removeUnit(unit.getType(), unit);
 			}
 		}
 

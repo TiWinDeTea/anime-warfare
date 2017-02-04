@@ -50,7 +50,7 @@ public class NetUnitCountChange implements NetReceivable {
         this.type = event.getType();
         this.factionType = event.getFaction();
         this.unitType = event.getUnitType();
-        this.id = event.getUnitId();
+        this.id = event.getUnit().getID();
     }
 
     public UnitCounterEvent.Type getType() {
